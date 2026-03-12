@@ -3474,6 +3474,1179 @@
         ]
       }
     },
+    "/v1/ai/inference/chat/completions": {
+      "post": {
+        "operationId": "createAiChatCompletion",
+        "summary": "Create an AI chat completion",
+        "tags": [
+          "AI - Inference"
+        ],
+        "security": [
+          {
+            "conjoinApiKey": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "response": {
+                      "$ref": "#/components/schemas/ApiResponseMeta"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "request_id": {
+                          "type": "string"
+                        },
+                        "conjoin_account_id": {
+                          "type": "string"
+                        },
+                        "conjoin_project_id": {
+                          "type": "string"
+                        },
+                        "live_mode": {
+                          "type": "boolean"
+                        },
+                        "model": {
+                          "type": "string"
+                        },
+                        "request_type": {
+                          "type": "string"
+                        },
+                        "status": {
+                          "type": "string"
+                        },
+                        "token_usage": {
+                          "type": "object",
+                          "properties": {
+                            "input_tokens": {
+                              "type": "number"
+                            },
+                            "output_tokens": {
+                              "type": "number"
+                            },
+                            "total_tokens": {
+                              "type": "number"
+                            }
+                          },
+                          "required": [
+                            "input_tokens",
+                            "output_tokens",
+                            "total_tokens"
+                          ]
+                        },
+                        "cost_usd": {
+                          "type": "number"
+                        },
+                        "latency_ms": {
+                          "type": "number"
+                        },
+                        "streaming_enabled": {
+                          "type": "boolean"
+                        },
+                        "policy_applied": {
+                          "type": "boolean"
+                        },
+                        "is_byok": {
+                          "type": "boolean"
+                        },
+                        "context_used": {
+                          "type": "boolean"
+                        },
+                        "date_created": {
+                          "type": "string"
+                        },
+                        "date_updated": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "request_id",
+                        "conjoin_account_id",
+                        "conjoin_project_id",
+                        "live_mode",
+                        "model",
+                        "request_type",
+                        "status",
+                        "token_usage",
+                        "cost_usd",
+                        "latency_ms",
+                        "streaming_enabled",
+                        "policy_applied",
+                        "is_byok",
+                        "context_used",
+                        "date_created",
+                        "date_updated"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error or bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - missing or invalid API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "response": {
+                      "$ref": "#/components/schemas/ApiResponseMeta"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "response": {
+                      "$ref": "#/components/schemas/ApiResponseMeta"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "model": {
+                    "type": "string"
+                  },
+                  "messages": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "role": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 64
+                        },
+                        "content": {
+                          "type": "string",
+                          "maxLength": 100000
+                        }
+                      },
+                      "required": [
+                        "role",
+                        "content"
+                      ]
+                    },
+                    "maxItems": 128
+                  },
+                  "temperature": {
+                    "type": "number"
+                  },
+                  "max_tokens": {
+                    "type": "number"
+                  },
+                  "top_p": {
+                    "type": "number"
+                  },
+                  "stream": {
+                    "type": "boolean"
+                  },
+                  "stop": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "maxItems": 10
+                  },
+                  "tools": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string"
+                        },
+                        "description": {
+                          "type": "string"
+                        },
+                        "parameters": {
+                          "type": "object",
+                          "additionalProperties": {}
+                        }
+                      },
+                      "required": [
+                        "name",
+                        "description",
+                        "parameters"
+                      ]
+                    },
+                    "maxItems": 64
+                  },
+                  "response_format": {
+                    "type": "object",
+                    "additionalProperties": {}
+                  },
+                  "metadata": {
+                    "type": "object",
+                    "additionalProperties": {}
+                  },
+                  "context": {
+                    "type": "object",
+                    "properties": {
+                      "containers": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "minLength": 1,
+                        "maxItems": 10
+                      },
+                      "modes": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "enum": [
+                            "vector",
+                            "fulltext",
+                            "agentic"
+                          ]
+                        }
+                      },
+                      "agentic": {
+                        "type": "object",
+                        "properties": {
+                          "enabled": {
+                            "type": "boolean"
+                          },
+                          "max_steps": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 10
+                          }
+                        },
+                        "required": [
+                          "enabled"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "containers"
+                    ]
+                  }
+                },
+                "required": [
+                  "model",
+                  "messages"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/ai/inference/multi-model": {
+      "post": {
+        "operationId": "createAiMultiModelInference",
+        "summary": "Create a multi-model AI inference",
+        "tags": [
+          "AI - Inference"
+        ],
+        "security": [
+          {
+            "conjoinApiKey": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "response": {
+                      "$ref": "#/components/schemas/ApiResponseMeta"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "request_id": {
+                          "type": "string"
+                        },
+                        "conjoin_account_id": {
+                          "type": "string"
+                        },
+                        "conjoin_project_id": {
+                          "type": "string"
+                        },
+                        "live_mode": {
+                          "type": "boolean"
+                        },
+                        "model": {
+                          "type": "string"
+                        },
+                        "request_type": {
+                          "type": "string"
+                        },
+                        "status": {
+                          "type": "string"
+                        },
+                        "token_usage": {
+                          "type": "object",
+                          "properties": {
+                            "input_tokens": {
+                              "type": "number"
+                            },
+                            "output_tokens": {
+                              "type": "number"
+                            },
+                            "total_tokens": {
+                              "type": "number"
+                            }
+                          },
+                          "required": [
+                            "input_tokens",
+                            "output_tokens",
+                            "total_tokens"
+                          ]
+                        },
+                        "cost_usd": {
+                          "type": "number"
+                        },
+                        "latency_ms": {
+                          "type": "number"
+                        },
+                        "streaming_enabled": {
+                          "type": "boolean"
+                        },
+                        "policy_applied": {
+                          "type": "boolean"
+                        },
+                        "is_byok": {
+                          "type": "boolean"
+                        },
+                        "context_used": {
+                          "type": "boolean"
+                        },
+                        "date_created": {
+                          "type": "string"
+                        },
+                        "date_updated": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "request_id",
+                        "conjoin_account_id",
+                        "conjoin_project_id",
+                        "live_mode",
+                        "model",
+                        "request_type",
+                        "status",
+                        "token_usage",
+                        "cost_usd",
+                        "latency_ms",
+                        "streaming_enabled",
+                        "policy_applied",
+                        "is_byok",
+                        "context_used",
+                        "date_created",
+                        "date_updated"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error or bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - missing or invalid API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "response": {
+                      "$ref": "#/components/schemas/ApiResponseMeta"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "response": {
+                      "$ref": "#/components/schemas/ApiResponseMeta"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "models": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "messages": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "role": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 64
+                        },
+                        "content": {
+                          "type": "string",
+                          "maxLength": 100000
+                        }
+                      },
+                      "required": [
+                        "role",
+                        "content"
+                      ]
+                    }
+                  },
+                  "temperature": {
+                    "type": "number"
+                  },
+                  "max_tokens": {
+                    "type": "number"
+                  },
+                  "synthesize": {
+                    "type": "boolean"
+                  },
+                  "judge_model": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "models",
+                  "messages"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/ai/inference/best-of-n": {
+      "post": {
+        "operationId": "createAiBestOfNInference",
+        "summary": "Create a best-of-N AI inference",
+        "tags": [
+          "AI - Inference"
+        ],
+        "security": [
+          {
+            "conjoinApiKey": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "response": {
+                      "$ref": "#/components/schemas/ApiResponseMeta"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "request_id": {
+                          "type": "string"
+                        },
+                        "conjoin_account_id": {
+                          "type": "string"
+                        },
+                        "conjoin_project_id": {
+                          "type": "string"
+                        },
+                        "live_mode": {
+                          "type": "boolean"
+                        },
+                        "model": {
+                          "type": "string"
+                        },
+                        "request_type": {
+                          "type": "string"
+                        },
+                        "status": {
+                          "type": "string"
+                        },
+                        "token_usage": {
+                          "type": "object",
+                          "properties": {
+                            "input_tokens": {
+                              "type": "number"
+                            },
+                            "output_tokens": {
+                              "type": "number"
+                            },
+                            "total_tokens": {
+                              "type": "number"
+                            }
+                          },
+                          "required": [
+                            "input_tokens",
+                            "output_tokens",
+                            "total_tokens"
+                          ]
+                        },
+                        "cost_usd": {
+                          "type": "number"
+                        },
+                        "latency_ms": {
+                          "type": "number"
+                        },
+                        "streaming_enabled": {
+                          "type": "boolean"
+                        },
+                        "policy_applied": {
+                          "type": "boolean"
+                        },
+                        "is_byok": {
+                          "type": "boolean"
+                        },
+                        "context_used": {
+                          "type": "boolean"
+                        },
+                        "date_created": {
+                          "type": "string"
+                        },
+                        "date_updated": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "request_id",
+                        "conjoin_account_id",
+                        "conjoin_project_id",
+                        "live_mode",
+                        "model",
+                        "request_type",
+                        "status",
+                        "token_usage",
+                        "cost_usd",
+                        "latency_ms",
+                        "streaming_enabled",
+                        "policy_applied",
+                        "is_byok",
+                        "context_used",
+                        "date_created",
+                        "date_updated"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error or bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - missing or invalid API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "response": {
+                      "$ref": "#/components/schemas/ApiResponseMeta"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "response": {
+                      "$ref": "#/components/schemas/ApiResponseMeta"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "model": {
+                    "type": "string"
+                  },
+                  "messages": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "role": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 64
+                        },
+                        "content": {
+                          "type": "string",
+                          "maxLength": 100000
+                        }
+                      },
+                      "required": [
+                        "role",
+                        "content"
+                      ]
+                    }
+                  },
+                  "n": {
+                    "type": "number",
+                    "minimum": 2,
+                    "maximum": 4
+                  },
+                  "temperature": {
+                    "type": "number"
+                  },
+                  "max_tokens": {
+                    "type": "number"
+                  },
+                  "selection_criteria": {
+                    "type": "string",
+                    "enum": [
+                      "length",
+                      "coherence",
+                      "custom"
+                    ]
+                  }
+                },
+                "required": [
+                  "model",
+                  "messages",
+                  "n"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/ai/inference/requests": {
+      "get": {
+        "operationId": "listAiInferenceRequests",
+        "summary": "List AI inference requests",
+        "tags": [
+          "AI - Inference"
+        ],
+        "security": [
+          {
+            "conjoinApiKey": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "response": {
+                      "$ref": "#/components/schemas/ApiResponseMeta"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "request_id": {
+                            "type": "string"
+                          },
+                          "conjoin_account_id": {
+                            "type": "string"
+                          },
+                          "conjoin_project_id": {
+                            "type": "string"
+                          },
+                          "live_mode": {
+                            "type": "boolean"
+                          },
+                          "model": {
+                            "type": "string"
+                          },
+                          "request_type": {
+                            "type": "string"
+                          },
+                          "status": {
+                            "type": "string"
+                          },
+                          "token_usage": {
+                            "type": "object",
+                            "properties": {
+                              "input_tokens": {
+                                "type": "number"
+                              },
+                              "output_tokens": {
+                                "type": "number"
+                              },
+                              "total_tokens": {
+                                "type": "number"
+                              }
+                            },
+                            "required": [
+                              "input_tokens",
+                              "output_tokens",
+                              "total_tokens"
+                            ]
+                          },
+                          "cost_usd": {
+                            "type": "number"
+                          },
+                          "latency_ms": {
+                            "type": "number"
+                          },
+                          "streaming_enabled": {
+                            "type": "boolean"
+                          },
+                          "policy_applied": {
+                            "type": "boolean"
+                          },
+                          "is_byok": {
+                            "type": "boolean"
+                          },
+                          "context_used": {
+                            "type": "boolean"
+                          },
+                          "date_created": {
+                            "type": "string"
+                          },
+                          "date_updated": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "request_id",
+                          "conjoin_account_id",
+                          "conjoin_project_id",
+                          "live_mode",
+                          "model",
+                          "request_type",
+                          "status",
+                          "token_usage",
+                          "cost_usd",
+                          "latency_ms",
+                          "streaming_enabled",
+                          "policy_applied",
+                          "is_byok",
+                          "context_used",
+                          "date_created",
+                          "date_updated"
+                        ]
+                      }
+                    },
+                    "cursor": {
+                      "$ref": "#/components/schemas/PaginationCursor"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error or bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - missing or invalid API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "response": {
+                      "$ref": "#/components/schemas/ApiResponseMeta"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "response": {
+                      "$ref": "#/components/schemas/ApiResponseMeta"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "prev": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 42
+                },
+                "next": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 42
+                }
+              }
+            },
+            "style": "deepObject",
+            "explode": true
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string",
+                "enum": [
+                  "asc",
+                  "desc"
+                ]
+              }
+            },
+            "style": "deepObject",
+            "explode": true
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 100,
+              "default": 50
+            }
+          },
+          {
+            "name": "query",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "model": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "string",
+                  "enum": [
+                    "pending",
+                    "streaming",
+                    "completed",
+                    "failed",
+                    "cancelled"
+                  ]
+                },
+                "request_type": {
+                  "type": "string",
+                  "enum": [
+                    "single",
+                    "multi_model",
+                    "best_of_n",
+                    "synthesis"
+                  ]
+                },
+                "date_created": {
+                  "type": "object",
+                  "properties": {
+                    "equals": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "not_equals": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "greater_than": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "less_than": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "greater_than_or_equals": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "less_than_or_equals": {
+                      "type": "string",
+                      "format": "date-time"
+                    }
+                  }
+                }
+              },
+              "default": {}
+            },
+            "style": "deepObject",
+            "explode": true
+          }
+        ]
+      }
+    },
+    "/v1/ai/inference/requests/{request_id}": {
+      "get": {
+        "operationId": "readAiInferenceRequest",
+        "summary": "Read an AI inference request",
+        "tags": [
+          "AI - Inference"
+        ],
+        "security": [
+          {
+            "conjoinApiKey": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "response": {
+                      "$ref": "#/components/schemas/ApiResponseMeta"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "request_id": {
+                          "type": "string"
+                        },
+                        "conjoin_account_id": {
+                          "type": "string"
+                        },
+                        "conjoin_project_id": {
+                          "type": "string"
+                        },
+                        "live_mode": {
+                          "type": "boolean"
+                        },
+                        "model": {
+                          "type": "string"
+                        },
+                        "request_type": {
+                          "type": "string"
+                        },
+                        "status": {
+                          "type": "string"
+                        },
+                        "token_usage": {
+                          "type": "object",
+                          "properties": {
+                            "input_tokens": {
+                              "type": "number"
+                            },
+                            "output_tokens": {
+                              "type": "number"
+                            },
+                            "total_tokens": {
+                              "type": "number"
+                            }
+                          },
+                          "required": [
+                            "input_tokens",
+                            "output_tokens",
+                            "total_tokens"
+                          ]
+                        },
+                        "cost_usd": {
+                          "type": "number"
+                        },
+                        "latency_ms": {
+                          "type": "number"
+                        },
+                        "streaming_enabled": {
+                          "type": "boolean"
+                        },
+                        "policy_applied": {
+                          "type": "boolean"
+                        },
+                        "is_byok": {
+                          "type": "boolean"
+                        },
+                        "context_used": {
+                          "type": "boolean"
+                        },
+                        "date_created": {
+                          "type": "string"
+                        },
+                        "date_updated": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "request_id",
+                        "conjoin_account_id",
+                        "conjoin_project_id",
+                        "live_mode",
+                        "model",
+                        "request_type",
+                        "status",
+                        "token_usage",
+                        "cost_usd",
+                        "latency_ms",
+                        "streaming_enabled",
+                        "policy_applied",
+                        "is_byok",
+                        "context_used",
+                        "date_created",
+                        "date_updated"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error or bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - missing or invalid API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "response": {
+                      "$ref": "#/components/schemas/ApiResponseMeta"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "response": {
+                      "$ref": "#/components/schemas/ApiResponseMeta"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "request_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
     "/v1/ai/model/models": {
       "get": {
         "operationId": "listAiModels",
@@ -3900,6 +5073,202 @@
             }
           }
         ]
+      }
+    },
+    "/v1/ai/policy/policy/check": {
+      "post": {
+        "operationId": "checkAiPolicy",
+        "summary": "Check content against AI policy rules",
+        "tags": [
+          "AI - Policy"
+        ],
+        "security": [
+          {
+            "conjoinApiKey": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "response": {
+                      "$ref": "#/components/schemas/ApiResponseMeta"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "allowed": {
+                          "type": "boolean"
+                        },
+                        "action_taken": {
+                          "type": "string"
+                        },
+                        "matched_rules": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "rule_id": {
+                                "type": "string"
+                              },
+                              "rule_type": {
+                                "type": "string"
+                              },
+                              "action": {
+                                "type": "string"
+                              },
+                              "detections": {
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "properties": {
+                                    "type": {
+                                      "type": "string"
+                                    },
+                                    "value": {
+                                      "type": "string"
+                                    },
+                                    "position": {
+                                      "type": "object",
+                                      "properties": {
+                                        "start": {
+                                          "type": "number"
+                                        },
+                                        "end": {
+                                          "type": "number"
+                                        }
+                                      },
+                                      "required": [
+                                        "start",
+                                        "end"
+                                      ]
+                                    },
+                                    "confidence": {
+                                      "type": "number"
+                                    }
+                                  },
+                                  "required": [
+                                    "type",
+                                    "value",
+                                    "position",
+                                    "confidence"
+                                  ]
+                                }
+                              }
+                            },
+                            "required": [
+                              "rule_id",
+                              "rule_type",
+                              "action",
+                              "detections"
+                            ]
+                          }
+                        },
+                        "transformed_content": {
+                          "oneOf": [
+                            {
+                              "type": "string"
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        }
+                      },
+                      "required": [
+                        "allowed",
+                        "action_taken",
+                        "matched_rules"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error or bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - missing or invalid API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "response": {
+                      "$ref": "#/components/schemas/ApiResponseMeta"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "response": {
+                      "$ref": "#/components/schemas/ApiResponseMeta"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "content": {
+                    "type": "string"
+                  },
+                  "direction": {
+                    "type": "string",
+                    "enum": [
+                      "request",
+                      "response",
+                      "both"
+                    ]
+                  },
+                  "context": {
+                    "type": "object",
+                    "properties": {
+                      "model": {
+                        "type": "string"
+                      },
+                      "request_id": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                },
+                "required": [
+                  "content",
+                  "direction"
+                ]
+              }
+            }
+          }
+        }
       }
     },
     "/v1/ai/policy/policy/rules/create": {
