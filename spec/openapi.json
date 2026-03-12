@@ -17,10 +17,6 @@
       "description": "Multi-provider AI inference with OpenAI-compatible chat completions, multi-model, and best-of-N modes"
     },
     {
-      "name": "AI - Provider Config",
-      "description": "AI provider configuration and credential management"
-    },
-    {
       "name": "AI - Model",
       "description": "AI model registry with capabilities and pricing"
     },
@@ -31,6 +27,10 @@
     {
       "name": "AI - Context",
       "description": "AI context indexing and retrieval with vector search, full-text search, and agentic access"
+    },
+    {
+      "name": "AI - BYOK",
+      "description": "Bring Your Own Key (BYOK) API key configuration for customer-managed provider access"
     },
     {
       "name": "AI - Usage",
@@ -394,6 +394,1295 @@
     }
   ],
   "paths": {
+    "/v1/ai/byok/byok/create": {
+      "post": {
+        "operationId": "createAiByokConfig",
+        "summary": "Create a BYOK API key configuration",
+        "tags": [
+          "AI - BYOK"
+        ],
+        "security": [
+          {
+            "conjoinApiKey": []
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "response": {
+                      "$ref": "#/components/schemas/ApiResponseMeta"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "byok_config_id": {
+                          "type": "string"
+                        },
+                        "conjoin_account_id": {
+                          "type": "string"
+                        },
+                        "conjoin_project_id": {
+                          "type": "string"
+                        },
+                        "live_mode": {
+                          "type": "boolean"
+                        },
+                        "reference_id": {
+                          "oneOf": [
+                            {
+                              "type": "string"
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        },
+                        "provider": {
+                          "type": "string"
+                        },
+                        "provider_name": {
+                          "type": "string"
+                        },
+                        "has_api_key": {
+                          "type": "boolean"
+                        },
+                        "endpoint_url": {
+                          "oneOf": [
+                            {
+                              "type": "string"
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        },
+                        "allowed_models": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "is_enabled": {
+                          "type": "boolean"
+                        },
+                        "status": {
+                          "type": "string"
+                        },
+                        "description": {
+                          "oneOf": [
+                            {
+                              "type": "string"
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        },
+                        "metadata": {
+                          "type": "object",
+                          "additionalProperties": {}
+                        },
+                        "date_created": {
+                          "type": "string"
+                        },
+                        "date_updated": {
+                          "type": "string"
+                        },
+                        "date_deleted": {
+                          "oneOf": [
+                            {
+                              "type": "string"
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        }
+                      },
+                      "required": [
+                        "byok_config_id",
+                        "conjoin_account_id",
+                        "conjoin_project_id",
+                        "live_mode",
+                        "reference_id",
+                        "provider",
+                        "provider_name",
+                        "has_api_key",
+                        "endpoint_url",
+                        "allowed_models",
+                        "is_enabled",
+                        "status",
+                        "metadata",
+                        "date_created",
+                        "date_updated"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error or bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - missing or invalid API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "response": {
+                      "$ref": "#/components/schemas/ApiResponseMeta"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "response": {
+                      "$ref": "#/components/schemas/ApiResponseMeta"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "provider": {
+                    "type": "string",
+                    "enum": [
+                      "anthropic",
+                      "openai",
+                      "google",
+                      "openai_compatible",
+                      "self_hosted"
+                    ]
+                  },
+                  "provider_name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 128
+                  },
+                  "api_key": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 512
+                  },
+                  "endpoint_url": {
+                    "oneOf": [
+                      {
+                        "type": "string",
+                        "format": "uri",
+                        "maxLength": 2048
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "allowed_models": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "maxLength": 256
+                    },
+                    "maxItems": 50
+                  },
+                  "description": {
+                    "oneOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "reference_id": {
+                    "oneOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "metadata": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "number"
+                        },
+                        {
+                          "type": "boolean"
+                        }
+                      ]
+                    },
+                    "maxProperties": 50,
+                    "description": "Custom key-value metadata (max 50 keys)",
+                    "default": {}
+                  }
+                },
+                "required": [
+                  "provider",
+                  "provider_name",
+                  "api_key"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/ai/byok/byok": {
+      "get": {
+        "operationId": "listAiByokConfigs",
+        "summary": "List BYOK API key configurations",
+        "tags": [
+          "AI - BYOK"
+        ],
+        "security": [
+          {
+            "conjoinApiKey": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "response": {
+                      "$ref": "#/components/schemas/ApiResponseMeta"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "byok_config_id": {
+                            "type": "string"
+                          },
+                          "conjoin_account_id": {
+                            "type": "string"
+                          },
+                          "conjoin_project_id": {
+                            "type": "string"
+                          },
+                          "live_mode": {
+                            "type": "boolean"
+                          },
+                          "reference_id": {
+                            "oneOf": [
+                              {
+                                "type": "string"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "provider": {
+                            "type": "string"
+                          },
+                          "provider_name": {
+                            "type": "string"
+                          },
+                          "has_api_key": {
+                            "type": "boolean"
+                          },
+                          "endpoint_url": {
+                            "oneOf": [
+                              {
+                                "type": "string"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "allowed_models": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "is_enabled": {
+                            "type": "boolean"
+                          },
+                          "status": {
+                            "type": "string"
+                          },
+                          "description": {
+                            "oneOf": [
+                              {
+                                "type": "string"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "metadata": {
+                            "type": "object",
+                            "additionalProperties": {}
+                          },
+                          "date_created": {
+                            "type": "string"
+                          },
+                          "date_updated": {
+                            "type": "string"
+                          },
+                          "date_deleted": {
+                            "oneOf": [
+                              {
+                                "type": "string"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          }
+                        },
+                        "required": [
+                          "byok_config_id",
+                          "conjoin_account_id",
+                          "conjoin_project_id",
+                          "live_mode",
+                          "reference_id",
+                          "provider",
+                          "provider_name",
+                          "has_api_key",
+                          "endpoint_url",
+                          "allowed_models",
+                          "is_enabled",
+                          "status",
+                          "metadata",
+                          "date_created",
+                          "date_updated"
+                        ]
+                      }
+                    },
+                    "cursor": {
+                      "$ref": "#/components/schemas/PaginationCursor"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error or bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - missing or invalid API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "response": {
+                      "$ref": "#/components/schemas/ApiResponseMeta"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "response": {
+                      "$ref": "#/components/schemas/ApiResponseMeta"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "prev": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 42
+                },
+                "next": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 42
+                }
+              }
+            },
+            "style": "deepObject",
+            "explode": true
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string",
+                "enum": [
+                  "asc",
+                  "desc"
+                ]
+              }
+            },
+            "style": "deepObject",
+            "explode": true
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 100,
+              "default": 50
+            }
+          },
+          {
+            "name": "query",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "provider": {
+                  "type": "string",
+                  "enum": [
+                    "anthropic",
+                    "openai",
+                    "google",
+                    "openai_compatible",
+                    "self_hosted"
+                  ]
+                },
+                "status": {
+                  "type": "string",
+                  "enum": [
+                    "active",
+                    "disabled",
+                    "archived"
+                  ]
+                },
+                "is_enabled": {
+                  "type": "boolean"
+                },
+                "date_created": {
+                  "type": "object",
+                  "properties": {
+                    "equals": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "not_equals": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "greater_than": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "less_than": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "greater_than_or_equals": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "less_than_or_equals": {
+                      "type": "string",
+                      "format": "date-time"
+                    }
+                  }
+                }
+              },
+              "default": {}
+            },
+            "style": "deepObject",
+            "explode": true
+          }
+        ]
+      }
+    },
+    "/v1/ai/byok/byok/{byok_config_id}": {
+      "get": {
+        "operationId": "readAiByokConfig",
+        "summary": "Read a BYOK API key configuration",
+        "tags": [
+          "AI - BYOK"
+        ],
+        "security": [
+          {
+            "conjoinApiKey": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "response": {
+                      "$ref": "#/components/schemas/ApiResponseMeta"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "byok_config_id": {
+                          "type": "string"
+                        },
+                        "conjoin_account_id": {
+                          "type": "string"
+                        },
+                        "conjoin_project_id": {
+                          "type": "string"
+                        },
+                        "live_mode": {
+                          "type": "boolean"
+                        },
+                        "reference_id": {
+                          "oneOf": [
+                            {
+                              "type": "string"
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        },
+                        "provider": {
+                          "type": "string"
+                        },
+                        "provider_name": {
+                          "type": "string"
+                        },
+                        "has_api_key": {
+                          "type": "boolean"
+                        },
+                        "endpoint_url": {
+                          "oneOf": [
+                            {
+                              "type": "string"
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        },
+                        "allowed_models": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "is_enabled": {
+                          "type": "boolean"
+                        },
+                        "status": {
+                          "type": "string"
+                        },
+                        "description": {
+                          "oneOf": [
+                            {
+                              "type": "string"
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        },
+                        "metadata": {
+                          "type": "object",
+                          "additionalProperties": {}
+                        },
+                        "date_created": {
+                          "type": "string"
+                        },
+                        "date_updated": {
+                          "type": "string"
+                        },
+                        "date_deleted": {
+                          "oneOf": [
+                            {
+                              "type": "string"
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        }
+                      },
+                      "required": [
+                        "byok_config_id",
+                        "conjoin_account_id",
+                        "conjoin_project_id",
+                        "live_mode",
+                        "reference_id",
+                        "provider",
+                        "provider_name",
+                        "has_api_key",
+                        "endpoint_url",
+                        "allowed_models",
+                        "is_enabled",
+                        "status",
+                        "metadata",
+                        "date_created",
+                        "date_updated"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error or bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - missing or invalid API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "response": {
+                      "$ref": "#/components/schemas/ApiResponseMeta"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "response": {
+                      "$ref": "#/components/schemas/ApiResponseMeta"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "byok_config_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/v1/ai/byok/byok/{byok_config_id}/update": {
+      "patch": {
+        "operationId": "updateAiByokConfig",
+        "summary": "Update a BYOK API key configuration",
+        "tags": [
+          "AI - BYOK"
+        ],
+        "security": [
+          {
+            "conjoinApiKey": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "response": {
+                      "$ref": "#/components/schemas/ApiResponseMeta"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "byok_config_id": {
+                          "type": "string"
+                        },
+                        "conjoin_account_id": {
+                          "type": "string"
+                        },
+                        "conjoin_project_id": {
+                          "type": "string"
+                        },
+                        "live_mode": {
+                          "type": "boolean"
+                        },
+                        "reference_id": {
+                          "oneOf": [
+                            {
+                              "type": "string"
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        },
+                        "provider": {
+                          "type": "string"
+                        },
+                        "provider_name": {
+                          "type": "string"
+                        },
+                        "has_api_key": {
+                          "type": "boolean"
+                        },
+                        "endpoint_url": {
+                          "oneOf": [
+                            {
+                              "type": "string"
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        },
+                        "allowed_models": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "is_enabled": {
+                          "type": "boolean"
+                        },
+                        "status": {
+                          "type": "string"
+                        },
+                        "description": {
+                          "oneOf": [
+                            {
+                              "type": "string"
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        },
+                        "metadata": {
+                          "type": "object",
+                          "additionalProperties": {}
+                        },
+                        "date_created": {
+                          "type": "string"
+                        },
+                        "date_updated": {
+                          "type": "string"
+                        },
+                        "date_deleted": {
+                          "oneOf": [
+                            {
+                              "type": "string"
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        }
+                      },
+                      "required": [
+                        "byok_config_id",
+                        "conjoin_account_id",
+                        "conjoin_project_id",
+                        "live_mode",
+                        "reference_id",
+                        "provider",
+                        "provider_name",
+                        "has_api_key",
+                        "endpoint_url",
+                        "allowed_models",
+                        "is_enabled",
+                        "status",
+                        "metadata",
+                        "date_created",
+                        "date_updated"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error or bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - missing or invalid API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "response": {
+                      "$ref": "#/components/schemas/ApiResponseMeta"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "response": {
+                      "$ref": "#/components/schemas/ApiResponseMeta"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "byok_config_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "provider_name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 128
+                  },
+                  "api_key": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 512
+                  },
+                  "endpoint_url": {
+                    "oneOf": [
+                      {
+                        "type": "string",
+                        "format": "uri",
+                        "maxLength": 2048
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "allowed_models": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "maxLength": 256
+                    },
+                    "maxItems": 50
+                  },
+                  "is_enabled": {
+                    "type": "boolean"
+                  },
+                  "status": {
+                    "type": "string",
+                    "enum": [
+                      "active",
+                      "disabled",
+                      "archived"
+                    ]
+                  },
+                  "description": {
+                    "oneOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "metadata": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "number"
+                        },
+                        {
+                          "type": "boolean"
+                        }
+                      ]
+                    },
+                    "maxProperties": 50,
+                    "description": "Custom key-value metadata (max 50 keys)"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/ai/byok/byok/{byok_config_id}/delete": {
+      "delete": {
+        "operationId": "deleteAiByokConfig",
+        "summary": "Delete a BYOK API key configuration",
+        "tags": [
+          "AI - BYOK"
+        ],
+        "security": [
+          {
+            "conjoinApiKey": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "response": {
+                      "$ref": "#/components/schemas/ApiResponseMeta"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "byok_config_id": {
+                          "type": "string"
+                        },
+                        "conjoin_account_id": {
+                          "type": "string"
+                        },
+                        "conjoin_project_id": {
+                          "type": "string"
+                        },
+                        "live_mode": {
+                          "type": "boolean"
+                        },
+                        "reference_id": {
+                          "oneOf": [
+                            {
+                              "type": "string"
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        },
+                        "provider": {
+                          "type": "string"
+                        },
+                        "provider_name": {
+                          "type": "string"
+                        },
+                        "has_api_key": {
+                          "type": "boolean"
+                        },
+                        "endpoint_url": {
+                          "oneOf": [
+                            {
+                              "type": "string"
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        },
+                        "allowed_models": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "is_enabled": {
+                          "type": "boolean"
+                        },
+                        "status": {
+                          "type": "string"
+                        },
+                        "description": {
+                          "oneOf": [
+                            {
+                              "type": "string"
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        },
+                        "metadata": {
+                          "type": "object",
+                          "additionalProperties": {}
+                        },
+                        "date_created": {
+                          "type": "string"
+                        },
+                        "date_updated": {
+                          "type": "string"
+                        },
+                        "date_deleted": {
+                          "oneOf": [
+                            {
+                              "type": "string"
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        }
+                      },
+                      "required": [
+                        "byok_config_id",
+                        "conjoin_account_id",
+                        "conjoin_project_id",
+                        "live_mode",
+                        "reference_id",
+                        "provider",
+                        "provider_name",
+                        "has_api_key",
+                        "endpoint_url",
+                        "allowed_models",
+                        "is_enabled",
+                        "status",
+                        "metadata",
+                        "date_created",
+                        "date_updated"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error or bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - missing or invalid API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "response": {
+                      "$ref": "#/components/schemas/ApiResponseMeta"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "response": {
+                      "$ref": "#/components/schemas/ApiResponseMeta"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "byok_config_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/v1/ai/byok/byok/{byok_config_id}/test": {
+      "post": {
+        "operationId": "testAiByokConnection",
+        "summary": "Test a BYOK API key connection",
+        "tags": [
+          "AI - BYOK"
+        ],
+        "security": [
+          {
+            "conjoinApiKey": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "response": {
+                      "$ref": "#/components/schemas/ApiResponseMeta"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error or bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - missing or invalid API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "response": {
+                      "$ref": "#/components/schemas/ApiResponseMeta"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "response": {
+                      "$ref": "#/components/schemas/ApiResponseMeta"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "byok_config_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
     "/v1/ai/context/context/indexes/create": {
       "post": {
         "operationId": "createAiContextIndex",
@@ -4285,1233 +5574,6 @@
             },
             "style": "deepObject",
             "explode": true
-          }
-        ]
-      }
-    },
-    "/v1/ai/provider/providers/create": {
-      "post": {
-        "operationId": "createAiProviderConfig",
-        "summary": "Create an AI provider configuration",
-        "tags": [
-          "AI - Provider Config"
-        ],
-        "security": [
-          {
-            "conjoinApiKey": []
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": "Successful response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "response": {
-                      "$ref": "#/components/schemas/ApiResponseMeta"
-                    },
-                    "data": {
-                      "type": "object",
-                      "properties": {
-                        "config_id": {
-                          "type": "string"
-                        },
-                        "conjoin_account_id": {
-                          "type": "string"
-                        },
-                        "conjoin_project_id": {
-                          "type": "string"
-                        },
-                        "live_mode": {
-                          "type": "boolean"
-                        },
-                        "reference_id": {
-                          "oneOf": [
-                            {
-                              "type": "string"
-                            },
-                            {
-                              "type": "null"
-                            }
-                          ]
-                        },
-                        "provider": {
-                          "type": "string"
-                        },
-                        "provider_name": {
-                          "type": "string"
-                        },
-                        "is_enabled": {
-                          "type": "boolean"
-                        },
-                        "allowed_models": {
-                          "type": "array",
-                          "items": {
-                            "type": "string"
-                          }
-                        },
-                        "priority": {
-                          "type": "number"
-                        },
-                        "rate_limit_rpm": {
-                          "oneOf": [
-                            {
-                              "type": "number"
-                            },
-                            {
-                              "type": "null"
-                            }
-                          ]
-                        },
-                        "status": {
-                          "type": "string"
-                        },
-                        "description": {
-                          "oneOf": [
-                            {
-                              "type": "string"
-                            },
-                            {
-                              "type": "null"
-                            }
-                          ]
-                        },
-                        "metadata": {
-                          "type": "object",
-                          "additionalProperties": {}
-                        },
-                        "date_created": {
-                          "type": "string"
-                        },
-                        "date_updated": {
-                          "type": "string"
-                        },
-                        "date_deleted": {
-                          "oneOf": [
-                            {
-                              "type": "string"
-                            },
-                            {
-                              "type": "null"
-                            }
-                          ]
-                        }
-                      },
-                      "required": [
-                        "config_id",
-                        "conjoin_account_id",
-                        "conjoin_project_id",
-                        "live_mode",
-                        "reference_id",
-                        "provider",
-                        "provider_name",
-                        "is_enabled",
-                        "allowed_models",
-                        "priority",
-                        "status",
-                        "metadata",
-                        "date_created",
-                        "date_updated"
-                      ]
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Validation error or bad request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ValidationError"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized - missing or invalid API key",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "response": {
-                      "$ref": "#/components/schemas/ApiResponseMeta"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal server error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "response": {
-                      "$ref": "#/components/schemas/ApiResponseMeta"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        },
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "provider": {
-                    "type": "string",
-                    "enum": [
-                      "vertex_ai",
-                      "azure_ai_foundry",
-                      "openai_compatible",
-                      "self_hosted"
-                    ]
-                  },
-                  "provider_name": {
-                    "type": "string",
-                    "minLength": 1,
-                    "maxLength": 128
-                  },
-                  "credentials": {
-                    "type": "object",
-                    "properties": {
-                      "api_key": {
-                        "type": "string",
-                        "maxLength": 512
-                      },
-                      "endpoint_url": {
-                        "type": "string",
-                        "format": "uri"
-                      }
-                    }
-                  },
-                  "allowed_models": {
-                    "type": "array",
-                    "items": {
-                      "type": "string",
-                      "maxLength": 256
-                    },
-                    "maxItems": 50
-                  },
-                  "priority": {
-                    "type": "integer",
-                    "minimum": 0,
-                    "maximum": 100
-                  },
-                  "rate_limit_rpm": {
-                    "oneOf": [
-                      {
-                        "type": "number",
-                        "minimum": 1,
-                        "maximum": 100000
-                      },
-                      {
-                        "type": "null"
-                      }
-                    ]
-                  },
-                  "description": {
-                    "oneOf": [
-                      {
-                        "type": "string"
-                      },
-                      {
-                        "type": "null"
-                      }
-                    ]
-                  },
-                  "reference_id": {
-                    "oneOf": [
-                      {
-                        "type": "string"
-                      },
-                      {
-                        "type": "null"
-                      }
-                    ]
-                  },
-                  "metadata": {
-                    "type": "object",
-                    "additionalProperties": {
-                      "oneOf": [
-                        {
-                          "type": "string"
-                        },
-                        {
-                          "type": "number"
-                        },
-                        {
-                          "type": "boolean"
-                        }
-                      ]
-                    },
-                    "maxProperties": 50,
-                    "description": "Custom key-value metadata (max 50 keys)",
-                    "default": {}
-                  }
-                },
-                "required": [
-                  "provider",
-                  "provider_name",
-                  "credentials"
-                ]
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/ai/provider/providers": {
-      "get": {
-        "operationId": "listAiProviderConfigs",
-        "summary": "List AI provider configurations",
-        "tags": [
-          "AI - Provider Config"
-        ],
-        "security": [
-          {
-            "conjoinApiKey": []
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "response": {
-                      "$ref": "#/components/schemas/ApiResponseMeta"
-                    },
-                    "data": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "config_id": {
-                            "type": "string"
-                          },
-                          "conjoin_account_id": {
-                            "type": "string"
-                          },
-                          "conjoin_project_id": {
-                            "type": "string"
-                          },
-                          "live_mode": {
-                            "type": "boolean"
-                          },
-                          "reference_id": {
-                            "oneOf": [
-                              {
-                                "type": "string"
-                              },
-                              {
-                                "type": "null"
-                              }
-                            ]
-                          },
-                          "provider": {
-                            "type": "string"
-                          },
-                          "provider_name": {
-                            "type": "string"
-                          },
-                          "is_enabled": {
-                            "type": "boolean"
-                          },
-                          "allowed_models": {
-                            "type": "array",
-                            "items": {
-                              "type": "string"
-                            }
-                          },
-                          "priority": {
-                            "type": "number"
-                          },
-                          "rate_limit_rpm": {
-                            "oneOf": [
-                              {
-                                "type": "number"
-                              },
-                              {
-                                "type": "null"
-                              }
-                            ]
-                          },
-                          "status": {
-                            "type": "string"
-                          },
-                          "description": {
-                            "oneOf": [
-                              {
-                                "type": "string"
-                              },
-                              {
-                                "type": "null"
-                              }
-                            ]
-                          },
-                          "metadata": {
-                            "type": "object",
-                            "additionalProperties": {}
-                          },
-                          "date_created": {
-                            "type": "string"
-                          },
-                          "date_updated": {
-                            "type": "string"
-                          },
-                          "date_deleted": {
-                            "oneOf": [
-                              {
-                                "type": "string"
-                              },
-                              {
-                                "type": "null"
-                              }
-                            ]
-                          }
-                        },
-                        "required": [
-                          "config_id",
-                          "conjoin_account_id",
-                          "conjoin_project_id",
-                          "live_mode",
-                          "reference_id",
-                          "provider",
-                          "provider_name",
-                          "is_enabled",
-                          "allowed_models",
-                          "priority",
-                          "status",
-                          "metadata",
-                          "date_created",
-                          "date_updated"
-                        ]
-                      }
-                    },
-                    "cursor": {
-                      "$ref": "#/components/schemas/PaginationCursor"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Validation error or bad request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ValidationError"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized - missing or invalid API key",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "response": {
-                      "$ref": "#/components/schemas/ApiResponseMeta"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal server error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "response": {
-                      "$ref": "#/components/schemas/ApiResponseMeta"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "cursor",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "object",
-              "properties": {
-                "prev": {
-                  "type": "string",
-                  "minLength": 1,
-                  "maxLength": 42
-                },
-                "next": {
-                  "type": "string",
-                  "minLength": 1,
-                  "maxLength": 42
-                }
-              }
-            },
-            "style": "deepObject",
-            "explode": true
-          },
-          {
-            "name": "sort",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "object",
-              "additionalProperties": {
-                "type": "string",
-                "enum": [
-                  "asc",
-                  "desc"
-                ]
-              }
-            },
-            "style": "deepObject",
-            "explode": true
-          },
-          {
-            "name": "limit",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "number",
-              "minimum": 0,
-              "maximum": 100,
-              "default": 50
-            }
-          },
-          {
-            "name": "query",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "object",
-              "properties": {
-                "provider": {
-                  "type": "string",
-                  "enum": [
-                    "vertex_ai",
-                    "azure_ai_foundry",
-                    "openai_compatible",
-                    "self_hosted"
-                  ]
-                },
-                "status": {
-                  "type": "string",
-                  "enum": [
-                    "active",
-                    "disabled",
-                    "archived"
-                  ]
-                },
-                "is_enabled": {
-                  "type": "boolean"
-                },
-                "date_created": {
-                  "type": "object",
-                  "properties": {
-                    "equals": {
-                      "type": "string",
-                      "format": "date-time"
-                    },
-                    "not_equals": {
-                      "type": "string",
-                      "format": "date-time"
-                    },
-                    "greater_than": {
-                      "type": "string",
-                      "format": "date-time"
-                    },
-                    "less_than": {
-                      "type": "string",
-                      "format": "date-time"
-                    },
-                    "greater_than_or_equals": {
-                      "type": "string",
-                      "format": "date-time"
-                    },
-                    "less_than_or_equals": {
-                      "type": "string",
-                      "format": "date-time"
-                    }
-                  }
-                }
-              },
-              "default": {}
-            },
-            "style": "deepObject",
-            "explode": true
-          }
-        ]
-      }
-    },
-    "/v1/ai/provider/providers/{config_id}": {
-      "get": {
-        "operationId": "readAiProviderConfig",
-        "summary": "Read an AI provider configuration",
-        "tags": [
-          "AI - Provider Config"
-        ],
-        "security": [
-          {
-            "conjoinApiKey": []
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "response": {
-                      "$ref": "#/components/schemas/ApiResponseMeta"
-                    },
-                    "data": {
-                      "type": "object",
-                      "properties": {
-                        "config_id": {
-                          "type": "string"
-                        },
-                        "conjoin_account_id": {
-                          "type": "string"
-                        },
-                        "conjoin_project_id": {
-                          "type": "string"
-                        },
-                        "live_mode": {
-                          "type": "boolean"
-                        },
-                        "reference_id": {
-                          "oneOf": [
-                            {
-                              "type": "string"
-                            },
-                            {
-                              "type": "null"
-                            }
-                          ]
-                        },
-                        "provider": {
-                          "type": "string"
-                        },
-                        "provider_name": {
-                          "type": "string"
-                        },
-                        "is_enabled": {
-                          "type": "boolean"
-                        },
-                        "allowed_models": {
-                          "type": "array",
-                          "items": {
-                            "type": "string"
-                          }
-                        },
-                        "priority": {
-                          "type": "number"
-                        },
-                        "rate_limit_rpm": {
-                          "oneOf": [
-                            {
-                              "type": "number"
-                            },
-                            {
-                              "type": "null"
-                            }
-                          ]
-                        },
-                        "status": {
-                          "type": "string"
-                        },
-                        "description": {
-                          "oneOf": [
-                            {
-                              "type": "string"
-                            },
-                            {
-                              "type": "null"
-                            }
-                          ]
-                        },
-                        "metadata": {
-                          "type": "object",
-                          "additionalProperties": {}
-                        },
-                        "date_created": {
-                          "type": "string"
-                        },
-                        "date_updated": {
-                          "type": "string"
-                        },
-                        "date_deleted": {
-                          "oneOf": [
-                            {
-                              "type": "string"
-                            },
-                            {
-                              "type": "null"
-                            }
-                          ]
-                        }
-                      },
-                      "required": [
-                        "config_id",
-                        "conjoin_account_id",
-                        "conjoin_project_id",
-                        "live_mode",
-                        "reference_id",
-                        "provider",
-                        "provider_name",
-                        "is_enabled",
-                        "allowed_models",
-                        "priority",
-                        "status",
-                        "metadata",
-                        "date_created",
-                        "date_updated"
-                      ]
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Validation error or bad request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ValidationError"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized - missing or invalid API key",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "response": {
-                      "$ref": "#/components/schemas/ApiResponseMeta"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal server error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "response": {
-                      "$ref": "#/components/schemas/ApiResponseMeta"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "config_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ]
-      }
-    },
-    "/v1/ai/provider/providers/{config_id}/update": {
-      "patch": {
-        "operationId": "updateAiProviderConfig",
-        "summary": "Update an AI provider configuration",
-        "tags": [
-          "AI - Provider Config"
-        ],
-        "security": [
-          {
-            "conjoinApiKey": []
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "response": {
-                      "$ref": "#/components/schemas/ApiResponseMeta"
-                    },
-                    "data": {
-                      "type": "object",
-                      "properties": {
-                        "config_id": {
-                          "type": "string"
-                        },
-                        "conjoin_account_id": {
-                          "type": "string"
-                        },
-                        "conjoin_project_id": {
-                          "type": "string"
-                        },
-                        "live_mode": {
-                          "type": "boolean"
-                        },
-                        "reference_id": {
-                          "oneOf": [
-                            {
-                              "type": "string"
-                            },
-                            {
-                              "type": "null"
-                            }
-                          ]
-                        },
-                        "provider": {
-                          "type": "string"
-                        },
-                        "provider_name": {
-                          "type": "string"
-                        },
-                        "is_enabled": {
-                          "type": "boolean"
-                        },
-                        "allowed_models": {
-                          "type": "array",
-                          "items": {
-                            "type": "string"
-                          }
-                        },
-                        "priority": {
-                          "type": "number"
-                        },
-                        "rate_limit_rpm": {
-                          "oneOf": [
-                            {
-                              "type": "number"
-                            },
-                            {
-                              "type": "null"
-                            }
-                          ]
-                        },
-                        "status": {
-                          "type": "string"
-                        },
-                        "description": {
-                          "oneOf": [
-                            {
-                              "type": "string"
-                            },
-                            {
-                              "type": "null"
-                            }
-                          ]
-                        },
-                        "metadata": {
-                          "type": "object",
-                          "additionalProperties": {}
-                        },
-                        "date_created": {
-                          "type": "string"
-                        },
-                        "date_updated": {
-                          "type": "string"
-                        },
-                        "date_deleted": {
-                          "oneOf": [
-                            {
-                              "type": "string"
-                            },
-                            {
-                              "type": "null"
-                            }
-                          ]
-                        }
-                      },
-                      "required": [
-                        "config_id",
-                        "conjoin_account_id",
-                        "conjoin_project_id",
-                        "live_mode",
-                        "reference_id",
-                        "provider",
-                        "provider_name",
-                        "is_enabled",
-                        "allowed_models",
-                        "priority",
-                        "status",
-                        "metadata",
-                        "date_created",
-                        "date_updated"
-                      ]
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Validation error or bad request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ValidationError"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized - missing or invalid API key",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "response": {
-                      "$ref": "#/components/schemas/ApiResponseMeta"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal server error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "response": {
-                      "$ref": "#/components/schemas/ApiResponseMeta"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "config_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "provider_name": {
-                    "type": "string",
-                    "minLength": 1,
-                    "maxLength": 128
-                  },
-                  "credentials": {
-                    "type": "object",
-                    "properties": {
-                      "api_key": {
-                        "type": "string",
-                        "maxLength": 512
-                      },
-                      "endpoint_url": {
-                        "type": "string",
-                        "format": "uri"
-                      }
-                    }
-                  },
-                  "allowed_models": {
-                    "type": "array",
-                    "items": {
-                      "type": "string",
-                      "maxLength": 256
-                    },
-                    "maxItems": 50
-                  },
-                  "priority": {
-                    "type": "integer",
-                    "minimum": 0,
-                    "maximum": 100
-                  },
-                  "rate_limit_rpm": {
-                    "oneOf": [
-                      {
-                        "type": "number",
-                        "minimum": 1,
-                        "maximum": 100000
-                      },
-                      {
-                        "type": "null"
-                      }
-                    ]
-                  },
-                  "is_enabled": {
-                    "type": "boolean"
-                  },
-                  "status": {
-                    "type": "string",
-                    "enum": [
-                      "active",
-                      "disabled",
-                      "archived"
-                    ]
-                  },
-                  "description": {
-                    "oneOf": [
-                      {
-                        "type": "string"
-                      },
-                      {
-                        "type": "null"
-                      }
-                    ]
-                  },
-                  "metadata": {
-                    "type": "object",
-                    "additionalProperties": {
-                      "oneOf": [
-                        {
-                          "type": "string"
-                        },
-                        {
-                          "type": "number"
-                        },
-                        {
-                          "type": "boolean"
-                        }
-                      ]
-                    },
-                    "maxProperties": 50,
-                    "description": "Custom key-value metadata (max 50 keys)"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/ai/provider/providers/{config_id}/delete": {
-      "delete": {
-        "operationId": "deleteAiProviderConfig",
-        "summary": "Delete an AI provider configuration",
-        "tags": [
-          "AI - Provider Config"
-        ],
-        "security": [
-          {
-            "conjoinApiKey": []
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "response": {
-                      "$ref": "#/components/schemas/ApiResponseMeta"
-                    },
-                    "data": {
-                      "type": "object",
-                      "properties": {
-                        "config_id": {
-                          "type": "string"
-                        },
-                        "conjoin_account_id": {
-                          "type": "string"
-                        },
-                        "conjoin_project_id": {
-                          "type": "string"
-                        },
-                        "live_mode": {
-                          "type": "boolean"
-                        },
-                        "reference_id": {
-                          "oneOf": [
-                            {
-                              "type": "string"
-                            },
-                            {
-                              "type": "null"
-                            }
-                          ]
-                        },
-                        "provider": {
-                          "type": "string"
-                        },
-                        "provider_name": {
-                          "type": "string"
-                        },
-                        "is_enabled": {
-                          "type": "boolean"
-                        },
-                        "allowed_models": {
-                          "type": "array",
-                          "items": {
-                            "type": "string"
-                          }
-                        },
-                        "priority": {
-                          "type": "number"
-                        },
-                        "rate_limit_rpm": {
-                          "oneOf": [
-                            {
-                              "type": "number"
-                            },
-                            {
-                              "type": "null"
-                            }
-                          ]
-                        },
-                        "status": {
-                          "type": "string"
-                        },
-                        "description": {
-                          "oneOf": [
-                            {
-                              "type": "string"
-                            },
-                            {
-                              "type": "null"
-                            }
-                          ]
-                        },
-                        "metadata": {
-                          "type": "object",
-                          "additionalProperties": {}
-                        },
-                        "date_created": {
-                          "type": "string"
-                        },
-                        "date_updated": {
-                          "type": "string"
-                        },
-                        "date_deleted": {
-                          "oneOf": [
-                            {
-                              "type": "string"
-                            },
-                            {
-                              "type": "null"
-                            }
-                          ]
-                        }
-                      },
-                      "required": [
-                        "config_id",
-                        "conjoin_account_id",
-                        "conjoin_project_id",
-                        "live_mode",
-                        "reference_id",
-                        "provider",
-                        "provider_name",
-                        "is_enabled",
-                        "allowed_models",
-                        "priority",
-                        "status",
-                        "metadata",
-                        "date_created",
-                        "date_updated"
-                      ]
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Validation error or bad request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ValidationError"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized - missing or invalid API key",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "response": {
-                      "$ref": "#/components/schemas/ApiResponseMeta"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal server error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "response": {
-                      "$ref": "#/components/schemas/ApiResponseMeta"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "config_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
           }
         ]
       }
@@ -81386,9 +81448,10 @@
                         "ai-context-index-synced",
                         "ai-context-index-deleted",
                         "ai-context-query-completed",
-                        "ai-provider-config-created",
-                        "ai-provider-config-updated",
-                        "ai-provider-config-deleted",
+                        "ai-byok-config-created",
+                        "ai-byok-config-updated",
+                        "ai-byok-config-deleted",
+                        "ai-byok-config-tested",
                         "ai-budget-threshold-reached",
                         "auth-account-created",
                         "auth-account-updated",
@@ -82035,9 +82098,10 @@
                         "ai-context-index-synced",
                         "ai-context-index-deleted",
                         "ai-context-query-completed",
-                        "ai-provider-config-created",
-                        "ai-provider-config-updated",
-                        "ai-provider-config-deleted",
+                        "ai-byok-config-created",
+                        "ai-byok-config-updated",
+                        "ai-byok-config-deleted",
+                        "ai-byok-config-tested",
                         "ai-budget-threshold-reached",
                         "auth-account-created",
                         "auth-account-updated",
@@ -125346,16 +125410,43 @@
                     "data": {
                       "type": "object",
                       "properties": {
-                        "url": {
+                        "upload_url": {
                           "type": "string"
                         },
-                        "expires_at": {
-                          "type": "string"
+                        "required_fields": {
+                          "type": "object",
+                          "properties": {
+                            "method": {
+                              "type": "string",
+                              "enum": [
+                                "POST",
+                                "PUT"
+                              ]
+                            },
+                            "headers": {
+                              "type": "object",
+                              "additionalProperties": {
+                                "type": "string"
+                              }
+                            }
+                          },
+                          "required": [
+                            "method",
+                            "headers"
+                          ]
+                        },
+                        "upload_mode": {
+                          "type": "string",
+                          "enum": [
+                            "resumable",
+                            "single"
+                          ]
                         }
                       },
                       "required": [
-                        "url",
-                        "expires_at"
+                        "upload_url",
+                        "required_fields",
+                        "upload_mode"
                       ]
                     }
                   }
@@ -125477,13 +125568,15 @@
                         "url": {
                           "type": "string"
                         },
-                        "expires_at": {
-                          "type": "string"
+                        "headers": {
+                          "type": "object",
+                          "additionalProperties": {
+                            "type": "string"
+                          }
                         }
                       },
                       "required": [
-                        "url",
-                        "expires_at"
+                        "url"
                       ]
                     }
                   }
