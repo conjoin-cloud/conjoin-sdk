@@ -418,7 +418,7 @@
     }
   ],
   "paths": {
-    "/v1/ai/byok/byok/create": {
+    "/v1/ai/byok/create": {
       "post": {
         "operationId": "createAiByokConfig",
         "summary": "Create a BYOK API key configuration",
@@ -724,7 +724,7 @@
         }
       }
     },
-    "/v1/ai/byok/byok": {
+    "/v1/ai/byok/": {
       "get": {
         "operationId": "listAiByokConfigs",
         "summary": "List BYOK API key configurations",
@@ -1062,7 +1062,7 @@
         ]
       }
     },
-    "/v1/ai/byok/byok/{byok_config_id}": {
+    "/v1/ai/byok/{byok_config_id}": {
       "get": {
         "operationId": "readAiByokConfig",
         "summary": "Read a BYOK API key configuration",
@@ -1276,7 +1276,7 @@
         ]
       }
     },
-    "/v1/ai/byok/byok/{byok_config_id}/update": {
+    "/v1/ai/byok/{byok_config_id}/update": {
       "patch": {
         "operationId": "updateAiByokConfig",
         "summary": "Update a BYOK API key configuration",
@@ -1575,7 +1575,7 @@
         }
       }
     },
-    "/v1/ai/byok/byok/{byok_config_id}/delete": {
+    "/v1/ai/byok/{byok_config_id}/delete": {
       "delete": {
         "operationId": "deleteAiByokConfig",
         "summary": "Delete a BYOK API key configuration",
@@ -1789,7 +1789,7 @@
         ]
       }
     },
-    "/v1/ai/byok/byok/{byok_config_id}/test": {
+    "/v1/ai/byok/{byok_config_id}/test": {
       "post": {
         "operationId": "testAiByokConnection",
         "summary": "Test a BYOK API key connection",
@@ -1917,7 +1917,7 @@
         ]
       }
     },
-    "/v1/ai/context/context/indexes/create": {
+    "/v1/ai/context/indexes/create": {
       "post": {
         "operationId": "createAiContextIndex",
         "summary": "Create an AI context index",
@@ -2290,7 +2290,7 @@
         }
       }
     },
-    "/v1/ai/context/context/indexes": {
+    "/v1/ai/context/indexes": {
       "get": {
         "operationId": "listAiContextIndexes",
         "summary": "List AI context indexes",
@@ -2668,7 +2668,7 @@
         ]
       }
     },
-    "/v1/ai/context/context/indexes/{index_id}": {
+    "/v1/ai/context/indexes/{index_id}": {
       "get": {
         "operationId": "readAiContextIndex",
         "summary": "Read an AI context index",
@@ -2928,7 +2928,7 @@
         ]
       }
     },
-    "/v1/ai/context/context/indexes/{index_id}/delete": {
+    "/v1/ai/context/indexes/{index_id}/delete": {
       "delete": {
         "operationId": "deleteAiContextIndex",
         "summary": "Delete an AI context index",
@@ -3188,7 +3188,7 @@
         ]
       }
     },
-    "/v1/ai/context/context/indexes/{index_id}/sync": {
+    "/v1/ai/context/indexes/{index_id}/sync": {
       "post": {
         "operationId": "syncAiContextIndex",
         "summary": "Sync an AI context index",
@@ -3448,7 +3448,7 @@
         ]
       }
     },
-    "/v1/ai/context/context/query": {
+    "/v1/ai/context/query": {
       "post": {
         "operationId": "queryAiContext",
         "summary": "Query AI context",
@@ -3658,7 +3658,7 @@
         }
       }
     },
-    "/v1/ai/context/context/query-logs": {
+    "/v1/ai/context/query-logs": {
       "get": {
         "operationId": "listAiContextQueryLogs",
         "summary": "List AI context query logs",
@@ -5949,7 +5949,7 @@
         ]
       }
     },
-    "/v1/ai/policy/policy/check": {
+    "/v1/ai/policy/check": {
       "post": {
         "operationId": "checkAiPolicy",
         "summary": "Check content against AI policy rules",
@@ -6175,7 +6175,7 @@
         }
       }
     },
-    "/v1/ai/policy/policy/rules/create": {
+    "/v1/ai/policy/rules/create": {
       "post": {
         "operationId": "createAiPolicyRule",
         "summary": "Create an AI policy rule",
@@ -6538,7 +6538,7 @@
         }
       }
     },
-    "/v1/ai/policy/policy/rules": {
+    "/v1/ai/policy/rules": {
       "get": {
         "operationId": "listAiPolicyRules",
         "summary": "List AI policy rules",
@@ -6895,7 +6895,7 @@
         ]
       }
     },
-    "/v1/ai/policy/policy/rules/{rule_id}": {
+    "/v1/ai/policy/rules/{rule_id}": {
       "get": {
         "operationId": "readAiPolicyRule",
         "summary": "Read an AI policy rule",
@@ -7129,7 +7129,7 @@
         ]
       }
     },
-    "/v1/ai/policy/policy/rules/{rule_id}/update": {
+    "/v1/ai/policy/rules/{rule_id}/update": {
       "patch": {
         "operationId": "updateAiPolicyRule",
         "summary": "Update an AI policy rule",
@@ -7484,7 +7484,7 @@
         }
       }
     },
-    "/v1/ai/policy/policy/rules/{rule_id}/delete": {
+    "/v1/ai/policy/rules/{rule_id}/delete": {
       "delete": {
         "operationId": "deleteAiPolicyRule",
         "summary": "Delete an AI policy rule",
@@ -7718,7 +7718,7 @@
         ]
       }
     },
-    "/v1/ai/policy/policy/logs": {
+    "/v1/ai/policy/logs": {
       "get": {
         "operationId": "listAiPolicyLogs",
         "summary": "List AI policy logs",
@@ -8059,7 +8059,7 @@
         ]
       }
     },
-    "/v1/ai/usage/usage/records": {
+    "/v1/ai/usage/records": {
       "get": {
         "operationId": "listAiUsageRecords",
         "summary": "List AI usage records",
@@ -8448,7 +8448,7 @@
         ]
       }
     },
-    "/v1/ai/usage/usage/summary": {
+    "/v1/ai/usage/summary": {
       "get": {
         "operationId": "readAiUsageSummary",
         "summary": "Read AI usage summary",
@@ -9851,7 +9851,7 @@
         ]
       }
     },
-    "/v1/auth/account/account": {
+    "/v1/auth/account/": {
       "get": {
         "operationId": "listAuthAccounts",
         "summary": "List auth accounts",
@@ -10235,7 +10235,7 @@
         ]
       }
     },
-    "/v1/auth/account/account/count": {
+    "/v1/auth/account/count": {
       "get": {
         "operationId": "countAuthAccounts",
         "summary": "Count auth accounts",
@@ -43528,7 +43528,7 @@
         ]
       }
     },
-    "/v1/auth/session/session/count": {
+    "/v1/auth/session/count": {
       "get": {
         "operationId": "countAuthSessions",
         "summary": "Count sessions",
@@ -46351,7 +46351,7 @@
         ]
       }
     },
-    "/v1/auth/session/session/active/count": {
+    "/v1/auth/session/active/count": {
       "get": {
         "operationId": "getActiveSessionCount",
         "summary": "Get active session count",
@@ -46495,7 +46495,7 @@
         ]
       }
     },
-    "/v1/auth/session/session/active/client-count": {
+    "/v1/auth/session/active/client-count": {
       "get": {
         "operationId": "getActiveClientSessionCount",
         "summary": "Get active session count by client",
@@ -46639,7 +46639,7 @@
         ]
       }
     },
-    "/v1/auth/session/session/analytics": {
+    "/v1/auth/session/analytics": {
       "get": {
         "operationId": "getSessionAnalytics",
         "summary": "Get session analytics",
