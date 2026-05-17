@@ -59594,7 +59594,7 @@
         }
       }
     },
-    "/v1/billing/entitlement-feature/{{feature_id_or_key}}": {
+    "/v1/billing/entitlement-feature/{feature_id_or_key}": {
       "get": {
         "operationId": "listEntitlementFeatures",
         "summary": "List entitlement features",
@@ -60037,9 +60037,7 @@
             "explode": true
           }
         ]
-      }
-    },
-    "/v1/billing/entitlement-feature/{feature_id_or_key}": {
+      },
       "put": {
         "operationId": "updateEntitlementFeature",
         "summary": "Update an entitlement feature",
@@ -73276,7 +73274,7 @@
         }
       }
     },
-    "/v1/billing/price-bundle/{entity_id}/{{reference_id}}": {
+    "/v1/billing/price-bundle/{entity_id}/{reference_id}": {
       "get": {
         "operationId": "listPriceBundles",
         "summary": "List price bundles",
@@ -74143,9 +74141,7 @@
             "explode": true
           }
         ]
-      }
-    },
-    "/v1/billing/price-bundle/{entity_id}/{reference_id}": {
+      },
       "put": {
         "operationId": "updatePriceBundle",
         "summary": "Update a price bundle",
@@ -81443,7 +81439,7 @@
         }
       }
     },
-    "/v1/billing/price/{entity_id}/{{reference_id}}": {
+    "/v1/billing/price/{entity_id}/{reference_id}": {
       "get": {
         "operationId": "listPrices",
         "summary": "List billing prices",
@@ -82115,9 +82111,7 @@
             "explode": true
           }
         ]
-      }
-    },
-    "/v1/billing/price/{entity_id}/{reference_id}": {
+      },
       "put": {
         "operationId": "updatePrice",
         "summary": "Update a billing price",
@@ -83776,7 +83770,7 @@
         }
       }
     },
-    "/v1/billing/product/{entity_id}/{{reference_id}}": {
+    "/v1/billing/product/{entity_id}/{reference_id}": {
       "get": {
         "operationId": "listProducts",
         "summary": "List billing products",
@@ -84272,9 +84266,7 @@
             "explode": true
           }
         ]
-      }
-    },
-    "/v1/billing/product/{entity_id}/{reference_id}": {
+      },
       "put": {
         "operationId": "updateProduct",
         "summary": "Update a billing product",
@@ -114228,10 +114220,274 @@
         }
       }
     },
-    "/v1/cloud/cloud-zones/{{zone_id}}": {
+    "/v1/cloud/cloud-zones/{zone_id}": {
       "get": {
         "operationId": "readCloudZone",
         "summary": "Read a cloud zone",
+        "tags": [
+          "Cloud - Zone"
+        ],
+        "security": [
+          {
+            "conjoinApiKey": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "headers": {
+              "Conjoin-Request-Id": {
+                "$ref": "#/components/headers/ConjoinRequestId"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "response": {
+                      "$ref": "#/components/schemas/ApiSuccessResponseMeta"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "cloud_account_id": {
+                          "type": "string"
+                        },
+                        "entity_id": {
+                          "type": "string"
+                        },
+                        "project_id": {
+                          "type": "string"
+                        },
+                        "zone_id": {
+                          "type": "string"
+                        },
+                        "reference_id": {
+                          "type": "string"
+                        },
+                        "provider_id": {
+                          "type": "string"
+                        },
+                        "dkim_authority": {
+                          "type": "string"
+                        },
+                        "domain": {
+                          "type": "string"
+                        },
+                        "status": {
+                          "type": "string"
+                        },
+                        "dns_records": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string"
+                              },
+                              "type": {
+                                "type": "string"
+                              },
+                              "value": {
+                                "type": "string"
+                              },
+                              "ttl": {
+                                "type": "number"
+                              },
+                              "mx_priority": {
+                                "type": "string"
+                              },
+                              "dkim_selector": {
+                                "type": "string"
+                              },
+                              "name": {
+                                "type": "string"
+                              },
+                              "mail_policy": {
+                                "type": "string"
+                              },
+                              "last_verified": {
+                                "oneOf": [
+                                  {
+                                    "type": "string"
+                                  },
+                                  {
+                                    "type": "null"
+                                  }
+                                ]
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "type",
+                              "value",
+                              "last_verified"
+                            ]
+                          }
+                        },
+                        "external_dns_records": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string"
+                              },
+                              "type": {
+                                "type": "string"
+                              },
+                              "value": {
+                                "type": "string"
+                              },
+                              "ttl": {
+                                "type": "number"
+                              },
+                              "mx_priority": {
+                                "type": "string"
+                              },
+                              "dkim_selector": {
+                                "type": "string"
+                              },
+                              "name": {
+                                "type": "string"
+                              },
+                              "mail_policy": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "type",
+                              "value"
+                            ]
+                          }
+                        },
+                        "is_internal_zone": {
+                          "type": "boolean"
+                        },
+                        "date_created": {
+                          "type": "string"
+                        },
+                        "date_updated": {
+                          "oneOf": [
+                            {
+                              "type": "string"
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        },
+                        "date_deleted": {
+                          "oneOf": [
+                            {
+                              "type": "string"
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        }
+                      },
+                      "required": [
+                        "cloud_account_id",
+                        "entity_id",
+                        "project_id",
+                        "zone_id",
+                        "provider_id",
+                        "dkim_authority",
+                        "domain",
+                        "status",
+                        "dns_records",
+                        "external_dns_records",
+                        "is_internal_zone",
+                        "date_created"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error or bad request",
+            "headers": {
+              "Conjoin-Request-Id": {
+                "$ref": "#/components/headers/ConjoinRequestId"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "response": {
+                      "$ref": "#/components/schemas/ApiClientErrorResponseMeta"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - missing or invalid API key",
+            "headers": {
+              "Conjoin-Request-Id": {
+                "$ref": "#/components/headers/ConjoinRequestId"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "response": {
+                      "$ref": "#/components/schemas/ApiClientErrorResponseMeta"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "headers": {
+              "Conjoin-Request-Id": {
+                "$ref": "#/components/headers/ConjoinRequestId"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "response": {
+                      "$ref": "#/components/schemas/ApiServerErrorResponseMeta"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ConjoinRequestId"
+          },
+          {
+            "name": "zone_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      },
+      "delete": {
+        "operationId": "deleteCloudZone",
+        "summary": "Delete a cloud zone",
         "tags": [
           "Cloud - Zone"
         ],
@@ -114498,272 +114754,6 @@
       "patch": {
         "operationId": "verifyCloudZoneDns",
         "summary": "Verify DNS records for a cloud zone",
-        "tags": [
-          "Cloud - Zone"
-        ],
-        "security": [
-          {
-            "conjoinApiKey": []
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful response",
-            "headers": {
-              "Conjoin-Request-Id": {
-                "$ref": "#/components/headers/ConjoinRequestId"
-              }
-            },
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "response": {
-                      "$ref": "#/components/schemas/ApiSuccessResponseMeta"
-                    },
-                    "data": {
-                      "type": "object",
-                      "properties": {
-                        "cloud_account_id": {
-                          "type": "string"
-                        },
-                        "entity_id": {
-                          "type": "string"
-                        },
-                        "project_id": {
-                          "type": "string"
-                        },
-                        "zone_id": {
-                          "type": "string"
-                        },
-                        "reference_id": {
-                          "type": "string"
-                        },
-                        "provider_id": {
-                          "type": "string"
-                        },
-                        "dkim_authority": {
-                          "type": "string"
-                        },
-                        "domain": {
-                          "type": "string"
-                        },
-                        "status": {
-                          "type": "string"
-                        },
-                        "dns_records": {
-                          "type": "array",
-                          "items": {
-                            "type": "object",
-                            "properties": {
-                              "id": {
-                                "type": "string"
-                              },
-                              "type": {
-                                "type": "string"
-                              },
-                              "value": {
-                                "type": "string"
-                              },
-                              "ttl": {
-                                "type": "number"
-                              },
-                              "mx_priority": {
-                                "type": "string"
-                              },
-                              "dkim_selector": {
-                                "type": "string"
-                              },
-                              "name": {
-                                "type": "string"
-                              },
-                              "mail_policy": {
-                                "type": "string"
-                              },
-                              "last_verified": {
-                                "oneOf": [
-                                  {
-                                    "type": "string"
-                                  },
-                                  {
-                                    "type": "null"
-                                  }
-                                ]
-                              }
-                            },
-                            "required": [
-                              "id",
-                              "type",
-                              "value",
-                              "last_verified"
-                            ]
-                          }
-                        },
-                        "external_dns_records": {
-                          "type": "array",
-                          "items": {
-                            "type": "object",
-                            "properties": {
-                              "id": {
-                                "type": "string"
-                              },
-                              "type": {
-                                "type": "string"
-                              },
-                              "value": {
-                                "type": "string"
-                              },
-                              "ttl": {
-                                "type": "number"
-                              },
-                              "mx_priority": {
-                                "type": "string"
-                              },
-                              "dkim_selector": {
-                                "type": "string"
-                              },
-                              "name": {
-                                "type": "string"
-                              },
-                              "mail_policy": {
-                                "type": "string"
-                              }
-                            },
-                            "required": [
-                              "id",
-                              "type",
-                              "value"
-                            ]
-                          }
-                        },
-                        "is_internal_zone": {
-                          "type": "boolean"
-                        },
-                        "date_created": {
-                          "type": "string"
-                        },
-                        "date_updated": {
-                          "oneOf": [
-                            {
-                              "type": "string"
-                            },
-                            {
-                              "type": "null"
-                            }
-                          ]
-                        },
-                        "date_deleted": {
-                          "oneOf": [
-                            {
-                              "type": "string"
-                            },
-                            {
-                              "type": "null"
-                            }
-                          ]
-                        }
-                      },
-                      "required": [
-                        "cloud_account_id",
-                        "entity_id",
-                        "project_id",
-                        "zone_id",
-                        "provider_id",
-                        "dkim_authority",
-                        "domain",
-                        "status",
-                        "dns_records",
-                        "external_dns_records",
-                        "is_internal_zone",
-                        "date_created"
-                      ]
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Validation error or bad request",
-            "headers": {
-              "Conjoin-Request-Id": {
-                "$ref": "#/components/headers/ConjoinRequestId"
-              }
-            },
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "response": {
-                      "$ref": "#/components/schemas/ApiClientErrorResponseMeta"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized - missing or invalid API key",
-            "headers": {
-              "Conjoin-Request-Id": {
-                "$ref": "#/components/headers/ConjoinRequestId"
-              }
-            },
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "response": {
-                      "$ref": "#/components/schemas/ApiClientErrorResponseMeta"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal server error",
-            "headers": {
-              "Conjoin-Request-Id": {
-                "$ref": "#/components/headers/ConjoinRequestId"
-              }
-            },
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "response": {
-                      "$ref": "#/components/schemas/ApiServerErrorResponseMeta"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        },
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/ConjoinRequestId"
-          },
-          {
-            "name": "zone_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ]
-      }
-    },
-    "/v1/cloud/cloud-zones/{zone_id}": {
-      "delete": {
-        "operationId": "deleteCloudZone",
-        "summary": "Delete a cloud zone",
         "tags": [
           "Cloud - Zone"
         ],
@@ -117591,7 +117581,7 @@
         }
       }
     },
-    "/v1/messaging/conversations/wipe/{{conversation_id}}": {
+    "/v1/messaging/conversations/wipe/{conversation_id}": {
       "patch": {
         "operationId": "deleteConversation",
         "summary": "Delete a conversation",
@@ -117819,7 +117809,7 @@
         ]
       }
     },
-    "/v1/messaging/conversations/archive/{{conversation_id}}": {
+    "/v1/messaging/conversations/archive/{conversation_id}": {
       "patch": {
         "operationId": "archiveConversation",
         "summary": "Archive a conversation",
@@ -118570,9 +118560,7 @@
             }
           }
         }
-      }
-    },
-    "/v1/messaging/conversations/{{conversation_id}}": {
+      },
       "post": {
         "operationId": "listConversations",
         "summary": "List conversations",
@@ -119134,7 +119122,7 @@
         }
       }
     },
-    "/v1/messaging/conversations/{conversation_id}/messages/{{parent_message_id}}": {
+    "/v1/messaging/conversations/{conversation_id}/messages/{parent_message_id}": {
       "post": {
         "operationId": "readConversationMessages",
         "summary": "Retrieve conversation messages",
@@ -120863,7 +120851,7 @@
         }
       }
     },
-    "/v1/messaging/email/messages/{{message_id}}": {
+    "/v1/messaging/email/messages/{message_id}": {
       "post": {
         "operationId": "readEmailMessages",
         "summary": "Retrieve email messages",
@@ -134953,7 +134941,7 @@
         }
       }
     },
-    "/v1/messaging/sms/messages/{{message_id}}": {
+    "/v1/messaging/sms/messages/{message_id}": {
       "post": {
         "operationId": "readSmsMessages",
         "summary": "Retrieve SMS messages",
@@ -139057,7 +139045,7 @@
         }
       }
     },
-    "/v1/messaging/templates/{{template_id}}": {
+    "/v1/messaging/templates/{template_id}": {
       "post": {
         "operationId": "listMessageTemplates",
         "summary": "List message templates",
@@ -140005,9 +139993,7 @@
             }
           }
         }
-      }
-    },
-    "/v1/messaging/templates/{template_id}": {
+      },
       "delete": {
         "operationId": "deleteMessageTemplate",
         "summary": "Delete a message template",
@@ -142106,7 +142092,7 @@
         }
       }
     },
-    "/v1/messaging/otps/resend/{{verification_id}}": {
+    "/v1/messaging/otps/resend/{verification_id}": {
       "patch": {
         "operationId": "resendVerification",
         "summary": "Resend a verification message",
@@ -166131,7 +166117,7 @@
         ]
       }
     },
-    "/v1/storage/storage-container/archive/{{container_name_or_id}}": {
+    "/v1/storage/storage-container/archive/{container_name_or_id}": {
       "patch": {
         "operationId": "archiveStorageContainer",
         "summary": "Archive a storage container",
@@ -166595,7 +166581,7 @@
         ]
       }
     },
-    "/v1/storage/storage-container/restore/{{container_name_or_id}}": {
+    "/v1/storage/storage-container/restore/{container_name_or_id}": {
       "patch": {
         "operationId": "restoreStorageContainer",
         "summary": "Restore a storage container",
