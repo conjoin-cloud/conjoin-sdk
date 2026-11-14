@@ -175,7 +175,7 @@ export function createAuthManager({ api, transport, onStateChange }: AuthManager
     clearTimer()
     const authApi = api
     const pending = withSessionLock(async () => {
-      if (authApi !== null && !isDestroyed) await transport.endSession(authApi)
+      if (authApi !== null) await transport.endSession(authApi)
     }).finally(() => {
       if (pendingSignOut === pending) pendingSignOut = null
       if (startedAt === generation) setState(SIGNED_OUT)
