@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace ConjoinCloud\Tests\Integration;
 
 use ConjoinCloud\ConjoinClient;
+use ConjoinCloud\Exception\ApiException;
 use ConjoinCloud\Exception\NetworkException;
 use ConjoinCloud\Exception\ResponseException;
 use ConjoinCloud\Tests\Support\Server\Behaviour;
@@ -13,6 +14,18 @@ use GuzzleHttp\Client;
 
 final class Psr18ClientTest extends ServerTestCase
 {
+    public function testTruncatedRefusalsFromTheCallerClientAreNotRetried(): void
+    {
+        foreach ([400, 501] as $status) {
+            $this->server()->reset();
+            $this->server()->queue(Behaviour::rawStatus($status, '{"error":', ['content-length' => '1000']));
+            $error = self::caught(fn () => self::read($this->psr18Client()));
+            self::assertInstanceOf(ApiException::class, $error);
+            self::assertSame($status, $error->getStatus());
+            self::assertSame(1, $this->server()->attemptCount());
+        }
+    }
+
     private function psr18Client(int $maxRetries = 3, int $maxResponseBytes = 16_777_216): ConjoinClient
     {
         return new ConjoinClient(
