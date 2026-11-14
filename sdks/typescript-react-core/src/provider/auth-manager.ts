@@ -28,6 +28,9 @@ export function createAuthManager({ api, transport, onStateChange }: AuthManager
   let currentState: ConjoinAuthState = { isLoaded: false }
   let timer: ReturnType<typeof setTimeout> | null = null
   let pendingRefresh: Promise<void> | null = null
+  let pendingSignOut: Promise<void> | null = null
+  let sessionTail: Promise<unknown> = Promise.resolve()
+  let sessionEnded = false
   let retryDelayMs = FIRST_RETRY_DELAY_MS
   let generation = 0
   let isDestroyed = false
@@ -57,6 +60,12 @@ export function createAuthManager({ api, transport, onStateChange }: AuthManager
     retryDelayMs = Math.min(retryDelayMs * 2, MAX_RETRY_DELAY_MS)
   }
 
+  function withSessionLock<T>(task: () => Promise<T>): Promise<T> {
+    const pending = sessionTail.then(() => transport.acquireRefreshLock(task))
+    sessionTail = pending.catch(() => undefined)
+    return pending
+  }
+
   async function readActiveOrganization(authApi: ConjoinAuthApi): Promise<ActiveOrganization> {
     try {
       const organization = await authApi.selves.readActiveOrganization(transport.sessionCallOptions('GET'))
@@ -72,6 +81,7 @@ export function createAuthManager({ api, transport, onStateChange }: AuthManager
   }
 
   async function applyGrant(authApi: ConjoinAuthApi, grant: AuthSessionGrant | null, startedAt: number) {
+    if (startedAt !== generation || isDestroyed) return
     if (grant === null) {
       if (startedAt === generation) {
         clearTimer()
@@ -93,16 +103,18 @@ export function createAuthManager({ api, transport, onStateChange }: AuthManager
       organizationId: organization.organizationId,
       organizationRoles: organization.organizationRoles,
     })
-    schedule(refreshDelayMs(grant.ttlSeconds), refresh)
+    if (startedAt === generation) schedule(refreshDelayMs(grant.ttlSeconds), refresh)
   }
 
   async function runSessionStep(read: (authApi: ConjoinAuthApi) => Promise<AuthSessionGrant | null>) {
-    if (api === null || isDestroyed) return
+    if (api === null || isDestroyed || sessionEnded) return
 
     const startedAt = ++generation
 
     try {
-      const grant = await transport.acquireRefreshLock(() => read(api))
+      const grant = await withSessionLock(() =>
+        startedAt === generation && !isDestroyed ? read(api) : Promise.resolve(null),
+      )
       await applyGrant(api, grant, startedAt)
     } catch (error) {
       if (startedAt !== generation) return
@@ -112,6 +124,7 @@ export function createAuthManager({ api, transport, onStateChange }: AuthManager
         return
       }
       if (!currentState.isLoaded) setState(SIGNED_OUT)
+      if (startedAt !== generation) return
       scheduleRetry(currentState.isLoaded && currentState.isSignedIn ? refresh : restore)
       throw error
     }
@@ -140,6 +153,7 @@ export function createAuthManager({ api, transport, onStateChange }: AuthManager
   }
 
   async function completeFlow(flow: AuthFlowState): Promise<void> {
+    sessionEnded = false
     await runSessionStep(authApi => transport.finishFlow(authApi, flow))
   }
 
@@ -153,16 +167,21 @@ export function createAuthManager({ api, transport, onStateChange }: AuthManager
     await refresh()
   }
 
-  async function signOut(): Promise<void> {
-    generation++
+  function signOut(): Promise<void> {
+    if (pendingSignOut !== null) return pendingSignOut
+    if (isDestroyed) return Promise.resolve()
+    const startedAt = ++generation
+    sessionEnded = true
     clearTimer()
-
-    try {
-      const authApi = api
-      if (authApi !== null) await transport.acquireRefreshLock(() => transport.endSession(authApi))
-    } finally {
-      setState(SIGNED_OUT)
-    }
+    const authApi = api
+    const pending = withSessionLock(async () => {
+      if (authApi !== null && !isDestroyed) await transport.endSession(authApi)
+    }).finally(() => {
+      if (pendingSignOut === pending) pendingSignOut = null
+      if (startedAt === generation) setState(SIGNED_OUT)
+    })
+    pendingSignOut = pending
+    return pending
   }
 
   function destroy() {
