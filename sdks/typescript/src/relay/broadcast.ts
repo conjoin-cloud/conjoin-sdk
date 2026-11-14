@@ -179,9 +179,13 @@ export function createBroadcastConnection(
   }
 
   const request: BroadcastRequest = (kind, channel, frame) => {
-    const lane = `${kind}:${channel ?? ''}`
+    const attempt = generation
+    const lane = `${kind === 'subscribe' || kind === 'unsubscribe' ? 'membership' : kind}:${channel ?? ''}`
     const previous = lanes.get(lane) ?? Promise.resolve()
-    const reply = previous.then(() => sendFrame(kind, channel, frame))
+    const reply = previous.then(() => {
+      if (attempt !== generation || closedOnPurpose) throw closedByCaller()
+      return sendFrame(kind, channel, frame)
+    })
     const settled = reply.then(
       () => undefined,
       () => undefined,
@@ -201,6 +205,7 @@ export function createBroadcastConnection(
     channelState.lastEventId = event.event_id
 
     for (const entry of [...channelState.listeners]) {
+      if (!isActive(channelState) || !channelState.listeners.has(entry)) continue
       if (entry.eventType !== null && entry.eventType !== event.event_type) continue
 
       try {
@@ -253,7 +258,9 @@ export function createBroadcastConnection(
   }
 
   const sendSubscribe = async (channelState: ChannelState): Promise<void> => {
+    const attempt = generation
     const authToken = await readToken(channelState.authToken)
+    if (attempt !== generation || !isActive(channelState)) throw closedByCaller()
 
     await request('subscribe', channelState.channel, {
       type: 'subscribe',
@@ -263,9 +270,11 @@ export function createBroadcastConnection(
   }
 
   const recoverMissedEvents = async (channelState: ChannelState): Promise<void> => {
+    const attempt = generation
     let lastEventId = channelState.lastEventId
 
     for (let page = 0; lastEventId !== null && page < MAX_HISTORY_PAGES_PER_RECOVERY; page++) {
+      if (attempt !== generation || !isActive(channelState)) return
       const reply = await request('history', channelState.channel, {
         type: 'history',
         channel: channelState.channel,
@@ -281,9 +290,10 @@ export function createBroadcastConnection(
     }
   }
 
-  const restoreChannels = async (attempt: number): Promise<void> => {
-    for (const entry of [...channels.values()]) {
+  const restoreChannels = async (attempt: number, entries: ChannelEntry[]): Promise<void> => {
+    for (const entry of entries) {
       if (attempt !== generation) return
+      if (!isActive(entry.state)) continue
 
       try {
         await sendSubscribe(entry.state)
@@ -297,7 +307,7 @@ export function createBroadcastConnection(
   }
 
   const scheduleReconnect = (): void => {
-    if (reconnectTimer !== null) return
+    if (reconnectTimer !== null || closedOnPurpose) return
 
     if (!autoReconnect || reconnectAttempt >= maxAttempts) {
       channels.clear()
@@ -306,7 +316,9 @@ export function createBroadcastConnection(
       return
     }
 
+    const attempt = generation
     setState('reconnecting')
+    if (closedOnPurpose || attempt !== generation) return
     const delay = Math.random() * Math.min(baseDelay * 2 ** reconnectAttempt, maxDelay)
     reconnectAttempt += 1
 
@@ -336,8 +348,9 @@ export function createBroadcastConnection(
     if (wasConnected) scheduleReconnect()
   }
 
-  const openSocket = async (): Promise<WebSocket> => {
+  const openSocket = async (attempt: number): Promise<WebSocket> => {
     const url = `${baseUrl}?token=${encodeURIComponent((await readToken(getConnectionToken)) ?? '')}`
+    if (attempt !== generation || closedOnPurpose) throw closedByCaller()
 
     return new Promise((resolve, reject) => {
       const ws = new WebSocketImpl(url)
@@ -361,8 +374,9 @@ export function createBroadcastConnection(
     const attempt = ++generation
 
     if (state !== 'reconnecting') setState('connecting')
+    if (attempt !== generation || closedOnPurpose) throw closedByCaller()
 
-    const ws = await openSocket()
+    const ws = await openSocket(attempt)
 
     if (attempt !== generation || closedOnPurpose) {
       ws.close(NORMAL_CLOSE_CODE)
@@ -382,8 +396,9 @@ export function createBroadcastConnection(
 
     socketId = typeof connected.socket_id === 'number' ? connected.socket_id : null
     reconnectAttempt = 0
+    const restoring = [...channels.values()]
     setState('connected')
-    await restoreChannels(attempt)
+    await restoreChannels(attempt, restoring)
   }
 
   const subscribe = async (channel: string, subscribeOptions: BroadcastSubscribeOptions = {}) => {
@@ -438,7 +453,8 @@ export function createBroadcastConnection(
     if (reconnectTimer !== null) clearTimeout(reconnectTimer)
     reconnectTimer = null
 
-    const pending = establish()
+    const pending = Promise.resolve()
+      .then(establish)
       .catch(error => {
         abandonSocket()
         if (!closedOnPurpose) setState('disconnected')
