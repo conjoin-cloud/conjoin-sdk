@@ -18,6 +18,7 @@ const DEFAULT_MAX_RETRIES = 3
 const DEFAULT_BACKOFF_MS = 500
 const DEFAULT_MAX_RETRY_DELAY_MS = 60_000
 const MAX_TIMER_DELAY_MS = 2 ** 31 - 1
+const SLASH_CHAR_CODE = 47
 
 function requirePositive(value: number | undefined, fallback: number, name: string): number {
   const resolved = value ?? fallback
@@ -66,7 +67,17 @@ function resolveBaseUrl(config: ConjoinConfig, key: string): string {
     throw new ConjoinConfigurationError('baseUrl must be an absolute http or https URL')
   }
 
-  return config.baseUrl.replace(/\/+$/, '')
+  return withoutTrailingSlashes(config.baseUrl)
+}
+
+function withoutTrailingSlashes(value: string): string {
+  let end = value.length
+
+  while (end > 0 && value.charCodeAt(end - 1) === SLASH_CHAR_CODE) {
+    end -= 1
+  }
+
+  return value.slice(0, end)
 }
 
 function resolveScope(scope: ConjoinScope): ConjoinScope {
