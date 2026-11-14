@@ -2,7 +2,7 @@ import { createHash } from 'node:crypto'
 import { createServer } from 'node:http'
 import type { Duplex } from 'node:stream'
 
-export async function startBroadcastServer() {
+export async function startBroadcastServer(acceptUpgrade = true) {
   const frames: Record<string, unknown>[] = []
   const sockets = new Set<Duplex>()
   let connections = 0
@@ -20,6 +20,7 @@ export async function startBroadcastServer() {
     sockets.add(socket)
     socket.on('close', () => sockets.delete(socket))
     socket.on('error', () => socket.destroy())
+    if (!acceptUpgrade) return
     const accept = createHash('sha1').update(`${key}258EAFA5-E914-47DA-95CA-C5AB0DC85B11`).digest('base64')
     socket.write(
       `HTTP/1.1 101 Switching Protocols\r\nUpgrade: websocket\r\nConnection: Upgrade\r\nSec-WebSocket-Accept: ${accept}\r\n\r\n`,

@@ -1,7 +1,24 @@
-import type { BroadcastRequest, ChannelState } from './broadcast'
+import type { SeenEventIds } from './broadcast-frames'
 import { readBroadcastEvent, readFrameString } from './broadcast-frames'
+import type { BroadcastRequest } from './broadcast-requests'
 import { ConjoinBroadcastError } from './broadcast-requests'
-import type { BroadcastEvent, BroadcastHistory, BroadcastListener, BroadcastSubscription } from './types'
+import type {
+  BroadcastEvent,
+  BroadcastHistory,
+  BroadcastListener,
+  BroadcastSubscription,
+  BroadcastTokenSource,
+} from './types'
+
+export type ChannelListener = { eventType: string | null; listener: BroadcastListener }
+
+export type ChannelState = {
+  channel: string
+  authToken?: BroadcastTokenSource
+  listeners: Set<ChannelListener>
+  lastEventId: string | null
+  seen: SeenEventIds
+}
 
 export const readEvents = (value: unknown): BroadcastEvent[] =>
   Array.isArray(value) ? value.flatMap(item => readBroadcastEvent(item) ?? []) : []
