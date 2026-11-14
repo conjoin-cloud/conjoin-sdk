@@ -1,3 +1,4 @@
+import { readBoundedText } from './bounded-body'
 import { buildApiError } from './error-response'
 import {
   ConjoinAbortError,
@@ -121,6 +122,7 @@ async function discardBody(response: Response): Promise<void> {
 
 export type ConjoinRawResult = {
   response: Response
+  bodyText?: string
   requestId: string
   readBody: <T>(read: (response: Response) => Promise<T>) => Promise<T>
 }
@@ -129,6 +131,7 @@ export async function sendConjoinRequest(
   config: ResolvedConfig,
   path: string,
   options: RequestOptions = {},
+  bufferResponse = false,
 ): Promise<ConjoinRawResult> {
   const method = options.method ?? 'GET'
   const url = buildUrl(config, path, options.query)
@@ -146,14 +149,19 @@ export async function sendConjoinRequest(
       throw new ConjoinAbortError('The caller aborted the request', requestId)
     }
 
-    const timeoutSignal = AbortSignal.timeout(timeout)
+    const timeoutSignal = AbortSignal.timeout(Math.ceil(timeout))
     const signal = callerSignal ? AbortSignal.any([timeoutSignal, callerSignal]) : timeoutSignal
     const canRetryAgain = retryAllowed && attempt < maxRetries
     let response: Response
+    let bodyText: string | undefined
 
     try {
       response = await fetch(url, { method, headers, body, signal, credentials: config.credentials })
+      if (bufferResponse && response.ok) {
+        bodyText = await readBoundedText(response, config.maxResponseBytes, requestId)
+      }
     } catch (error) {
+      if (error instanceof ConjoinResponseError) throw error
       const failure = readAttemptFailure(error, callerSignal, timeoutSignal, requestId)
 
       if (!canRetryAgain) {
@@ -173,7 +181,10 @@ export async function sendConjoinRequest(
 
     const readBody = async <T>(read: (value: Response) => Promise<T>): Promise<T> => {
       try {
-        return await read(response)
+        const value = await read(response)
+        if (callerSignal?.aborted) throw new ConjoinAbortError('The caller aborted the request', requestId)
+        if (timeoutSignal.aborted) throw new ConjoinTimeoutError(`Request timed out after ${timeout}ms`, requestId)
+        return value
       } catch (error) {
         if (error instanceof ConjoinResponseError) {
           throw error
@@ -183,7 +194,7 @@ export async function sendConjoinRequest(
       }
     }
 
-    return { response, requestId, readBody }
+    return { response, bodyText, requestId, readBody }
   }
 }
 
@@ -200,7 +211,7 @@ async function readJsonBody(result: ConjoinRawResult): Promise<unknown> {
   }
 
   return result.readBody(async value => {
-    const text = await value.text()
+    const text = result.bodyText ?? (await value.text())
 
     if (text.length === 0) {
       return undefined
@@ -223,7 +234,7 @@ function metadataOf(result: ConjoinRawResult) {
 }
 
 export async function conjoinFetchJson<T>(config: ResolvedConfig, path: string, options?: RequestOptions): Promise<T> {
-  const result = await sendConjoinRequest(config, path, options)
+  const result = await sendConjoinRequest(config, path, options, true)
 
   return (await readJsonBody(result)) as T
 }
@@ -233,7 +244,7 @@ export async function conjoinFetchWithResponse<T>(
   path: string,
   options?: RequestOptions,
 ): Promise<ConjoinFetchResult<T>> {
-  const result = await sendConjoinRequest(config, path, options)
+  const result = await sendConjoinRequest(config, path, options, true)
   const json = await readJsonBody(result)
   const data = json && typeof json === 'object' && 'data' in json ? (json as { data: T }).data : (undefined as T)
 
@@ -249,7 +260,7 @@ export async function conjoinFetchListWithResponse<T>(
   path: string,
   options: RequestOptions = {},
 ): Promise<ConjoinFetchListResult<T>> {
-  const result = await sendConjoinRequest(config, path, options)
+  const result = await sendConjoinRequest(config, path, options, true)
   const json = await readJsonBody(result)
   const metadata = metadataOf(result)
   const query = options.query ?? {}

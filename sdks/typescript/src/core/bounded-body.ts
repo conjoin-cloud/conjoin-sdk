@@ -1,4 +1,6 @@
-export async function readBoundedText(response: Response, maxBytes: number): Promise<string> {
+import { ConjoinResponseError } from './errors'
+
+export async function readBoundedText(response: Response, maxBytes: number, requestId?: string): Promise<string> {
   if (response.body === null) {
     return ''
   }
@@ -8,7 +10,7 @@ export async function readBoundedText(response: Response, maxBytes: number): Pro
   let total = 0
 
   try {
-    while (total < maxBytes) {
+    while (true) {
       const { done, value } = await reader.read()
 
       if (done) {
@@ -16,9 +18,16 @@ export async function readBoundedText(response: Response, maxBytes: number): Pro
       }
 
       const room = maxBytes - total
+      if (requestId !== undefined && value.byteLength > room) {
+        throw new ConjoinResponseError('The response body exceeded the size limit', {
+          status: response.status,
+          requestId,
+        })
+      }
       const chunk = value.byteLength > room ? value.subarray(0, room) : value
       chunks.push(chunk)
       total += chunk.byteLength
+      if (requestId === undefined && total >= maxBytes) break
     }
   } finally {
     await reader.cancel().catch(() => undefined)
