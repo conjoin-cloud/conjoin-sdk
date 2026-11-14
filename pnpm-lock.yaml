@@ -95,8 +95,8 @@ importers:
         specifier: 19.2.14
         version: 19.2.14
       expo-crypto:
-        specifier: 58.0.8
-        version: 58.0.8(expo@55.0.6)
+        specifier: 58.0.7
+        version: 58.0.7(expo@55.0.6)
       expo-secure-store:
         specifier: 55.0.13
         version: 55.0.13(expo@55.0.6)
@@ -3719,8 +3719,8 @@ packages:
       expo: '*'
       react-native: '*'
 
-  expo-crypto@58.0.8:
-    resolution: {integrity: sha512-yMSiMlallOweQ28oQ3BqJf6I/4ZoBggFNRg+PfjG1NbQWBWzGKmkPPUrd3yT0oPW4P+AYppg+Mw6xoAYddLUKA==}
+  expo-crypto@58.0.7:
+    resolution: {integrity: sha512-g+4i4UpqQ5jNy1VPRvVVvr9aIdh8WwvxbpwL2ntiSESDRsXyVSeb8JM6tHVdC3b9J2nGxjtrhrsaWOo0jbSxlA==}
     peerDependencies:
       expo: '*'
 
@@ -9519,7 +9519,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  expo-crypto@58.0.8(expo@55.0.6):
+  expo-crypto@58.0.7(expo@55.0.6):
     dependencies:
       expo: 55.0.6(@babel/core@7.29.7)(@expo/dom-webview@55.0.3)(react-dom@19.2.6(react@19.2.6))(react-native@0.84.1(@babel/core@7.29.7)(@types/react@19.2.14)(react@19.2.6))(react@19.2.6)(typescript@5.9.3)
 
