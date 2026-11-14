@@ -2,6 +2,7 @@
   "name": "sdk-python",
   "sourceRoot": "sdks/python/src",
   "projectType": "library",
+  "implicitDependencies": ["spec"],
   "targets": {
     "generate": {
       "executor": "nx:run-commands",
@@ -11,6 +12,7 @@
       },
       "inputs": [
         "{workspaceRoot}/spec/openapi.json",
+        "{workspaceRoot}/spec/openapi-frontend.json",
         "{projectRoot}/codegen/**/*",
         "{projectRoot}/scripts/run_python.py"
       ],

@@ -6,8 +6,6 @@ from typing import Generic, TypeVar
 
 T = TypeVar("T")
 
-BODY_PREVIEW_LIMIT = 2048
-
 
 @dataclass(frozen=True)
 class ResponseMetadata:
@@ -30,9 +28,3 @@ class WithResponse(Generic[T]):
             headers=self.headers,
             request_id=self.request_id,
         )
-
-
-def preview_body(body: str, *, limit: int = BODY_PREVIEW_LIMIT) -> str:
-    if len(body) <= limit:
-        return body
-    return f"{body[:limit]}..."
