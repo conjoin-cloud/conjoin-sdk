@@ -105,7 +105,7 @@ func (c *Client) attempt(ctx context.Context, p *preparedRequest, canRetryAgain 
 		return result
 	}
 	data, err := io.ReadAll(io.LimitReader(response.Body, maxErrorBodyBytes))
-	if err != nil {
+	if err != nil && ctx.Err() != nil {
 		return classifyFailure(ctx, attemptCtx, err)
 	}
 	result.body = data
