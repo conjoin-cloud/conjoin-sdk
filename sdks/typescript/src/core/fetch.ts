@@ -183,7 +183,8 @@ export async function sendConjoinRequest(
       try {
         const value = await read(response)
         if (callerSignal?.aborted) throw new ConjoinAbortError('The caller aborted the request', requestId)
-        if (timeoutSignal.aborted) throw new ConjoinTimeoutError(`Request timed out after ${timeout}ms`, requestId)
+        if (response.ok && timeoutSignal.aborted)
+          throw new ConjoinTimeoutError(`Request timed out after ${timeout}ms`, requestId)
         return value
       } catch (error) {
         if (error instanceof ConjoinResponseError) {
