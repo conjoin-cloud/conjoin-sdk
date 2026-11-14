@@ -1,6 +1,6 @@
 # conjoin-cloud
 
-`conjoin-cloud` is the official Python SDK for Conjoin. It includes sync and async clients, generated REST resources, storage upload and download helpers, AI chat helpers, messaging profile scoping, retries, request tracing, response metadata, and typed Conjoin errors.
+`conjoin-cloud` is the official Python SDK for Conjoin. It includes sync and async clients, generated calls for every operation in the Conjoin API documents, storage upload and download helpers, AI chat helpers, scope headers, safe retries, request tracing, response metadata, and typed Conjoin errors.
 
 Python 3.10 or later is required.
 
@@ -14,21 +14,23 @@ pip install conjoin-cloud
 
 ## Authentication
 
-Create a client with one credential mode:
+Create a client with exactly one credential:
 
 ```python
 from conjoin_cloud import Conjoin
 
-client = Conjoin(api_key='ck_test_...')
+client = Conjoin(api_key='cak_live_...')
 ```
 
-You can use a publishable key for browser-adjacent flows:
+Use a publishable key in browser-adjacent flows:
 
 ```python
-client = Conjoin(publishable_key='pk_test_...')
+client = Conjoin(publishable_key='cpk_live_...')
 ```
 
-The client reads `CONJOIN_API_KEY` or `CONJOIN_PUBLISHABLE_KEY` when you omit explicit credentials. Set one variable for a process. Load `.env` files in your application before you create the client.
+Passing both raises a `ConjoinConfigurationError`. When you pass neither, the client reads `CONJOIN_API_KEY` or `CONJOIN_PUBLISHABLE_KEY`, and it raises the same error when both variables are set. Load `.env` files in your application before you create the client.
+
+The SDK picks the regional host from the key, so a `cak_eu_live_` or `cpk_eu_live_` key calls `https://api.eu.conjoin.cloud`, a `gh` key calls `https://api.gh.conjoin.cloud`, and a key with no region code calls `https://api.conjoin.cloud`. Set `base_url` only when you need to reach another host.
 
 ## Sync Client
 
@@ -37,20 +39,22 @@ Use `Conjoin` in blocking Python code:
 ```python
 from conjoin_cloud import Conjoin
 
-with Conjoin(api_key='ck_test_...') as client:
-    page = client.auth.accounts.list(query={'limit': 10})
+with Conjoin(api_key='cak_live_...', auth_app_id='app_123') as client:
+    page = client.auth.accounts.list()
 
     for account in page.data:
         print(account.account_id)
 ```
 
-Generated resources are grouped by service and resource:
+Generated calls are grouped by service and resource:
 
 ```python
-page = client.auth.accounts.list(query={'limit': 25})
-customer = client.billing.customers.read('ent_123', 'cust_123')
-profiles = client.messaging.profiles.list(data={'sort': {'date_created': 'desc'}})
+page = client.auth.accounts.list()
+customers = client.billing.customers.list()
+customer = client.billing.customers.read('cust_123')
 ```
+
+The calls in the frontend document live under `client.frontend`, as in `client.frontend.auth.accounts`.
 
 Generated responses use Pydantic models. Python attributes use `snake_case`, and API wire aliases stay available when you dump a model with aliases:
 
@@ -58,10 +62,10 @@ Generated responses use Pydantic models. Python attributes use `snake_case`, and
 payload = page.data[0].model_dump(by_alias=True)
 ```
 
-Use `client.request(...)` when you need an endpoint before a generated wrapper exists:
+Use `client.request(...)` when you need an endpoint before a generated call exists:
 
 ```python
-customer = client.request('GET', 'billing/customers/cust_123')
+customer = client.request('GET', 'billing/customers/cust_123', scopes=('billing_entity_id',))
 ```
 
 ## Async Client
@@ -73,24 +77,54 @@ from conjoin_cloud import AsyncConjoin
 
 
 async def main() -> None:
-    async with AsyncConjoin(api_key='ck_test_...') as client:
-        page = await client.auth.accounts.list(query={'limit': 10})
+    async with AsyncConjoin(api_key='cak_live_...', auth_app_id='app_123') as client:
+        page = await client.auth.accounts.list()
 
-        for account in page.data:
+        async for account in page.iter_all():
             print(account.account_id)
 ```
 
-The async client has the same generated resource shape as the sync client.
+The async client has the same generated call shape as the sync client. Cancelling the task that awaits a call stops the call at once, during a backoff wait too, and raises `asyncio.CancelledError`.
+
+## Scope Headers
+
+Calls that need a scope read it from the client. Set `billing_entity_id`, `messaging_profile_id`, or `auth_app_id` when you create the client, or call `with_scope(...)` to get a scoped copy that shares the same connection pool:
+
+```python
+billing = client.with_scope(billing_entity_id='entity_123')
+customers = billing.billing.customers.list()
+```
+
+The SDK sends them as the `Billing-Entity-ID`, `Messaging-Profile-ID`, and `Auth-App-ID` headers. A call that needs a scope that you didn't set raises a `ConjoinConfigurationError` before it sends anything.
+
+## Retries
+
+The SDK retries `GET`, `PUT`, `PATCH`, and `DELETE` calls after a network failure, a timeout, or a `429`, `500`, `502`, `503`, or `504` response. It retries a `POST` only when the API declares an `Idempotency-Key` header for that operation. The SDK then generates a key for each call, or sends the one that you pass in `RequestOptions(idempotency_key=...)`, and it keeps the same key on every retry. A key is 1 to 64 characters of letters, digits, `-`, `_`, `:`, and `.`, and passing one on any other call raises a `ConjoinConfigurationError`.
+
+A `POST` whose operation declares no `Idempotency-Key` header goes out once, because the server can't tell a retry from a second request.
+
+The SDK never retries a `501` or any other `4xx` response. When the server sends `Retry-After`, as seconds or as an HTTP date, the SDK waits that long, capped at `max_retry_delay_seconds`. Otherwise it waits a random time between zero and `backoff_seconds * 2 ** attempt`, capped at the same limit:
+
+```python
+client = Conjoin(
+    api_key='cak_live_...',
+    timeout=30,
+    max_retries=3,
+    backoff_seconds=0.5,
+    max_retry_delay_seconds=60,
+)
+```
+
+Those values are the defaults. `timeout` applies to each phase of one attempt, which means connecting, sending the body, and waiting for each part of the response.
 
 ## Request Options and Response Metadata
 
-Every generated endpoint accepts `request_options` for per-call SDK behavior:
+Every generated call accepts `request_options` to change one call:
 
 ```python
 from conjoin_cloud import RequestOptions
 
 account = client.auth.accounts.read(
-    'app_123',
     'acct_123',
     request_options=RequestOptions(
         timeout=10,
@@ -105,8 +139,8 @@ Use `with_response` when you need the HTTP response metadata:
 ```python
 result = client.with_response.request(
     'GET',
-    'auth/account/',
-    query={'limit': 1},
+    'billing/customers/cust_123',
+    scopes=('billing_entity_id',),
 )
 
 print(result.status_code)
@@ -114,22 +148,20 @@ print(result.request_id)
 print(result.data)
 ```
 
-Parsed models also keep `_request_id` when the API response includes one.
+## Request IDs
+
+Every call sends a `Conjoin-Request-Id` header, and every retry of that call sends the same value. Pass `conjoin_request_id` in the client settings or in the request options to reuse an ID from your own logs, or wrap related calls in `client.with_request_trace(lambda traced, request_id: ...)` so that they share one ID. Otherwise the SDK creates a fresh ID for every call. Every error exposes the ID as `error.request_id`.
 
 ## Pagination
 
-List endpoints return typed `Page[T]` objects:
+List calls return typed `Page[T]` objects that hold `response`, `data`, and `cursor`. Call `iter_all()` to read every page in order:
 
 ```python
-page = client.auth.accounts.list(query={'limit': 100})
-
-if page.cursor and page.cursor.next:
-    next_page = client.auth.accounts.list(
-        query={'limit': 100, 'cursor': {'next': page.cursor.next}},
-    )
+for account in client.auth.accounts.list().iter_all():
+    print(account.account_id)
 ```
 
-Pagination is explicit. Keep your original filters and pass `cursor[next]` on the next list call.
+`next_page()` fetches one more page with the same filters and `cursor.next`, and it returns `None` on the last page. `iter_all()` raises a `ConjoinResponseError` when the server returns a cursor that it returned before.
 
 ## Storage
 
@@ -145,7 +177,7 @@ def report_progress(progress: UploadProgress) -> None:
     print(f'{progress.loaded}/{progress.total} bytes')
 
 
-with Conjoin(api_key='ck_test_...') as client:
+with Conjoin(api_key='cak_live_...') as client:
     client.storage.upload(
         container='container_123',
         path='reports/monthly.csv',
@@ -162,17 +194,19 @@ with client.storage.download(container='container_123', path='reports/monthly.cs
     data = download.read()
 ```
 
+The generated storage calls, such as `client.storage.objects.list(...)`, stay available next to the helpers. `ConjoinStorageError.storage_url` holds the signed URL without its query string, so the signature never reaches your logs.
+
 ## AI Chat
 
-Call `client.ai.chat.complete(...)` for a non-streaming chat completion:
+Call `client.ai.chat.complete(...)` for a non-streaming chat completion. It returns the inference record that the API stores:
 
 ```python
-response = client.ai.chat.complete(
+completion = client.ai.chat.complete(
     model='your-model-id',
     messages=[{'role': 'user', 'content': 'Write a concise account update.'}],
 )
 
-print(response.choices[0].message.content)
+print(completion.status, completion.token_usage)
 ```
 
 Call `client.ai.chat.stream(...)` for typed SSE chunks:
@@ -191,11 +225,13 @@ The async client supports `await client.ai.chat.complete(...)` and `async for ch
 
 ## Messaging Email
 
-Messaging operations that require `Messaging-Profile-ID` are scoped with `with_profile(...)`:
+Messaging calls read `Messaging-Profile-ID` from the client:
 
 ```python
-message = client.messaging.with_profile('msg_profile_123').emails.send(
-    data={
+client = Conjoin(api_key='cak_live_...', messaging_profile_id='msg_profile_123')
+
+message = client.messaging.emails.send(
+    {
         'from_': 'sender@example.com',
         'to': ['recipient@example.com'],
         'subject': 'Welcome',
@@ -219,24 +255,53 @@ users = client.auth.scim.with_token('scim_token_...').scim_list_users(
 )
 ```
 
-Public SCIM metadata endpoints, such as schemas and resource types, remain callable through the normal client.
+Public SCIM metadata endpoints, such as schemas and resource types, stay callable through the normal client.
 
 ## Errors
 
-All SDK errors inherit from `ConjoinError`:
+Every SDK error extends `ConjoinError`:
 
 ```python
-from conjoin_cloud import ConjoinError
+from conjoin_cloud import (
+    ConjoinConflictError,
+    ConjoinError,
+    ConjoinNotFoundError,
+    ConjoinRateLimitError,
+    ConjoinValidationError,
+)
 
 try:
-    client.auth.accounts.read('app_123', 'acct_missing')
+    client.billing.customers.read('cust_123')
+except ConjoinValidationError as error:
+    for field in error.errors:
+        print(f'{field.path}: {field.message}')
+except ConjoinNotFoundError:
+    print('The customer does not exist.')
+except ConjoinConflictError as error:
+    print(error.code, error.details)
+except ConjoinRateLimitError as error:
+    print(f'Retry after {error.retry_after} seconds.')
 except ConjoinError as error:
-    print(error.code)
-    print(error.status_code)
-    print(error.request_id)
+    print(error.code, error.message, error.request_id)
 ```
 
-Focused subclasses cover connection failures, timeouts, authentication failures, permission denials, missing resources, validation errors, rate limits, server errors, response validation errors, configuration errors, and storage errors.
+Every error exposes `status`, `code`, `param`, `details`, and `request_id`. `param` and `details` are `None` when the server sends neither.
+
+- `ConjoinValidationError` covers `400` and `422` responses, with field-level details on `.errors`.
+- `ConjoinAuthenticationError` covers `401` responses.
+- `ConjoinPermissionDeniedError` covers `403` responses.
+- `ConjoinNotFoundError` covers `404` responses.
+- `ConjoinConflictError` covers `409` responses.
+- `ConjoinRateLimitError` covers `429` responses and exposes `.retry_after` in seconds when the server sends `Retry-After`.
+- `ConjoinInternalServerError` covers `5xx` responses.
+- `ConjoinApiError` is the base class of every API error, and it covers any other status.
+- `ConjoinResponseError` covers a response body that the SDK can't read.
+- `ConjoinNetworkError` covers DNS failures, refused connections, and dropped connections.
+- `ConjoinTimeoutError` covers calls that run past the configured timeout.
+- `ConjoinConfigurationError` covers client settings and call options that the SDK rejects before it sends anything.
+- `ConjoinStorageError` covers upload, download, and signed URL failures.
+
+The SDK reads at most 64 KiB of an error body.
 
 ## Examples
 
@@ -245,12 +310,12 @@ The `examples/` directory includes focused scripts:
 - `package_metadata.py` prints package metadata.
 - `sync_client.py` shows sync client setup.
 - `async_client.py` shows async client setup.
-- `pagination.py` fetches cursor-paginated account pages.
+- `pagination.py` reads every page of accounts.
 - `storage_upload_download.py` uploads and downloads a storage object.
 - `ai_streaming.py` streams chat chunks.
 - `messaging_email.py` sends a profile-scoped email.
 
-The examples avoid network calls when imported. Running them requires live credentials and any IDs, model names, or local files referenced by the script.
+The examples make no network calls when imported. Running them requires live credentials and any IDs, model names, or local files referenced by the script.
 
 ## Development
 
@@ -265,11 +330,14 @@ python3 -m pip install -e ".[dev]"
 Run package checks from this directory:
 
 ```bash
-python3 -m pytest
-python3 -m ruff check src tests examples scripts codegen
-python3 -m pyright
-python3 -m hatchling build
+python3 scripts/run_python.py -m codegen
+python3 scripts/run_python.py -m pytest
+python3 scripts/run_python.py -m ruff check src tests examples scripts codegen
+python3 scripts/run_python.py -m pyright
+python3 scripts/run_python.py -m hatchling build
 ```
+
+`codegen` reads `spec/openapi.json` and `spec/openapi-frontend.json` at the repository root and rewrites `src/conjoin_cloud/generated`. Two runs on the same documents produce the same files.
 
 Run Nx tasks from the repository root:
 

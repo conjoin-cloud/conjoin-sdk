@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from collections.abc import Sequence
 from dataclasses import dataclass
+from typing import Any
 
 
 @dataclass(frozen=True)
@@ -11,22 +12,118 @@ class ValidationFieldError:
 
 
 class ConjoinError(Exception):
-    status_code: int
+    status: int
     code: str
+    param: str | None
+    details: Any
     request_id: str | None
 
     def __init__(
         self,
         message: str,
         *,
-        status_code: int = 0,
-        code: str = "conjoin_error",
+        code: str,
+        status: int = 0,
+        param: str | None = None,
+        details: Any = None,
         request_id: str | None = None,
     ) -> None:
         super().__init__(message)
-        self.status_code = status_code
+        self.message = message
+        self.status = status
         self.code = code
+        self.param = param
+        self.details = details
         self.request_id = request_id
+
+
+class ConjoinApiError(ConjoinError):
+    pass
+
+
+class ConjoinAuthenticationError(ConjoinApiError):
+    pass
+
+
+class ConjoinPermissionDeniedError(ConjoinApiError):
+    pass
+
+
+class ConjoinNotFoundError(ConjoinApiError):
+    pass
+
+
+class ConjoinConflictError(ConjoinApiError):
+    pass
+
+
+class ConjoinValidationError(ConjoinApiError):
+    errors: tuple[ValidationFieldError, ...]
+
+    def __init__(
+        self,
+        message: str,
+        *,
+        code: str,
+        status: int,
+        errors: Sequence[ValidationFieldError] = (),
+        param: str | None = None,
+        details: Any = None,
+        request_id: str | None = None,
+    ) -> None:
+        super().__init__(
+            message,
+            code=code,
+            status=status,
+            param=param,
+            details=details,
+            request_id=request_id,
+        )
+        self.errors = tuple(errors)
+
+
+class ConjoinRateLimitError(ConjoinApiError):
+    retry_after: float | None
+
+    def __init__(
+        self,
+        message: str,
+        *,
+        code: str,
+        status: int,
+        retry_after: float | None = None,
+        param: str | None = None,
+        details: Any = None,
+        request_id: str | None = None,
+    ) -> None:
+        super().__init__(
+            message,
+            code=code,
+            status=status,
+            param=param,
+            details=details,
+            request_id=request_id,
+        )
+        self.retry_after = retry_after
+
+
+class ConjoinInternalServerError(ConjoinApiError):
+    pass
+
+
+class ConjoinResponseError(ConjoinError):
+    def __init__(self, message: str, *, status: int, request_id: str | None = None) -> None:
+        super().__init__(message, code="invalid_response", status=status, request_id=request_id)
+
+
+class ConjoinNetworkError(ConjoinError):
+    def __init__(self, message: str, *, request_id: str | None = None) -> None:
+        super().__init__(message, code="network_error", request_id=request_id)
+
+
+class ConjoinTimeoutError(ConjoinError):
+    def __init__(self, message: str, *, request_id: str | None = None) -> None:
+        super().__init__(message, code="timeout_error", request_id=request_id)
 
 
 class ConjoinConfigurationError(ConjoinError):
@@ -34,167 +131,7 @@ class ConjoinConfigurationError(ConjoinError):
         super().__init__(message, code="configuration_error")
 
 
-class ConjoinConnectionError(ConjoinError):
-    def __init__(self, message: str) -> None:
-        super().__init__(message, code="connection_error")
-
-
-class ConjoinTimeoutError(ConjoinError):
-    def __init__(self, message: str) -> None:
-        super().__init__(message, code="timeout_error")
-
-
-class ConjoinStatusError(ConjoinError):
-    body: str | None
-
-    def __init__(
-        self,
-        message: str,
-        *,
-        status_code: int,
-        code: str = "api_error",
-        request_id: str | None = None,
-        body: str | None = None,
-    ) -> None:
-        super().__init__(message, status_code=status_code, code=code, request_id=request_id)
-        self.body = body
-
-
-class ConjoinAuthenticationError(ConjoinStatusError):
-    def __init__(
-        self,
-        message: str,
-        *,
-        request_id: str | None = None,
-        body: str | None = None,
-    ) -> None:
-        super().__init__(
-            message,
-            status_code=401,
-            code="authentication_error",
-            request_id=request_id,
-            body=body,
-        )
-
-
-class ConjoinPermissionDeniedError(ConjoinStatusError):
-    def __init__(
-        self,
-        message: str,
-        *,
-        request_id: str | None = None,
-        body: str | None = None,
-    ) -> None:
-        super().__init__(
-            message,
-            status_code=403,
-            code="permission_denied_error",
-            request_id=request_id,
-            body=body,
-        )
-
-
-class ConjoinNotFoundError(ConjoinStatusError):
-    def __init__(
-        self,
-        message: str,
-        *,
-        request_id: str | None = None,
-        body: str | None = None,
-    ) -> None:
-        super().__init__(
-            message,
-            status_code=404,
-            code="not_found_error",
-            request_id=request_id,
-            body=body,
-        )
-
-
-class ConjoinValidationError(ConjoinStatusError):
-    errors: tuple[ValidationFieldError, ...]
-
-    def __init__(
-        self,
-        message: str,
-        *,
-        status_code: int,
-        errors: Sequence[ValidationFieldError] = (),
-        request_id: str | None = None,
-        body: str | None = None,
-    ) -> None:
-        super().__init__(
-            message,
-            status_code=status_code,
-            code="validation_error",
-            request_id=request_id,
-            body=body,
-        )
-        self.errors = tuple(errors)
-
-
-class ConjoinRateLimitError(ConjoinStatusError):
-    retry_after: float | None
-
-    def __init__(
-        self,
-        message: str,
-        *,
-        retry_after: float | None = None,
-        request_id: str | None = None,
-        body: str | None = None,
-    ) -> None:
-        super().__init__(
-            message,
-            status_code=429,
-            code="rate_limit_error",
-            request_id=request_id,
-            body=body,
-        )
-        self.retry_after = retry_after
-
-
-class ConjoinInternalServerError(ConjoinStatusError):
-    def __init__(
-        self,
-        message: str,
-        *,
-        status_code: int,
-        request_id: str | None = None,
-        body: str | None = None,
-    ) -> None:
-        super().__init__(
-            message,
-            status_code=status_code,
-            code="internal_server_error",
-            request_id=request_id,
-            body=body,
-        )
-
-
-class ConjoinResponseValidationError(ConjoinError):
-    status_code: int
-    body: str
-
-    def __init__(
-        self,
-        message: str,
-        *,
-        status_code: int,
-        request_id: str | None,
-        body: str,
-    ) -> None:
-        super().__init__(
-            message,
-            status_code=status_code,
-            code="response_validation_error",
-            request_id=request_id,
-        )
-        self.body = body
-
-
 class ConjoinStorageError(ConjoinError):
-    body: str | None
     storage_url: str
     upload_mode: str | None
 
@@ -202,20 +139,10 @@ class ConjoinStorageError(ConjoinError):
         self,
         message: str,
         *,
-        status_code: int,
+        status: int,
         storage_url: str,
         upload_mode: str | None = None,
-        body: str | None = None,
     ) -> None:
-        super().__init__(
-            message,
-            status_code=status_code,
-            code="storage_error",
-        )
-        self.body = body
+        super().__init__(message, code="storage_error", status=status)
         self.storage_url = storage_url
         self.upload_mode = upload_mode
-
-    @property
-    def status(self) -> int:
-        return self.status_code
