@@ -66,3 +66,21 @@ it('does not restore a subscription removed inside the connected callback', asyn
   await unsubscribing
   expect(server.frames.filter(frame => frame.type === 'subscribe')).toHaveLength(1)
 })
+
+it('times out an unanswered upgrade and closes it when the caller disconnects', async () => {
+  await server.stop()
+  server = await startBroadcastServer(false)
+  connection = createBroadcastConnection(client, {
+    url: server.url,
+    getConnectionToken: async () => 'connection_token',
+    requestTimeout: 50,
+  })
+  await expect(connection.connect()).rejects.toMatchObject({ code: 'timeout_error' })
+  expect(server.connections).toBe(1)
+  const pending = connection.connect()
+  const rejection = expect(pending).rejects.toMatchObject({ code: 'broadcast_disconnected' })
+  await new Promise(resolve => setTimeout(resolve, 10))
+  connection.disconnect()
+  await rejection
+  expect(connection.state).toBe('disconnected')
+})

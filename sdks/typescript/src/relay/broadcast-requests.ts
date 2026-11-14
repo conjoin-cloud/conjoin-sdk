@@ -4,6 +4,26 @@ export type BroadcastFrame = Record<string, unknown>
 
 export type BroadcastRequestKind = 'connect' | 'subscribe' | 'unsubscribe' | 'publish' | 'history'
 
+export const REPLY_KINDS: Readonly<Record<string, BroadcastRequestKind>> = {
+  connected: 'connect',
+  subscribed: 'subscribe',
+  unsubscribed: 'unsubscribe',
+  published: 'publish',
+  history: 'history',
+}
+
+export const notConnected = () =>
+  new ConjoinError('Connect the broadcast client before you use a channel', { code: 'broadcast_not_connected' })
+
+export const closedByCaller = () =>
+  new ConjoinError('The caller closed the broadcast connection', { code: 'broadcast_disconnected' })
+
+export type BroadcastRequest = (
+  kind: BroadcastRequestKind,
+  channel: string | null,
+  frame: BroadcastFrame,
+) => Promise<BroadcastFrame>
+
 type PendingRequest = {
   kind: BroadcastRequestKind
   channel: string | null
