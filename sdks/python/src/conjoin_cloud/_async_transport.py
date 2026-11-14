@@ -8,7 +8,7 @@ import httpx
 from conjoin_cloud._call import PreparedCall
 from conjoin_cloud._config import ResolvedConfig
 from conjoin_cloud._error_response import MAX_ERROR_BODY_BYTES, build_api_error
-from conjoin_cloud._errors import ConjoinApiError
+from conjoin_cloud._errors import ConjoinApiError, ConjoinResponseError
 from conjoin_cloud._response_parsing import parse_body, response_request_id, transport_error
 from conjoin_cloud._retry import (
     RETRY_AFTER_HEADER,
@@ -16,12 +16,15 @@ from conjoin_cloud._retry import (
     is_retryable_status,
     parse_retry_after,
 )
+from conjoin_cloud._sync_transport import BUFFERED_BODY_EXTENSION, MAX_SUCCESS_BODY_BYTES
 
 
 async def send_call(
     client: httpx.AsyncClient,
     config: ResolvedConfig,
     call: PreparedCall,
+    *,
+    buffer_response: bool = False,
 ) -> httpx.Response:
     request = client.build_request(
         call.method,
@@ -37,6 +40,10 @@ async def send_call(
         can_retry_again = call.retry_allowed and attempt < call.max_retries
         try:
             response = await client.send(request, stream=True)
+            if buffer_response and response.is_success:
+                response.extensions[BUFFERED_BODY_EXTENSION] = await _read_success(
+                    response, call.request_id
+                )
         except httpx.TransportError as exc:
             if not can_retry_again:
                 raise transport_error(
@@ -72,7 +79,9 @@ async def read_response(
         raise await read_api_error(response, request_id)
 
     try:
-        content = await response.aread()
+        content = response.extensions.get(BUFFERED_BODY_EXTENSION)
+        if content is None:
+            content = await _read_success(response, call.request_id)
     except httpx.HTTPError as exc:
         raise transport_error(exc, timeout=call.timeout, request_id=call.request_id) from exc
     finally:
@@ -87,6 +96,22 @@ async def read_response(
         unwrap_data=unwrap_data,
     )
     return data, request_id
+
+
+async def _read_success(response: httpx.Response, request_id: str) -> bytes:
+    collected = bytearray()
+    try:
+        async for chunk in response.aiter_bytes():
+            if len(collected) + len(chunk) > MAX_SUCCESS_BODY_BYTES:
+                raise ConjoinResponseError(
+                    "The response body exceeded the size limit",
+                    status=response.status_code,
+                    request_id=request_id,
+                )
+            collected.extend(chunk)
+    finally:
+        await response.aclose()
+    return bytes(collected)
 
 
 async def read_api_error(response: httpx.Response, request_id: str) -> ConjoinApiError:

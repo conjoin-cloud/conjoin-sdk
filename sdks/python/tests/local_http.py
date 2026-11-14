@@ -34,6 +34,7 @@ class Reply:
     status: int
     body: bytes = b""
     headers: dict[str, str] = field(default_factory=dict)
+    declared_length: int | None = None
 
 
 def json_reply(status: int, payload: Any, headers: dict[str, str] | None = None) -> Reply:
@@ -152,9 +153,14 @@ class LocalHttpServer:
                     self.send_response(reply.status)
                     for name, value in reply.headers.items():
                         self.send_header(name, value)
-                    self.send_header("Content-Length", str(len(reply.body)))
+                    length = (
+                        len(reply.body) if reply.declared_length is None else reply.declared_length
+                    )
+                    self.send_header("Content-Length", str(length))
                     self.end_headers()
                     self.wfile.write(reply.body)
+                    if length != len(reply.body):
+                        self.close_connection = True
                 except (BrokenPipeError, ConnectionResetError):
                     self.close_connection = True
 
