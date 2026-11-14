@@ -1,0 +1,43 @@
+{
+  "name": "sdk-php",
+  "sourceRoot": "sdks/php/src",
+  "projectType": "library",
+  "tags": ["php"],
+  "implicitDependencies": ["spec"],
+  "targets": {
+    "generate": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "php codegen/generate.php",
+        "cwd": "{projectRoot}"
+      },
+      "inputs": [
+        "{workspaceRoot}/spec/openapi.json",
+        "{workspaceRoot}/spec/openapi-frontend.json",
+        "{projectRoot}/codegen/**/*"
+      ],
+      "outputs": ["{projectRoot}/src/Generated"]
+    },
+    "lint": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "vendor/bin/phpcs",
+        "cwd": "{projectRoot}"
+      }
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "vendor/bin/phpstan analyse --no-progress --memory-limit=2G",
+        "cwd": "{projectRoot}"
+      }
+    },
+    "test": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "vendor/bin/phpunit",
+        "cwd": "{projectRoot}"
+      }
+    }
+  }
+}
