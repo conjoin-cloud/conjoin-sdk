@@ -142,7 +142,7 @@ class Conjoin(SyncGeneratedResourcesMixin):
             accepts_idempotency_key=accepts_idempotency_key,
             default_auth=default_auth,
         )
-        response = send_call(self._client, self.config, call)
+        response = send_call(self._client, self.config, call, buffer_response=True)
         data, request_id = read_response(
             response,
             call,

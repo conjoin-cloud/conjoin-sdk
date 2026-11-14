@@ -147,7 +147,7 @@ class AsyncConjoin(AsyncGeneratedResourcesMixin):
             accepts_idempotency_key=accepts_idempotency_key,
             default_auth=default_auth,
         )
-        response = await send_call(self._client, self.config, call)
+        response = await send_call(self._client, self.config, call, buffer_response=True)
         data, request_id = await read_response(
             response,
             call,
