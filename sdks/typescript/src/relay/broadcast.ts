@@ -68,21 +68,16 @@ const notConnected = () =>
 const closedByCaller = () =>
   new ConjoinError('The caller closed the broadcast connection', { code: 'broadcast_disconnected' })
 
-function resolveBroadcastUrl(client: ConjoinClient, options: BroadcastConnectionOptions): URL {
+const BROADCAST_URL_PATTERN = /^wss?:\/\/[^\s/?#]+(\/[^\s?#]*)?$/i
+
+function resolveBroadcastUrl(client: ConjoinClient, options: BroadcastConnectionOptions): string {
   const raw = options.url ?? `${client.config.baseUrl.replace(/^http/, 'ws')}${BROADCAST_PATH}`
-  let url: URL
 
-  try {
-    url = new URL(raw)
-  } catch {
-    throw new ConjoinConfigurationError('The broadcast url must be an absolute ws or wss URL')
+  if (!BROADCAST_URL_PATTERN.test(raw)) {
+    throw new ConjoinConfigurationError('The broadcast url must be an absolute ws or wss URL without a query')
   }
 
-  if (url.protocol !== 'ws:' && url.protocol !== 'wss:') {
-    throw new ConjoinConfigurationError('The broadcast url must be an absolute ws or wss URL')
-  }
-
-  return url
+  return raw
 }
 
 export async function readToken(source: BroadcastTokenSource | undefined): Promise<string | undefined> {
@@ -342,11 +337,10 @@ export function createBroadcastConnection(
   }
 
   const openSocket = async (): Promise<WebSocket> => {
-    const url = new URL(baseUrl)
-    url.searchParams.set('token', (await readToken(getConnectionToken)) ?? '')
+    const url = `${baseUrl}?token=${encodeURIComponent((await readToken(getConnectionToken)) ?? '')}`
 
     return new Promise((resolve, reject) => {
-      const ws = new WebSocketImpl(url.toString())
+      const ws = new WebSocketImpl(url)
       const refuse = () => {
         ws.removeEventListener('open', accept)
         reject(new ConjoinNetworkError('The realtime server refused the broadcast connection'))

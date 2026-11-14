@@ -1,66 +1,33 @@
-import { useCallback } from 'react'
+import type { ConjoinAuthApi } from '../auth/auth-api'
+import type { AuthTransport } from '../provider/types'
+import { collectPages } from './internal/collect-pages'
 import { useAuthActions } from './internal/use-auth-actions'
 import { useAuthState } from './internal/use-auth-state'
-import { useConjoinClient } from './internal/use-conjoin-client'
-import { useConjoinQuery } from './internal/use-conjoin-query'
+import { useSignedInQuery } from './internal/use-signed-in-query'
 
-export type ConjoinOrganization = {
-  id: string
-  name: string
-  slug: string
-  logo_url: string | null
-  created_at: string
-}
+export type ConjoinMembership = Awaited<ReturnType<ConjoinAuthApi['selves']['listOrganizations']>>['data'][number]
 
-export type ConjoinMembership = {
-  id: string
-  organization_id: string
-  account_id: string
-  role: string
-  created_at: string
-}
+const NO_MEMBERSHIPS: ConjoinMembership[] = []
 
-type OrgData = {
-  organization: ConjoinOrganization
-  membership: ConjoinMembership
-}
+const readMemberships = (authApi: ConjoinAuthApi, transport: AuthTransport): Promise<ConjoinMembership[]> =>
+  collectPages(authApi.selves.listOrganizations({}, transport.sessionCallOptions('GET')))
 
 export function useOrg() {
-  const { sdkConfig } = useConjoinClient()
-  const { getToken } = useAuthActions()
   const authState = useAuthState()
+  const { switchOrganization } = useAuthActions()
+  const result = useSignedInQuery('organizations', readMemberships)
   const isSignedIn = authState.isLoaded && authState.isSignedIn
-  const orgId = isSignedIn ? authState.organizationId : null
-  const authDomain = sdkConfig?.auth.domain
-
-  const queryFn = useCallback(async (): Promise<OrgData> => {
-    if (!authDomain || !orgId) throw new Error('Organization context not available')
-    const token = getToken()
-    const response = await fetch(`https://${authDomain}/v1/auth/self/organization`, {
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json',
-        ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      },
-    })
-    if (!response.ok) throw new Error('Failed to fetch organization')
-    const body = (await response.json()) as { data: OrgData }
-    return body.data
-  }, [authDomain, orgId, getToken])
-
-  const result = useConjoinQuery<OrgData>({
-    queryKey: ['conjoin', 'auth', 'organization', orgId],
-    queryFn,
-    enabled: isSignedIn && !!orgId && !!authDomain,
-  })
-
-  if (!authState.isLoaded) {
-    return { isLoaded: false as const, organization: undefined, membership: undefined }
-  }
+  const organizationId = isSignedIn ? authState.organizationId : null
+  const organizationRoles = isSignedIn ? authState.organizationRoles : []
+  const memberships = result.data ?? NO_MEMBERSHIPS
 
   return {
-    isLoaded: !result.isLoading,
-    organization: result.data?.organization ?? null,
-    membership: result.data?.membership ?? null,
+    isLoaded: result.isLoaded,
+    organizationId,
+    organizationRoles,
+    membership: memberships.find(membership => membership.organization_id === organizationId) ?? null,
+    memberships,
+    error: result.error,
+    switchOrganization,
   }
 }

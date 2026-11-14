@@ -1,11 +1,20 @@
-import { useAuthFetch, useConjoinClient } from '@conjoin-cloud/react-core'
+import { type AuthFlowResult, useConjoinClient, useSignIn } from '@conjoin-cloud/react-core'
 import * as Label from '@radix-ui/react-label'
 import * as VisuallyHidden from '@radix-ui/react-visually-hidden'
 import { type ChangeEvent, type FormEvent, useCallback, useRef, useState } from 'react'
+import {
+  type MfaMethod,
+  type OAuthProvider,
+  PASSWORD_METHODS,
+  readFlowErrorMessage,
+  readMfaMethod,
+  readOAuthProviders,
+  readSafeRedirectUrl,
+} from '../internal/auth-flow-display'
 import { BusyContent } from '../internal/busy-content'
 import { OAuthButton } from '../internal/oauth-button'
 
-type SignInStep = 'identifier' | 'password' | 'mfa'
+type SignInStep = 'identifier' | 'password' | 'code' | 'mfa' | 'confirmation'
 
 type SignInProps = {
   afterSignInUrl?: string
@@ -15,26 +24,83 @@ type SignInProps = {
 }
 
 const ERROR_ID = 'conjoin-sign-in-error'
+const CODE_MAX_LENGTH = 8
 
 export function SignIn({ afterSignInUrl, forgotPasswordUrl, signUpUrl, onSignIn }: SignInProps) {
   const { sdkConfig } = useConjoinClient()
-  const { authFetch, authDomain, isConfigured } = useAuthFetch()
+  const signIn = useSignIn()
   const [step, setStep] = useState<SignInStep>('identifier')
   const [identifier, setIdentifier] = useState('')
   const [password, setPassword] = useState('')
-  const [mfaCode, setMfaCode] = useState('')
+  const [code, setCode] = useState('')
+  const [mfaMethod, setMfaMethod] = useState<MfaMethod>('totp')
   const [error, setError] = useState<string | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [flowId, setFlowId] = useState<string | null>(null)
 
   const passwordRef = useRef<HTMLInputElement>(null)
-  const mfaRef = useRef<HTMLInputElement>(null)
+  const codeRef = useRef<HTMLInputElement>(null)
   const identifierRef = useRef<HTMLInputElement>(null)
 
-  const signInMethods = sdkConfig?.auth.sign_in_methods ?? []
-  const oauthMethods = signInMethods.filter(m => m !== 'email_password' && m !== 'email_otp')
-  const hasEmailPassword = signInMethods.includes('email_password')
+  const signInMethods = sdkConfig?.auth?.sign_in_methods ?? []
+  const oauthProviders = readOAuthProviders(signInMethods)
+  const usesPassword = signInMethods.some(method => PASSWORD_METHODS.has(method))
+  const usesEmail = usesPassword || signInMethods.includes('email')
   const describedBy = error ? ERROR_ID : undefined
+
+  const finishSignIn = useCallback(() => {
+    if (afterSignInUrl) window.location.assign(afterSignInUrl)
+    onSignIn?.()
+  }, [afterSignInUrl, onSignIn])
+
+  const followResult = useCallback(
+    (result: AuthFlowResult) => {
+      if (result.status === 'complete') {
+        finishSignIn()
+        return
+      }
+
+      if (result.status === 'mfa_required') {
+        setMfaMethod(readMfaMethod(result))
+        setCode('')
+        setStep('mfa')
+        requestAnimationFrame(() => codeRef.current?.focus())
+        return
+      }
+
+      if (result.status === 'verification_required') {
+        setCode('')
+        setStep('code')
+        requestAnimationFrame(() => codeRef.current?.focus())
+        return
+      }
+
+      if (result.status === 'confirmation_required') {
+        setStep('confirmation')
+        return
+      }
+
+      setError('Unable to sign in. Please try again.')
+    },
+    [finishSignIn],
+  )
+
+  const submitStep = useCallback(
+    async (run: () => Promise<AuthFlowResult>, fallback: string) => {
+      if (isSubmitting) return
+
+      setIsSubmitting(true)
+      setError(null)
+
+      try {
+        followResult(await run())
+      } catch (caught) {
+        setError(readFlowErrorMessage(caught, fallback))
+      } finally {
+        setIsSubmitting(false)
+      }
+    },
+    [isSubmitting, followResult],
+  )
 
   const handleIdentifierChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     setIdentifier(e.target.value)
@@ -44,131 +110,116 @@ export function SignIn({ afterSignInUrl, forgotPasswordUrl, signUpUrl, onSignIn 
     setPassword(e.target.value)
   }, [])
 
-  const handleMfaChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-    setMfaCode(e.target.value)
+  const handleCodeChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
+    setCode(e.target.value)
   }, [])
 
   const handleIdentifierSubmit = useCallback(
     async (e: FormEvent) => {
       e.preventDefault()
-      if (isSubmitting || !identifier.trim()) return
+      const email = identifier.trim()
+      if (!email) return
 
-      setIsSubmitting(true)
-      setError(null)
-
-      try {
-        const response = await authFetch('/v1/auth/signin/start', {
-          method: 'POST',
-          body: JSON.stringify({ identifier: identifier.trim() }),
-        })
-
-        if (!response.ok) {
-          const body = (await response.json().catch(() => ({}))) as { message?: string }
-          setError(body.message ?? 'Unable to sign in. Please check your email and try again.')
-          return
-        }
-
-        const body = (await response.json()) as { data: { flow_id: string } }
-        setFlowId(body.data.flow_id)
+      if (usesPassword) {
+        setError(null)
         setStep('password')
         requestAnimationFrame(() => passwordRef.current?.focus())
-      } catch {
-        setError('A network error occurred. Please check your connection and try again.')
-      } finally {
-        setIsSubmitting(false)
+        return
       }
+
+      await submitStep(
+        () => signIn.start({ email, verification_option: 'email_verification_code' }),
+        'Unable to sign in. Please check your email and try again.',
+      )
     },
-    [authFetch, identifier, isSubmitting],
+    [identifier, usesPassword, signIn, submitStep],
   )
 
   const handlePasswordSubmit = useCallback(
     async (e: FormEvent) => {
       e.preventDefault()
-      if (isSubmitting || !flowId || !password) return
+      if (!password) return
 
-      setIsSubmitting(true)
-      setError(null)
-
-      try {
-        const response = await authFetch('/v1/auth/signin/complete', {
-          method: 'POST',
-          body: JSON.stringify({ flow_id: flowId, password }),
-        })
-
-        if (!response.ok) {
-          const body = (await response.json().catch(() => ({}))) as { message?: string; requires_mfa?: boolean }
-          if (body.requires_mfa) {
-            setStep('mfa')
-            requestAnimationFrame(() => mfaRef.current?.focus())
-            return
-          }
-          setError(body.message ?? 'Invalid credentials. Please try again.')
-          return
-        }
-
-        if (afterSignInUrl) {
-          window.location.href = afterSignInUrl
-        }
-        onSignIn?.()
-      } catch {
-        setError('A network error occurred. Please check your connection and try again.')
-      } finally {
-        setIsSubmitting(false)
-      }
+      await submitStep(
+        () => signIn.start({ email: identifier.trim(), password }),
+        'Invalid credentials. Please try again.',
+      )
     },
-    [authFetch, flowId, password, afterSignInUrl, onSignIn, isSubmitting],
+    [identifier, password, signIn, submitStep],
+  )
+
+  const handleCodeSubmit = useCallback(
+    async (e: FormEvent) => {
+      e.preventDefault()
+      const pinCode = code.trim()
+      if (!pinCode) return
+
+      await submitStep(
+        () => signIn.complete({ verification_result: { pin_code: pinCode } }),
+        'Invalid verification code. Please try again.',
+      )
+    },
+    [code, signIn, submitStep],
   )
 
   const handleMfaSubmit = useCallback(
     async (e: FormEvent) => {
       e.preventDefault()
-      if (isSubmitting || !flowId || !mfaCode) return
+      const mfaCode = code.trim()
+      if (!mfaCode) return
+
+      const mfa =
+        mfaMethod === 'phone_verification_code'
+          ? { method: 'phone_verification_code' as const, phone_code: mfaCode }
+          : { method: 'totp' as const, totp_code: mfaCode }
+
+      await submitStep(
+        () => signIn.complete({ verification_result: {}, mfa }),
+        'Invalid verification code. Please try again.',
+      )
+    },
+    [code, mfaMethod, signIn, submitStep],
+  )
+
+  const handleOAuthSelect = useCallback(
+    async (provider: string) => {
+      if (isSubmitting) return
 
       setIsSubmitting(true)
       setError(null)
 
       try {
-        const response = await authFetch('/v1/auth/signin/complete', {
-          method: 'POST',
-          body: JSON.stringify({ flow_id: flowId, mfa_code: mfaCode }),
+        const result = await signIn.startRedirect({
+          provider_key: provider as OAuthProvider,
+          verification_option: 'oauth_token',
         })
+        const redirectUrl = readSafeRedirectUrl(result)
 
-        if (!response.ok) {
-          const body = (await response.json().catch(() => ({}))) as { message?: string }
-          setError(body.message ?? 'Invalid verification code. Please try again.')
+        if (redirectUrl === null) {
+          setError('Unable to start sign in with this provider.')
           return
         }
 
-        if (afterSignInUrl) {
-          window.location.href = afterSignInUrl
-        }
-        onSignIn?.()
-      } catch {
-        setError('A network error occurred. Please check your connection and try again.')
+        window.location.assign(redirectUrl)
+      } catch (caught) {
+        setError(readFlowErrorMessage(caught, 'Unable to start sign in with this provider.'))
       } finally {
         setIsSubmitting(false)
       }
     },
-    [authFetch, flowId, mfaCode, afterSignInUrl, onSignIn, isSubmitting],
-  )
-
-  const handleOAuthClick = useCallback(
-    (provider: string) => {
-      if (!authDomain) return
-      window.location.href = `https://${authDomain}/v1/auth/oauth/${encodeURIComponent(provider)}/start`
-    },
-    [authDomain],
+    [isSubmitting, signIn],
   )
 
   const handleBack = useCallback(() => {
+    signIn.reset()
     setStep('identifier')
     setError(null)
     setPassword('')
-    setMfaCode('')
+    setCode('')
     requestAnimationFrame(() => identifierRef.current?.focus())
-  }, [])
+  }, [signIn])
 
-  if (!isConfigured) {
+  if (!signIn.isConfigured) {
     return (
       <div data-conjoin-card="">
         <p data-conjoin-heading="" data-conjoin-center="">
@@ -184,15 +235,17 @@ export function SignIn({ afterSignInUrl, forgotPasswordUrl, signUpUrl, onSignIn 
         Sign in
       </h2>
 
-      {oauthMethods.length > 0 ? (
+      {oauthProviders.length > 0 && step === 'identifier' ? (
         <div data-conjoin-social-group="">
-          {oauthMethods.map(method => (
-            <OAuthButton key={method} provider={method} onSelect={handleOAuthClick} />
+          {oauthProviders.map(provider => (
+            <OAuthButton key={provider} provider={provider} onSelect={handleOAuthSelect} />
           ))}
         </div>
       ) : null}
 
-      {oauthMethods.length > 0 && hasEmailPassword ? <div data-conjoin-divider-text="">or</div> : null}
+      {oauthProviders.length > 0 && usesEmail && step === 'identifier' ? (
+        <div data-conjoin-divider-text="">or</div>
+      ) : null}
 
       {error ? (
         <p id={ERROR_ID} data-conjoin-field-error="" role="alert">
@@ -200,7 +253,7 @@ export function SignIn({ afterSignInUrl, forgotPasswordUrl, signUpUrl, onSignIn 
         </p>
       ) : null}
 
-      {step === 'identifier' && hasEmailPassword ? (
+      {step === 'identifier' && usesEmail ? (
         <form onSubmit={handleIdentifierSubmit} noValidate>
           <div data-conjoin-field="" data-gap="wide">
             <Label.Root data-conjoin-label="" htmlFor="conjoin-sign-in-identifier">
@@ -218,7 +271,7 @@ export function SignIn({ afterSignInUrl, forgotPasswordUrl, signUpUrl, onSignIn 
               required
               aria-invalid={error ? true : undefined}
               aria-describedby={describedBy}
-              maxLength={320}
+              maxLength={254}
             />
           </div>
 
@@ -257,6 +310,7 @@ export function SignIn({ afterSignInUrl, forgotPasswordUrl, signUpUrl, onSignIn 
               onChange={handlePasswordChange}
               placeholder="Enter your password"
               required
+              maxLength={256}
               aria-invalid={error ? true : undefined}
               aria-describedby={describedBy}
             />
@@ -295,25 +349,25 @@ export function SignIn({ afterSignInUrl, forgotPasswordUrl, signUpUrl, onSignIn 
         </form>
       ) : null}
 
-      {step === 'mfa' ? (
-        <form onSubmit={handleMfaSubmit} noValidate>
+      {step === 'code' || step === 'mfa' ? (
+        <form onSubmit={step === 'code' ? handleCodeSubmit : handleMfaSubmit} noValidate>
           <div data-conjoin-field="" data-gap="wide">
-            <Label.Root data-conjoin-label="" htmlFor="conjoin-sign-in-mfa">
-              Verification code
+            <Label.Root data-conjoin-label="" htmlFor="conjoin-sign-in-code">
+              {step === 'code' ? 'Code from your email' : 'Verification code'}
             </Label.Root>
             <input
-              ref={mfaRef}
-              id="conjoin-sign-in-mfa"
+              ref={codeRef}
+              id="conjoin-sign-in-code"
               data-conjoin-input=""
               data-mono="true"
               type="text"
               inputMode="numeric"
               autoComplete="one-time-code"
-              value={mfaCode}
-              onChange={handleMfaChange}
-              placeholder="Enter 6-digit code"
+              value={code}
+              onChange={handleCodeChange}
+              placeholder="Enter the code"
               required
-              maxLength={8}
+              maxLength={CODE_MAX_LENGTH}
               aria-invalid={error ? true : undefined}
               aria-describedby={describedBy}
             />
@@ -330,8 +384,21 @@ export function SignIn({ afterSignInUrl, forgotPasswordUrl, signUpUrl, onSignIn 
           >
             <BusyContent busy={isSubmitting} label="Verify" busyLabel="Verifying" />
           </button>
+
+          <button
+            type="button"
+            data-conjoin-button=""
+            data-variant="outline"
+            data-block="true"
+            data-spacing="stacked"
+            onClick={handleBack}
+          >
+            Back
+          </button>
         </form>
       ) : null}
+
+      {step === 'confirmation' ? <output data-conjoin-prompt="">Check your email for a sign-in link.</output> : null}
 
       {signUpUrl ? (
         <p data-conjoin-prompt="">

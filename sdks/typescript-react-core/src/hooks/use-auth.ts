@@ -1,6 +1,8 @@
 import { useCallback, useContext } from 'react'
 import { ConjoinAuthActionsContext, ConjoinAuthStateContext } from '../provider/contexts'
 
+const NO_ROLES: string[] = []
+
 export function useAuth() {
   const authState = useContext(ConjoinAuthStateContext)
   const actions = useContext(ConjoinAuthActionsContext)
@@ -10,15 +12,11 @@ export function useAuth() {
 
   const { getToken, signOut } = actions
   const isSignedIn = authState.isLoaded && authState.isSignedIn
-  const organizationRole = authState.isLoaded && authState.isSignedIn ? authState.organizationRole : null
+  const organizationRoles = authState.isLoaded && authState.isSignedIn ? authState.organizationRoles : NO_ROLES
 
   const has = useCallback(
-    (params: { role?: string; permission?: string }) => {
-      if (!isSignedIn) return false
-      if (params.role && organizationRole !== params.role) return false
-      return true
-    },
-    [isSignedIn, organizationRole],
+    (params: { role: string }) => isSignedIn && organizationRoles.includes(params.role),
+    [isSignedIn, organizationRoles],
   )
 
   if (!authState.isLoaded) {
@@ -28,7 +26,7 @@ export function useAuth() {
       accountId: undefined,
       sessionId: undefined,
       organizationId: undefined,
-      organizationRole: undefined,
+      organizationRoles: undefined,
       getToken,
       signOut,
       has,
@@ -42,7 +40,7 @@ export function useAuth() {
       accountId: null,
       sessionId: null,
       organizationId: null,
-      organizationRole: null,
+      organizationRoles: NO_ROLES,
       getToken,
       signOut,
       has,
@@ -55,7 +53,7 @@ export function useAuth() {
     accountId: authState.accountId,
     sessionId: authState.sessionId,
     organizationId: authState.organizationId,
-    organizationRole: authState.organizationRole,
+    organizationRoles: authState.organizationRoles,
     getToken,
     signOut,
     has,

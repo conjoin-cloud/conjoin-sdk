@@ -4,8 +4,8 @@ import { useConjoinClient } from './internal/use-conjoin-client'
 import { useConjoinMutation } from './internal/use-conjoin-mutation'
 
 type BillingApi = ReturnType<typeof createBillingPriceBundles>
-type ActivateBody = Parameters<BillingApi['activate']>[1]
-type DeactivateBody = Parameters<BillingApi['deactivate']>[2]
+type ActivateBody = Parameters<BillingApi['activate']>[0]
+type DeactivateBody = Parameters<BillingApi['deactivate']>[1]
 type ActivateData = Omit<ActivateBody, 'bundles'>
 
 type ActivateParams = {
@@ -26,8 +26,8 @@ export function useCheckout() {
   const activateMutation = useConjoinMutation({
     mutationFn: useCallback(
       async (params: ActivateParams) => {
-        const api = createBillingPriceBundles(client)
-        return api.activate(params.entityId, {
+        const api = createBillingPriceBundles(client.withScope({ billingEntityId: params.entityId }))
+        return api.activate({
           ...params.data,
           bundles: [{ bundle_reference: params.referenceId }],
         })
@@ -40,8 +40,8 @@ export function useCheckout() {
   const deactivateMutation = useConjoinMutation({
     mutationFn: useCallback(
       async (params: DeactivateParams) => {
-        const api = createBillingPriceBundles(client)
-        return api.deactivate(params.entityId, params.activationId, params.data)
+        const api = createBillingPriceBundles(client.withScope({ billingEntityId: params.entityId }))
+        return api.deactivate(params.activationId, params.data)
       },
       [client],
     ),

@@ -16,7 +16,6 @@ vi.mock('../../server/tokens', () => ({
 import { cookies, headers } from 'next/headers'
 import { verifyToken } from '../../server/tokens'
 import { auth } from '../auth'
-import { getJwksUrl, resolveConfig } from '../config'
 
 const mockCookies = vi.mocked(cookies)
 const mockHeaders = vi.mocked(headers)
@@ -26,8 +25,7 @@ describe('auth', () => {
   beforeEach(() => {
     vi.clearAllMocks()
 
-    process.env.CONJOIN_PUBLISHABLE_KEY = 'pk_test_auth.conjoin.cloud'
-    process.env.CONJOIN_SECRET_KEY = 'sk_test_secret123'
+    process.env.CONJOIN_AUTH_DOMAIN = 'auth.conjoin.cloud'
 
     mockHeaders.mockResolvedValue({
       get: vi.fn().mockReturnValue(null),
@@ -40,8 +38,7 @@ describe('auth', () => {
 
   afterEach(() => {
     vi.restoreAllMocks()
-    delete process.env.CONJOIN_PUBLISHABLE_KEY
-    delete process.env.CONJOIN_SECRET_KEY
+    delete process.env.CONJOIN_AUTH_DOMAIN
   })
 
   it('reads token from cookie and verifies', async () => {
@@ -148,100 +145,5 @@ describe('auth', () => {
     const result = await auth()
     expect(result).toBeNull()
     expect(mockVerifyToken).not.toHaveBeenCalled()
-  })
-})
-
-describe('resolveConfig', () => {
-  beforeEach(() => {
-    process.env.CONJOIN_SECRET_KEY = 'sk_test_env_key'
-    process.env.CONJOIN_PUBLISHABLE_KEY = 'pk_test_env.conjoin.cloud'
-  })
-
-  afterEach(() => {
-    delete process.env.CONJOIN_SECRET_KEY
-    delete process.env.CONJOIN_PUBLISHABLE_KEY
-  })
-
-  it('reads from environment variables by default', () => {
-    const config = resolveConfig()
-    expect(config.secretKey).toBe('sk_test_env_key')
-    expect(config.publishableKey).toBe('pk_test_env.conjoin.cloud')
-  })
-
-  it('overrides take precedence over env vars', () => {
-    const config = resolveConfig({
-      secretKey: 'sk_override',
-      publishableKey: 'pk_live_override.conjoin.cloud',
-    })
-    expect(config.secretKey).toBe('sk_override')
-    expect(config.publishableKey).toBe('pk_live_override.conjoin.cloud')
-  })
-
-  it('returns undefined for keys when env vars are not set', () => {
-    delete process.env.CONJOIN_SECRET_KEY
-    delete process.env.CONJOIN_PUBLISHABLE_KEY
-    const config = resolveConfig()
-    expect(config.secretKey).toBeUndefined()
-    expect(config.publishableKey).toBeUndefined()
-  })
-
-  it('passes through jwksUrl and authDomain overrides', () => {
-    const config = resolveConfig({
-      jwksUrl: 'https://custom.example.com/.well-known/jwks.json',
-      authDomain: 'custom.example.com',
-    })
-    expect(config.jwksUrl).toBe('https://custom.example.com/.well-known/jwks.json')
-    expect(config.authDomain).toBe('custom.example.com')
-  })
-})
-
-describe('getJwksUrl', () => {
-  it('returns explicit jwksUrl when provided', () => {
-    const url = getJwksUrl({ jwksUrl: 'https://custom.example.com/jwks' })
-    expect(url).toBe('https://custom.example.com/jwks')
-  })
-
-  it('derives URL from authDomain', () => {
-    const url = getJwksUrl({ authDomain: 'auth.myapp.com' })
-    expect(url).toBe('https://auth.myapp.com/.well-known/jwks.json')
-  })
-
-  it('derives URL from publishable key with test prefix', () => {
-    const url = getJwksUrl({ publishableKey: 'pk_test_auth.conjoin.cloud' })
-    expect(url).toBe('https://auth.conjoin.cloud/.well-known/jwks.json')
-  })
-
-  it('derives URL from publishable key with live prefix', () => {
-    const url = getJwksUrl({ publishableKey: 'pk_live_auth.myapp.com' })
-    expect(url).toBe('https://auth.myapp.com/.well-known/jwks.json')
-  })
-
-  it('prefers jwksUrl over authDomain over publishableKey', () => {
-    const url = getJwksUrl({
-      jwksUrl: 'https://explicit.com/jwks',
-      authDomain: 'domain.com',
-      publishableKey: 'pk_test_key.com',
-    })
-    expect(url).toBe('https://explicit.com/jwks')
-  })
-
-  it('prefers authDomain over publishableKey', () => {
-    const url = getJwksUrl({
-      authDomain: 'domain.com',
-      publishableKey: 'pk_test_key.com',
-    })
-    expect(url).toBe('https://domain.com/.well-known/jwks.json')
-  })
-
-  it('throws when no publishableKey, authDomain, or jwksUrl', () => {
-    expect(() => getJwksUrl({})).toThrow('requires a publishableKey, authDomain, or jwksUrl')
-  })
-
-  it('throws on invalid publishable key format', () => {
-    expect(() => getJwksUrl({ publishableKey: 'invalid_key' })).toThrow('Invalid publishable key format')
-  })
-
-  it('throws on publishable key without environment prefix', () => {
-    expect(() => getJwksUrl({ publishableKey: 'pk_auth.conjoin.cloud' })).toThrow('Invalid publishable key format')
   })
 })
