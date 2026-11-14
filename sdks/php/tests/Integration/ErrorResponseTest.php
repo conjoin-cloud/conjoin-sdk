@@ -70,6 +70,18 @@ final class ErrorResponseTest extends ServerTestCase
         self::assertSame([['body.email', 'is locked']], $fieldErrors);
     }
 
+    public function testTruncatedRefusalIsNotRetried(): void
+    {
+        foreach ([400, 501] as $status) {
+            $this->server()->reset();
+            $this->server()->queue(Behaviour::rawStatus($status, '{"error":', ['content-length' => '1000']));
+            $error = self::caught(fn () => self::read($this->client()));
+            self::assertInstanceOf(ApiException::class, $error);
+            self::assertSame($status, $error->getStatus());
+            self::assertSame(1, $this->server()->attemptCount());
+        }
+    }
+
     public function testReadsOnlyTheFirst64KiBOfAnErrorBody(): void
     {
         $this->server()->queue(Behaviour::large(400, 5_000_000));

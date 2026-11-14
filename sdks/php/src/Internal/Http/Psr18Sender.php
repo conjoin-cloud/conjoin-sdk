@@ -37,6 +37,10 @@ final class Psr18Sender implements HttpSender
         try {
             $body = $this->readAtMost($stream, $limit + 1);
         } catch (\RuntimeException) {
+            if ($response->getStatusCode() >= 300) {
+                return ReceivedResponse::fromPsr($response, '', true);
+            }
+
             throw new NetworkException('The connection failed while the response arrived', $request->requestId);
         } finally {
             $stream->close();

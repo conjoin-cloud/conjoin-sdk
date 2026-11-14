@@ -13,7 +13,6 @@ use ConjoinCloud\Internal\Request\PreparedRequest;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ConnectTimeoutException;
 use GuzzleHttp\Exception\NetworkTimeoutException;
-use GuzzleHttp\Exception\ResponseException;
 use GuzzleHttp\Exception\ResponseTimeoutException;
 use GuzzleHttp\Exception\TransferException;
 use GuzzleHttp\Handler\CurlMultiHandler;
@@ -48,10 +47,12 @@ final class GuzzleSender implements HttpSender
     {
         $sink = new BoundedSink($limits->maxBodyBytes);
         $deadline = Clock::deadlineAfter($limits->timeoutSeconds);
+        $receivedResponse = null;
         $promise = $this->client->sendAsync($request->toPsrRequest(), [
             RequestOptions::TIMEOUT => $limits->timeoutSeconds,
             RequestOptions::SINK => $sink,
-            RequestOptions::ON_HEADERS => static function (ResponseInterface $response) use ($sink, $limits): void {
+            RequestOptions::ON_HEADERS => static function (ResponseInterface $response) use ($sink, $limits, &$receivedResponse): void {
+                $receivedResponse = $response;
                 $sink->limitTo($limits->bodyLimitFor($response->getStatusCode()));
             },
         ]);
@@ -59,17 +60,23 @@ final class GuzzleSender implements HttpSender
         try {
             $this->drive($promise, $deadline, $limits, $request->requestId);
             return ReceivedResponse::fromPsr($promise->wait(), $sink->contents(), false);
-        } catch (ConjoinException $error) {
-            throw $error;
-        } catch (ResponseTimeoutException | ConnectTimeoutException | NetworkTimeoutException) {
-            throw new TimeoutException($limits->timeoutSeconds, $request->requestId);
-        } catch (ResponseException $error) {
-            if ($sink->overflowed()) {
-                return ReceivedResponse::fromPsr($error->getResponse(), $sink->contents(), true);
+        } catch (ConjoinException | TransferException | RejectionException $error) {
+            if ($limits->isCancelled() || $error instanceof CancelledException) {
+                throw new CancelledException($request->requestId);
             }
 
-            throw new NetworkException('The connection failed while the response arrived', $request->requestId);
-        } catch (TransferException | RejectionException) {
+            if ($receivedResponse !== null && ($sink->overflowed() || $receivedResponse->getStatusCode() >= 300)) {
+                return ReceivedResponse::fromPsr($receivedResponse, $sink->contents(), true);
+            }
+
+            if ($error instanceof ConjoinException) {
+                throw $error;
+            }
+
+            if ($error instanceof ResponseTimeoutException || $error instanceof ConnectTimeoutException || $error instanceof NetworkTimeoutException) {
+                throw new TimeoutException($limits->timeoutSeconds, $request->requestId);
+            }
+
             throw new NetworkException('The connection to the Conjoin API failed', $request->requestId);
         } finally {
             if ($promise->getState() === PromiseInterface::PENDING) {
