@@ -7,6 +7,7 @@ namespace ConjoinCloud\Internal\Http;
 use ConjoinCloud\Exception\CancelledException;
 use ConjoinCloud\Exception\NetworkException;
 use ConjoinCloud\Internal\Request\PreparedRequest;
+use GuzzleHttp\Exception\ResponseException;
 use Psr\Http\Client\ClientExceptionInterface;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\StreamInterface;
@@ -27,6 +28,12 @@ final class Psr18Sender implements HttpSender
 
         try {
             $response = $this->client->sendRequest($request->toPsrRequest());
+        } catch (ResponseException $error) {
+            $response = $error->getResponse();
+            if ($response->getStatusCode() < 300) {
+                $response->getBody()->close();
+                throw new NetworkException('The connection failed while the response arrived', $request->requestId);
+            }
         } catch (ClientExceptionInterface) {
             throw new NetworkException('The HTTP client could not complete the request', $request->requestId);
         }
