@@ -23,6 +23,7 @@ const BROADCAST_PATH = '/v1/relay/broadcast'
 
 const RELAY_URL_PATTERN = /^(https?|wss?):\/\/([a-z0-9.-]+(?::[0-9]{1,5})?)(\/[^?#]*)?$/i
 const SECURE_SCHEMES: ReadonlySet<string> = new Set(['https', 'wss'])
+const SLASH_CHAR_CODE = 47
 
 function resolveBroadcastUrl(relayUrl: string | undefined): string | undefined {
   const match = relayUrl ? RELAY_URL_PATTERN.exec(relayUrl.trim()) : null
@@ -31,7 +32,17 @@ function resolveBroadcastUrl(relayUrl: string | undefined): string | undefined {
   const [, scheme = '', host = '', path = ''] = match
   const socketScheme = SECURE_SCHEMES.has(scheme.toLowerCase()) ? 'wss' : 'ws'
 
-  return `${socketScheme}://${host}${path.replace(/\/+$/, '')}${BROADCAST_PATH}`
+  return `${socketScheme}://${host}${withoutTrailingSlashes(path)}${BROADCAST_PATH}`
+}
+
+function withoutTrailingSlashes(value: string): string {
+  let end = value.length
+
+  while (end > 0 && value.charCodeAt(end - 1) === SLASH_CHAR_CODE) {
+    end -= 1
+  }
+
+  return value.slice(0, end)
 }
 
 const notConnectedError = () => new Error('The channel is not connected yet')
