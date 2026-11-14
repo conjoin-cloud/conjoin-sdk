@@ -90,3 +90,24 @@ it('does not schedule a refresh after a state callback signs out', async () => {
   expect(server.requests.filter(path => path.endsWith('/handshakes'))).toHaveLength(1)
   expect(manager.getState()).toEqual({ isLoaded: true, isSignedIn: false })
 }, 10000)
+
+it('finishes a requested logout after destruction while a refresh is pending', async () => {
+  const server = await authServer()
+  let notifications = 0
+  const manager = createAuthManager({
+    api: server.api,
+    transport: createWebTransport(),
+    onStateChange: () => {
+      notifications++
+    },
+  })
+  managers.push(manager)
+  const refreshing = manager.refresh()
+  await waitFor(() => server.requests.length === 1)
+  const signingOut = manager.signOut()
+  manager.destroy()
+  server.release()
+  await Promise.all([refreshing, signingOut])
+  expect(server.requests).toEqual(['/v1/auth/client/handshakes', '/v1/auth/client/logout'])
+  expect(notifications).toBe(0)
+})
