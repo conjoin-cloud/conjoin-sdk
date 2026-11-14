@@ -94,3 +94,12 @@ jobs:
     with:
       base: ${{ needs.affected.outputs.base }}
       head: ${{ needs.affected.outputs.head }}
+
+  go:
+    name: Go
+    needs: affected
+    if: ${{ contains(fromJSON(needs.affected.outputs.projects), 'sdk-go') }}
+    uses: ./.github/workflows/check-go.yml
+    with:
+      base: ${{ needs.affected.outputs.base }}
+      head: ${{ needs.affected.outputs.head }}
