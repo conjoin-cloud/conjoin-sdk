@@ -31,10 +31,14 @@ final class Reply
 
         if ($status !== self::NO_CONTENT_STATUS) {
             $lines[] = 'Content-Type: application/json';
-            $lines[] = sprintf('Content-Length: %d', strlen($body));
+            $declaredLength = $headers['content-length'] ?? null;
+            $lines[] = sprintf('Content-Length: %s', is_string($declaredLength) ? $declaredLength : strlen($body));
         }
 
         foreach ($headers as $name => $value) {
+            if ($name === 'content-length') {
+                continue;
+            }
             if (is_string($name) && is_string($value)) {
                 $lines[] = sprintf('%s: %s', $name, $value);
             }
