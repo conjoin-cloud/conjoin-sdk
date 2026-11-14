@@ -1,6 +1,7 @@
 {
   "name": "sdk-typescript",
   "tags": ["typescript"],
+  "implicitDependencies": ["spec"],
   "targets": {
     "generate": {
       "executor": "nx:run-commands",

@@ -1,0 +1,50 @@
+{
+  "name": "sdk-go",
+  "sourceRoot": "sdks/go",
+  "projectType": "library",
+  "tags": ["go"],
+  "implicitDependencies": ["spec"],
+  "targets": {
+    "generate": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "go run ./internal/cmd/generate",
+        "cwd": "{projectRoot}"
+      },
+      "inputs": [
+        "{workspaceRoot}/spec/openapi.json",
+        "{workspaceRoot}/spec/openapi-frontend.json",
+        "{projectRoot}/internal/codegen/**/*",
+        "{projectRoot}/internal/cmd/**/*"
+      ],
+      "outputs": ["{projectRoot}/**/*_gen.go"]
+    },
+    "build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "go build ./...",
+        "cwd": "{projectRoot}"
+      },
+      "dependsOn": ["generate"],
+      "outputs": []
+    },
+    "lint": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "go vet ./...",
+          "unformatted=\"$(gofmt -l .)\"; if [ -n \"$unformatted\" ]; then echo \"$unformatted\"; exit 1; fi"
+        ],
+        "parallel": false,
+        "cwd": "{projectRoot}"
+      }
+    },
+    "test": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "go test -race ./...",
+        "cwd": "{projectRoot}"
+      }
+    }
+  }
+}
