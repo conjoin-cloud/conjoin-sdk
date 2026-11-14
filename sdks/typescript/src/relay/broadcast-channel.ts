@@ -20,6 +20,12 @@ export type ChannelState = {
   seen: SeenEventIds
 }
 
+export type ChannelEntry = {
+  state: ChannelState
+  ready: Promise<void>
+  subscription: BroadcastSubscription
+}
+
 export const readEvents = (value: unknown): BroadcastEvent[] =>
   Array.isArray(value) ? value.flatMap(item => readBroadcastEvent(item) ?? []) : []
 
