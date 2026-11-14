@@ -9,6 +9,7 @@ import { ContractRouteRegistry, normalizeRoutePath } from './route-registry'
 
 const LOOPBACK_HOST = '127.0.0.1'
 const MAX_BODY_BYTES = 1_048_576
+const NO_CONTENT_STATUS = 204
 
 export type ConjoinContractServer = {
   baseUrl: string
@@ -150,11 +151,14 @@ const handleRequest = async ({ request, response, recorder, routes }: HandleRequ
 
     if (routes.openApiContract !== undefined && routeMatch.openApiMatch !== undefined) {
       routes.openApiContract.assertDeclaredResponseStatus(routeMatch.openApiMatch, contractResponse.status)
-      routes.openApiContract.assertValidResponseBody(
-        routeMatch.openApiMatch,
-        contractResponse.status,
-        contractResponse.body,
-      )
+
+      if (contractResponse.status !== NO_CONTENT_STATUS) {
+        routes.openApiContract.assertValidResponseBody(
+          routeMatch.openApiMatch,
+          contractResponse.status,
+          contractResponse.body,
+        )
+      }
     }
 
     writeResponse(response, contractResponse)
@@ -261,6 +265,12 @@ const parseBody = (rawBody: string, contentType: string | string[] | undefined):
 }
 
 const writeResponse = (response: ServerResponse, contractResponse: ContractResponse): void => {
+  if (contractResponse.status === NO_CONTENT_STATUS) {
+    response.writeHead(NO_CONTENT_STATUS, contractResponse.headers)
+    response.end()
+    return
+  }
+
   const body =
     typeof contractResponse.body === 'string' ? contractResponse.body : JSON.stringify(contractResponse.body ?? {})
 

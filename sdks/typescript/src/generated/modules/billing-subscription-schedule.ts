@@ -1,29 +1,35 @@
-import type { ConjoinClient } from '../../core/types'
+import { encodePathParam } from '../../core/path'
+import type { ConjoinCallOptions, ConjoinClient } from '../../core/types'
 import type { operations } from '../api-types'
 
-type CreateBody = operations['createSubscriptionSchedule']['requestBody']['content']['application/json']
-type CreateData = NonNullable<operations['createSubscriptionSchedule']['responses']['201']['content']['application/json']['data']>
 type ListData = NonNullable<operations['listSubscriptionSchedules']['responses']['200']['content']['application/json']['data']>[number]
 type ListQuery = NonNullable<operations['listSubscriptionSchedules']['parameters']['query']>
+type CreateBody = NonNullable<operations['createSubscriptionSchedule']['requestBody']>['content']['application/json']
+type CreateData = NonNullable<operations['createSubscriptionSchedule']['responses']['201']['content']['application/json']['data']>
+type ListCountData = NonNullable<operations['listSubscriptionSchedulesCount']['responses']['200']['content']['application/json']['data']>
+type ListCountQuery = NonNullable<operations['listSubscriptionSchedulesCount']['parameters']['query']>
 type GetData = NonNullable<operations['getSubscriptionSchedule']['responses']['200']['content']['application/json']['data']>
 type CancelData = NonNullable<operations['cancelSubscriptionSchedule']['responses']['200']['content']['application/json']['data']>
 type ReleaseData = NonNullable<operations['releaseSubscriptionSchedule']['responses']['200']['content']['application/json']['data']>
 
 export function createBillingSubscriptionSchedules(client: ConjoinClient) {
   return {
-    create: (entityId: string, subscriptionId: string, data: CreateBody) =>
-      client.fetch<CreateData>(`billing/subscription/${entityId}/schedules/${subscriptionId}`, { method: 'POST', body: data }),
+    list: (subscriptionId: string, query?: ListQuery, options?: ConjoinCallOptions) =>
+      client.fetchList<ListData>(`billing/subscriptions/${encodePathParam(subscriptionId)}/schedules`, { ...options, method: 'GET', query: query as Record<string, unknown> | undefined, scopes: ['billingEntityId'] }),
 
-    list: (entityId: string, subscriptionId: string, query?: ListQuery) =>
-      client.fetchList<ListData>(`billing/subscription/${entityId}/schedules/${subscriptionId}`, { query: query as Record<string, unknown> }),
+    create: (subscriptionId: string, data: CreateBody, options?: ConjoinCallOptions) =>
+      client.fetch<CreateData>(`billing/subscriptions/${encodePathParam(subscriptionId)}/schedules`, { ...options, method: 'POST', body: data, scopes: ['billingEntityId'] }),
 
-    get: (entityId: string, subscriptionId: string, scheduleId: string) =>
-      client.fetch<GetData>(`billing/subscription/${entityId}/schedules/${subscriptionId}/${scheduleId}`),
+    listCount: (subscriptionId: string, query?: ListCountQuery, options?: ConjoinCallOptions) =>
+      client.fetch<ListCountData>(`billing/subscriptions/${encodePathParam(subscriptionId)}/schedules/count`, { ...options, method: 'GET', query: query as Record<string, unknown> | undefined, scopes: ['billingEntityId'] }),
 
-    cancel: (entityId: string, subscriptionId: string, scheduleId: string) =>
-      client.fetch<CancelData>(`billing/subscription/${entityId}/schedules/${subscriptionId}/${scheduleId}`, { method: 'DELETE' }),
+    get: (subscriptionScheduleId: string, options?: ConjoinCallOptions) =>
+      client.fetch<GetData>(`billing/subscription-schedules/${encodePathParam(subscriptionScheduleId)}`, { ...options, method: 'GET', scopes: ['billingEntityId'] }),
 
-    release: (entityId: string, subscriptionId: string, scheduleId: string) =>
-      client.fetch<ReleaseData>(`billing/subscription/${entityId}/schedules/${subscriptionId}/${scheduleId}/release`, { method: 'POST' }),
+    cancel: (subscriptionScheduleId: string, options?: ConjoinCallOptions) =>
+      client.fetch<CancelData>(`billing/subscription-schedules/${encodePathParam(subscriptionScheduleId)}/cancel`, { ...options, method: 'POST', scopes: ['billingEntityId'] }),
+
+    release: (subscriptionScheduleId: string, options?: ConjoinCallOptions) =>
+      client.fetch<ReleaseData>(`billing/subscription-schedules/${encodePathParam(subscriptionScheduleId)}/release`, { ...options, method: 'POST', scopes: ['billingEntityId'] }),
   }
 }

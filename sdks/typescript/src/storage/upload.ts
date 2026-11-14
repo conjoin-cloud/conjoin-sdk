@@ -145,13 +145,16 @@ export function createStorageUploader(client: ConjoinClient) {
       }
 
       const storageApi = createStorageObjects(client)
-      const signedUrlResponse = await storageApi.createUploadSignedUrl({
-        container_name_or_id: container,
-        path,
-        content_type: contentType,
-        file_size: totalSize,
-        expires_in_minutes: expiresInMinutes,
-      })
+      const signedUrlResponse = await storageApi.createUploadSignedUrl(
+        container,
+        {
+          path,
+          content_type: contentType,
+          file_size: totalSize,
+          expires_in_minutes: expiresInMinutes,
+        },
+        { signal },
+      )
 
       const { upload_url, required_fields, upload_mode } = signedUrlResponse
 

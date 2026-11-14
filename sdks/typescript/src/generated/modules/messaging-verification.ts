@@ -1,27 +1,28 @@
-import type { ConjoinClient } from '../../core/types'
+import { encodePathParam } from '../../core/path'
+import type { ConjoinCallOptions, ConjoinClient } from '../../core/types'
 import type { operations } from '../api-types'
 
-type CreateBody = operations['createVerification']['requestBody']['content']['application/json']
+type CreateBody = NonNullable<operations['createVerification']['requestBody']>['content']['application/json']
 type CreateData = NonNullable<operations['createVerification']['responses']['200']['content']['application/json']['data']>
-type CheckBody = operations['checkVerification']['requestBody']['content']['application/json']
+type CheckBody = NonNullable<operations['checkVerification']['requestBody']>['content']['application/json']
 type CheckData = NonNullable<operations['checkVerification']['responses']['200']['content']['application/json']['data']>
-type ResendBody = operations['resendVerification']['requestBody']['content']['application/json']
+type ResendBody = NonNullable<operations['resendVerification']['requestBody']>['content']['application/json']
 type ResendData = NonNullable<operations['resendVerification']['responses']['200']['content']['application/json']['data']>
-type ListMessagesBody = operations['listVerificationMessages']['requestBody']['content']['application/json']
+type ListMessagesBody = NonNullable<operations['listVerificationMessages']['requestBody']>['content']['application/json']
 type ListMessagesData = NonNullable<operations['listVerificationMessages']['responses']['200']['content']['application/json']['data']>[number]
 
 export function createMessagingVerifications(client: ConjoinClient) {
   return {
-    create: (data: CreateBody) =>
-      client.fetch<CreateData>('messaging/otps/send', { method: 'POST', body: data }),
+    create: (data: CreateBody, options?: ConjoinCallOptions) =>
+      client.fetch<CreateData>('messaging/otps/send', { ...options, method: 'POST', body: data, scopes: ['messagingProfileId'] }),
 
-    check: (token: string, data: CheckBody) =>
-      client.fetch<CheckData>(`messaging/otps/verify/${token}`, { method: 'PATCH', body: data }),
+    check: (token: string, data: CheckBody, options?: ConjoinCallOptions) =>
+      client.fetch<CheckData>(`messaging/otps/verify/${encodePathParam(token)}`, { ...options, method: 'PATCH', body: data, scopes: ['messagingProfileId'] }),
 
-    resend: (verificationId: string, data: ResendBody) =>
-      client.fetch<ResendData>(`messaging/otps/resend/${verificationId}`, { method: 'PATCH', body: data }),
+    resend: (verificationId: string, data: ResendBody, options?: ConjoinCallOptions) =>
+      client.fetch<ResendData>(`messaging/otps/resend/${encodePathParam(verificationId)}`, { ...options, method: 'PATCH', body: data, scopes: ['messagingProfileId'] }),
 
-    listMessages: (data: ListMessagesBody) =>
-      client.fetchList<ListMessagesData>('messaging/otps/messages', { method: 'POST', body: data }),
+    listMessages: (data: ListMessagesBody, options?: ConjoinCallOptions) =>
+      client.fetchList<ListMessagesData>('messaging/otps/messages', { ...options, method: 'POST', body: data, scopes: ['messagingProfileId'] }),
   }
 }

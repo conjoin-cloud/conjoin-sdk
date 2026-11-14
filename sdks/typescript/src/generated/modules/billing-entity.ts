@@ -1,47 +1,57 @@
-import type { ConjoinClient } from '../../core/types'
+import { encodePathParam } from '../../core/path'
+import type { ConjoinCallOptions, ConjoinClient } from '../../core/types'
 import type { operations } from '../api-types'
 
-type CreateBody = operations['createBillingEntity']['requestBody']['content']['application/json']
+type ListData = NonNullable<operations['listBillingEntities']['responses']['200']['content']['application/json']['data']>[number]
+type ListQuery = NonNullable<operations['listBillingEntities']['parameters']['query']>
+type CreateBody = NonNullable<operations['createBillingEntity']['requestBody']>['content']['application/json']
 type CreateData = NonNullable<operations['createBillingEntity']['responses']['201']['content']['application/json']['data']>
+type ListCountData = NonNullable<operations['listBillingEntitiesCount']['responses']['200']['content']['application/json']['data']>
+type ListCountQuery = NonNullable<operations['listBillingEntitiesCount']['parameters']['query']>
+type OnboardBody = NonNullable<operations['onboardBillingEntities']['requestBody']>['content']['application/json']
+type OnboardResponse = operations['onboardBillingEntities']['responses']['201']['content']['application/json']
 type ReadData = NonNullable<operations['readBillingEntity']['responses']['200']['content']['application/json']['data']>
 type ReadQuery = NonNullable<operations['readBillingEntity']['parameters']['query']>
-type UpdateBody = operations['updateBillingEntity']['requestBody']['content']['application/json']
+type UpdateBody = NonNullable<operations['updateBillingEntity']['requestBody']>['content']['application/json']
 type UpdateData = NonNullable<operations['updateBillingEntity']['responses']['200']['content']['application/json']['data']>
-type CreatePayoutBankAccountBody = operations['createBillingPayoutBankAccount']['requestBody']['content']['application/json']
+type CreatePayoutBankAccountBody = NonNullable<operations['createBillingPayoutBankAccount']['requestBody']>['content']['application/json']
 type CreatePayoutBankAccountData = NonNullable<operations['createBillingPayoutBankAccount']['responses']['200']['content']['application/json']['data']>
-type InitiateStripeOnboardingBody = operations['initiateStripeOnboarding']['requestBody']['content']['application/json']
-type InitiateStripeOnboardingResponse = operations['initiateStripeOnboarding']['responses']['200']['content']['application/json']
-type CheckStripeOnboardingStatusResponse = operations['checkStripeOnboardingStatus']['responses']['200']['content']['application/json']
-type CheckStripeOnboardingStatusQuery = NonNullable<operations['checkStripeOnboardingStatus']['parameters']['query']>
-type SubmitPaystackCredentialsBody = operations['submitPaystackCredentials']['requestBody']['content']['application/json']
-type SubmitPaystackCredentialsResponse = operations['submitPaystackCredentials']['responses']['200']['content']['application/json']
-type OnboardBody = operations['onboardBillingEntities']['requestBody']['content']['application/json']
-type OnboardResponse = operations['onboardBillingEntities']['responses']['200']['content']['application/json']
+type CreateAccountLinkBody = NonNullable<operations['createBillingEntityAccountLink']['requestBody']>['content']['application/json']
+type CreateAccountLinkResponse = operations['createBillingEntityAccountLink']['responses']['200']['content']['application/json']
+type SyncOnboardingResponse = operations['syncBillingEntityOnboarding']['responses']['200']['content']['application/json']
+type CreatePaystackCredentialsBody = NonNullable<operations['createBillingEntityPaystackCredentials']['requestBody']>['content']['application/json']
+type CreatePaystackCredentialsResponse = operations['createBillingEntityPaystackCredentials']['responses']['200']['content']['application/json']
 
 export function createBillingEntities(client: ConjoinClient) {
   return {
-    create: (data: CreateBody) =>
-      client.fetch<CreateData>('billing/entity/', { method: 'POST', body: data }),
+    list: (query?: ListQuery, options?: ConjoinCallOptions) =>
+      client.fetchList<ListData>('billing/entities/', { ...options, method: 'GET', query: query as Record<string, unknown> | undefined }),
 
-    read: (query?: ReadQuery) =>
-      client.fetch<ReadData>('billing/entity/', { query: query as Record<string, unknown> }),
+    create: (data: CreateBody, options?: ConjoinCallOptions) =>
+      client.fetch<CreateData>('billing/entities/', { ...options, method: 'POST', body: data }),
 
-    update: (data: UpdateBody) =>
-      client.fetch<UpdateData>('billing/entity/', { method: 'PATCH', body: data }),
+    listCount: (query?: ListCountQuery, options?: ConjoinCallOptions) =>
+      client.fetch<ListCountData>('billing/entities/count', { ...options, method: 'GET', query: query as Record<string, unknown> | undefined }),
 
-    createPayoutBankAccount: (data: CreatePayoutBankAccountBody) =>
-      client.fetch<CreatePayoutBankAccountData>('billing/entity/payout/bank-account', { method: 'PUT', body: data }),
+    onboard: (data: OnboardBody, options?: ConjoinCallOptions) =>
+      client.fetchJson<OnboardResponse>('billing/entities/onboard', { ...options, method: 'POST', body: data }),
 
-    initiateStripeOnboarding: (data: InitiateStripeOnboardingBody) =>
-      client.fetch<InitiateStripeOnboardingResponse>('billing/entity/entities/onboarding/stripe', { method: 'POST', body: data }),
+    read: (entityId: string, query?: ReadQuery, options?: ConjoinCallOptions) =>
+      client.fetch<ReadData>(`billing/entities/${encodePathParam(entityId)}`, { ...options, method: 'GET', query: query as Record<string, unknown> | undefined }),
 
-    checkStripeOnboardingStatus: (query?: CheckStripeOnboardingStatusQuery) =>
-      client.fetch<CheckStripeOnboardingStatusResponse>('billing/entity/entities/onboarding/stripe', { query: query as Record<string, unknown> }),
+    update: (entityId: string, data: UpdateBody, options?: ConjoinCallOptions) =>
+      client.fetch<UpdateData>(`billing/entities/${encodePathParam(entityId)}`, { ...options, method: 'PATCH', body: data }),
 
-    submitPaystackCredentials: (data: SubmitPaystackCredentialsBody) =>
-      client.fetch<SubmitPaystackCredentialsResponse>('billing/entity/entities/onboarding/paystack', { method: 'POST', body: data }),
+    createPayoutBankAccount: (entityId: string, data: CreatePayoutBankAccountBody, options?: ConjoinCallOptions) =>
+      client.fetch<CreatePayoutBankAccountData>(`billing/entities/${encodePathParam(entityId)}/payout-bank-accounts`, { ...options, method: 'POST', body: data }),
 
-    onboard: (data: OnboardBody) =>
-      client.fetch<OnboardResponse>('billing/entity/entities/onboard', { method: 'POST', body: data }),
+    createAccountLink: (entityId: string, data: CreateAccountLinkBody, options?: ConjoinCallOptions) =>
+      client.fetchJson<CreateAccountLinkResponse>(`billing/entities/${encodePathParam(entityId)}/account-links`, { ...options, method: 'POST', body: data }),
+
+    syncOnboarding: (entityId: string, options?: ConjoinCallOptions) =>
+      client.fetchJson<SyncOnboardingResponse>(`billing/entities/${encodePathParam(entityId)}/sync`, { ...options, method: 'POST' }),
+
+    createPaystackCredentials: (entityId: string, data: CreatePaystackCredentialsBody, options?: ConjoinCallOptions) =>
+      client.fetchJson<CreatePaystackCredentialsResponse>(`billing/entities/${encodePathParam(entityId)}/paystack-credentials`, { ...options, method: 'POST', body: data }),
   }
 }

@@ -1,26 +1,32 @@
-import type { ConjoinClient } from '../../core/types'
+import { encodePathParam } from '../../core/path'
+import type { ConjoinCallOptions, ConjoinClient } from '../../core/types'
 import type { operations } from '../api-types'
 
-type CreateBody = operations['createCoupon']['requestBody']['content']['application/json']
-type CreateData = NonNullable<operations['createCoupon']['responses']['201']['content']['application/json']['data']>
 type ListData = NonNullable<operations['listCoupons']['responses']['200']['content']['application/json']['data']>[number]
 type ListQuery = NonNullable<operations['listCoupons']['parameters']['query']>
-type UpdateBody = operations['updateCoupon']['requestBody']['content']['application/json']
+type CreateBody = NonNullable<operations['createCoupon']['requestBody']>['content']['application/json']
+type CreateData = NonNullable<operations['createCoupon']['responses']['201']['content']['application/json']['data']>
+type ListCountData = NonNullable<operations['listCouponsCount']['responses']['200']['content']['application/json']['data']>
+type ListCountQuery = NonNullable<operations['listCouponsCount']['parameters']['query']>
+type UpdateBody = NonNullable<operations['updateCoupon']['requestBody']>['content']['application/json']
 type UpdateData = NonNullable<operations['updateCoupon']['responses']['200']['content']['application/json']['data']>
 type DeleteData = NonNullable<operations['deleteCoupon']['responses']['200']['content']['application/json']['data']>
 
 export function createBillingCoupons(client: ConjoinClient) {
   return {
-    create: (data: CreateBody) =>
-      client.fetch<CreateData>('billing/coupon/create', { method: 'POST', body: data }),
+    list: (query?: ListQuery, options?: ConjoinCallOptions) =>
+      client.fetchList<ListData>('billing/coupons/', { ...options, method: 'GET', query: query as Record<string, unknown> | undefined }),
 
-    list: (query?: ListQuery) =>
-      client.fetchList<ListData>('billing/coupon/', { query: query as Record<string, unknown> }),
+    create: (data: CreateBody, options?: ConjoinCallOptions) =>
+      client.fetch<CreateData>('billing/coupons/', { ...options, method: 'POST', body: data }),
 
-    update: (couponId: string, data: UpdateBody) =>
-      client.fetch<UpdateData>(`billing/coupon/${couponId}`, { method: 'PATCH', body: data }),
+    listCount: (query?: ListCountQuery, options?: ConjoinCallOptions) =>
+      client.fetch<ListCountData>('billing/coupons/count', { ...options, method: 'GET', query: query as Record<string, unknown> | undefined }),
 
-    delete: (couponId: string) =>
-      client.fetch<DeleteData>(`billing/coupon/${couponId}`, { method: 'DELETE' }),
+    update: (couponId: string, data: UpdateBody, options?: ConjoinCallOptions) =>
+      client.fetch<UpdateData>(`billing/coupons/${encodePathParam(couponId)}`, { ...options, method: 'PATCH', body: data }),
+
+    delete: (couponId: string, options?: ConjoinCallOptions) =>
+      client.fetch<DeleteData>(`billing/coupons/${encodePathParam(couponId)}`, { ...options, method: 'DELETE' }),
   }
 }

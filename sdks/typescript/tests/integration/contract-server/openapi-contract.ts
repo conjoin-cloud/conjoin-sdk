@@ -29,9 +29,11 @@ export type {
   OpenApiValidationResult,
 } from './openapi-types'
 
-export const loadConjoinOpenApiDocument = (): OpenApiDocument => {
+export type ConjoinOpenApiDocumentFile = 'openapi.json' | 'openapi-frontend.json'
+
+export const loadConjoinOpenApiDocument = (fileName: ConjoinOpenApiDocumentFile = 'openapi.json'): OpenApiDocument => {
   const currentDirectory = dirname(fileURLToPath(import.meta.url))
-  const specPath = resolve(currentDirectory, '../../../../../spec/openapi.json')
+  const specPath = resolve(currentDirectory, '../../../../../spec', fileName)
   const rawSpec = readFileSync(specPath, 'utf8')
 
   return JSON.parse(rawSpec) as OpenApiDocument
