@@ -1,180 +1,185 @@
-import type { ConjoinClient } from '@conjoin-cloud/sdk'
-import type { AuthTransport, ConjoinAuthState, ConjoinSdkConfig } from './types'
+import type { ConjoinAuthApi } from '../auth/auth-api'
+import { isSessionRejection } from '../auth/session-errors'
+import type { AuthFlowState, AuthSessionGrant, AuthTransport, ConjoinAuthState } from './types'
 
 type AuthManagerOptions = {
-  client: ConjoinClient
+  api: ConjoinAuthApi | null
   transport: AuthTransport
-  sdkConfig: ConjoinSdkConfig | null
   onStateChange: (state: ConjoinAuthState) => void
 }
 
-type TokenPayload = {
-  sub: string
-  sid: string
-  org_id?: string
-  org_role?: string
-  exp: number
+const REFRESH_AT_TTL_FRACTION = 0.75
+const MIN_REFRESH_DELAY_MS = 5_000
+const FIRST_RETRY_DELAY_MS = 1_000
+const MAX_RETRY_DELAY_MS = 30_000
+const SIGNED_OUT: ConjoinAuthState = { isLoaded: true, isSignedIn: false }
+
+type ActiveOrganization = { organizationId: string | null; organizationRoles: string[] }
+
+const NO_ORGANIZATION: ActiveOrganization = { organizationId: null, organizationRoles: [] }
+
+function refreshDelayMs(ttlSeconds: number): number {
+  if (!Number.isFinite(ttlSeconds) || ttlSeconds <= 0) return MIN_REFRESH_DELAY_MS
+
+  return Math.max(ttlSeconds * 1000 * REFRESH_AT_TTL_FRACTION, MIN_REFRESH_DELAY_MS)
 }
 
-const REFRESH_MARGIN_MS = 60_000
-
-function decodeTokenPayload(token: string): TokenPayload | null {
-  try {
-    const parts = token.split('.')
-    if (parts.length !== 3) return null
-    const payload = JSON.parse(atob(parts[1].replace(/-/g, '+').replace(/_/g, '/')))
-    return payload as TokenPayload
-  } catch {
-    return null
-  }
-}
-
-export function createAuthManager(options: AuthManagerOptions) {
-  const { transport, onStateChange } = options
-
+export function createAuthManager({ api, transport, onStateChange }: AuthManagerOptions) {
   let currentState: ConjoinAuthState = { isLoaded: false }
-  let refreshTimer: ReturnType<typeof setTimeout> | null = null
-  let refreshPromise: Promise<void> | null = null
+  let timer: ReturnType<typeof setTimeout> | null = null
+  let pendingRefresh: Promise<void> | null = null
+  let retryDelayMs = FIRST_RETRY_DELAY_MS
+  let generation = 0
+  let isDestroyed = false
 
   function setState(next: ConjoinAuthState) {
+    if (isDestroyed) return
     currentState = next
     onStateChange(next)
   }
 
-  function getState(): ConjoinAuthState {
-    return currentState
+  function clearTimer() {
+    if (timer !== null) clearTimeout(timer)
+    timer = null
   }
 
-  function scheduleRefresh(expiresAt: number) {
-    if (refreshTimer) clearTimeout(refreshTimer)
-
-    const now = Date.now()
-    const refreshAt = expiresAt * 1000 - REFRESH_MARGIN_MS
-    const delay = Math.max(refreshAt - now, 0)
-
-    refreshTimer = setTimeout(() => {
-      refreshTokens().catch(() => {
-        setState({ isLoaded: true, isSignedIn: false })
-      })
-    }, delay)
+  function schedule(delayMs: number, task: () => Promise<void>) {
+    clearTimer()
+    if (isDestroyed) return
+    timer = setTimeout(() => {
+      timer = null
+      task().catch(() => undefined)
+    }, delayMs)
   }
 
-  async function refreshTokens(): Promise<void> {
-    if (refreshPromise) return refreshPromise
+  function scheduleRetry(task: () => Promise<void>) {
+    schedule(retryDelayMs, task)
+    retryDelayMs = Math.min(retryDelayMs * 2, MAX_RETRY_DELAY_MS)
+  }
 
-    refreshPromise = transport.acquireRefreshLock(async () => {
-      try {
-        const authDomain = options.sdkConfig?.auth.domain
-        if (!authDomain) return
+  async function readActiveOrganization(authApi: ConjoinAuthApi): Promise<ActiveOrganization> {
+    try {
+      const organization = await authApi.selves.readActiveOrganization(transport.sessionCallOptions('GET'))
 
-        const response = await fetch(`https://${authDomain}/v1/auth/self/sessions/refresh`, {
-          method: 'POST',
-          credentials: 'include',
-          headers: {
-            'Content-Type': 'application/json',
-            ...transport.attachAuth({}),
-            ...(transport.attachCsrf ? transport.attachCsrf({}) : {}),
-          },
-        })
-
-        if (!response.ok) {
-          await transport.clearTokens()
-          setState({ isLoaded: true, isSignedIn: false })
-          return
-        }
-
-        const body = (await response.json()) as { data: { access_token: string; refresh_token: string } }
-        const { access_token, refresh_token } = body.data
-
-        await transport.storeTokens(access_token, refresh_token)
-
-        const payload = decodeTokenPayload(access_token)
-        if (payload) {
-          setState({
-            isLoaded: true,
-            isSignedIn: true,
-            accountId: payload.sub,
-            sessionId: payload.sid,
-            organizationId: payload.org_id ?? null,
-            organizationRole: payload.org_role ?? null,
-            accessToken: access_token,
-          })
-          scheduleRefresh(payload.exp)
-        }
-      } catch {
-        await transport.clearTokens()
-        setState({ isLoaded: true, isSignedIn: false })
+      return {
+        organizationId: organization.active_organization_id,
+        organizationRoles: organization.active_organization_roles,
       }
+    } catch (error) {
+      if (isSessionRejection(error)) throw error
+      return NO_ORGANIZATION
+    }
+  }
+
+  async function applyGrant(authApi: ConjoinAuthApi, grant: AuthSessionGrant | null, startedAt: number) {
+    if (grant === null) {
+      if (startedAt === generation) {
+        clearTimer()
+        setState(SIGNED_OUT)
+      }
+      return
+    }
+
+    const organization = await readActiveOrganization(authApi)
+
+    if (startedAt !== generation) return
+
+    retryDelayMs = FIRST_RETRY_DELAY_MS
+    setState({
+      isLoaded: true,
+      isSignedIn: true,
+      accountId: grant.accountId,
+      sessionId: grant.sessionId,
+      organizationId: organization.organizationId,
+      organizationRoles: organization.organizationRoles,
     })
+    schedule(refreshDelayMs(grant.ttlSeconds), refresh)
+  }
+
+  async function runSessionStep(read: (authApi: ConjoinAuthApi) => Promise<AuthSessionGrant | null>) {
+    if (api === null || isDestroyed) return
+
+    const startedAt = ++generation
 
     try {
-      await refreshPromise
-    } finally {
-      refreshPromise = null
+      const grant = await transport.acquireRefreshLock(() => read(api))
+      await applyGrant(api, grant, startedAt)
+    } catch (error) {
+      if (startedAt !== generation) return
+      if (isSessionRejection(error)) {
+        clearTimer()
+        setState(SIGNED_OUT)
+        return
+      }
+      if (!currentState.isLoaded) setState(SIGNED_OUT)
+      scheduleRetry(currentState.isLoaded && currentState.isSignedIn ? refresh : restore)
+      throw error
     }
+  }
+
+  async function restore(): Promise<void> {
+    await runSessionStep(authApi => transport.restoreSession(authApi)).catch(() => undefined)
+  }
+
+  function refresh(): Promise<void> {
+    if (pendingRefresh) return pendingRefresh
+
+    pendingRefresh = runSessionStep(authApi => transport.refreshSession(authApi)).finally(() => {
+      pendingRefresh = null
+    })
+
+    return pendingRefresh
   }
 
   function initialize() {
-    const state = transport.readAuthState()
-    setState(state)
-
-    if (state.isLoaded && state.isSignedIn) {
-      const payload = decodeTokenPayload(state.accessToken)
-      if (payload) {
-        const now = Date.now() / 1000
-        if (payload.exp <= now) {
-          refreshTokens().catch(() => {
-            setState({ isLoaded: true, isSignedIn: false })
-          })
-        } else {
-          scheduleRefresh(payload.exp)
-        }
-      }
+    if (api === null) {
+      setState(SIGNED_OUT)
+      return
     }
+    void restore()
+  }
+
+  async function completeFlow(flow: AuthFlowState): Promise<void> {
+    await runSessionStep(authApi => transport.finishFlow(authApi, flow))
+  }
+
+  async function switchOrganization(organizationId: string | null): Promise<void> {
+    if (api === null) throw new Error('Sign-in is not configured for this project')
+
+    await api.selves.updateActiveOrganization(
+      { organization_id: organizationId },
+      transport.sessionCallOptions('PATCH'),
+    )
+    await refresh()
   }
 
   async function signOut(): Promise<void> {
-    if (refreshTimer) clearTimeout(refreshTimer)
+    generation++
+    clearTimer()
 
-    const authDomain = options.sdkConfig?.auth.domain
-    if (authDomain && currentState.isLoaded && currentState.isSignedIn) {
-      try {
-        await fetch(`https://${authDomain}/v1/auth/self/sessions/${currentState.sessionId}`, {
-          method: 'DELETE',
-          credentials: 'include',
-          headers: {
-            'Content-Type': 'application/json',
-            ...transport.attachAuth({}),
-            ...(transport.attachCsrf ? transport.attachCsrf({}) : {}),
-          },
-        })
-      } catch {
-        // Sign out locally even if the server call fails
-      }
+    try {
+      const authApi = api
+      if (authApi !== null) await transport.acquireRefreshLock(() => transport.endSession(authApi))
+    } finally {
+      setState(SIGNED_OUT)
     }
-
-    await transport.clearTokens()
-    setState({ isLoaded: true, isSignedIn: false })
-  }
-
-  function getToken(): string | null {
-    if (currentState.isLoaded && currentState.isSignedIn) {
-      return currentState.accessToken
-    }
-    return null
   }
 
   function destroy() {
-    if (refreshTimer) clearTimeout(refreshTimer)
-    refreshPromise = null
+    isDestroyed = true
+    generation++
+    clearTimer()
+    pendingRefresh = null
   }
 
   return {
     initialize,
-    getState,
-    getToken,
+    getState: () => currentState,
+    getToken: () => (currentState.isLoaded && currentState.isSignedIn ? transport.readAccessToken() : null),
+    completeFlow,
+    switchOrganization,
+    refresh,
     signOut,
-    refreshTokens,
     destroy,
   }
 }

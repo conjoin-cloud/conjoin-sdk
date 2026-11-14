@@ -1,91 +1,102 @@
-import type { AuthTransport, ConjoinAuthState } from '../provider/types'
+import type { ConjoinCallOptions, HttpMethod } from '@conjoin-cloud/sdk'
+import type { ConjoinAuthApi } from '../auth/auth-api'
+import {
+  AUTH_CODE_CHALLENGE_HEADER,
+  AUTH_CODE_VERIFIER_HEADER,
+  AUTH_STATE_HEADER,
+  CSRF_TOKEN_HEADER,
+} from '../auth/flow-headers'
+import { createAuthFlowProof } from '../auth/flow-proof'
+import { createRedirectFlowRegistry } from '../auth/redirect-flows'
+import { readSessionUnlessRejected } from '../auth/session-errors'
+import type { AuthFlowState, AuthSessionGrant, AuthTransport } from '../provider/types'
 
-function getCookie(name: string): string | null {
+const CSRF_COOKIE_NAME = '__conjoin_auth_csrf'
+const REFRESH_LOCK_NAME = 'conjoin-session-handshake'
+
+function readCookie(name: string): string | null {
   if (typeof document === 'undefined') return null
+
   const prefix = `${name}=`
-  const cookies = document.cookie.split('; ')
-  for (const cookie of cookies) {
-    if (cookie.startsWith(prefix)) {
+
+  for (const cookie of document.cookie.split('; ')) {
+    if (!cookie.startsWith(prefix)) continue
+
+    try {
       return decodeURIComponent(cookie.substring(prefix.length))
+    } catch {
+      return null
     }
   }
+
   return null
 }
 
-type AuthCookiePayload = {
-  accountId: string
-  sessionId: string
-  orgId: string | null
-  orgRole: string | null
+function readCsrfHeaders(): Record<string, string> {
+  const csrfToken = readCookie(CSRF_COOKIE_NAME)
+
+  return csrfToken ? { [CSRF_TOKEN_HEADER]: csrfToken } : {}
 }
 
-function parseAuthCookie(): AuthCookiePayload | null {
-  const raw = getCookie('__conjoin_auth_cl')
-  if (!raw) return null
-  try {
-    const parsed = JSON.parse(raw)
-    if (typeof parsed !== 'object' || parsed === null) return null
-    if (typeof parsed.accountId !== 'string' || typeof parsed.sessionId !== 'string') return null
-    return parsed as AuthCookiePayload
-  } catch {
-    return null
-  }
+async function handshake(api: ConjoinAuthApi): Promise<AuthSessionGrant | null> {
+  const session = await readSessionUnlessRejected(() => api.clients.processHandshake())
+
+  if (session === null) return null
+
+  return { accountId: session.account_id, sessionId: session.session_id, ttlSeconds: session.access_token_ttl_seconds }
 }
 
-function deleteCookie(name: string) {
-  if (typeof window !== 'undefined' && 'cookieStore' in window) {
-    const store = window.cookieStore as { delete: (name: string) => Promise<void> }
-    store.delete(name).catch(() => {})
-  } else if (typeof document !== 'undefined') {
-    // biome-ignore lint/suspicious/noDocumentCookie: Cookie Store API fallback for older browsers
-    document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/`
-  }
+const browserCrypto = {
+  fillRandomBytes: (bytes: Uint8Array<ArrayBuffer>) => globalThis.crypto.getRandomValues(bytes),
+  digestSha256: (bytes: Uint8Array<ArrayBuffer>) => globalThis.crypto.subtle.digest('SHA-256', bytes),
 }
+
+const readSessionStorage = () => (typeof sessionStorage === 'undefined' ? null : sessionStorage)
 
 export function createWebTransport(): AuthTransport {
+  const redirectFlows = createRedirectFlowRegistry(readSessionStorage)
+
   return {
-    readAuthState(): ConjoinAuthState {
-      const parsed = parseAuthCookie()
-      if (!parsed) {
-        return { isLoaded: true, isSignedIn: false }
-      }
+    platform: 'web',
 
+    restoreSession: handshake,
+
+    refreshSession: handshake,
+
+    finishFlow: handshake,
+
+    async endSession(api: ConjoinAuthApi) {
+      await readSessionUnlessRejected(() => api.clients.processLogout({ headers: readCsrfHeaders() }))
+    },
+
+    sessionCallOptions(method: HttpMethod): ConjoinCallOptions {
+      return method === 'GET' ? {} : { headers: readCsrfHeaders() }
+    },
+
+    flowCallOptions(flow: AuthFlowState): ConjoinCallOptions {
       return {
-        isLoaded: true,
-        isSignedIn: true,
-        accountId: parsed.accountId,
-        sessionId: parsed.sessionId,
-        organizationId: parsed.orgId,
-        organizationRole: parsed.orgRole,
-        accessToken: '',
+        headers: {
+          [AUTH_STATE_HEADER]: flow.proof.state,
+          [AUTH_CODE_VERIFIER_HEADER]: flow.proof.codeVerifier,
+          [AUTH_CODE_CHALLENGE_HEADER]: flow.proof.codeChallenge,
+        },
       }
     },
 
-    storeTokens() {
-      // Tokens are HttpOnly cookies managed by the auth server
-    },
+    createFlowProof: () => createAuthFlowProof(browserCrypto),
 
-    clearTokens() {
-      deleteCookie('__conjoin_auth_cl')
-    },
+    saveRedirectFlow: redirectFlows.save,
 
-    attachAuth(headers: Record<string, string>): Record<string, string> {
-      return headers
-    },
-
-    attachCsrf(headers: Record<string, string>): Record<string, string> {
-      const csrf = getCookie('__conjoin_auth_csrf')
-      if (csrf) {
-        return { ...headers, 'X-CSRF-Token': csrf }
-      }
-      return headers
-    },
+    takeRedirectFlow: redirectFlows.take,
 
     async acquireRefreshLock<T>(fn: () => Promise<T>): Promise<T> {
       if (typeof navigator !== 'undefined' && 'locks' in navigator) {
-        return navigator.locks.request('conjoin-token-refresh', fn)
+        return navigator.locks.request(REFRESH_LOCK_NAME, fn)
       }
+
       return fn()
     },
+
+    readAccessToken: () => null,
   }
 }

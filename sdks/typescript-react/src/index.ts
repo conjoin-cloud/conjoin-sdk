@@ -1,22 +1,27 @@
 'use client'
 
 export type {
+  AuthFlowResult,
   AuthTransport,
   ColorPalette,
   ConjoinAccount,
+  ConjoinAccountUpdate,
   ConjoinAuthState,
   ConjoinBranding,
   ConjoinMembership,
-  ConjoinOrganization,
   ConjoinProviderProps,
   ConjoinSdkConfig,
   ConjoinSession,
+  OAuthRedirectResult,
+  SignInCompleteBody,
+  SignInStartBody,
+  SignUpCompleteBody,
+  SignUpStartBody,
 } from '@conjoin-cloud/react-core'
 export {
   ConjoinProviderCore,
   useAccount,
   useAuth,
-  useAuthFetch,
   useBundles,
   useChannel,
   useCheckout,
@@ -25,7 +30,11 @@ export {
   useEntitlements,
   useOrg,
   useSession,
+  useSessions,
+  useSignIn,
+  useSignUp,
   useStorageUpload,
+  useUpdateAccount,
 } from '@conjoin-cloud/react-core'
 export type { ConjoinThemeState } from '@conjoin-cloud/react-core/web'
 export { ConjoinProvider, useConjoinTheme } from '@conjoin-cloud/react-core/web'

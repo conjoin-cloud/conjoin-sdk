@@ -1,32 +1,44 @@
 import type { ConjoinClient } from '@conjoin-cloud/sdk'
-import type { ConjoinSdkConfig } from './types'
+import { createConjoinPublicApi } from '../auth/auth-api'
+import type { ConjoinBranding, ConjoinSdkConfig } from './types'
 
-let cachedConfig: ConjoinSdkConfig | null = null
-let inflightPromise: Promise<ConjoinSdkConfig> | null = null
+const cachedConfigs = new Map<string, ConjoinSdkConfig>()
+const inflightConfigs = new Map<string, Promise<ConjoinSdkConfig>>()
 
-export async function fetchSdkConfig(client: ConjoinClient): Promise<ConjoinSdkConfig> {
-  if (cachedConfig) return cachedConfig
+const configCacheKey = (client: ConjoinClient): string =>
+  `${client.config.baseUrl} ${client.config.publishableKey ?? client.config.apiKey ?? ''}`
 
-  if (inflightPromise) return inflightPromise
+async function readSdkConfig(client: ConjoinClient): Promise<ConjoinSdkConfig> {
+  const settings = await createConjoinPublicApi(client).sdk.readSdkSettings({ auth: { type: 'default' } })
 
-  inflightPromise = client
-    .fetch<ConjoinSdkConfig>('cloud/sdk-config')
+  return {
+    project_id: settings.project_id,
+    environment: settings.environment,
+    api_url: settings.api_url,
+    branding: settings.branding as ConjoinBranding | null,
+    auth: settings.auth,
+    relay: { url: settings.relay.url },
+  }
+}
+
+export function fetchSdkConfig(client: ConjoinClient): Promise<ConjoinSdkConfig> {
+  const key = configCacheKey(client)
+  const cached = cachedConfigs.get(key)
+  if (cached) return Promise.resolve(cached)
+
+  const inflight = inflightConfigs.get(key)
+  if (inflight) return inflight
+
+  const request = readSdkConfig(client)
     .then(config => {
-      cachedConfig = config
+      cachedConfigs.set(key, config)
       return config
     })
     .finally(() => {
-      inflightPromise = null
+      inflightConfigs.delete(key)
     })
 
-  return inflightPromise
-}
+  inflightConfigs.set(key, request)
 
-export function getCachedSdkConfig(): ConjoinSdkConfig | null {
-  return cachedConfig
-}
-
-export function clearSdkConfigCache(): void {
-  cachedConfig = null
-  inflightPromise = null
+  return request
 }

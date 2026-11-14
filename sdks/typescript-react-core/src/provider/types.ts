@@ -1,16 +1,21 @@
+import type { ConjoinCallOptions, HttpMethod } from '@conjoin-cloud/sdk'
 import type { ReactNode } from 'react'
+import type { ConjoinAuthApi } from '../auth/auth-api'
+import type { AuthFlowProof } from '../auth/flow-proof'
+
+export type ConjoinSdkAuthSettings = {
+  domain: string
+  sign_in_methods: string[]
+  mfa_enabled: boolean
+  sign_up_enabled: boolean
+}
 
 export type ConjoinSdkConfig = {
   project_id: string
   environment: 'live' | 'test'
   api_url: string
   branding: ConjoinBranding | null
-  auth: {
-    domain: string
-    sign_in_methods: string[]
-    mfa_enabled: boolean
-    sign_up_enabled: boolean
-  }
+  auth: ConjoinSdkAuthSettings | null
   relay: {
     url: string
   }
@@ -167,21 +172,41 @@ export type ConjoinAuthState =
       accountId: string
       sessionId: string
       organizationId: string | null
-      organizationRole: string | null
-      accessToken: string
+      organizationRoles: string[]
     }
 
-export type AuthTransport = {
-  readAuthState: () => ConjoinAuthState
-  storeTokens: (accessToken: string, refreshToken: string) => void | Promise<void>
-  clearTokens: () => void | Promise<void>
-  attachAuth: (headers: Record<string, string>) => Record<string, string>
-  attachCsrf?: (headers: Record<string, string>) => Record<string, string>
-  acquireRefreshLock: <T>(fn: () => Promise<T>) => Promise<T>
+export type AuthSessionGrant = {
+  accountId: string
+  sessionId: string
+  ttlSeconds: number
 }
 
-export type AuthManagerState = ConjoinAuthState & {
-  isRefreshing: boolean
+export type AuthClientHandle = {
+  client_id: string
+  reference_id: string
+}
+
+export type AuthFlowKind = 'signin' | 'signup'
+
+export type AuthFlowState = {
+  kind: AuthFlowKind
+  proof: AuthFlowProof
+  clientHandle: AuthClientHandle | null
+}
+
+export type AuthTransport = {
+  readonly platform: 'web' | 'native'
+  restoreSession: (api: ConjoinAuthApi) => Promise<AuthSessionGrant | null>
+  refreshSession: (api: ConjoinAuthApi) => Promise<AuthSessionGrant | null>
+  finishFlow: (api: ConjoinAuthApi, flow: AuthFlowState) => Promise<AuthSessionGrant | null>
+  endSession: (api: ConjoinAuthApi) => Promise<void>
+  sessionCallOptions: (method: HttpMethod) => ConjoinCallOptions
+  flowCallOptions: (flow: AuthFlowState) => ConjoinCallOptions
+  createFlowProof: () => Promise<AuthFlowProof>
+  saveRedirectFlow: (flow: AuthFlowState) => void
+  takeRedirectFlow: (state: string) => AuthFlowState | null
+  acquireRefreshLock: <T>(fn: () => Promise<T>) => Promise<T>
+  readAccessToken: () => string | null
 }
 
 export type ConjoinThemeState = {

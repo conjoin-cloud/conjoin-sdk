@@ -1,58 +1,36 @@
 import { useCallback } from 'react'
-import { useAuthActions } from './internal/use-auth-actions'
-import { useAuthState } from './internal/use-auth-state'
+import type { ConjoinAuthApi } from '../auth/auth-api'
+import type { AuthTransport } from '../provider/types'
 import { useConjoinClient } from './internal/use-conjoin-client'
-import { useConjoinQuery } from './internal/use-conjoin-query'
+import { useConjoinMutation } from './internal/use-conjoin-mutation'
+import { useSignedInQuery } from './internal/use-signed-in-query'
 
-export type ConjoinAccount = {
-  id: string
-  email: string
-  first_name: string | null
-  last_name: string | null
-  avatar_url: string | null
-  created_at: string
-  updated_at: string
-}
+export type ConjoinAccount = Awaited<ReturnType<ConjoinAuthApi['selves']['readProfile']>>
+export type ConjoinAccountUpdate = Parameters<ConjoinAuthApi['selves']['updateProfile']>[0]
+
+const ACCOUNT_QUERY_KEYS = [['conjoin', 'auth', 'account']]
+
+const readAccount = (authApi: ConjoinAuthApi, transport: AuthTransport): Promise<ConjoinAccount> =>
+  authApi.selves.readProfile(transport.sessionCallOptions('GET'))
 
 export function useAccount() {
-  const { sdkConfig } = useConjoinClient()
-  const { getToken } = useAuthActions()
-  const authState = useAuthState()
-  const isSignedIn = authState.isLoaded && authState.isSignedIn
-  const authDomain = sdkConfig?.auth.domain
+  const result = useSignedInQuery('account', readAccount)
 
-  const queryFn = useCallback(async (): Promise<ConjoinAccount> => {
-    if (!authDomain) throw new Error('Auth domain not configured')
-    const token = getToken()
-    const response = await fetch(`https://${authDomain}/v1/auth/self`, {
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json',
-        ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      },
-    })
-    if (!response.ok) throw new Error('Failed to fetch account')
-    const body = (await response.json()) as { data: ConjoinAccount }
-    return body.data
-  }, [authDomain, getToken])
+  return { isLoaded: result.isLoaded, isSignedIn: result.isSignedIn, account: result.data, error: result.error }
+}
 
-  const result = useConjoinQuery<ConjoinAccount>({
-    queryKey: ['conjoin', 'auth', 'account'],
-    queryFn,
-    enabled: isSignedIn && !!authDomain,
-  })
+export function useUpdateAccount() {
+  const { authApi, transport } = useConjoinClient()
 
-  if (!authState.isLoaded) {
-    return { isLoaded: false as const, isSignedIn: undefined, account: undefined }
-  }
+  const mutationFn = useCallback(
+    (update: ConjoinAccountUpdate): Promise<ConjoinAccount> => {
+      if (authApi === null) return Promise.reject(new Error('Sign-in is not configured for this project'))
+      return authApi.selves.updateProfile(update, transport.sessionCallOptions('PATCH'))
+    },
+    [authApi, transport],
+  )
 
-  if (!isSignedIn) {
-    return { isLoaded: true as const, isSignedIn: false as const, account: null }
-  }
+  const mutation = useConjoinMutation({ mutationFn, invalidateKeys: ACCOUNT_QUERY_KEYS })
 
-  return {
-    isLoaded: !result.isLoading,
-    isSignedIn: true as const,
-    account: result.data ?? null,
-  }
+  return { update: mutation.mutateAsync, isPending: mutation.isPending, error: mutation.error }
 }

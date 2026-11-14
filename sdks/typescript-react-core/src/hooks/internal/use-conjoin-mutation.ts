@@ -1,5 +1,5 @@
 import { MutationObserver, type MutationObserverResult, type QueryKey } from '@tanstack/query-core'
-import { useCallback, useMemo, useState, useSyncExternalStore } from 'react'
+import { useCallback, useEffect, useMemo, useState, useSyncExternalStore } from 'react'
 import { useConjoinClient } from './use-conjoin-client'
 
 type ConjoinMutationOptions<TData, TVariables, TError = Error> = {
@@ -25,24 +25,27 @@ export function useConjoinMutation<TData, TVariables, TError = Error>(
   options: ConjoinMutationOptions<TData, TVariables, TError>,
 ): ConjoinMutationResult<TData, TVariables, TError> {
   const { queryClient } = useConjoinClient()
+  const { mutationFn, invalidateKeys, onSuccess, onError } = options
 
-  const [observer] = useState(
-    () =>
-      new MutationObserver<TData, TError, TVariables>(queryClient, {
-        mutationFn: options.mutationFn,
-        onSuccess: (data, variables) => {
-          if (options.invalidateKeys) {
-            for (const key of options.invalidateKeys) {
-              queryClient.invalidateQueries({ queryKey: key })
-            }
-          }
-          options.onSuccess?.(data, variables)
-        },
-        onError: (error, variables) => {
-          options.onError?.(error, variables)
-        },
-      }),
+  const observerOptions = useMemo(
+    () => ({
+      mutationFn,
+      onSuccess: async (data: TData, variables: TVariables) => {
+        await Promise.all((invalidateKeys ?? []).map(key => queryClient.invalidateQueries({ queryKey: key })))
+        onSuccess?.(data, variables)
+      },
+      onError: (error: TError, variables: TVariables) => {
+        onError?.(error, variables)
+      },
+    }),
+    [queryClient, mutationFn, invalidateKeys, onSuccess, onError],
   )
+
+  const [observer] = useState(() => new MutationObserver<TData, TError, TVariables>(queryClient, observerOptions))
+
+  useEffect(() => {
+    observer.setOptions(observerOptions)
+  }, [observer, observerOptions])
 
   const subscribe = useMemo(() => {
     return (onStoreChange: () => void) => {
@@ -60,22 +63,14 @@ export function useConjoinMutation<TData, TVariables, TError = Error>(
 
   const mutate = useCallback(
     (variables: TVariables) => {
-      observer.mutate(variables)
+      observer.mutate(variables).catch(() => undefined)
     },
     [observer],
   )
 
-  const mutateAsync = useCallback(
-    (variables: TVariables): Promise<TData> => {
-      return new Promise<TData>((resolve, reject) => {
-        observer.mutate(variables, {
-          onSuccess: data => resolve(data),
-          onError: error => reject(error),
-        })
-      })
-    },
-    [observer],
-  )
+  const mutateAsync = useCallback((variables: TVariables): Promise<TData> => observer.mutate(variables), [observer])
+
+  const reset = useCallback(() => observer.reset(), [observer])
 
   return {
     mutate,
@@ -86,6 +81,6 @@ export function useConjoinMutation<TData, TVariables, TError = Error>(
     isPending: result.status === 'pending',
     isSuccess: result.status === 'success',
     isError: result.status === 'error',
-    reset: () => observer.reset(),
+    reset,
   }
 }

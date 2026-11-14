@@ -2,11 +2,16 @@ import { buildApiError } from '../core/error-response'
 import { ConjoinApiError, ConjoinResponseError } from '../core/errors'
 import { getConjoinRequestIdFromHeaders } from '../core/request-tracing'
 import type { ConjoinCallOptions, ConjoinClient } from '../core/types'
+import type { operations } from '../generated/api-types'
 import { createAiInferences } from '../generated/modules/ai-inference'
 import { iterSSEMessages } from './sse'
 import type { ChatCompletionChunk, ChatCompletionParams, ChatCompletionResponse } from './types'
 
+type ChatCompletionHeaderName = keyof NonNullable<operations['createAiChatCompletion']['parameters']['header']> & string
+type ChatCompletionDeclaresIdempotencyKey = 'idempotency-key' extends Lowercase<ChatCompletionHeaderName> ? true : false
+
 const CHAT_COMPLETIONS_PATH = 'ai/inference/chat/completions'
+const CHAT_COMPLETION_DECLARES_IDEMPOTENCY_KEY: ChatCompletionDeclaresIdempotencyKey = false
 const MAX_REPORTED_CHUNK_CHARACTERS = 200
 
 export type ChatStreamOptions = Pick<ConjoinCallOptions, 'signal' | 'idempotencyKey' | 'conjoinRequestId'>
@@ -70,7 +75,7 @@ async function* createStreamIterator(
     ...options,
     method: 'POST',
     body: { ...params, stream: true },
-    acceptsIdempotencyKey: true,
+    acceptsIdempotencyKey: CHAT_COMPLETION_DECLARES_IDEMPOTENCY_KEY,
   })
   const requestId = getConjoinRequestIdFromHeaders(response.headers)
 
