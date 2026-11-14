@@ -43,6 +43,7 @@ class ListPage(ConjoinModel, Generic[T]):
     cursor: Cursor = Field(default_factory=Cursor)
 
     _status: int = PrivateAttr(default=0)
+    _seen_cursors: frozenset[str] = PrivateAttr(default_factory=frozenset)
 
     @field_validator("response", "cursor", mode="before")
     @classmethod
@@ -71,7 +72,11 @@ class Page(ListPage[T], Generic[T]):
         token = self._next_cursor()
         if token is None or self._fetch_next is None:
             return None
-        return self._fetch_next(token)
+        if token in self._seen_cursors:
+            raise self._repeated_cursor_error()
+        page = self._fetch_next(token)
+        page._seen_cursors = self._seen_cursors | {token}
+        return page
 
     def iter_all(self) -> Iterator[T]:
         page: Page[T] = self
@@ -97,7 +102,11 @@ class AsyncPage(ListPage[T], Generic[T]):
         token = self._next_cursor()
         if token is None or self._fetch_next is None:
             return None
-        return await self._fetch_next(token)
+        if token in self._seen_cursors:
+            raise self._repeated_cursor_error()
+        page = await self._fetch_next(token)
+        page._seen_cursors = self._seen_cursors | {token}
+        return page
 
     async def iter_all(self) -> AsyncIterator[T]:
         page: AsyncPage[T] = self
