@@ -1,197 +1,482 @@
-import { encodePathParam } from '../core/path'
+import { ConjoinConfigurationError, ConjoinError, ConjoinNetworkError } from '../core/errors'
 import type { ConjoinClient } from '../core/types'
 import { createRelayBroadcasts } from '../generated/modules/relay-broadcast'
-import type { BroadcastConnectionOptions, BroadcastListener, BroadcastMessage, ConnectionState } from './types'
+import { createBroadcastChannel, readEvents } from './broadcast-channel'
+import { FramePacer, parseBroadcastFrame, readBroadcastEvent, readFrameString, SeenEventIds } from './broadcast-frames'
+import {
+  type BroadcastFrame,
+  type BroadcastRequestKind,
+  BroadcastRequests,
+  ConjoinBroadcastError,
+  toBroadcastErrorCode,
+} from './broadcast-requests'
+import type {
+  BroadcastConnection,
+  BroadcastConnectionOptions,
+  BroadcastEvent,
+  BroadcastListener,
+  BroadcastSubscribeOptions,
+  BroadcastSubscription,
+  BroadcastTokenSource,
+  ConnectionState,
+} from './types'
 
+const BROADCAST_PATH = '/v1/relay/broadcast'
 const DEFAULT_MAX_RECONNECT_ATTEMPTS = 10
-const DEFAULT_RECONNECT_BASE_DELAY = 1000
-const DEFAULT_RECONNECT_MAX_DELAY = 30_000
-const DEFAULT_HEARTBEAT_INTERVAL = 25_000
-const JITTER_FACTOR = 0.5
+const DEFAULT_RECONNECT_BASE_DELAY_MS = 1_000
+const DEFAULT_RECONNECT_MAX_DELAY_MS = 30_000
+const DEFAULT_REQUEST_TIMEOUT_MS = 10_000
+const FRAMES_PER_SECOND_BELOW_SERVER_LIMIT = 25
+const MAX_FRAME_BYTES = 64 * 1024
+const MAX_HISTORY_PAGES_PER_RECOVERY = 20
+const NORMAL_CLOSE_CODE = 1000
+const SOCKET_OPEN = 1
 
-type Subscription = {
-  event: string | '*'
-  listener: BroadcastListener
+const REPLY_KINDS: Readonly<Record<string, BroadcastRequestKind>> = {
+  connected: 'connect',
+  subscribed: 'subscribe',
+  unsubscribed: 'unsubscribe',
+  published: 'publish',
+  history: 'history',
 }
 
-export type BroadcastConnection = {
-  readonly state: ConnectionState
-  connect: () => Promise<void>
-  disconnect: () => void
-  publish: (event: string, data: unknown) => void
-  subscribe: <T = unknown>(event: string, listener: BroadcastListener<T>) => () => void
-  subscribeAll: <T = unknown>(listener: BroadcastListener<T>) => () => void
+export type ChannelListener = { eventType: string | null; listener: BroadcastListener }
+
+export type ChannelState = {
+  channel: string
+  authToken?: BroadcastTokenSource
+  listeners: Set<ChannelListener>
+  lastEventId: string | null
+  seen: SeenEventIds
+}
+
+type ChannelEntry = {
+  state: ChannelState
+  ready: Promise<void>
+  subscription: BroadcastSubscription
+}
+
+export type BroadcastRequest = (
+  kind: BroadcastRequestKind,
+  channel: string | null,
+  frame: BroadcastFrame,
+) => Promise<BroadcastFrame>
+
+const notConnected = () =>
+  new ConjoinError('Connect the broadcast client before you use a channel', { code: 'broadcast_not_connected' })
+
+const closedByCaller = () =>
+  new ConjoinError('The caller closed the broadcast connection', { code: 'broadcast_disconnected' })
+
+function resolveBroadcastUrl(client: ConjoinClient, options: BroadcastConnectionOptions): URL {
+  const raw = options.url ?? `${client.config.baseUrl.replace(/^http/, 'ws')}${BROADCAST_PATH}`
+  let url: URL
+
+  try {
+    url = new URL(raw)
+  } catch {
+    throw new ConjoinConfigurationError('The broadcast url must be an absolute ws or wss URL')
+  }
+
+  if (url.protocol !== 'ws:' && url.protocol !== 'wss:') {
+    throw new ConjoinConfigurationError('The broadcast url must be an absolute ws or wss URL')
+  }
+
+  return url
+}
+
+export async function readToken(source: BroadcastTokenSource | undefined): Promise<string | undefined> {
+  if (source === undefined) return undefined
+
+  const token = typeof source === 'string' ? source : await source()
+
+  if (typeof token !== 'string' || token.length === 0) {
+    throw new ConjoinConfigurationError('A broadcast token must be a non-empty string')
+  }
+
+  return token
+}
+
+function encodeFrame(frame: BroadcastFrame): string {
+  let text: string
+
+  try {
+    text = JSON.stringify(frame)
+  } catch {
+    throw new ConjoinConfigurationError('The broadcast data cannot be sent as JSON')
+  }
+
+  if (new TextEncoder().encode(text).byteLength > MAX_FRAME_BYTES) {
+    throw new ConjoinConfigurationError(`A broadcast message must be ${MAX_FRAME_BYTES} bytes or fewer`)
+  }
+
+  return text
+}
+
+function assertChannel(channel: string): void {
+  if (typeof channel !== 'string' || channel.length === 0 || channel.trim() !== channel) {
+    throw new ConjoinConfigurationError('A channel must be a non-empty string without surrounding spaces')
+  }
 }
 
 export function createBroadcastConnection(
   client: ConjoinClient,
-  options: BroadcastConnectionOptions,
+  options: BroadcastConnectionOptions = {},
 ): BroadcastConnection {
-  const broadcastApi = createRelayBroadcasts(client)
+  const baseUrl = resolveBroadcastUrl(client, options)
+  const WebSocketImpl = options.WebSocket ?? globalThis.WebSocket
   const maxAttempts = options.maxReconnectAttempts ?? DEFAULT_MAX_RECONNECT_ATTEMPTS
-  const baseDelay = options.reconnectBaseDelay ?? DEFAULT_RECONNECT_BASE_DELAY
-  const maxDelay = options.reconnectMaxDelay ?? DEFAULT_RECONNECT_MAX_DELAY
-  const heartbeatMs = options.heartbeatInterval ?? DEFAULT_HEARTBEAT_INTERVAL
+  const baseDelay = options.reconnectBaseDelay ?? DEFAULT_RECONNECT_BASE_DELAY_MS
+  const maxDelay = options.reconnectMaxDelay ?? DEFAULT_RECONNECT_MAX_DELAY_MS
+  const requestTimeout = options.requestTimeout ?? DEFAULT_REQUEST_TIMEOUT_MS
   const autoReconnect = options.autoReconnect !== false
+  const getConnectionToken =
+    options.getConnectionToken ?? (async () => (await createRelayBroadcasts(client).generateConnectionToken()).token)
 
+  if (WebSocketImpl === undefined) {
+    throw new ConjoinConfigurationError('This runtime has no WebSocket, so pass one in the WebSocket option')
+  }
+
+  const requests = new BroadcastRequests()
+  const channels = new Map<string, ChannelEntry>()
+  const lanes = new Map<string, Promise<unknown>>()
   let state: ConnectionState = 'idle'
-  let ws: WebSocket | null = null
+  let socket: WebSocket | null = null
+  let socketId: number | null = null
+  let pacer = new FramePacer(FRAMES_PER_SECOND_BELOW_SERVER_LIMIT)
+  let generation = 0
   let reconnectAttempt = 0
   let reconnectTimer: ReturnType<typeof setTimeout> | null = null
-  let heartbeatTimer: ReturnType<typeof setInterval> | null = null
-  let intentionalClose = false
-  const subscriptions = new Set<Subscription>()
+  let connecting: Promise<void> | null = null
+  let closedOnPurpose = false
 
-  function setState(next: ConnectionState) {
+  const reportError = (error: unknown): void => {
+    try {
+      options.onError?.(error instanceof Error ? error : new Error(String(error)))
+    } catch {}
+  }
+
+  const setState = (next: ConnectionState): void => {
     if (state === next) return
     state = next
-    options.onStateChange?.(next)
-  }
-
-  function clearTimers() {
-    if (reconnectTimer) {
-      clearTimeout(reconnectTimer)
-      reconnectTimer = null
-    }
-    if (heartbeatTimer) {
-      clearInterval(heartbeatTimer)
-      heartbeatTimer = null
-    }
-  }
-
-  function startHeartbeat() {
-    heartbeatTimer = setInterval(() => {
-      if (ws?.readyState === WebSocket.OPEN) {
-        ws.send(JSON.stringify({ type: 'ping' }))
-      }
-    }, heartbeatMs)
-  }
-
-  function getReconnectDelay(attempt: number): number {
-    const exponential = Math.min(baseDelay * 2 ** attempt, maxDelay)
-    const jitter = exponential * (1 - JITTER_FACTOR + Math.random() * JITTER_FACTOR * 2)
-    return Math.floor(jitter)
-  }
-
-  function handleMessage(raw: MessageEvent) {
     try {
-      const message = JSON.parse(String(raw.data)) as BroadcastMessage
-
-      if ((message as unknown as { type: string }).type === 'pong') return
-
-      for (const sub of subscriptions) {
-        if (sub.event === '*' || sub.event === message.event) {
-          sub.listener(message)
-        }
-      }
-    } catch {
-      options.onError?.(new Error(`Failed to parse broadcast message: ${String(raw.data)}`))
+      options.onStateChange?.(next)
+    } catch (error) {
+      reportError(error)
     }
   }
 
-  function scheduleReconnect() {
+  const sendFrame: BroadcastRequest = (kind, channel, frame) => {
+    const ws = socket
+
+    if (ws === null || ws.readyState !== SOCKET_OPEN) return Promise.reject(notConnected())
+
+    const text = encodeFrame(frame)
+    const reply = requests.open(kind, channel, requestTimeout)
+
+    pacer
+      .send(() => {
+        if (ws.readyState === SOCKET_OPEN) ws.send(text)
+      })
+      .catch(reportError)
+
+    return reply
+  }
+
+  const request: BroadcastRequest = (kind, channel, frame) => {
+    const lane = `${kind}:${channel ?? ''}`
+    const previous = lanes.get(lane) ?? Promise.resolve()
+    const reply = previous.then(() => sendFrame(kind, channel, frame))
+    const settled = reply.then(
+      () => undefined,
+      () => undefined,
+    )
+
+    lanes.set(lane, settled)
+    settled.then(() => {
+      if (lanes.get(lane) === settled) lanes.delete(lane)
+    })
+
+    return reply
+  }
+
+  const notify = (channelState: ChannelState, event: BroadcastEvent): void => {
+    if (!channelState.seen.remember(event.event_id)) return
+
+    channelState.lastEventId = event.event_id
+
+    for (const entry of [...channelState.listeners]) {
+      if (entry.eventType !== null && entry.eventType !== event.event_type) continue
+
+      try {
+        entry.listener(event)
+      } catch (error) {
+        reportError(error)
+      }
+    }
+  }
+
+  const isActive = (channelState: ChannelState): boolean => channels.get(channelState.channel)?.state === channelState
+
+  const handleFrame = (raw: unknown): void => {
+    const frame = parseBroadcastFrame(raw)
+    const type = frame === null ? null : readFrameString(frame, 'type')
+
+    if (frame === null || type === null) return
+
+    if (type === 'event') {
+      const event = readBroadcastEvent(frame)
+      const entry = event === null ? undefined : channels.get(event.channel_id)
+      if (event !== null && entry !== undefined) notify(entry.state, event)
+      return
+    }
+
+    const kind = REPLY_KINDS[type]
+    const channel = readFrameString(frame, 'channel')
+
+    if (kind !== undefined) {
+      requests.settle(kind, kind === 'connect' ? null : channel, frame)
+      return
+    }
+
+    if (type === 'error') {
+      const code = readFrameString(frame, 'code') ?? 'UNKNOWN_ERROR'
+      const message = readFrameString(frame, 'message') ?? 'The realtime server reported an error'
+
+      if (!requests.fail(code, message, channel)) {
+        reportError(new ConjoinBroadcastError(message, toBroadcastErrorCode(code), channel))
+      }
+    }
+  }
+
+  const abandonSocket = (): void => {
+    generation += 1
+    const ws = socket
+    socket = null
+    socketId = null
+    ws?.close(NORMAL_CLOSE_CODE)
+  }
+
+  const sendSubscribe = async (channelState: ChannelState): Promise<void> => {
+    const authToken = await readToken(channelState.authToken)
+
+    await request('subscribe', channelState.channel, {
+      type: 'subscribe',
+      channel: channelState.channel,
+      ...(authToken === undefined ? {} : { auth_token: authToken }),
+    })
+  }
+
+  const recoverMissedEvents = async (channelState: ChannelState): Promise<void> => {
+    let lastEventId = channelState.lastEventId
+
+    for (let page = 0; lastEventId !== null && page < MAX_HISTORY_PAGES_PER_RECOVERY; page++) {
+      const reply = await request('history', channelState.channel, {
+        type: 'history',
+        channel: channelState.channel,
+        last_event_id: lastEventId,
+      })
+      const events = readEvents(reply.events)
+
+      for (const event of events) notify(channelState, event)
+
+      const newest = events.at(-1)
+      if (reply.truncated !== true || newest === undefined) return
+      lastEventId = newest.event_id
+    }
+  }
+
+  const restoreChannels = async (attempt: number): Promise<void> => {
+    for (const entry of [...channels.values()]) {
+      if (attempt !== generation) return
+
+      try {
+        await sendSubscribe(entry.state)
+        await recoverMissedEvents(entry.state)
+      } catch (error) {
+        if (attempt !== generation || socket === null) return
+        if (isActive(entry.state)) channels.delete(entry.state.channel)
+        reportError(error)
+      }
+    }
+  }
+
+  const scheduleReconnect = (): void => {
+    if (reconnectTimer !== null) return
+
     if (!autoReconnect || reconnectAttempt >= maxAttempts) {
+      channels.clear()
       setState('disconnected')
+      reportError(new ConjoinNetworkError('The broadcast connection closed and the client stopped reconnecting'))
       return
     }
 
     setState('reconnecting')
-    const delay = getReconnectDelay(reconnectAttempt)
-    reconnectAttempt++
+    const delay = Math.random() * Math.min(baseDelay * 2 ** reconnectAttempt, maxDelay)
+    reconnectAttempt += 1
 
     reconnectTimer = setTimeout(() => {
-      connectInternal().catch(err => {
-        options.onError?.(err instanceof Error ? err : new Error(String(err)))
+      reconnectTimer = null
+      establish().catch(error => {
+        if (closedOnPurpose) return
+        reportError(error)
+        abandonSocket()
         scheduleReconnect()
       })
     }, delay)
   }
 
-  async function connectInternal(): Promise<void> {
-    setState('connecting')
+  const handleClose = (): void => {
+    const wasConnected = state === 'connected'
 
-    const { token } = await broadcastApi.generateConnectionToken()
-    const baseUrl = client.config.baseUrl.replace(/^http/, 'ws')
-    const url = `${baseUrl}/v1/relay/broadcast/channels/${encodePathParam(options.channelId)}/ws?token=${encodeURIComponent(token)}`
+    socket = null
+    socketId = null
+    requests.rejectAll(new ConjoinNetworkError('The broadcast connection closed'))
 
-    return new Promise<void>((resolve, reject) => {
-      const socket = new WebSocket(url)
+    if (closedOnPurpose) {
+      setState('disconnected')
+      return
+    }
 
-      socket.onopen = () => {
-        ws = socket
-        reconnectAttempt = 0
-        intentionalClose = false
-        setState('connected')
-        startHeartbeat()
-        resolve()
+    if (wasConnected) scheduleReconnect()
+  }
+
+  const openSocket = async (): Promise<WebSocket> => {
+    const url = new URL(baseUrl)
+    url.searchParams.set('token', (await readToken(getConnectionToken)) ?? '')
+
+    return new Promise((resolve, reject) => {
+      const ws = new WebSocketImpl(url.toString())
+      const refuse = () => {
+        ws.removeEventListener('open', accept)
+        reject(new ConjoinNetworkError('The realtime server refused the broadcast connection'))
+      }
+      const accept = () => {
+        ws.removeEventListener('error', refuse)
+        ws.removeEventListener('close', refuse)
+        resolve(ws)
       }
 
-      socket.onmessage = handleMessage
-
-      socket.onerror = () => {
-        const error = new Error('WebSocket connection error')
-        options.onError?.(error)
-        if (state === 'connecting') reject(error)
-      }
-
-      socket.onclose = () => {
-        ws = null
-        clearTimers()
-
-        if (intentionalClose) {
-          setState('disconnected')
-          return
-        }
-
-        scheduleReconnect()
-      }
+      ws.addEventListener('open', accept, { once: true })
+      ws.addEventListener('error', refuse, { once: true })
+      ws.addEventListener('close', refuse, { once: true })
     })
+  }
+
+  const establish = async (): Promise<void> => {
+    const attempt = ++generation
+
+    if (state !== 'reconnecting') setState('connecting')
+
+    const ws = await openSocket()
+
+    if (attempt !== generation || closedOnPurpose) {
+      ws.close(NORMAL_CLOSE_CODE)
+      throw closedByCaller()
+    }
+
+    socket = ws
+    pacer = new FramePacer(FRAMES_PER_SECOND_BELOW_SERVER_LIMIT)
+    ws.addEventListener('message', event => {
+      if (attempt === generation) handleFrame(event.data)
+    })
+    ws.addEventListener('close', () => {
+      if (attempt === generation) handleClose()
+    })
+
+    const connected = await request('connect', null, { type: 'connect' })
+
+    socketId = typeof connected.socket_id === 'number' ? connected.socket_id : null
+    reconnectAttempt = 0
+    setState('connected')
+    await restoreChannels(attempt)
+  }
+
+  const subscribe = async (channel: string, subscribeOptions: BroadcastSubscribeOptions = {}) => {
+    assertChannel(channel)
+
+    const existing = channels.get(channel)
+    if (existing !== undefined) {
+      await existing.ready
+      return existing.subscription
+    }
+
+    if (state !== 'connected') throw notConnected()
+
+    const channelState: ChannelState = {
+      channel,
+      authToken: subscribeOptions.authToken,
+      listeners: new Set(),
+      lastEventId: null,
+      seen: new SeenEventIds(),
+    }
+    const entry: ChannelEntry = {
+      state: channelState,
+      ready: sendSubscribe(channelState),
+      subscription: createBroadcastChannel({
+        channelState,
+        request,
+        isActive: () => isActive(channelState),
+        isConnected: () => state === 'connected',
+        forget: () => {
+          if (isActive(channelState)) channels.delete(channel)
+        },
+      }),
+    }
+    channels.set(channel, entry)
+
+    try {
+      await entry.ready
+    } catch (error) {
+      if (isActive(channelState)) channels.delete(channel)
+      throw error
+    }
+
+    return entry.subscription
+  }
+
+  const connect = (): Promise<void> => {
+    if (state === 'connected') return Promise.resolve()
+    if (connecting !== null) return connecting
+
+    closedOnPurpose = false
+    reconnectAttempt = 0
+    if (reconnectTimer !== null) clearTimeout(reconnectTimer)
+    reconnectTimer = null
+
+    const pending = establish()
+      .catch(error => {
+        abandonSocket()
+        if (!closedOnPurpose) setState('disconnected')
+        throw error
+      })
+      .finally(() => {
+        if (connecting === pending) connecting = null
+      })
+    connecting = pending
+
+    return pending
+  }
+
+  const disconnect = (): void => {
+    closedOnPurpose = true
+    if (reconnectTimer !== null) clearTimeout(reconnectTimer)
+    reconnectTimer = null
+    channels.clear()
+    requests.rejectAll(closedByCaller())
+    abandonSocket()
+    setState('disconnected')
   }
 
   return {
     get state() {
       return state
     },
-
-    async connect() {
-      if (state === 'connected' || state === 'connecting') return
-      intentionalClose = false
-      reconnectAttempt = 0
-      await connectInternal()
+    get socketId() {
+      return socketId
     },
-
-    disconnect() {
-      intentionalClose = true
-      clearTimers()
-      reconnectAttempt = 0
-      if (ws) {
-        ws.close(1000, 'Client disconnect')
-        ws = null
-      }
-      setState('disconnected')
-    },
-
-    publish(event: string, data: unknown) {
-      if (!ws || ws.readyState !== WebSocket.OPEN) {
-        throw new Error('Cannot publish: WebSocket is not connected')
-      }
-      ws.send(JSON.stringify({ event, data }))
-    },
-
-    subscribe<T = unknown>(event: string, listener: BroadcastListener<T>) {
-      const sub: Subscription = { event, listener: listener as BroadcastListener }
-      subscriptions.add(sub)
-      return () => {
-        subscriptions.delete(sub)
-      }
-    },
-
-    subscribeAll<T = unknown>(listener: BroadcastListener<T>) {
-      const sub: Subscription = { event: '*', listener: listener as BroadcastListener }
-      subscriptions.add(sub)
-      return () => {
-        subscriptions.delete(sub)
-      }
-    },
+    connect,
+    disconnect,
+    subscribe,
   }
 }
