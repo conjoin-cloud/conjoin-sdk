@@ -75,3 +75,15 @@ it('rejects overflowing timers before sending and ignores a negative Retry-After
   })
   expect(server.attempts).toHaveLength(1)
 })
+
+it('preserves a refusal whose body times out while giving caller cancellation priority', async () => {
+  const client = createConjoinClient({ apiKey: 'cak_test_transport', baseUrl: server.baseUrl })
+  server.queue({ kind: 'drop-during-response', status: 400, delayMs: 200 })
+  await expect(client.fetch('billing/customers/', { timeout: 50 })).rejects.toMatchObject({ status: 400 })
+  server.queue({ kind: 'drop-during-response', status: 400, delayMs: 200 })
+  const controller = new AbortController()
+  const pending = client.fetch('billing/customers/', { signal: controller.signal })
+  setTimeout(() => controller.abort(), 50)
+  await expect(pending).rejects.toMatchObject({ code: 'request_aborted' })
+  expect(server.attempts).toHaveLength(2)
+})
