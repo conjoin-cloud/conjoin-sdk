@@ -17,12 +17,13 @@ const DEFAULT_TIMEOUT_MS = 30_000
 const DEFAULT_MAX_RETRIES = 3
 const DEFAULT_BACKOFF_MS = 500
 const DEFAULT_MAX_RETRY_DELAY_MS = 60_000
+const MAX_TIMER_DELAY_MS = 2 ** 31 - 1
 
 function requirePositive(value: number | undefined, fallback: number, name: string): number {
   const resolved = value ?? fallback
 
-  if (!Number.isFinite(resolved) || resolved <= 0) {
-    throw new ConjoinConfigurationError(`${name} must be a finite number greater than 0`)
+  if (!Number.isFinite(resolved) || resolved <= 0 || resolved > MAX_TIMER_DELAY_MS) {
+    throw new ConjoinConfigurationError(`${name} must be greater than 0 and at most ${MAX_TIMER_DELAY_MS}`)
   }
 
   return resolved
@@ -31,8 +32,8 @@ function requirePositive(value: number | undefined, fallback: number, name: stri
 function requireNonNegative(value: number | undefined, fallback: number, name: string): number {
   const resolved = value ?? fallback
 
-  if (!Number.isFinite(resolved) || resolved < 0) {
-    throw new ConjoinConfigurationError(`${name} must be a finite number of 0 or more`)
+  if (!Number.isFinite(resolved) || resolved < 0 || resolved > MAX_TIMER_DELAY_MS) {
+    throw new ConjoinConfigurationError(`${name} must be from 0 to ${MAX_TIMER_DELAY_MS}`)
   }
 
   return resolved
@@ -41,7 +42,7 @@ function requireNonNegative(value: number | undefined, fallback: number, name: s
 function requireRetryCount(value: number | undefined): number {
   const resolved = value ?? DEFAULT_MAX_RETRIES
 
-  if (!Number.isInteger(resolved) || resolved < 0) {
+  if (!Number.isSafeInteger(resolved) || resolved < 0) {
     throw new ConjoinConfigurationError('retry.maxRetries must be a whole number of 0 or more')
   }
 
