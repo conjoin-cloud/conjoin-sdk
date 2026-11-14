@@ -5,6 +5,7 @@ export type ServerBehaviour =
   | { kind: 'answer' }
   | { kind: 'drop-before-store' }
   | { kind: 'drop-after-store' }
+  | { kind: 'drop-during-response'; status?: number }
   | { kind: 'slow'; delayMs: number }
   | { kind: 'status'; status: number; headers?: Record<string, string>; body?: unknown }
 
@@ -137,6 +138,14 @@ export const startUnreliableServer = async (): Promise<UnreliableServer> => {
     if (behaviour.kind === 'drop-after-store') {
       if (attempt.method === 'POST' && attempt.path === CUSTOMERS_PATH) storeCustomer(attempt)
       request.socket.destroy()
+      return
+    }
+
+    if (behaviour.kind === 'drop-during-response') {
+      if (attempt.method === 'POST' && attempt.path === CUSTOMERS_PATH) storeCustomer(attempt)
+      response.writeHead(behaviour.status ?? 200, { 'content-type': 'application/json', 'content-length': '1000' })
+      response.write('{"data":')
+      setTimeout(() => response.destroy(), 20)
       return
     }
 

@@ -93,6 +93,7 @@ function resolveConfig(config: ConjoinConfig): ResolvedConfig {
     baseUrl: resolveBaseUrl(config, key),
     apiVersion: config.apiVersion ?? DEFAULT_API_VERSION,
     timeout: requirePositive(config.timeout, DEFAULT_TIMEOUT_MS, 'timeout'),
+    maxResponseBytes: requirePositive(config.maxResponseBytes, 16 * 1024 * 1024, 'maxResponseBytes'),
     conjoinRequestId: config.conjoinRequestId,
     credentials: config.credentials,
     scope: resolveScope(config),

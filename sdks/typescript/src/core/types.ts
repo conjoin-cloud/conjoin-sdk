@@ -14,6 +14,7 @@ export type ConjoinConfig = ConjoinScope & {
   baseUrl?: string
   apiVersion?: string
   timeout?: number
+  maxResponseBytes?: number
   conjoinRequestId?: string
   credentials?: RequestCredentials
   retry?: {
@@ -29,6 +30,7 @@ export type ResolvedConfig = {
   readonly baseUrl: string
   readonly apiVersion: string
   readonly timeout: number
+  readonly maxResponseBytes: number
   readonly conjoinRequestId?: string
   readonly credentials?: RequestCredentials
   readonly scope: Readonly<ConjoinScope>
