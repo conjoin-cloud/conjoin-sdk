@@ -1,22 +1,23 @@
-import type { ConjoinClient } from '../../core/types'
+import { encodePathParam } from '../../core/path'
+import type { ConjoinCallOptions, ConjoinClient } from '../../core/types'
 import type { operations } from '../api-types'
 
-type LinkBody = operations['linkIdentity']['requestBody']['content']['application/json']
-type LinkData = NonNullable<operations['linkIdentity']['responses']['200']['content']['application/json']['data']>
-type UnlinkBody = operations['unlinkIdentity']['requestBody']['content']['application/json']
-type UnlinkData = NonNullable<operations['unlinkIdentity']['responses']['200']['content']['application/json']['data']>
-type DiscoverAccountBody = operations['discoverAccount']['requestBody']['content']['application/json']
+type DiscoverAccountBody = NonNullable<operations['discoverAccount']['requestBody']>['content']['application/json']
 type DiscoverAccountData = NonNullable<operations['discoverAccount']['responses']['200']['content']['application/json']['data']>
+type LinkBody = NonNullable<operations['linkIdentity']['requestBody']>['content']['application/json']
+type LinkData = NonNullable<operations['linkIdentity']['responses']['200']['content']['application/json']['data']>
+type UnlinkBody = NonNullable<operations['unlinkIdentity']['requestBody']>['content']['application/json']
+type UnlinkData = NonNullable<operations['unlinkIdentity']['responses']['200']['content']['application/json']['data']>
 
 export function createAuthIdentities(client: ConjoinClient) {
   return {
-    link: (appId: string, accountId: string, data: LinkBody) =>
-      client.fetch<LinkData>(`auth/identity/${appId}/account/${accountId}/identity/link`, { method: 'POST', body: data }),
+    discoverAccount: (data: DiscoverAccountBody, options?: ConjoinCallOptions) =>
+      client.fetch<DiscoverAccountData>('auth/accounts/discover', { ...options, method: 'POST', body: data, scopes: ['authAppId'] }),
 
-    unlink: (appId: string, accountId: string, data: UnlinkBody) =>
-      client.fetch<UnlinkData>(`auth/identity/${appId}/account/${accountId}/identity/unlink`, { method: 'POST', body: data }),
+    link: (accountId: string, data: LinkBody, options?: ConjoinCallOptions) =>
+      client.fetch<LinkData>(`auth/accounts/${encodePathParam(accountId)}/identities/link`, { ...options, method: 'POST', body: data, scopes: ['authAppId'] }),
 
-    discoverAccount: (appId: string, data: DiscoverAccountBody) =>
-      client.fetch<DiscoverAccountData>(`auth/identity/${appId}/identity/discover`, { method: 'POST', body: data }),
+    unlink: (accountId: string, data: UnlinkBody, options?: ConjoinCallOptions) =>
+      client.fetch<UnlinkData>(`auth/accounts/${encodePathParam(accountId)}/identities/unlink`, { ...options, method: 'POST', body: data, scopes: ['authAppId'] }),
   }
 }

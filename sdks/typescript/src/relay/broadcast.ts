@@ -1,3 +1,4 @@
+import { encodePathParam } from '../core/path'
 import type { ConjoinClient } from '../core/types'
 import { createRelayBroadcasts } from '../generated/modules/relay-broadcast'
 import type { BroadcastConnectionOptions, BroadcastListener, BroadcastMessage, ConnectionState } from './types'
@@ -109,9 +110,9 @@ export function createBroadcastConnection(
   async function connectInternal(): Promise<void> {
     setState('connecting')
 
-    const token = await broadcastApi.generateConnectionToken()
+    const { token } = await broadcastApi.generateConnectionToken()
     const baseUrl = client.config.baseUrl.replace(/^http/, 'ws')
-    const url = `${baseUrl}/v1/relay/broadcast/channels/${options.channelId}/ws?token=${encodeURIComponent(String(token))}`
+    const url = `${baseUrl}/v1/relay/broadcast/channels/${encodePathParam(options.channelId)}/ws?token=${encodeURIComponent(token)}`
 
     return new Promise<void>((resolve, reject) => {
       const socket = new WebSocket(url)

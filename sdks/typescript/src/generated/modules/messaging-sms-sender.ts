@@ -1,7 +1,8 @@
-import type { ConjoinClient } from '../../core/types'
+import { encodePathParam } from '../../core/path'
+import type { ConjoinCallOptions, ConjoinClient } from '../../core/types'
 import type { operations } from '../api-types'
 
-type CreateSmsSenderBody = operations['createSmsSender']['requestBody']['content']['application/json']
+type CreateSmsSenderBody = NonNullable<operations['createSmsSender']['requestBody']>['content']['application/json']
 type CreateSmsSenderData = NonNullable<operations['createSmsSender']['responses']['201']['content']['application/json']['data']>
 type EnableSmsSenderData = NonNullable<operations['enableSmsSender']['responses']['200']['content']['application/json']['data']>
 type DisableSmsSenderData = NonNullable<operations['disableSmsSender']['responses']['200']['content']['application/json']['data']>
@@ -12,25 +13,25 @@ type TransferSmsSenderData = NonNullable<operations['transferSmsSender']['respon
 
 export function createMessagingSMSSenders(client: ConjoinClient) {
   return {
-    createSmsSender: (data: CreateSmsSenderBody) =>
-      client.fetch<CreateSmsSenderData>('messaging/sms/senders/new', { method: 'POST', body: data }),
+    createSmsSender: (data: CreateSmsSenderBody, options?: ConjoinCallOptions) =>
+      client.fetch<CreateSmsSenderData>('messaging/sms/senders/', { ...options, method: 'POST', body: data, scopes: ['messagingProfileId'] }),
 
-    enableSmsSender: (senderId: string) =>
-      client.fetch<EnableSmsSenderData>(`messaging/sms/senders/${senderId}/enable`, { method: 'PATCH' }),
+    enableSmsSender: (senderId: string, options?: ConjoinCallOptions) =>
+      client.fetch<EnableSmsSenderData>(`messaging/sms/senders/${encodePathParam(senderId)}/enable`, { ...options, method: 'PATCH', scopes: ['messagingProfileId'] }),
 
-    disableSmsSender: (senderId: string) =>
-      client.fetch<DisableSmsSenderData>(`messaging/sms/senders/${senderId}/disable`, { method: 'PATCH' }),
+    disableSmsSender: (senderId: string, options?: ConjoinCallOptions) =>
+      client.fetch<DisableSmsSenderData>(`messaging/sms/senders/${encodePathParam(senderId)}/disable`, { ...options, method: 'PATCH', scopes: ['messagingProfileId'] }),
 
-    listSmsSender: (senderId: string) =>
-      client.fetch<ListSmsSenderData>(`messaging/sms/senders/${senderId}`),
+    listSmsSender: (senderId: string, options?: ConjoinCallOptions) =>
+      client.fetch<ListSmsSenderData>(`messaging/sms/senders/${encodePathParam(senderId)}`, { ...options, method: 'GET', scopes: ['messagingProfileId'] }),
 
-    deleteSmsSender: (senderId: string) =>
-      client.fetch<DeleteSmsSenderData>(`messaging/sms/senders/${senderId}`, { method: 'DELETE' }),
+    deleteSmsSender: (senderId: string, options?: ConjoinCallOptions) =>
+      client.fetch<DeleteSmsSenderData>(`messaging/sms/senders/${encodePathParam(senderId)}`, { ...options, method: 'DELETE', scopes: ['messagingProfileId'] }),
 
-    updateOneSmsSender: (senderId: string) =>
-      client.fetch<UpdateOneSmsSenderData>(`messaging/sms/senders/${senderId}`, { method: 'PATCH' }),
+    updateOneSmsSender: (senderId: string, options?: ConjoinCallOptions) =>
+      client.fetch<UpdateOneSmsSenderData>(`messaging/sms/senders/${encodePathParam(senderId)}`, { ...options, method: 'PATCH', scopes: ['messagingProfileId'] }),
 
-    transferSmsSender: (senderId: string, projectId: string) =>
-      client.fetch<TransferSmsSenderData>(`messaging/sms/senders/transfers/${senderId}/${projectId}`, { method: 'PATCH' }),
+    transferSmsSender: (senderId: string, projectId: string, options?: ConjoinCallOptions) =>
+      client.fetch<TransferSmsSenderData>(`messaging/sms/senders/transfers/${encodePathParam(senderId)}/${encodePathParam(projectId)}`, { ...options, method: 'PATCH', scopes: ['messagingProfileId'] }),
   }
 }

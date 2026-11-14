@@ -1,21 +1,27 @@
-import type { ConjoinClient } from '../../core/types'
+import { encodePathParam } from '../../core/path'
+import type { ConjoinCallOptions, ConjoinClient } from '../../core/types'
 import type { operations } from '../api-types'
 
-type CreateBody = operations['createAuthClient']['requestBody']['content']['application/json']
-type CreateData = NonNullable<operations['createAuthClient']['responses']['201']['content']['application/json']['data']>
-type ReadData = NonNullable<operations['readAuthClient']['responses']['200']['content']['application/json']['data']>
 type ListData = NonNullable<operations['listAuthClients']['responses']['200']['content']['application/json']['data']>[number]
 type ListQuery = NonNullable<operations['listAuthClients']['parameters']['query']>
+type CreateBody = NonNullable<operations['createAuthClient']['requestBody']>['content']['application/json']
+type CreateData = NonNullable<operations['createAuthClient']['responses']['201']['content']['application/json']['data']>
+type ListCountData = NonNullable<operations['listAuthClientsCount']['responses']['200']['content']['application/json']['data']>
+type ListCountQuery = NonNullable<operations['listAuthClientsCount']['parameters']['query']>
+type ReadData = NonNullable<operations['readAuthClient']['responses']['200']['content']['application/json']['data']>
 
 export function createAuthClients(client: ConjoinClient) {
   return {
-    create: (appId: string, data: CreateBody) =>
-      client.fetch<CreateData>(`auth/client/${appId}/client/create`, { method: 'POST', body: data }),
+    list: (query?: ListQuery, options?: ConjoinCallOptions) =>
+      client.fetchList<ListData>('auth/clients/', { ...options, method: 'GET', query: query as Record<string, unknown> | undefined, scopes: ['authAppId'] }),
 
-    read: (appId: string, clientId: string) =>
-      client.fetch<ReadData>(`auth/client/${appId}/client/${clientId}`),
+    create: (data: CreateBody, options?: ConjoinCallOptions) =>
+      client.fetch<CreateData>('auth/clients/', { ...options, method: 'POST', body: data, scopes: ['authAppId'] }),
 
-    list: (appId: string, query?: ListQuery) =>
-      client.fetchList<ListData>(`auth/client/${appId}/client`, { query: query as Record<string, unknown> }),
+    listCount: (query?: ListCountQuery, options?: ConjoinCallOptions) =>
+      client.fetch<ListCountData>('auth/clients/count', { ...options, method: 'GET', query: query as Record<string, unknown> | undefined, scopes: ['authAppId'] }),
+
+    read: (clientId: string, options?: ConjoinCallOptions) =>
+      client.fetch<ReadData>(`auth/clients/${encodePathParam(clientId)}`, { ...options, method: 'GET', scopes: ['authAppId'] }),
   }
 }

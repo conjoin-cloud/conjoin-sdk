@@ -1,31 +1,63 @@
+export type ConjoinErrorOptions = {
+  status?: number
+  code: string
+  param?: string | null
+  details?: unknown
+  requestId?: string
+}
+
 export class ConjoinError extends Error {
   readonly status: number
   readonly code: string
+  readonly param: string | null
+  readonly details: unknown
   readonly requestId?: string
 
-  constructor(message: string, status: number, code: string, requestId?: string) {
+  constructor(message: string, options: ConjoinErrorOptions) {
     super(message)
     this.name = 'ConjoinError'
-    this.status = status
-    this.code = code
-    this.requestId = requestId
+    this.status = options.status ?? 0
+    this.code = options.code
+    this.param = options.param ?? null
+    this.details = options.details ?? null
+    this.requestId = options.requestId
   }
 }
 
-export class ConjoinAuthenticationError extends ConjoinError {
-  constructor(message: string, requestId?: string) {
-    super(message, 401, 'authentication_error', requestId)
+export type ConjoinApiErrorOptions = Omit<ConjoinErrorOptions, 'status'> & { status: number }
+
+export class ConjoinApiError extends ConjoinError {
+  constructor(message: string, options: ConjoinApiErrorOptions) {
+    super(message, options)
+    this.name = 'ConjoinApiError'
+  }
+}
+
+export class ConjoinAuthenticationError extends ConjoinApiError {
+  constructor(message: string, options: ConjoinApiErrorOptions) {
+    super(message, options)
     this.name = 'ConjoinAuthenticationError'
   }
 }
 
-export class ConjoinRateLimitError extends ConjoinError {
-  readonly retryAfter?: number
+export class ConjoinPermissionDeniedError extends ConjoinApiError {
+  constructor(message: string, options: ConjoinApiErrorOptions) {
+    super(message, options)
+    this.name = 'ConjoinPermissionDeniedError'
+  }
+}
 
-  constructor(message: string, retryAfter?: number, requestId?: string) {
-    super(message, 429, 'rate_limit_error', requestId)
-    this.name = 'ConjoinRateLimitError'
-    this.retryAfter = retryAfter
+export class ConjoinNotFoundError extends ConjoinApiError {
+  constructor(message: string, options: ConjoinApiErrorOptions) {
+    super(message, options)
+    this.name = 'ConjoinNotFoundError'
+  }
+}
+
+export class ConjoinConflictError extends ConjoinApiError {
+  constructor(message: string, options: ConjoinApiErrorOptions) {
+    super(message, options)
+    this.name = 'ConjoinConflictError'
   }
 }
 
@@ -34,27 +66,65 @@ export type ValidationFieldError = {
   path: string
 }
 
-export class ConjoinValidationError extends ConjoinError {
+export class ConjoinValidationError extends ConjoinApiError {
   readonly errors: ValidationFieldError[]
 
-  constructor(message: string, status: number, errors: ValidationFieldError[], requestId?: string) {
-    super(message, status, 'validation_error', requestId)
+  constructor(message: string, options: ConjoinApiErrorOptions & { errors: ValidationFieldError[] }) {
+    super(message, options)
     this.name = 'ConjoinValidationError'
-    this.errors = errors
+    this.errors = options.errors
+  }
+}
+
+export class ConjoinRateLimitError extends ConjoinApiError {
+  readonly retryAfterMs?: number
+
+  constructor(message: string, options: ConjoinApiErrorOptions & { retryAfterMs?: number }) {
+    super(message, options)
+    this.name = 'ConjoinRateLimitError'
+    this.retryAfterMs = options.retryAfterMs
+  }
+}
+
+export class ConjoinInternalServerError extends ConjoinApiError {
+  constructor(message: string, options: ConjoinApiErrorOptions) {
+    super(message, options)
+    this.name = 'ConjoinInternalServerError'
+  }
+}
+
+export class ConjoinResponseError extends ConjoinError {
+  constructor(message: string, options: { status: number; requestId?: string }) {
+    super(message, { ...options, code: 'invalid_response' })
+    this.name = 'ConjoinResponseError'
   }
 }
 
 export class ConjoinNetworkError extends ConjoinError {
-  constructor(message: string) {
-    super(message, 0, 'network_error')
+  constructor(message: string, requestId?: string) {
+    super(message, { code: 'network_error', requestId })
     this.name = 'ConjoinNetworkError'
   }
 }
 
 export class ConjoinTimeoutError extends ConjoinError {
-  constructor(message: string) {
-    super(message, 0, 'timeout_error')
+  constructor(message: string, requestId?: string) {
+    super(message, { code: 'timeout_error', requestId })
     this.name = 'ConjoinTimeoutError'
+  }
+}
+
+export class ConjoinAbortError extends ConjoinError {
+  constructor(message: string, requestId?: string) {
+    super(message, { code: 'request_aborted', requestId })
+    this.name = 'ConjoinAbortError'
+  }
+}
+
+export class ConjoinConfigurationError extends ConjoinError {
+  constructor(message: string) {
+    super(message, { code: 'configuration_error' })
+    this.name = 'ConjoinConfigurationError'
   }
 }
 
@@ -63,7 +133,7 @@ export class ConjoinStorageError extends ConjoinError {
   readonly uploadMode?: 'resumable' | 'single'
 
   constructor(message: string, status: number, storageUrl: string, uploadMode?: 'resumable' | 'single') {
-    super(message, status, 'storage_error')
+    super(message, { status, code: 'storage_error' })
     this.name = 'ConjoinStorageError'
     this.storageUrl = storageUrl
     this.uploadMode = uploadMode

@@ -1,26 +1,27 @@
-import type { ConjoinClient, RequestOptions } from '../../core/types'
+import { encodePathParam } from '../../core/path'
+import type { ConjoinCallOptions, ConjoinClient, RequestOptions } from '../../core/types'
 import type { operations } from '../api-types'
 
+type ScimBulkOperationsBody = NonNullable<operations['scimBulkOperations']['requestBody']>['content']['application/json']
+type ScimBulkOperationsResponse = operations['scimBulkOperations']['responses']['200']['content']['application/json']
+type ScimListGroupsResponse = operations['scimListGroups']['responses']['200']['content']['application/json']
+type ScimCreateGroupBody = NonNullable<operations['scimCreateGroup']['requestBody']>['content']['application/json']
+type ScimCreateGroupResponse = operations['scimCreateGroup']['responses']['201']['content']['application/json']
+type ScimGetGroupResponse = operations['scimGetGroup']['responses']['200']['content']['application/json']
+type ScimReplaceGroupBody = NonNullable<operations['scimReplaceGroup']['requestBody']>['content']['application/json']
+type ScimReplaceGroupResponse = operations['scimReplaceGroup']['responses']['200']['content']['application/json']
+type ScimPatchGroupMembersBody = NonNullable<operations['scimPatchGroupMembers']['requestBody']>['content']['application/json']
+type ScimPatchGroupMembersResponse = operations['scimPatchGroupMembers']['responses']['200']['content']['application/json']
 type ScimGetServiceProviderConfigResponse = operations['scimGetServiceProviderConfig']['responses']['200']['content']['application/json']
 type ScimGetSchemasResponse = operations['scimGetSchemas']['responses']['200']['content']['application/json']
 type ScimGetResourceTypesResponse = operations['scimGetResourceTypes']['responses']['200']['content']['application/json']
 type ScimListUsersResponse = operations['scimListUsers']['responses']['200']['content']['application/json']
-type ScimCreateUserBody = operations['scimCreateUser']['requestBody']['content']['application/json']
+type ScimCreateUserBody = NonNullable<operations['scimCreateUser']['requestBody']>['content']['application/json']
 type ScimCreateUserResponse = operations['scimCreateUser']['responses']['201']['content']['application/json']
 type ScimGetUserResponse = operations['scimGetUser']['responses']['200']['content']['application/json']
-type ScimReplaceUserBody = operations['scimReplaceUser']['requestBody']['content']['application/json']
+type ScimReplaceUserBody = NonNullable<operations['scimReplaceUser']['requestBody']>['content']['application/json']
 type ScimReplaceUserResponse = operations['scimReplaceUser']['responses']['200']['content']['application/json']
 type ScimPatchUserResponse = operations['scimPatchUser']['responses']['200']['content']['application/json']
-type ScimDeactivateUserResponse = operations['scimDeactivateUser']['responses']['204']['content']['application/json']
-type ScimListGroupsResponse = operations['scimListGroups']['responses']['200']['content']['application/json']
-type ScimCreateGroupBody = operations['scimCreateGroup']['requestBody']['content']['application/json']
-type ScimCreateGroupResponse = operations['scimCreateGroup']['responses']['201']['content']['application/json']
-type ScimGetGroupResponse = operations['scimGetGroup']['responses']['200']['content']['application/json']
-type ScimReplaceGroupBody = operations['scimReplaceGroup']['requestBody']['content']['application/json']
-type ScimReplaceGroupResponse = operations['scimReplaceGroup']['responses']['200']['content']['application/json']
-type ScimPatchGroupMembersResponse = operations['scimPatchGroupMembers']['responses']['200']['content']['application/json']
-type ScimDeleteGroupResponse = operations['scimDeleteGroup']['responses']['204']['content']['application/json']
-type ScimBulkOperationsResponse = operations['scimBulkOperations']['responses']['200']['content']['application/json']
 
 export type AuthSCIMOptions = {
   scimToken?: string
@@ -34,54 +35,54 @@ function scimBearerRequestOptions(scimToken: string | undefined): RequestOptions
   return { auth: { type: 'bearer', token: scimToken } }
 }
 
-export function createAuthSCIMs(client: ConjoinClient, options: AuthSCIMOptions = {}) {
+export function createAuthSCIMs(client: ConjoinClient, scim: AuthSCIMOptions = {}) {
   return {
-    scimGetServiceProviderConfig: () =>
-      client.fetch<ScimGetServiceProviderConfigResponse>('auth/scim/v2/ServiceProviderConfig', { auth: { type: 'none' } }),
+    scimBulkOperations: (projectId: string, appId: string, data: ScimBulkOperationsBody, options?: ConjoinCallOptions) =>
+      client.fetchJson<ScimBulkOperationsResponse>(`auth/scim/v2/${encodePathParam(projectId)}/${encodePathParam(appId)}/Bulk`, { ...scimBearerRequestOptions(scim.scimToken), ...options, method: 'POST', body: data }),
 
-    scimGetSchemas: () =>
-      client.fetch<ScimGetSchemasResponse>('auth/scim/v2/Schemas', { auth: { type: 'none' } }),
+    scimListGroups: (projectId: string, appId: string, options?: ConjoinCallOptions) =>
+      client.fetchJson<ScimListGroupsResponse>(`auth/scim/v2/${encodePathParam(projectId)}/${encodePathParam(appId)}/Groups`, { ...scimBearerRequestOptions(scim.scimToken), ...options, method: 'GET' }),
 
-    scimGetResourceTypes: () =>
-      client.fetch<ScimGetResourceTypesResponse>('auth/scim/v2/ResourceTypes', { auth: { type: 'none' } }),
+    scimCreateGroup: (projectId: string, appId: string, data: ScimCreateGroupBody, options?: ConjoinCallOptions) =>
+      client.fetchJson<ScimCreateGroupResponse>(`auth/scim/v2/${encodePathParam(projectId)}/${encodePathParam(appId)}/Groups`, { ...scimBearerRequestOptions(scim.scimToken), ...options, method: 'POST', body: data }),
 
-    scimListUsers: (projectId: string, appId: string) =>
-      client.fetch<ScimListUsersResponse>(`auth/scim/v2/${projectId}/${appId}/Users`, { ...scimBearerRequestOptions(options.scimToken) }),
+    scimGetGroup: (projectId: string, appId: string, id: string, options?: ConjoinCallOptions) =>
+      client.fetchJson<ScimGetGroupResponse>(`auth/scim/v2/${encodePathParam(projectId)}/${encodePathParam(appId)}/Groups/${encodePathParam(id)}`, { ...scimBearerRequestOptions(scim.scimToken), ...options, method: 'GET' }),
 
-    scimCreateUser: (projectId: string, appId: string, data: ScimCreateUserBody) =>
-      client.fetch<ScimCreateUserResponse>(`auth/scim/v2/${projectId}/${appId}/Users`, { method: 'POST', body: data, ...scimBearerRequestOptions(options.scimToken) }),
+    scimReplaceGroup: (projectId: string, appId: string, id: string, data: ScimReplaceGroupBody, options?: ConjoinCallOptions) =>
+      client.fetchJson<ScimReplaceGroupResponse>(`auth/scim/v2/${encodePathParam(projectId)}/${encodePathParam(appId)}/Groups/${encodePathParam(id)}`, { ...scimBearerRequestOptions(scim.scimToken), ...options, method: 'PUT', body: data }),
 
-    scimGetUser: (projectId: string, appId: string, id: string) =>
-      client.fetch<ScimGetUserResponse>(`auth/scim/v2/${projectId}/${appId}/Users/${id}`, { ...scimBearerRequestOptions(options.scimToken) }),
+    scimPatchGroupMembers: (projectId: string, appId: string, id: string, data: ScimPatchGroupMembersBody, options?: ConjoinCallOptions) =>
+      client.fetchJson<ScimPatchGroupMembersResponse>(`auth/scim/v2/${encodePathParam(projectId)}/${encodePathParam(appId)}/Groups/${encodePathParam(id)}`, { ...scimBearerRequestOptions(scim.scimToken), ...options, method: 'PATCH', body: data }),
 
-    scimReplaceUser: (projectId: string, appId: string, id: string, data: ScimReplaceUserBody) =>
-      client.fetch<ScimReplaceUserResponse>(`auth/scim/v2/${projectId}/${appId}/Users/${id}`, { method: 'PUT', body: data, ...scimBearerRequestOptions(options.scimToken) }),
+    scimDeleteGroup: (projectId: string, appId: string, id: string, options?: ConjoinCallOptions) =>
+      client.fetchJson<undefined>(`auth/scim/v2/${encodePathParam(projectId)}/${encodePathParam(appId)}/Groups/${encodePathParam(id)}`, { ...scimBearerRequestOptions(scim.scimToken), ...options, method: 'DELETE' }),
 
-    scimPatchUser: (projectId: string, appId: string, id: string) =>
-      client.fetch<ScimPatchUserResponse>(`auth/scim/v2/${projectId}/${appId}/Users/${id}`, { method: 'PATCH', ...scimBearerRequestOptions(options.scimToken) }),
+    scimGetServiceProviderConfig: (options?: ConjoinCallOptions) =>
+      client.fetchJson<ScimGetServiceProviderConfigResponse>('auth/scim/v2/ServiceProviderConfig', { auth: { type: 'none' }, ...options, method: 'GET' }),
 
-    scimDeactivateUser: (projectId: string, appId: string, id: string) =>
-      client.fetch<ScimDeactivateUserResponse>(`auth/scim/v2/${projectId}/${appId}/Users/${id}`, { method: 'DELETE', ...scimBearerRequestOptions(options.scimToken) }),
+    scimGetSchemas: (options?: ConjoinCallOptions) =>
+      client.fetchJson<ScimGetSchemasResponse>('auth/scim/v2/Schemas', { auth: { type: 'none' }, ...options, method: 'GET' }),
 
-    scimListGroups: (projectId: string, appId: string) =>
-      client.fetch<ScimListGroupsResponse>(`auth/scim/v2/${projectId}/${appId}/Groups`, { ...scimBearerRequestOptions(options.scimToken) }),
+    scimGetResourceTypes: (options?: ConjoinCallOptions) =>
+      client.fetchJson<ScimGetResourceTypesResponse>('auth/scim/v2/ResourceTypes', { auth: { type: 'none' }, ...options, method: 'GET' }),
 
-    scimCreateGroup: (projectId: string, appId: string, data: ScimCreateGroupBody) =>
-      client.fetch<ScimCreateGroupResponse>(`auth/scim/v2/${projectId}/${appId}/Groups`, { method: 'POST', body: data, ...scimBearerRequestOptions(options.scimToken) }),
+    scimListUsers: (projectId: string, appId: string, options?: ConjoinCallOptions) =>
+      client.fetchJson<ScimListUsersResponse>(`auth/scim/v2/${encodePathParam(projectId)}/${encodePathParam(appId)}/Users`, { ...scimBearerRequestOptions(scim.scimToken), ...options, method: 'GET' }),
 
-    scimGetGroup: (projectId: string, appId: string, id: string) =>
-      client.fetch<ScimGetGroupResponse>(`auth/scim/v2/${projectId}/${appId}/Groups/${id}`, { ...scimBearerRequestOptions(options.scimToken) }),
+    scimCreateUser: (projectId: string, appId: string, data: ScimCreateUserBody, options?: ConjoinCallOptions) =>
+      client.fetchJson<ScimCreateUserResponse>(`auth/scim/v2/${encodePathParam(projectId)}/${encodePathParam(appId)}/Users`, { ...scimBearerRequestOptions(scim.scimToken), ...options, method: 'POST', body: data }),
 
-    scimReplaceGroup: (projectId: string, appId: string, id: string, data: ScimReplaceGroupBody) =>
-      client.fetch<ScimReplaceGroupResponse>(`auth/scim/v2/${projectId}/${appId}/Groups/${id}`, { method: 'PUT', body: data, ...scimBearerRequestOptions(options.scimToken) }),
+    scimGetUser: (projectId: string, appId: string, id: string, options?: ConjoinCallOptions) =>
+      client.fetchJson<ScimGetUserResponse>(`auth/scim/v2/${encodePathParam(projectId)}/${encodePathParam(appId)}/Users/${encodePathParam(id)}`, { ...scimBearerRequestOptions(scim.scimToken), ...options, method: 'GET' }),
 
-    scimPatchGroupMembers: (projectId: string, appId: string, id: string) =>
-      client.fetch<ScimPatchGroupMembersResponse>(`auth/scim/v2/${projectId}/${appId}/Groups/${id}`, { method: 'PATCH', ...scimBearerRequestOptions(options.scimToken) }),
+    scimReplaceUser: (projectId: string, appId: string, id: string, data: ScimReplaceUserBody, options?: ConjoinCallOptions) =>
+      client.fetchJson<ScimReplaceUserResponse>(`auth/scim/v2/${encodePathParam(projectId)}/${encodePathParam(appId)}/Users/${encodePathParam(id)}`, { ...scimBearerRequestOptions(scim.scimToken), ...options, method: 'PUT', body: data }),
 
-    scimDeleteGroup: (projectId: string, appId: string, id: string) =>
-      client.fetch<ScimDeleteGroupResponse>(`auth/scim/v2/${projectId}/${appId}/Groups/${id}`, { method: 'DELETE', ...scimBearerRequestOptions(options.scimToken) }),
+    scimPatchUser: (projectId: string, appId: string, id: string, options?: ConjoinCallOptions) =>
+      client.fetchJson<ScimPatchUserResponse>(`auth/scim/v2/${encodePathParam(projectId)}/${encodePathParam(appId)}/Users/${encodePathParam(id)}`, { ...scimBearerRequestOptions(scim.scimToken), ...options, method: 'PATCH' }),
 
-    scimBulkOperations: (projectId: string, appId: string) =>
-      client.fetch<ScimBulkOperationsResponse>(`auth/scim/v2/${projectId}/${appId}/Bulk`, { method: 'POST', ...scimBearerRequestOptions(options.scimToken) }),
+    scimDeactivateUser: (projectId: string, appId: string, id: string, options?: ConjoinCallOptions) =>
+      client.fetchJson<undefined>(`auth/scim/v2/${encodePathParam(projectId)}/${encodePathParam(appId)}/Users/${encodePathParam(id)}`, { ...scimBearerRequestOptions(scim.scimToken), ...options, method: 'DELETE' }),
   }
 }

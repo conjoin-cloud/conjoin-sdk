@@ -12,6 +12,7 @@ export {
 } from '../server'
 export { auth } from './auth'
 export { resolveConfig } from './config'
+export type { CurrentAccount } from './current-account'
 export { currentAccount } from './current-account'
 export { conjoinProxy, createRouteMatcher } from './proxy'
 export type { AuthObject, NextAdapterConfig } from './types'

@@ -1,41 +1,90 @@
-import type { ConjoinClient } from '../../core/types'
+import { encodePathParam } from '../../core/path'
+import type { ConjoinCallOptions, ConjoinClient } from '../../core/types'
 import type { operations } from '../api-types'
 
-type ReadEventsData = NonNullable<operations['readGuardEvents']['responses']['200']['content']['application/json']['data']>[number]
-type ReadEventsQuery = NonNullable<operations['readGuardEvents']['parameters']['query']>
-type UpdateSettingsBody = operations['updateGuardSettings']['requestBody']['content']['application/json']
-type UpdateSettingsData = NonNullable<operations['updateGuardSettings']['responses']['200']['content']['application/json']['data']>
-type AddTrustedIpBody = operations['addGuardTrustedIp']['requestBody']['content']['application/json']
+type ListRulesData = NonNullable<operations['listGuardRules']['responses']['200']['content']['application/json']['data']>[number]
+type ListRulesQuery = NonNullable<operations['listGuardRules']['parameters']['query']>
+type CreateRuleBody = NonNullable<operations['createGuardRule']['requestBody']>['content']['application/json']
+type CreateRuleData = NonNullable<operations['createGuardRule']['responses']['201']['content']['application/json']['data']>
+type ListRulesCountData = NonNullable<operations['listGuardRulesCount']['responses']['200']['content']['application/json']['data']>
+type ListRulesCountQuery = NonNullable<operations['listGuardRulesCount']['parameters']['query']>
+type ReadRuleData = NonNullable<operations['readGuardRule']['responses']['200']['content']['application/json']['data']>
+type UpdateRuleBody = NonNullable<operations['updateGuardRule']['requestBody']>['content']['application/json']
+type UpdateRuleData = NonNullable<operations['updateGuardRule']['responses']['200']['content']['application/json']['data']>
+type DeleteRuleData = NonNullable<operations['deleteGuardRule']['responses']['200']['content']['application/json']['data']>
+type ListEventsData = NonNullable<operations['listGuardEvents']['responses']['200']['content']['application/json']['data']>[number]
+type ListEventsQuery = NonNullable<operations['listGuardEvents']['parameters']['query']>
+type ListEventsCountData = NonNullable<operations['listGuardEventsCount']['responses']['200']['content']['application/json']['data']>
+type ListEventsCountQuery = NonNullable<operations['listGuardEventsCount']['parameters']['query']>
+type AddTrustedIpBody = NonNullable<operations['addGuardTrustedIp']['requestBody']>['content']['application/json']
 type AddTrustedIpData = NonNullable<operations['addGuardTrustedIp']['responses']['200']['content']['application/json']['data']>
-type RemoveTrustedIpBody = operations['removeGuardTrustedIp']['requestBody']['content']['application/json']
+type RemoveTrustedIpBody = NonNullable<operations['removeGuardTrustedIp']['requestBody']>['content']['application/json']
 type RemoveTrustedIpData = NonNullable<operations['removeGuardTrustedIp']['responses']['200']['content']['application/json']['data']>
+type AddTrustedEmailBody = NonNullable<operations['addGuardTrustedEmail']['requestBody']>['content']['application/json']
+type AddTrustedEmailData = NonNullable<operations['addGuardTrustedEmail']['responses']['200']['content']['application/json']['data']>
+type RemoveTrustedEmailBody = NonNullable<operations['removeGuardTrustedEmail']['requestBody']>['content']['application/json']
+type RemoveTrustedEmailData = NonNullable<operations['removeGuardTrustedEmail']['responses']['200']['content']['application/json']['data']>
+type AddTrustedDomainBody = NonNullable<operations['addGuardTrustedDomain']['requestBody']>['content']['application/json']
+type AddTrustedDomainData = NonNullable<operations['addGuardTrustedDomain']['responses']['200']['content']['application/json']['data']>
+type RemoveTrustedDomainBody = NonNullable<operations['removeGuardTrustedDomain']['requestBody']>['content']['application/json']
+type RemoveTrustedDomainData = NonNullable<operations['removeGuardTrustedDomain']['responses']['200']['content']['application/json']['data']>
 type ListAnonymousIpsData = NonNullable<operations['listGuardAnonymousIps']['responses']['200']['content']['application/json']['data']>
-type AddAnonymousIpsBody = operations['addGuardAnonymousIps']['requestBody']['content']['application/json']
+type AddAnonymousIpsBody = NonNullable<operations['addGuardAnonymousIps']['requestBody']>['content']['application/json']
 type AddAnonymousIpsData = NonNullable<operations['addGuardAnonymousIps']['responses']['200']['content']['application/json']['data']>
-type RemoveAnonymousIpsBody = operations['removeGuardAnonymousIps']['requestBody']['content']['application/json']
+type RemoveAnonymousIpsBody = NonNullable<operations['removeGuardAnonymousIps']['requestBody']>['content']['application/json']
 type RemoveAnonymousIpsData = NonNullable<operations['removeGuardAnonymousIps']['responses']['200']['content']['application/json']['data']>
 
 export function createAuthGuards(client: ConjoinClient) {
   return {
-    readEvents: (appId: string, query?: ReadEventsQuery) =>
-      client.fetchList<ReadEventsData>(`auth/guard/${appId}/guard/events`, { query: query as Record<string, unknown> }),
+    listRules: (query?: ListRulesQuery, options?: ConjoinCallOptions) =>
+      client.fetchList<ListRulesData>('auth/guard-rules', { ...options, method: 'GET', query: query as Record<string, unknown> | undefined, scopes: ['authAppId'] }),
 
-    updateSettings: (appId: string, data: UpdateSettingsBody) =>
-      client.fetch<UpdateSettingsData>(`auth/guard/${appId}/guard/settings`, { method: 'PATCH', body: data }),
+    createRule: (data: CreateRuleBody, options?: ConjoinCallOptions) =>
+      client.fetch<CreateRuleData>('auth/guard-rules', { ...options, method: 'POST', body: data, scopes: ['authAppId'] }),
 
-    addTrustedIp: (appId: string, data: AddTrustedIpBody) =>
-      client.fetch<AddTrustedIpData>(`auth/guard/${appId}/guard/trusted-ips`, { method: 'POST', body: data }),
+    listRulesCount: (query?: ListRulesCountQuery, options?: ConjoinCallOptions) =>
+      client.fetch<ListRulesCountData>('auth/guard-rules/count', { ...options, method: 'GET', query: query as Record<string, unknown> | undefined, scopes: ['authAppId'] }),
 
-    removeTrustedIp: (appId: string, data: RemoveTrustedIpBody) =>
-      client.fetch<RemoveTrustedIpData>(`auth/guard/${appId}/guard/trusted-ips/remove`, { method: 'POST', body: data }),
+    readRule: (guardRuleId: string, options?: ConjoinCallOptions) =>
+      client.fetch<ReadRuleData>(`auth/guard-rules/${encodePathParam(guardRuleId)}`, { ...options, method: 'GET', scopes: ['authAppId'] }),
 
-    listAnonymousIps: (appId: string) =>
-      client.fetch<ListAnonymousIpsData>(`auth/guard/${appId}/guard/anonymous-ips`),
+    updateRule: (guardRuleId: string, data: UpdateRuleBody, options?: ConjoinCallOptions) =>
+      client.fetch<UpdateRuleData>(`auth/guard-rules/${encodePathParam(guardRuleId)}`, { ...options, method: 'PATCH', body: data, scopes: ['authAppId'] }),
 
-    addAnonymousIps: (appId: string, data: AddAnonymousIpsBody) =>
-      client.fetch<AddAnonymousIpsData>(`auth/guard/${appId}/guard/anonymous-ips`, { method: 'POST', body: data }),
+    deleteRule: (guardRuleId: string, options?: ConjoinCallOptions) =>
+      client.fetch<DeleteRuleData>(`auth/guard-rules/${encodePathParam(guardRuleId)}`, { ...options, method: 'DELETE', scopes: ['authAppId'] }),
 
-    removeAnonymousIps: (appId: string, data: RemoveAnonymousIpsBody) =>
-      client.fetch<RemoveAnonymousIpsData>(`auth/guard/${appId}/guard/anonymous-ips/remove`, { method: 'POST', body: data }),
+    listEvents: (query?: ListEventsQuery, options?: ConjoinCallOptions) =>
+      client.fetchList<ListEventsData>('auth/guard-events', { ...options, method: 'GET', query: query as Record<string, unknown> | undefined, scopes: ['authAppId'] }),
+
+    listEventsCount: (query?: ListEventsCountQuery, options?: ConjoinCallOptions) =>
+      client.fetch<ListEventsCountData>('auth/guard-events/count', { ...options, method: 'GET', query: query as Record<string, unknown> | undefined, scopes: ['authAppId'] }),
+
+    addTrustedIp: (data: AddTrustedIpBody, options?: ConjoinCallOptions) =>
+      client.fetch<AddTrustedIpData>('auth/guard-trusted-ips', { ...options, method: 'POST', body: data, scopes: ['authAppId'] }),
+
+    removeTrustedIp: (data: RemoveTrustedIpBody, options?: ConjoinCallOptions) =>
+      client.fetch<RemoveTrustedIpData>('auth/guard-trusted-ips/remove', { ...options, method: 'POST', body: data, scopes: ['authAppId'] }),
+
+    addTrustedEmail: (data: AddTrustedEmailBody, options?: ConjoinCallOptions) =>
+      client.fetch<AddTrustedEmailData>('auth/guard-trusted-emails', { ...options, method: 'POST', body: data, scopes: ['authAppId'] }),
+
+    removeTrustedEmail: (data: RemoveTrustedEmailBody, options?: ConjoinCallOptions) =>
+      client.fetch<RemoveTrustedEmailData>('auth/guard-trusted-emails/remove', { ...options, method: 'POST', body: data, scopes: ['authAppId'] }),
+
+    addTrustedDomain: (data: AddTrustedDomainBody, options?: ConjoinCallOptions) =>
+      client.fetch<AddTrustedDomainData>('auth/guard-trusted-domains', { ...options, method: 'POST', body: data, scopes: ['authAppId'] }),
+
+    removeTrustedDomain: (data: RemoveTrustedDomainBody, options?: ConjoinCallOptions) =>
+      client.fetch<RemoveTrustedDomainData>('auth/guard-trusted-domains/remove', { ...options, method: 'POST', body: data, scopes: ['authAppId'] }),
+
+    listAnonymousIps: (options?: ConjoinCallOptions) =>
+      client.fetch<ListAnonymousIpsData>('auth/guard-anonymous-ips', { ...options, method: 'GET', scopes: ['authAppId'] }),
+
+    addAnonymousIps: (data: AddAnonymousIpsBody, options?: ConjoinCallOptions) =>
+      client.fetch<AddAnonymousIpsData>('auth/guard-anonymous-ips', { ...options, method: 'POST', body: data, scopes: ['authAppId'] }),
+
+    removeAnonymousIps: (data: RemoveAnonymousIpsBody, options?: ConjoinCallOptions) =>
+      client.fetch<RemoveAnonymousIpsData>('auth/guard-anonymous-ips/remove', { ...options, method: 'POST', body: data, scopes: ['authAppId'] }),
   }
 }

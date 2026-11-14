@@ -23,10 +23,7 @@ export function createStorageDownloader(client: ConjoinClient) {
       const { container, path, signal } = options
 
       const storageApi = createStorageObjects(client)
-      const signedUrlResponse = await storageApi.createDownloadSignedUrl({
-        container_name_or_id: container,
-        path,
-      })
+      const signedUrlResponse = await storageApi.createDownloadSignedUrl(container, { path }, { signal })
 
       const { url, headers } = signedUrlResponse
 

@@ -11,6 +11,9 @@ type CompiledOpenApiRoute = {
 const OPENAPI_METHODS: OpenApiMethod[] = ['delete', 'get', 'head', 'options', 'patch', 'post', 'put', 'trace']
 
 export const compileRoutes = (document: OpenApiDocument): CompiledOpenApiRoute[] =>
+  compileEveryRoute(document).sort((left, right) => left.paramNames.length - right.paramNames.length)
+
+const compileEveryRoute = (document: OpenApiDocument): CompiledOpenApiRoute[] =>
   Object.entries(document.paths).flatMap(([pathTemplate, pathItem]) =>
     OPENAPI_METHODS.flatMap(method => {
       const operation = pathItem[method]

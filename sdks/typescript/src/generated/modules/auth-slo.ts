@@ -1,22 +1,23 @@
-import type { ConjoinClient } from '../../core/types'
+import { encodePathParam } from '../../core/path'
+import type { ConjoinCallOptions, ConjoinClient } from '../../core/types'
 import type { operations } from '../api-types'
 
-type OidcLogoutBody = operations['oidcLogout']['requestBody']['content']['application/json']
+type OidcLogoutBody = NonNullable<operations['oidcLogout']['requestBody']>['content']['application/json']
 type OidcLogoutData = NonNullable<operations['oidcLogout']['responses']['200']['content']['application/json']['data']>
-type SamlSpLogoutBody = operations['samlSpLogout']['requestBody']['content']['application/json']
+type SamlSpLogoutBody = NonNullable<operations['samlSpLogout']['requestBody']>['content']['application/json']
 type SamlSpLogoutData = NonNullable<operations['samlSpLogout']['responses']['200']['content']['application/json']['data']>
-type SamlIdpLogoutBody = operations['samlIdpLogout']['requestBody']['content']['application/json']
+type SamlIdpLogoutBody = NonNullable<operations['samlIdpLogout']['requestBody']>['content']['application/json']
 type SamlIdpLogoutData = NonNullable<operations['samlIdpLogout']['responses']['200']['content']['application/json']['data']>
 
 export function createAuthSLOs(client: ConjoinClient) {
   return {
-    oidcLogout: (appId: string, accountId: string, data: OidcLogoutBody) =>
-      client.fetch<OidcLogoutData>(`auth/slo/${appId}/account/${accountId}/slo/oidc`, { method: 'POST', body: data }),
+    oidcLogout: (accountId: string, data: OidcLogoutBody, options?: ConjoinCallOptions) =>
+      client.fetch<OidcLogoutData>(`auth/accounts/${encodePathParam(accountId)}/logout-oidc`, { ...options, method: 'POST', body: data, scopes: ['authAppId'] }),
 
-    samlSpLogout: (appId: string, accountId: string, data: SamlSpLogoutBody) =>
-      client.fetch<SamlSpLogoutData>(`auth/slo/${appId}/account/${accountId}/slo/saml/sp-initiated`, { method: 'POST', body: data }),
+    samlSpLogout: (accountId: string, data: SamlSpLogoutBody, options?: ConjoinCallOptions) =>
+      client.fetch<SamlSpLogoutData>(`auth/accounts/${encodePathParam(accountId)}/logout-saml`, { ...options, method: 'POST', body: data, scopes: ['authAppId'] }),
 
-    samlIdpLogout: (appId: string, data: SamlIdpLogoutBody) =>
-      client.fetch<SamlIdpLogoutData>(`auth/slo/${appId}/slo/saml/idp-initiated`, { method: 'POST', body: data }),
+    samlIdpLogout: (data: SamlIdpLogoutBody, options?: ConjoinCallOptions) =>
+      client.fetch<SamlIdpLogoutData>('auth/saml-logout-requests', { ...options, method: 'POST', body: data, scopes: ['authAppId'] }),
   }
 }
