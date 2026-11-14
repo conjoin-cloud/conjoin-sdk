@@ -7,7 +7,7 @@ namespace ConjoinCloud\Tests\Integration;
 use ConjoinCloud\ConjoinClient;
 use ConjoinCloud\Exception\ConfigurationException;
 use ConjoinCloud\Generated\Api\BillingCustomers;
-use ConjoinCloud\Generated\Api\MessagingEmails;
+use ConjoinCloud\Generated\Api\MessagingEmailSenderPools;
 use ConjoinCloud\Tests\Support\ServerTestCase;
 
 final class ClientSettingsTest extends ServerTestCase
@@ -47,7 +47,7 @@ final class ClientSettingsTest extends ServerTestCase
             authAppId: 'app_auth_owner',
         );
 
-        (new MessagingEmails($client))->getSummary();
+        (new MessagingEmailSenderPools($client))->get('esp_1');
 
         $attempt = $this->server()->attempt(0);
         self::assertSame('mpr_messaging_owner', $attempt->header('messaging-profile-id'));
