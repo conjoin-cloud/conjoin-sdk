@@ -16,6 +16,10 @@ type ConjoinProviderCoreProps = ConjoinProviderProps & {
   transport: AuthTransport
 }
 
+// The auth manager emits a fresh state object on every token refresh, but the
+// rotating accessToken never reaches React (getToken reads the manager's live
+// value). Collapsing updates onto an identity signature keeps refresh ticks
+// from re-rendering every auth consumer on the refresh timer.
 function authStateSignature(state: ConjoinAuthState): string {
   if (!state.isLoaded) return 'loading'
   if (!state.isSignedIn) return 'signed-out'
