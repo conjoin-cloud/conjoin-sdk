@@ -211,8 +211,8 @@ export function createBroadcastConnection(
         await recoverMissedEvents(entry.state)
       })
       previous = entry.ready.catch(error => {
-        if (attempt !== generation || socket === null) return
-        if (isActive(entry.state)) channels.delete(entry.state.channel)
+        if (attempt !== generation || socket === null || !isActive(entry.state)) return
+        channels.delete(entry.state.channel)
         reportError(error)
       })
     }
@@ -301,14 +301,27 @@ export function createBroadcastConnection(
     await restoring
   }
 
+  const waitForSubscription = async (entry: ChannelEntry) => {
+    for (;;) {
+      const ready = entry.ready
+      try {
+        await ready
+      } catch (error) {
+        if (entry.ready !== ready) continue
+        if (isActive(entry.state)) channels.delete(entry.state.channel)
+        throw error
+      }
+      if (entry.ready !== ready) continue
+      if (!isActive(entry.state)) throw closedByCaller()
+      return entry.subscription
+    }
+  }
+
   const subscribe = async (channel: string, subscribeOptions: BroadcastSubscribeOptions = {}) => {
     assertChannel(channel)
 
     const existing = channels.get(channel)
-    if (existing !== undefined) {
-      await existing.ready
-      return existing.subscription
-    }
+    if (existing !== undefined) return waitForSubscription(existing)
 
     if (state !== 'connected') throw notConnected()
 
@@ -333,19 +346,7 @@ export function createBroadcastConnection(
       }),
     }
     channels.set(channel, entry)
-    const ready = entry.ready
-    try {
-      await ready
-    } catch (error) {
-      if (entry.ready !== ready) {
-        await entry.ready
-        return entry.subscription
-      }
-      if (isActive(channelState)) channels.delete(channel)
-      throw error
-    }
-
-    return entry.subscription
+    return waitForSubscription(entry)
   }
 
   const connect = (): Promise<void> => {

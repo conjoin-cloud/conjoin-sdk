@@ -48,6 +48,7 @@ it('honours disconnect from inside the reconnecting callback', async () => {
 })
 
 it('does not restore a subscription removed inside the connected callback', async () => {
+  const errors: Error[] = []
   let subscription: BroadcastSubscription | undefined
   let unsubscribing: Promise<void> | undefined
   let connected = 0
@@ -55,6 +56,7 @@ it('does not restore a subscription removed inside the connected callback', asyn
     url: server.url,
     getConnectionToken: async () => 'connection_token',
     reconnectBaseDelay: 0,
+    onError: error => errors.push(error),
     onStateChange: state => {
       if (state === 'connected' && ++connected === 2) unsubscribing = subscription?.unsubscribe()
     },
@@ -65,6 +67,8 @@ it('does not restore a subscription removed inside the connected callback', asyn
   await new Promise(resolve => setTimeout(resolve, 100))
   await unsubscribing
   expect(server.frames.filter(frame => frame.type === 'subscribe')).toHaveLength(1)
+  expect(server.frames.filter(frame => frame.type === 'unsubscribe')).toHaveLength(1)
+  expect(errors).toEqual([])
 })
 
 it('times out an unanswered upgrade and closes it when the caller disconnects', async () => {
@@ -102,6 +106,7 @@ it('keeps a restored channel when the previous connection token resolves late', 
       authToken: () => (++tokenReads === 1 ? token : 'channel_token'),
     })
     .catch((error: unknown) => error)
+  const concurrent = connection.subscribe('orders').catch((error: unknown) => error)
   server.drop()
   const deadline = Date.now() + 2000
   while (!server.frames.some(frame => frame.type === 'subscribe')) {
@@ -111,6 +116,7 @@ it('keeps a restored channel when the previous connection token resolves late', 
   const restored = await connection.subscribe('orders')
   releaseToken?.('old_channel_token')
   expect(await initial).toBe(restored)
+  expect(await concurrent).toBe(restored)
   await restored.publish('created', {})
   expect(server.frames.filter(frame => frame.type === 'subscribe')).toHaveLength(1)
   expect(server.frames.filter(frame => frame.type === 'publish')).toHaveLength(1)
