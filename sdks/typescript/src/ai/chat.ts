@@ -20,23 +20,15 @@ export type ChatStream = AsyncIterable<ChatCompletionChunk> & {
   controller: AbortController
 }
 
-type GeneratedChatCompletionBody = Parameters<ReturnType<typeof createAiInferences>['createChatCompletion']>[0]
-
 export function createAiChat(client: ConjoinClient) {
   const inferences = createAiInferences(client)
 
   return {
-    async complete(
-      params: Omit<ChatCompletionParams, 'stream'>,
-      options?: ChatStreamOptions,
-    ): Promise<ChatCompletionResponse> {
-      const body = { ...params, stream: false } as unknown as GeneratedChatCompletionBody
-      const completion = await inferences.createChatCompletion(body, options)
-
-      return completion as unknown as ChatCompletionResponse
+    complete(params: ChatCompletionParams, options?: ChatStreamOptions): Promise<ChatCompletionResponse> {
+      return inferences.createChatCompletion({ ...params, stream: false }, options)
     },
 
-    stream(params: Omit<ChatCompletionParams, 'stream'>, options?: ChatStreamOptions): ChatStream {
+    stream(params: ChatCompletionParams, options?: ChatStreamOptions): ChatStream {
       const controller = new AbortController()
       const signals = options?.signal ? [controller.signal, options.signal] : [controller.signal]
       const iterator = createStreamIterator(client, params, { ...options, signal: AbortSignal.any(signals) })
@@ -68,7 +60,7 @@ export function createAiChat(client: ConjoinClient) {
 
 async function* createStreamIterator(
   client: ConjoinClient,
-  params: Omit<ChatCompletionParams, 'stream'>,
+  params: ChatCompletionParams,
   options: ChatStreamOptions,
 ): AsyncGenerator<ChatCompletionChunk> {
   const response = await client.fetchRaw(CHAT_COMPLETIONS_PATH, {
