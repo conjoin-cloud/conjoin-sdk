@@ -1,10 +1,9 @@
 import { ConjoinNetworkError } from '../core/errors'
 import type { ConjoinClient } from '../core/types'
-import { type ChannelState, createBroadcastChannel, readEvents } from './broadcast-channel'
+import { type ChannelEntry, type ChannelState, createBroadcastChannel, readEvents } from './broadcast-channel'
 import { assertChannel, encodeFrame, readToken, resolveBroadcastConfig } from './broadcast-config'
 import { FramePacer, parseBroadcastFrame, readBroadcastEvent, readFrameString, SeenEventIds } from './broadcast-frames'
 import {
-  type BroadcastFrame,
   type BroadcastRequest,
   BroadcastRequests,
   ConjoinBroadcastError,
@@ -19,7 +18,6 @@ import type {
   BroadcastConnectionOptions,
   BroadcastEvent,
   BroadcastSubscribeOptions,
-  BroadcastSubscription,
   ConnectionState,
 } from './types'
 
@@ -27,12 +25,6 @@ const FRAMES_PER_SECOND_BELOW_SERVER_LIMIT = 25
 const MAX_HISTORY_PAGES_PER_RECOVERY = 20
 const NORMAL_CLOSE_CODE = 1000
 const SOCKET_OPEN = 1
-
-type ChannelEntry = {
-  state: ChannelState
-  ready: Promise<void>
-  subscription: BroadcastSubscription
-}
 
 export function createBroadcastConnection(
   client: ConjoinClient,
@@ -210,20 +202,21 @@ export function createBroadcastConnection(
     }
   }
 
-  const restoreChannels = async (attempt: number, entries: ChannelEntry[]): Promise<void> => {
+  const restoreChannels = (attempt: number, entries: ChannelEntry[]): Promise<void> => {
+    let previous = Promise.resolve()
     for (const entry of entries) {
-      if (attempt !== generation) return
-      if (!isActive(entry.state)) continue
-
-      try {
+      entry.ready = previous.then(async () => {
+        if (attempt !== generation || !isActive(entry.state)) throw closedByCaller()
         await sendSubscribe(entry.state)
         await recoverMissedEvents(entry.state)
-      } catch (error) {
+      })
+      previous = entry.ready.catch(error => {
         if (attempt !== generation || socket === null) return
         if (isActive(entry.state)) channels.delete(entry.state.channel)
         reportError(error)
-      }
+      })
     }
+    return previous
   }
 
   const scheduleReconnect = (): void => {
@@ -303,9 +296,9 @@ export function createBroadcastConnection(
 
     socketId = typeof connected.socket_id === 'number' ? connected.socket_id : null
     reconnectAttempt = 0
-    const restoring = [...channels.values()]
+    const restoring = restoreChannels(attempt, [...channels.values()])
     setState('connected')
-    await restoreChannels(attempt, restoring)
+    await restoring
   }
 
   const subscribe = async (channel: string, subscribeOptions: BroadcastSubscribeOptions = {}) => {
@@ -340,10 +333,14 @@ export function createBroadcastConnection(
       }),
     }
     channels.set(channel, entry)
-
+    const ready = entry.ready
     try {
-      await entry.ready
+      await ready
     } catch (error) {
+      if (entry.ready !== ready) {
+        await entry.ready
+        return entry.subscription
+      }
       if (isActive(channelState)) channels.delete(channel)
       throw error
     }

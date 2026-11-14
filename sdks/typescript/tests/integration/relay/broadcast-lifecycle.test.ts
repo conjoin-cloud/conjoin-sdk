@@ -84,3 +84,34 @@ it('times out an unanswered upgrade and closes it when the caller disconnects', 
   await rejection
   expect(connection.state).toBe('disconnected')
 })
+
+it('keeps a restored channel when the previous connection token resolves late', async () => {
+  let releaseToken: ((token: string) => void) | undefined
+  const token = new Promise<string>(resolve => {
+    releaseToken = resolve
+  })
+  let tokenReads = 0
+  connection = createBroadcastConnection(client, {
+    url: server.url,
+    getConnectionToken: async () => 'connection_token',
+    reconnectBaseDelay: 0,
+  })
+  await connection.connect()
+  const initial = connection
+    .subscribe('orders', {
+      authToken: () => (++tokenReads === 1 ? token : 'channel_token'),
+    })
+    .catch((error: unknown) => error)
+  server.drop()
+  const deadline = Date.now() + 2000
+  while (!server.frames.some(frame => frame.type === 'subscribe')) {
+    if (Date.now() > deadline) throw new Error('The channel was not restored')
+    await new Promise(resolve => setTimeout(resolve, 5))
+  }
+  const restored = await connection.subscribe('orders')
+  releaseToken?.('old_channel_token')
+  expect(await initial).toBe(restored)
+  await restored.publish('created', {})
+  expect(server.frames.filter(frame => frame.type === 'subscribe')).toHaveLength(1)
+  expect(server.frames.filter(frame => frame.type === 'publish')).toHaveLength(1)
+})
