@@ -225,7 +225,7 @@ for await (const chunk of stream) {
 stream.controller.abort()
 ```
 
-`stream` returns an `AsyncIterable<ChatCompletionChunk>` and an `AbortController`.
+`complete` returns the stored inference record, with its `status`, `token_usage`, `cost_usd`, and `latency_ms`. `stream` returns an `AsyncIterable<ChatCompletionChunk>` and an `AbortController`. Neither call retries until the API declares an `Idempotency-Key` header for chat completions, so a dropped connection never runs a completion twice.
 
 ## Relay Broadcast
 
