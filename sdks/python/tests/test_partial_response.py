@@ -5,7 +5,14 @@ import threading
 
 import pytest
 
-from conjoin_cloud import AsyncConjoin, Conjoin, ConjoinNetworkError, ConjoinResponseError
+from conjoin_cloud import (
+    AsyncConjoin,
+    AsyncPage,
+    Conjoin,
+    ConjoinNetworkError,
+    ConjoinResponseError,
+    Page,
+)
 from local_http import LocalHttpServer, ReceivedRequest, Reply, json_reply
 
 
@@ -84,3 +91,31 @@ def test_oversized_success_is_rejected_without_retry(asynchronous: bool) -> None
                 with Conjoin(api_key="cak_test_transport", base_url=server.base_url) as client:
                     client.request("GET", "billing/customers/")
         assert len(server.requests) == 1
+
+
+@pytest.mark.parametrize("asynchronous", [False, True])
+def test_manual_page_walk_stops_a_repeated_cursor(asynchronous: bool) -> None:
+    def handle(request: ReceivedRequest, stopping: threading.Event) -> Reply:
+        return json_reply(200, {"data": ["customer_1"], "cursor": {"prev": None, "next": "loop"}})
+
+    with LocalHttpServer(handle) as server:
+
+        async def async_call() -> None:
+            async with AsyncConjoin(
+                api_key="cak_test_transport", base_url=server.base_url
+            ) as client:
+                first = await client.request("GET", "billing/customers/", cast_to=AsyncPage[str])
+                second = await first.next_page()
+                assert second is not None
+                await second.next_page()
+
+        with pytest.raises(ConjoinResponseError):
+            if asynchronous:
+                asyncio.run(async_call())
+            else:
+                with Conjoin(api_key="cak_test_transport", base_url=server.base_url) as client:
+                    first = client.request("GET", "billing/customers/", cast_to=Page[str])
+                    second = first.next_page()
+                    assert second is not None
+                    second.next_page()
+        assert len(server.requests) == 2
