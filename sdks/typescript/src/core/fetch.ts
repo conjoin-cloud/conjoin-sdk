@@ -58,8 +58,8 @@ function resolvePositive(value: number | undefined, fallback: number, name: stri
     return fallback
   }
 
-  if (!Number.isFinite(value) || value <= 0) {
-    throw new ConjoinConfigurationError(`${name} must be a finite number greater than 0`)
+  if (!Number.isFinite(value) || value <= 0 || value > 2 ** 31 - 1) {
+    throw new ConjoinConfigurationError(`${name} must be greater than 0 and at most ${2 ** 31 - 1}`)
   }
 
   return value
@@ -70,7 +70,7 @@ function resolveMaxRetries(value: number | undefined, fallback: number): number 
     return fallback
   }
 
-  if (!Number.isInteger(value) || value < 0) {
+  if (!Number.isSafeInteger(value) || value < 0) {
     throw new ConjoinConfigurationError('maxRetries must be a whole number of 0 or more')
   }
 
@@ -259,15 +259,17 @@ export async function conjoinFetchListWithResponse<T>(
   config: ResolvedConfig,
   path: string,
   options: RequestOptions = {},
+  seenCursors: ReadonlySet<string> = new Set(),
 ): Promise<ConjoinFetchListResult<T>> {
   const result = await sendConjoinRequest(config, path, options, true)
   const json = await readJsonBody(result)
   const metadata = metadataOf(result)
   const query = options.query ?? {}
-  const fetchNext = (next: string): Promise<ConjoinListPage<T>> =>
-    conjoinFetchList<T>(config, path, { ...options, query: { ...query, cursor: { next } } })
+  const fetchNext = async (next: string, seen: ReadonlySet<string>): Promise<ConjoinListPage<T>> =>
+    (await conjoinFetchListWithResponse<T>(config, path, { ...options, query: { ...query, cursor: { next } } }, seen))
+      .data
 
-  return { data: createListPage<T>(json, metadata.status, metadata.requestId, fetchNext), metadata }
+  return { data: createListPage<T>(json, metadata.status, metadata.requestId, fetchNext, seenCursors), metadata }
 }
 
 export async function conjoinFetchList<T>(

@@ -10,7 +10,7 @@ export type ConjoinListPage<T> = {
   [Symbol.asyncIterator](): AsyncIterator<T>
 }
 
-export type FetchNextListPage<T> = (nextCursor: string) => Promise<ConjoinListPage<T>>
+export type FetchNextListPage<T> = (nextCursor: string, seenCursors: ReadonlySet<string>) => Promise<ConjoinListPage<T>>
 
 type ListBody = {
   response?: unknown
@@ -36,6 +36,7 @@ export function createListPage<T>(
   status: number,
   requestId: string | undefined,
   fetchNext: FetchNextListPage<T> | undefined,
+  seenCursors: ReadonlySet<string> = new Set(),
 ): ConjoinListPage<T> {
   const list = (body && typeof body === 'object' ? body : {}) as ListBody
 
@@ -53,7 +54,10 @@ export function createListPage<T>(
       return null
     }
 
-    return fetchNext(cursor.next)
+    if (seenCursors.has(cursor.next)) {
+      throw new ConjoinResponseError('The list returned a cursor that it had returned before', { status, requestId })
+    }
+    return fetchNext(cursor.next, new Set([...seenCursors, cursor.next]))
   }
 
   async function* iterate(): AsyncGenerator<T> {

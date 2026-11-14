@@ -4,6 +4,8 @@ import type { HttpMethod } from './types'
 const RETRYABLE_STATUSES = new Set([429, 500, 502, 503, 504])
 const METHODS_SAFE_TO_RETRY = new Set<HttpMethod>(['GET', 'PUT', 'PATCH', 'DELETE'])
 const RETRY_AFTER_SECONDS_PATTERN = /^\d+(\.\d+)?$/
+const HTTP_DATE_PATTERN =
+  /^(?:[A-Za-z]{3}, \d{2} [A-Za-z]{3} \d{4} \d{2}:\d{2}:\d{2} GMT|[A-Za-z]+, \d{2}-[A-Za-z]{3}-\d{2} \d{2}:\d{2}:\d{2} GMT|[A-Za-z]{3} [A-Za-z]{3} [ \d]\d \d{2}:\d{2}:\d{2} \d{4})$/
 const MILLISECONDS_PER_SECOND = 1000
 
 export type RetryTiming = {
@@ -34,6 +36,7 @@ export function parseRetryAfterMs(value: string | null, now: number = Date.now()
     return Number(trimmed) * MILLISECONDS_PER_SECOND
   }
 
+  if (!HTTP_DATE_PATTERN.test(trimmed)) return undefined
   const retryAt = Date.parse(trimmed)
 
   if (Number.isNaN(retryAt)) {
@@ -48,7 +51,8 @@ export function computeRetryDelayMs(attempt: number, timing: RetryTiming, retryA
     return Math.min(retryAfterMs, timing.maxDelayMs)
   }
 
-  const ceiling = Math.min(timing.backoffMs * 2 ** attempt, timing.maxDelayMs)
+  const ceiling =
+    timing.backoffMs === 0 ? 0 : Math.min(timing.backoffMs * 2 ** Math.min(attempt, 1023), timing.maxDelayMs)
 
   return Math.random() * ceiling
 }

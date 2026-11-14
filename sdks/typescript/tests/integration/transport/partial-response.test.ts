@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, expect, it } from 'vitest'
 import { createConjoinClient } from '../../../src/core/client'
-import { ConjoinNetworkError, ConjoinResponseError } from '../../../src/core/errors'
+import { ConjoinConfigurationError, ConjoinNetworkError, ConjoinResponseError } from '../../../src/core/errors'
 import { startUnreliableServer, type UnreliableServer } from './unreliable-server'
 
 let server: UnreliableServer
@@ -50,4 +50,28 @@ it('rejects an oversized success without retrying and accepts the exact byte lim
   expect(server.attempts).toHaveLength(1)
   const exact = createConjoinClient({ apiKey: 'cak_test_transport', baseUrl: server.baseUrl, maxResponseBytes: size })
   await expect(exact.fetch('billing/customers/')).resolves.toBe(body.data)
+})
+
+it('stops a manual page walk on a repeated cursor without preventing independent reads', async () => {
+  server.servePages(() => ({ data: ['customer_1'], next: 'loop' }))
+  const client = createConjoinClient({ apiKey: 'cak_test_transport', baseUrl: server.baseUrl })
+  const first = await client.fetchList('billing/customers/')
+  const [second, independent] = await Promise.all([first.nextPage(), first.nextPage()])
+  expect(second?.data).toEqual(independent?.data)
+  await expect(second?.nextPage()).rejects.toBeInstanceOf(ConjoinResponseError)
+  expect(server.attempts).toHaveLength(3)
+})
+
+it('rejects overflowing timers before sending and ignores a negative Retry-After', async () => {
+  const client = createConjoinClient({ apiKey: 'cak_test_transport', baseUrl: server.baseUrl })
+  await expect(client.fetch('billing/customers/', { timeout: 2 ** 31 })).rejects.toBeInstanceOf(
+    ConjoinConfigurationError,
+  )
+  expect(server.attempts).toHaveLength(0)
+  server.queue({ kind: 'status', status: 429, headers: { 'retry-after': '-1' } })
+  await expect(client.fetch('billing/customers/', { maxRetries: 0 })).rejects.toMatchObject({
+    status: 429,
+    retryAfterMs: undefined,
+  })
+  expect(server.attempts).toHaveLength(1)
 })
