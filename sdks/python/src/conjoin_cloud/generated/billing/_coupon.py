@@ -52,6 +52,7 @@ class BillingCouponsResource:
             body=data,
             cast_to=BillingCouponCreateResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     def list_count(
@@ -127,6 +128,7 @@ class AsyncBillingCouponsResource:
             body=data,
             cast_to=BillingCouponCreateResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     async def list_count(

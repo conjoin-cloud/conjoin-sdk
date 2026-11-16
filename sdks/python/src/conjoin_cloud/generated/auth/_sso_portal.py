@@ -63,6 +63,7 @@ class AuthSSOPortalsResource:
             cast_to=AuthSSOPortalMintSsoPortalTicketResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     def revoke_sso_portal_ticket(
@@ -81,6 +82,7 @@ class AuthSSOPortalsResource:
             cast_to=AuthSSOPortalRevokeSsoPortalTicketResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
 
@@ -130,6 +132,7 @@ class AsyncAuthSSOPortalsResource:
             cast_to=AuthSSOPortalMintSsoPortalTicketResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     async def revoke_sso_portal_ticket(
@@ -148,4 +151,5 @@ class AsyncAuthSSOPortalsResource:
             cast_to=AuthSSOPortalRevokeSsoPortalTicketResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )

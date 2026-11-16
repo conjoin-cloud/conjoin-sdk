@@ -67,6 +67,7 @@ class AuthTrustedDevicesResource:
             cast_to=AuthTrustedDeviceRevokeAllResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     def revoke(
@@ -85,6 +86,7 @@ class AuthTrustedDevicesResource:
             cast_to=AuthTrustedDeviceRevokeResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
 
@@ -136,6 +138,7 @@ class AsyncAuthTrustedDevicesResource:
             cast_to=AuthTrustedDeviceRevokeAllResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     async def revoke(
@@ -154,4 +157,5 @@ class AsyncAuthTrustedDevicesResource:
             cast_to=AuthTrustedDeviceRevokeResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )

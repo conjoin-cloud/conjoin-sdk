@@ -257,6 +257,24 @@ users = client.auth.scim.with_token('scim_token_...').scim_list_users(
 
 Public SCIM metadata endpoints, such as schemas and resource types, stay callable through the normal client.
 
+## Credentials That a Call Declares
+
+Each call sends only the credential that its API document declares. A frontend call that signs in nobody sends no `Authorization` header, a call that needs the publishable key raises `ConjoinConfigurationError` when the client holds an API key, and none of them ever sends your API key. A call for the signed-in user takes the session token as its `session_token` keyword, and an SSO portal call takes the portal ticket as its `portal_ticket` keyword, which the SDK sends only in the `x-portal-ticket` header. These calls refuse `request_options.auth`.
+
+A call that declares a header of its own, such as the step-up headers on `accounts.delete`, takes each header as a keyword. The SDK checks each value against the documented length and format before it sends anything:
+
+```python
+from conjoin_cloud import Credential
+
+client.auth.accounts.delete(
+    'acc_123',
+    step_up_session_id=step_up_session_id,
+    step_up_token=Credential(step_up_token),
+)
+```
+
+The step-up token, the session token, and the portal ticket take a `Credential`, whose `str` and `repr` show only `[redacted]`.
+
 ## Errors
 
 Every SDK error extends `ConjoinError`:

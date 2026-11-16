@@ -140,6 +140,7 @@ class AuthSessionsResource:
             cast_to=AuthSessionValidateResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     def revoke(
@@ -154,6 +155,7 @@ class AuthSessionsResource:
             cast_to=AuthSessionRevokeResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     def revoke_all_for_account(
@@ -168,6 +170,7 @@ class AuthSessionsResource:
             cast_to=AuthSessionRevokeAllForAccountResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     def bulk_revoke_account(
@@ -184,6 +187,7 @@ class AuthSessionsResource:
             cast_to=AuthSessionBulkRevokeAccountResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     def bulk_revoke_client(
@@ -200,6 +204,7 @@ class AuthSessionsResource:
             cast_to=AuthSessionBulkRevokeClientResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
 
@@ -311,6 +316,7 @@ class AsyncAuthSessionsResource:
             cast_to=AuthSessionValidateResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     async def revoke(
@@ -325,6 +331,7 @@ class AsyncAuthSessionsResource:
             cast_to=AuthSessionRevokeResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     async def revoke_all_for_account(
@@ -339,6 +346,7 @@ class AsyncAuthSessionsResource:
             cast_to=AuthSessionRevokeAllForAccountResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     async def bulk_revoke_account(
@@ -355,6 +363,7 @@ class AsyncAuthSessionsResource:
             cast_to=AuthSessionBulkRevokeAccountResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     async def bulk_revoke_client(
@@ -371,4 +380,5 @@ class AsyncAuthSessionsResource:
             cast_to=AuthSessionBulkRevokeClientResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )

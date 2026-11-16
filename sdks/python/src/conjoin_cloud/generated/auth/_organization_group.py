@@ -66,6 +66,7 @@ class AuthOrganizationGroupsResource:
             cast_to=AuthOrganizationGroupCreateGroupResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     def list_group_members(
@@ -172,6 +173,7 @@ class AuthOrganizationGroupsResource:
             cast_to=AuthOrganizationGroupAddGroupMemberResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     def remove_group_member(
@@ -192,6 +194,7 @@ class AuthOrganizationGroupsResource:
             cast_to=AuthOrganizationGroupRemoveGroupMemberResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     def bulk_sync_group_members(
@@ -212,6 +215,7 @@ class AuthOrganizationGroupsResource:
             cast_to=AuthOrganizationGroupBulkSyncGroupMembersResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
 
@@ -249,6 +253,7 @@ class AsyncAuthOrganizationGroupsResource:
             cast_to=AuthOrganizationGroupCreateGroupResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     async def list_group_members(
@@ -355,6 +360,7 @@ class AsyncAuthOrganizationGroupsResource:
             cast_to=AuthOrganizationGroupAddGroupMemberResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     async def remove_group_member(
@@ -375,6 +381,7 @@ class AsyncAuthOrganizationGroupsResource:
             cast_to=AuthOrganizationGroupRemoveGroupMemberResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     async def bulk_sync_group_members(
@@ -395,4 +402,5 @@ class AsyncAuthOrganizationGroupsResource:
             cast_to=AuthOrganizationGroupBulkSyncGroupMembersResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )

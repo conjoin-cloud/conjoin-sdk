@@ -50,6 +50,7 @@ class CloudZonesResource:
             body=data,
             cast_to=CloudZoneCreateResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     def read_count(
@@ -101,6 +102,7 @@ class CloudZonesResource:
             'POST',
             f'cloud/zones/{encode_path_param(zone_id)}/verify',
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
 
@@ -134,6 +136,7 @@ class AsyncCloudZonesResource:
             body=data,
             cast_to=CloudZoneCreateResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     async def read_count(
@@ -185,4 +188,5 @@ class AsyncCloudZonesResource:
             'POST',
             f'cloud/zones/{encode_path_param(zone_id)}/verify',
             request_options=request_options,
+            accepts_idempotency_key=True,
         )

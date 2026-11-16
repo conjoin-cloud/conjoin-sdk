@@ -54,6 +54,7 @@ class CloudProjectsResource:
             body=data,
             cast_to=CloudProjectCreateResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     def read_count(
@@ -132,6 +133,7 @@ class AsyncCloudProjectsResource:
             body=data,
             cast_to=CloudProjectCreateResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     async def read_count(

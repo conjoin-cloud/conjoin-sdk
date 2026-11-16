@@ -54,6 +54,7 @@ class BillingEntitlementOverridesResource:
             cast_to=BillingEntitlementOverrideCreateResponse,
             request_options=request_options,
             scopes=('billing_entity_id',),
+            accepts_idempotency_key=True,
         )
 
     def list_count(
@@ -135,6 +136,7 @@ class AsyncBillingEntitlementOverridesResource:
             cast_to=BillingEntitlementOverrideCreateResponse,
             request_options=request_options,
             scopes=('billing_entity_id',),
+            accepts_idempotency_key=True,
         )
 
     async def list_count(

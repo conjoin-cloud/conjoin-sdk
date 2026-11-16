@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import json
 from collections.abc import Mapping, Sequence
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Any
 
 from conjoin_cloud._config import (
@@ -11,6 +11,7 @@ from conjoin_cloud._config import (
     require_positive_seconds,
     require_retry_count,
 )
+from conjoin_cloud._declared_headers import DeclaredHeader
 from conjoin_cloud._errors import ConjoinConfigurationError
 from conjoin_cloud._idempotency import (
     IDEMPOTENCY_KEY_HEADER,
@@ -21,6 +22,7 @@ from conjoin_cloud._multipart import MultipartBody, MultipartPart
 from conjoin_cloud._request_headers import build_request_headers, read_header_value
 from conjoin_cloud._request_options import (
     AuthOverride,
+    DeclaredAuth,
     RequestOptions,
     coerce_request_options,
     resolve_auth_override,
@@ -40,7 +42,7 @@ HTTP_METHODS = frozenset({"GET", "POST", "PUT", "PATCH", "DELETE"})
 class PreparedCall:
     method: str
     url: str
-    headers: dict[str, str]
+    headers: dict[str, str] = field(repr=False)
     content: bytes | None
     files: list[MultipartPart] | None
     timeout: float
@@ -59,9 +61,16 @@ def prepare_call(
     request_options: RequestOptions | Mapping[str, Any] | None,
     scopes: Sequence[ScopeName],
     accepts_idempotency_key: bool,
-    default_auth: AuthOverride | None,
+    default_auth: AuthOverride | DeclaredAuth | None,
+    declared_headers: Sequence[DeclaredHeader] = (),
 ) -> PreparedCall:
     options = coerce_request_options(request_options)
+    override = resolve_auth_override(options.auth)
+    if override is not None and _declares_its_credential(default_auth):
+        raise ConjoinConfigurationError(
+            "This call sends only the credential that its operation declares, "
+            "so it does not take request_options.auth"
+        )
     normalized_method = _normalize_method(method)
     url = build_url(config.base_url, path, query)
     request_id = _resolve_request_id(config, options)
@@ -70,7 +79,7 @@ def prepare_call(
         options,
         accepts_idempotency_key=accepts_idempotency_key,
     )
-    auth = resolve_auth_override(options.auth) or default_auth or AuthOverride()
+    auth = override or default_auth or AuthOverride()
     content, files = _encode_body(body)
     headers = build_request_headers(
         config,
@@ -80,6 +89,7 @@ def prepare_call(
         request_id=request_id,
         idempotency_key=idempotency_key,
         json_body=content is not None,
+        declared_headers=declared_headers,
     )
 
     return PreparedCall(
@@ -99,6 +109,12 @@ def prepare_call(
             has_idempotency_key=idempotency_key is not None and accepts_idempotency_key,
         ),
         request_id=request_id,
+    )
+
+
+def _declares_its_credential(default_auth: AuthOverride | DeclaredAuth | None) -> bool:
+    return isinstance(default_auth, DeclaredAuth) or (
+        isinstance(default_auth, AuthOverride) and default_auth.type == "none"
     )
 
 

@@ -47,6 +47,7 @@ class AuthConnectionsResource:
             cast_to=AuthConnectionUpsertFirstPartyResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
 
@@ -82,4 +83,5 @@ class AsyncAuthConnectionsResource:
             cast_to=AuthConnectionUpsertFirstPartyResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )

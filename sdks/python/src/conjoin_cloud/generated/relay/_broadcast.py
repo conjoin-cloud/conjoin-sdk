@@ -42,6 +42,7 @@ class RelayBroadcastsResource:
             'relay/broadcast-connection-tokens/',
             cast_to=RelayBroadcastGenerateConnectionTokenResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     def read_channels(
@@ -70,6 +71,7 @@ class RelayBroadcastsResource:
             body=data,
             cast_to=RelayBroadcastCreateChannelResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     def read_channels_count(
@@ -127,6 +129,7 @@ class RelayBroadcastsResource:
             body=data,
             cast_to=RelayBroadcastGenerateAuthTokenResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     def publish_to(
@@ -142,6 +145,7 @@ class RelayBroadcastsResource:
             body=data,
             cast_to=RelayBroadcastPublishToResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     def read_presence(
@@ -172,6 +176,7 @@ class AsyncRelayBroadcastsResource:
             'relay/broadcast-connection-tokens/',
             cast_to=RelayBroadcastGenerateConnectionTokenResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     async def read_channels(
@@ -200,6 +205,7 @@ class AsyncRelayBroadcastsResource:
             body=data,
             cast_to=RelayBroadcastCreateChannelResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     async def read_channels_count(
@@ -257,6 +263,7 @@ class AsyncRelayBroadcastsResource:
             body=data,
             cast_to=RelayBroadcastGenerateAuthTokenResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     async def publish_to(
@@ -272,6 +279,7 @@ class AsyncRelayBroadcastsResource:
             body=data,
             cast_to=RelayBroadcastPublishToResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     async def read_presence(

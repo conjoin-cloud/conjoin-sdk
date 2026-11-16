@@ -39,6 +39,7 @@ class MessagingPhoneNumbersResource:
             cast_to=MessagingPhoneNumberPurchaseResponse,
             request_options=request_options,
             scopes=('messaging_profile_id',),
+            accepts_idempotency_key=True,
         )
 
     def update(
@@ -101,6 +102,7 @@ class MessagingPhoneNumbersResource:
             cast_to=MessagingPhoneNumberReleaseResponse,
             request_options=request_options,
             scopes=('messaging_profile_id',),
+            accepts_idempotency_key=True,
         )
 
 
@@ -122,6 +124,7 @@ class AsyncMessagingPhoneNumbersResource:
             cast_to=MessagingPhoneNumberPurchaseResponse,
             request_options=request_options,
             scopes=('messaging_profile_id',),
+            accepts_idempotency_key=True,
         )
 
     async def update(
@@ -184,4 +187,5 @@ class AsyncMessagingPhoneNumbersResource:
             cast_to=MessagingPhoneNumberReleaseResponse,
             request_options=request_options,
             scopes=('messaging_profile_id',),
+            accepts_idempotency_key=True,
         )

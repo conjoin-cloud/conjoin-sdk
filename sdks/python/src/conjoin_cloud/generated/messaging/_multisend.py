@@ -31,6 +31,7 @@ class MessagingMultisendsResource:
             cast_to=MessagingMultisendCreateResponse,
             request_options=request_options,
             scopes=('messaging_profile_id',),
+            accepts_idempotency_key=True,
         )
 
     def read(
@@ -65,6 +66,7 @@ class AsyncMessagingMultisendsResource:
             cast_to=MessagingMultisendCreateResponse,
             request_options=request_options,
             scopes=('messaging_profile_id',),
+            accepts_idempotency_key=True,
         )
 
     async def read(

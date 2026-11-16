@@ -51,6 +51,7 @@ class CloudRolesResource:
             body=data,
             cast_to=CloudRoleCreateResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     def read_count(
@@ -113,6 +114,7 @@ class AsyncCloudRolesResource:
             body=data,
             cast_to=CloudRoleCreateResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     async def read_count(

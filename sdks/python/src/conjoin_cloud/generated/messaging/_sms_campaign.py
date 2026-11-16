@@ -38,6 +38,7 @@ class MessagingSMSCampaignsResource:
             cast_to=MessagingSMSCampaignCreateSmsCampaignResponse,
             request_options=request_options,
             scopes=('messaging_profile_id',),
+            accepts_idempotency_key=True,
         )
 
     def read_sms_campaign(
@@ -97,6 +98,7 @@ class MessagingSMSCampaignsResource:
             cast_to=Page[MessagingSMSCampaignListSmsCampaignsItem],
             request_options=request_options,
             scopes=('messaging_profile_id',),
+            accepts_idempotency_key=True,
         )
 
 
@@ -117,6 +119,7 @@ class AsyncMessagingSMSCampaignsResource:
             cast_to=MessagingSMSCampaignCreateSmsCampaignResponse,
             request_options=request_options,
             scopes=('messaging_profile_id',),
+            accepts_idempotency_key=True,
         )
 
     async def read_sms_campaign(
@@ -176,4 +179,5 @@ class AsyncMessagingSMSCampaignsResource:
             cast_to=AsyncPage[MessagingSMSCampaignListSmsCampaignsItem],
             request_options=request_options,
             scopes=('messaging_profile_id',),
+            accepts_idempotency_key=True,
         )

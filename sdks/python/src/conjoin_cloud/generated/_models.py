@@ -6037,6 +6037,29 @@ class CloudZoneReadResponse(ConjoinModel):
 
 
 class MessagingChannelAnalyticsCreateReportResponse(ConjoinModel):
+    url: str
+
+
+class MessagingChannelAnalyticsGenerateSummariesResponse(ConjoinModel):
+    bounces: dict[str, Any]
+    channel_id: str
+    clicks: dict[str, Any]
+    complaints: dict[str, Any]
+    deliveries: dict[str, Any]
+    duration: str
+    failures: dict[str, Any]
+    label: str
+    opens: dict[str, Any]
+    period_end: str
+    period_start: str
+    periods: Sequence[dict[str, Any]]
+    rejections: dict[str, Any]
+    subscribes: dict[str, Any]
+    total_message_count: float
+    unsubscribes: dict[str, Any]
+
+
+class MessagingChannelAnalyticsIncrementClicksResponse(ConjoinModel):
     analytics_id: str
     bounces: dict[str, Any]
     channel_id: str
@@ -6060,7 +6083,79 @@ class MessagingChannelAnalyticsCreateReportResponse(ConjoinModel):
     unsubscribes: dict[str, Any]
 
 
-class MessagingChannelAnalyticsGenerateSummariesResponse(ConjoinModel):
+class MessagingChannelAnalyticsIncrementDeliveriesResponse(ConjoinModel):
+    analytics_id: str
+    bounces: dict[str, Any]
+    channel_id: str
+    clicks: dict[str, Any]
+    complaints: dict[str, Any]
+    conjoin_account_id: str
+    conjoin_project_id: str
+    conversation_id: str | None
+    date_created: str
+    date_deleted: str | None = None
+    date_updated: str
+    deliveries: dict[str, Any]
+    failures: dict[str, Any]
+    live_mode: bool
+    message_request_id: str
+    opens: dict[str, Any]
+    profile_id: str
+    rejections: dict[str, Any]
+    subscribes: dict[str, Any]
+    total_message_count: float
+    unsubscribes: dict[str, Any]
+
+
+class MessagingChannelAnalyticsIncrementOpensResponse(ConjoinModel):
+    analytics_id: str
+    bounces: dict[str, Any]
+    channel_id: str
+    clicks: dict[str, Any]
+    complaints: dict[str, Any]
+    conjoin_account_id: str
+    conjoin_project_id: str
+    conversation_id: str | None
+    date_created: str
+    date_deleted: str | None = None
+    date_updated: str
+    deliveries: dict[str, Any]
+    failures: dict[str, Any]
+    live_mode: bool
+    message_request_id: str
+    opens: dict[str, Any]
+    profile_id: str
+    rejections: dict[str, Any]
+    subscribes: dict[str, Any]
+    total_message_count: float
+    unsubscribes: dict[str, Any]
+
+
+class MessagingChannelAnalyticsIncrementSubscribesResponse(ConjoinModel):
+    analytics_id: str
+    bounces: dict[str, Any]
+    channel_id: str
+    clicks: dict[str, Any]
+    complaints: dict[str, Any]
+    conjoin_account_id: str
+    conjoin_project_id: str
+    conversation_id: str | None
+    date_created: str
+    date_deleted: str | None = None
+    date_updated: str
+    deliveries: dict[str, Any]
+    failures: dict[str, Any]
+    live_mode: bool
+    message_request_id: str
+    opens: dict[str, Any]
+    profile_id: str
+    rejections: dict[str, Any]
+    subscribes: dict[str, Any]
+    total_message_count: float
+    unsubscribes: dict[str, Any]
+
+
+class MessagingChannelAnalyticsIncrementUnsubscribesResponse(ConjoinModel):
     analytics_id: str
     bounces: dict[str, Any]
     channel_id: str
@@ -6116,13 +6211,16 @@ class MessagingContactAddPropertiesResponse(ConjoinModel):
     date_deleted: str | None = None
     date_updated: str
     email: str | None = None
+    first_name: str | None = None
+    last_name: str | None = None
     live_mode: bool
-    name: str | None = None
     phone_number: Any | None = None
     preferred_channels: Sequence[str] | None = None
     profile_id: str
     properties: dict[str, Any] | None = None
+    quiet_hours: dict[str, Any] | None = None
     reference_id: str | None = None
+    timezone: str | None = None
 
 
 class MessagingContactCreateResponse(ConjoinModel):
@@ -6133,13 +6231,16 @@ class MessagingContactCreateResponse(ConjoinModel):
     date_deleted: str | None = None
     date_updated: str
     email: str | None = None
+    first_name: str | None = None
+    last_name: str | None = None
     live_mode: bool
-    name: str | None = None
     phone_number: Any | None = None
     preferred_channels: Sequence[str] | None = None
     profile_id: str
     properties: dict[str, Any] | None = None
+    quiet_hours: dict[str, Any] | None = None
     reference_id: str | None = None
+    timezone: str | None = None
 
 
 class MessagingContactDeletePropertiesResponse(ConjoinModel):
@@ -6150,13 +6251,16 @@ class MessagingContactDeletePropertiesResponse(ConjoinModel):
     date_deleted: str | None = None
     date_updated: str
     email: str | None = None
+    first_name: str | None = None
+    last_name: str | None = None
     live_mode: bool
-    name: str | None = None
     phone_number: Any | None = None
     preferred_channels: Sequence[str] | None = None
     profile_id: str
     properties: dict[str, Any] | None = None
+    quiet_hours: dict[str, Any] | None = None
     reference_id: str | None = None
+    timezone: str | None = None
 
 
 class MessagingContactDeleteResponse(ConjoinModel):
@@ -6167,13 +6271,16 @@ class MessagingContactDeleteResponse(ConjoinModel):
     date_deleted: str | None = None
     date_updated: str
     email: str | None = None
+    first_name: str | None = None
+    last_name: str | None = None
     live_mode: bool
-    name: str | None = None
     phone_number: Any | None = None
     preferred_channels: Sequence[str] | None = None
     profile_id: str
     properties: dict[str, Any] | None = None
+    quiet_hours: dict[str, Any] | None = None
     reference_id: str | None = None
+    timezone: str | None = None
 
 
 class MessagingContactListItem(ConjoinModel):
@@ -6184,13 +6291,16 @@ class MessagingContactListItem(ConjoinModel):
     date_deleted: str | None = None
     date_updated: str
     email: str | None = None
+    first_name: str | None = None
+    last_name: str | None = None
     live_mode: bool
-    name: str | None = None
     phone_number: Any | None = None
     preferred_channels: Sequence[str] | None = None
     profile_id: str
     properties: dict[str, Any] | None = None
+    quiet_hours: dict[str, Any] | None = None
     reference_id: str | None = None
+    timezone: str | None = None
 
 
 class MessagingContactPropertiesCreateContactPropertyResponse(ConjoinModel):
@@ -6219,7 +6329,7 @@ class MessagingContactPropertiesDeleteContactPropertyResponse(ConjoinModel):
     type: str
 
 
-class MessagingContactPropertiesDeleteManyResponse(ConjoinModel):
+class MessagingContactPropertiesDeleteManyItem(ConjoinModel):
     conjoin_account_id: str
     conjoin_project_id: str
     date_created: str
@@ -6266,13 +6376,16 @@ class MessagingContactSuppressMessagesResponse(ConjoinModel):
     date_deleted: str | None = None
     date_updated: str
     email: str | None = None
+    first_name: str | None = None
+    last_name: str | None = None
     live_mode: bool
-    name: str | None = None
     phone_number: Any | None = None
     preferred_channels: Sequence[str] | None = None
     profile_id: str
     properties: dict[str, Any] | None = None
+    quiet_hours: dict[str, Any] | None = None
     reference_id: str | None = None
+    timezone: str | None = None
 
 
 class MessagingContactUpdatePropertyResponse(ConjoinModel):
@@ -6283,13 +6396,16 @@ class MessagingContactUpdatePropertyResponse(ConjoinModel):
     date_deleted: str | None = None
     date_updated: str
     email: str | None = None
+    first_name: str | None = None
+    last_name: str | None = None
     live_mode: bool
-    name: str | None = None
     phone_number: Any | None = None
     preferred_channels: Sequence[str] | None = None
     profile_id: str
     properties: dict[str, Any] | None = None
+    quiet_hours: dict[str, Any] | None = None
     reference_id: str | None = None
+    timezone: str | None = None
 
 
 class MessagingContactUpdateResponse(ConjoinModel):
@@ -6300,13 +6416,16 @@ class MessagingContactUpdateResponse(ConjoinModel):
     date_deleted: str | None = None
     date_updated: str
     email: str | None = None
+    first_name: str | None = None
+    last_name: str | None = None
     live_mode: bool
-    name: str | None = None
     phone_number: Any | None = None
     preferred_channels: Sequence[str] | None = None
     profile_id: str
     properties: dict[str, Any] | None = None
+    quiet_hours: dict[str, Any] | None = None
     reference_id: str | None = None
+    timezone: str | None = None
 
 
 class MessagingConversationAddManyRecipientsItem(ConjoinModel):
@@ -6469,26 +6588,6 @@ class MessagingConversationReadManyRecipientsItem(ConjoinModel):
     reference_id: str | None = None
 
 
-class MessagingConversationReadMessagesItem(ConjoinModel):
-    accepts_replies: bool
-    conjoin_account_id: str
-    conjoin_project_id: str
-    conversation_id: str
-    date_archived: str | None = None
-    date_created: str
-    date_deleted: str | None = None
-    date_updated: str
-    description: str | None = None
-    live_mode: bool
-    message_channels: dict[str, Any]
-    placeholders: dict[str, Any] | None = None
-    profile_id: str
-    reference_id: str | None = None
-    senders: dict[str, Any] | None = None
-    title: str
-    total_recipients: float
-
-
 class MessagingConversationReadOneRecipientResponse(ConjoinModel):
     conjoin_account_id: str
     conjoin_project_id: str
@@ -6524,11 +6623,12 @@ class MessagingConversationUpdateResponse(ConjoinModel):
     total_recipients: float
 
 
-class MessagingEmailGetSummaryResponse(ConjoinModel):
-    cost_per_part: float
+class MessagingEmailGenerateSummaryResponse(ConjoinModel):
     currency: str
-    total_cost: float
-    total_parts: float
+    message_body: str
+    price_per_part: float
+    total_message_parts: float
+    total_price: float
     total_recipients: float
 
 
@@ -6839,68 +6939,38 @@ class MessagingEmailSenderVerifyResponse(ConjoinModel):
 
 
 class MessagingMultisendCreateResponse(ConjoinModel):
-    accepts_replies: bool
-    channel_messages: dict[str, Any]
-    conjoin_account_id: str
-    conjoin_project_id: str
-    conversation_id: str | None = None
-    date_created: str
-    date_deleted: str | None = None
-    date_updated: str
-    live_mode: bool
-    message_id: str
-    parent_message_id: str | None = None
-    priority: Sequence[str]
-    profile_id: str
-    reference_id: str | None = None
-    send_at: str | None = None
-    sent_at: str
-    status: str | None = None
-    type: str
+    email: dict[str, Any] | None = None
+    sms: dict[str, Any] | None = None
 
 
 class MessagingMultisendReadResponse(ConjoinModel):
-    accepts_replies: bool
-    channel_messages: dict[str, Any]
+    broadcast_id: str
     conjoin_account_id: str
     conjoin_project_id: str
-    conversation_id: str | None = None
     date_created: str
     date_deleted: str | None = None
     date_updated: str
     live_mode: bool
-    message_id: str
-    parent_message_id: str | None = None
-    priority: Sequence[str]
+    message_channels: Sequence[str]
+    message_priority: str
+    message_requests: dict[str, str]
+    message_retry_statuses: Sequence[str]
+    originator: str
+    originator_primary_id: str
+    originator_request_id: str
     profile_id: str
     reference_id: str | None = None
     send_at: str | None = None
-    sent_at: str
-    status: str | None = None
-    type: str
+    sent_at: str | None = None
 
 
 class MessagingPhoneNumberListAvailableItem(ConjoinModel):
-    conjoin_account_id: str
-    conjoin_project_id: str
+    capabilities: dict[str, Any]
     country_iso_code: str
-    date_created: str
-    date_deleted: str | None = None
-    date_updated: str
-    description: str | None = None
-    expires_at: str | None = None
-    features: dict[str, Any] | None = None
-    live_mode: bool
     phone_number: str
-    phone_number_id: str
-    price: dict[str, Any] | None = None
-    profile_id: str
-    provisioned_at: str | None = None
-    recurring_charge: dict[str, Any] | None = None
-    reference_id: str | None = None
-    region_code: str
-    status: str
-    title: str
+    price: dict[str, Any]
+    recurring_charge: dict[str, Any]
+    requires_supporting_documents: bool
     type: str
 
 
@@ -7423,12 +7493,14 @@ class MessagingSMSCampaignUpdateSmsCampaignResponse(ConjoinModel):
     use_case: str | None = None
 
 
-class MessagingSMSGetSmsSummaryResponse(ConjoinModel):
-    cost_per_part: float
+class MessagingSMSGenerateSmsSummaryResponse(ConjoinModel):
     currency: str
-    total_cost: float
-    total_parts: float
-    total_recipients: float
+    destinations: dict[str, dict[str, Any]]
+    max_characters: float
+    message_body: str
+    price_per_part: float
+    total_message_parts: float
+    total_price: float
 
 
 class MessagingSMSReadSmsMessagesItem(ConjoinModel):
@@ -7830,26 +7902,12 @@ class MessagingVerificationCheckResponse(ConjoinModel):
 
 
 class MessagingVerificationCreateResponse(ConjoinModel):
-    conjoin_account_id: str
-    conjoin_project_id: str
-    current_verification_attempts: float
-    date_created: str
-    date_deleted: str | None = None
-    date_updated: str
+    channel: str
     expires_at: str
-    from_: str = Field(..., alias='from')
-    live_mode: bool
-    max_verification_attempts: float
-    message_channel: str
-    message_status: str
-    message_subject: str | None = None
-    profile_id: str
-    recipient: dict[str, Any]
-    reference_id: str | None = None
-    sent_at: str
-    token_type: str
+    message_id: str
+    messages: Sequence[dict[str, Any]]
+    status: str
     verification_id: str
-    verification_status: str
 
 
 class MessagingVerificationListMessagesItem(ConjoinModel):
@@ -7876,26 +7934,12 @@ class MessagingVerificationListMessagesItem(ConjoinModel):
 
 
 class MessagingVerificationResendResponse(ConjoinModel):
-    conjoin_account_id: str
-    conjoin_project_id: str
-    current_verification_attempts: float
-    date_created: str
-    date_deleted: str | None = None
-    date_updated: str
+    channel: str
     expires_at: str
-    from_: str = Field(..., alias='from')
-    live_mode: bool
-    max_verification_attempts: float
-    message_channel: str
-    message_status: str
-    message_subject: str | None = None
-    profile_id: str
-    recipient: dict[str, Any]
-    reference_id: str | None = None
-    sent_at: str
-    token_type: str
+    message_id: str
+    messages: Sequence[dict[str, Any]]
+    status: str
     verification_id: str
-    verification_status: str
 
 
 class RelayBroadcastCreateChannelResponse(ConjoinModel):
@@ -10089,6 +10133,10 @@ class AuthAccountCreateRequest(TypedDict, total=False):
     reference_id: str
 
 
+class AuthAccountDeleteQuery(TypedDict, total=False):
+    permanent: Any
+
+
 class AuthAccountGrantGlobalRoleRequest(TypedDict):
     role_key: str
 
@@ -10634,6 +10682,11 @@ class AuthOrganizationCreateRequest(_AuthOrganizationCreateRequestRequired, tota
     image_url: str | None
     metadata: dict[str, Any]
     reference_id: str
+
+
+class AuthOrganizationDeleteQuery(TypedDict, total=False):
+    permanent: Any
+    force: Any
 
 
 class AuthOrganizationDomainCreateRequest(TypedDict):
@@ -12685,6 +12738,67 @@ class CloudZoneReadCountQuery(TypedDict, total=False):
     limit: Any
 
 
+class _MessagingChannelAnalyticsCreateReportRequestRequired(TypedDict):
+    duration: str
+
+
+class MessagingChannelAnalyticsCreateReportRequest(
+    _MessagingChannelAnalyticsCreateReportRequestRequired,
+    total=False,
+):
+    document: dict[str, Any]
+
+
+class MessagingChannelAnalyticsGenerateSummariesRequest(TypedDict):
+    duration: str
+
+
+class _MessagingChannelAnalyticsIncrementClicksRequestRequired(TypedDict):
+    total_clicks: int
+
+
+class MessagingChannelAnalyticsIncrementClicksRequest(
+    _MessagingChannelAnalyticsIncrementClicksRequestRequired,
+    total=False,
+):
+    unique_clicks: int
+
+
+class MessagingChannelAnalyticsIncrementDeliveriesRequest(TypedDict):
+    total_deliveries: int
+
+
+class _MessagingChannelAnalyticsIncrementOpensRequestRequired(TypedDict):
+    total_opens: int
+
+
+class MessagingChannelAnalyticsIncrementOpensRequest(
+    _MessagingChannelAnalyticsIncrementOpensRequestRequired,
+    total=False,
+):
+    unique_opens: int
+
+
+class MessagingChannelAnalyticsIncrementSubscribesRequest(TypedDict):
+    total_subscribes: int
+
+
+class MessagingChannelAnalyticsIncrementUnsubscribesRequest(TypedDict):
+    total_unsubscribes: int
+
+
+class MessagingChannelAnalyticsListRequest(TypedDict, total=False):
+    cursor: dict[str, Any]
+    filter: dict[str, Any]
+    limit: Any
+    query: dict[str, Any]
+    sort: dict[str, str]
+
+
+class MessagingContactAddPropertiesRequest(TypedDict):
+    properties: dict[str, Any]
+
+
 class MessagingContactCreateRequest(TypedDict, total=False):
     email: str
     first_name: str
@@ -12696,6 +12810,10 @@ class MessagingContactCreateRequest(TypedDict, total=False):
     reference_id: str
 
 
+class MessagingContactDeletePropertiesRequest(TypedDict):
+    keys: Sequence[str]
+
+
 class MessagingContactListRequest(TypedDict, total=False):
     cursor: dict[str, Any]
     filter: dict[str, Any]
@@ -12705,26 +12823,54 @@ class MessagingContactListRequest(TypedDict, total=False):
     sort: dict[str, str]
 
 
+class MessagingContactPropertiesListRequest(TypedDict, total=False):
+    cursor: dict[str, Any]
+    limit: Any
+    query: dict[str, Any]
+    sort: dict[str, str]
+
+
 class MessagingContactSuppressMessagesRequest(TypedDict):
     channels: Sequence[str]
 
 
-class MessagingContactUpdateRequest(TypedDict):
-    updates: dict[str, Any]
+class MessagingContactUpdatePropertyRequest(TypedDict):
+    key: str
+    value: Any
 
 
-class MessagingConversationArchiveRequest(TypedDict, total=False):
-    query: dict[str, Any]
+class MessagingContactUpdateRequest(TypedDict, total=False):
+    email: str
+    first_name: str
+    last_name: str
+    phone_number: Any
+    preferred_channels: Sequence[str]
+    quiet_hours: dict[str, Any]
 
 
-class MessagingConversationCloneRequest(TypedDict):
-    updates: dict[str, Any]
+class MessagingConversationAddManyRecipientsRequest(TypedDict):
+    recipients: Sequence[dict[str, Any]]
+
+
+class MessagingConversationAddOneRecipientRequest(TypedDict, total=False):
+    email: str
+    first_name: str
+    last_name: str
+    phone_number: Any
+    preferred_channels: Sequence[str]
+    properties: dict[str, Any]
+    quiet_hours: dict[str, Any]
+    reference_id: str
+
+
+class MessagingConversationCloneRequest(TypedDict, total=False):
+    accepts_replies: bool
+    description: str
+    title: str
 
 
 class _MessagingConversationCreateRequestRequired(TypedDict):
     channels: Sequence[str]
-    recipients: Sequence[dict[str, Any]]
-    senders: dict[str, Any]
     title: str
 
 
@@ -12732,7 +12878,9 @@ class MessagingConversationCreateRequest(_MessagingConversationCreateRequestRequ
     accepts_replies: bool
     default_placeholders: dict[str, str]
     description: str
+    recipients: Sequence[dict[str, Any]]
     reference_id: str
+    senders: dict[str, Any]
 
 
 class MessagingConversationListRequest(TypedDict, total=False):
@@ -12740,6 +12888,26 @@ class MessagingConversationListRequest(TypedDict, total=False):
     filter: dict[str, Any]
     limit: Any
     query: dict[str, Any]
+    search: dict[str, Any]
+    sort: dict[str, str]
+
+
+class MessagingConversationReadManyRecipientsRequest(TypedDict, total=False):
+    cursor: dict[str, Any]
+    limit: Any
+    sort: dict[str, str]
+
+
+class _MessagingConversationReadMessagesRequestRequired(TypedDict):
+    channel: str
+
+
+class MessagingConversationReadMessagesRequest(
+    _MessagingConversationReadMessagesRequestRequired,
+    total=False,
+):
+    cursor: dict[str, Any]
+    limit: Any
     search: dict[str, Any]
     sort: dict[str, str]
 
@@ -12760,12 +12928,31 @@ class MessagingConversationSendMessageRequest(
     to: Sequence[dict[str, Any]]
 
 
-class MessagingConversationUpdateRequest(TypedDict):
-    updates: dict[str, Any]
+class MessagingConversationUpdateRequest(TypedDict, total=False):
+    accepts_replies: bool
+    description: str
+    title: str
 
 
-class MessagingEmailReadMessagesRequest(TypedDict):
-    body: dict[str, Any]
+class _MessagingEmailGenerateSummaryRequestRequired(TypedDict):
+    currency: str
+    message: str
+
+
+class MessagingEmailGenerateSummaryRequest(
+    _MessagingEmailGenerateSummaryRequestRequired,
+    total=False,
+):
+    default_placeholders: dict[str, str]
+    to: Sequence[Any]
+
+
+class MessagingEmailReadMessagesRequest(TypedDict, total=False):
+    cursor: dict[str, Any]
+    limit: Any
+    query: dict[str, Any]
+    search: dict[str, Any]
+    sort: dict[str, str]
 
 
 class _MessagingEmailSendRequestRequired(TypedDict):
@@ -12788,14 +12975,6 @@ class MessagingEmailSendRequest(_MessagingEmailSendRequestRequired, total=False)
     template_id: str
     text: str
     to: Sequence[Any]
-
-
-class MessagingEmailSenderDisableRequest(TypedDict):
-    params: dict[str, Any]
-
-
-class MessagingEmailSenderEnableRequest(TypedDict):
-    params: dict[str, Any]
 
 
 class MessagingEmailSenderListManyRequest(TypedDict, total=False):
@@ -12839,10 +13018,7 @@ class MessagingPhoneNumberListQuery(TypedDict, total=False):
 
 
 class _MessagingPhoneNumberPurchaseRequestRequired(TypedDict):
-    callback_url: str
-    config: dict[str, Any]
     country_iso_code: str
-    phone_number: str
     title: str
     type: str
 
@@ -12851,6 +13027,8 @@ class MessagingPhoneNumberPurchaseRequest(
     _MessagingPhoneNumberPurchaseRequestRequired,
     total=False,
 ):
+    callback_url: str
+    config: dict[str, Any]
     description: str
     features: dict[str, Any]
     message_type: str
@@ -12872,14 +13050,12 @@ class MessagingProfileCreateRequest(_MessagingProfileCreateRequestRequired, tota
     verifications_config: dict[str, Any]
 
 
-class _MessagingProfileListRequestRequired(TypedDict):
-    sort: dict[str, str]
-
-
-class MessagingProfileListRequest(_MessagingProfileListRequestRequired, total=False):
+class MessagingProfileListRequest(TypedDict, total=False):
+    cursor: dict[str, Any]
     filter: dict[str, Any]
     limit: Any
     query: dict[str, Any]
+    sort: dict[str, str]
 
 
 class MessagingProfileUpdateEmailConfigRequest(TypedDict):
@@ -12900,21 +13076,16 @@ class MessagingProfileUpdateVerificationsConfigRequest(TypedDict):
     verifications_config: dict[str, Any]
 
 
-class _MessagingSMSBrandListSmsBrandsRequestRequired(TypedDict):
+class MessagingSMSBrandListSmsBrandsRequest(TypedDict, total=False):
+    cursor: dict[str, Any]
+    filter: dict[str, Any]
+    limit: Any
     query: dict[str, Any]
     sort: dict[str, str]
 
 
-class MessagingSMSBrandListSmsBrandsRequest(
-    _MessagingSMSBrandListSmsBrandsRequestRequired,
-    total=False,
-):
-    filter: dict[str, Any]
-    limit: Any
-
-
 class MessagingSMSBrandUpdateSmsBrandRequest(TypedDict):
-    updates: dict[str, Any]
+    display_name: str
 
 
 class _MessagingSMSCampaignCreateSmsCampaignRequestRequired(TypedDict):
@@ -12947,25 +13118,38 @@ class MessagingSMSCampaignCreateSmsCampaignRequest(
     subscriber_opt_in: bool
 
 
-class _MessagingSMSCampaignListSmsCampaignsRequestRequired(TypedDict):
+class MessagingSMSCampaignListSmsCampaignsRequest(TypedDict, total=False):
+    cursor: dict[str, Any]
+    filter: dict[str, Any]
+    limit: Any
     query: dict[str, Any]
     sort: dict[str, str]
 
 
-class MessagingSMSCampaignListSmsCampaignsRequest(
-    _MessagingSMSCampaignListSmsCampaignsRequestRequired,
+class MessagingSMSCampaignUpdateSmsCampaignRequest(TypedDict):
+    title: str
+
+
+class _MessagingSMSGenerateSmsSummaryRequestRequired(TypedDict):
+    currency: str
+    message: str
+
+
+class MessagingSMSGenerateSmsSummaryRequest(
+    _MessagingSMSGenerateSmsSummaryRequestRequired,
     total=False,
 ):
-    filter: dict[str, Any]
+    default_placeholders: dict[str, str]
+    to: Sequence[Any]
+    truncate_message: bool
+
+
+class MessagingSMSReadSmsMessagesRequest(TypedDict, total=False):
+    cursor: dict[str, Any]
     limit: Any
-
-
-class MessagingSMSCampaignUpdateSmsCampaignRequest(TypedDict):
-    updates: dict[str, Any]
-
-
-class MessagingSMSReadSmsMessagesRequest(TypedDict):
-    body: dict[str, Any]
+    query: dict[str, Any]
+    search: dict[str, Any]
+    sort: dict[str, str]
 
 
 class MessagingSMSSendSmsRequest(TypedDict, total=False):
@@ -12997,6 +13181,12 @@ class MessagingSMSSenderPoolCreateSmsSenderPoolRequest(
     total=False,
 ):
     description: str
+
+
+class MessagingSMSSenderUpdateOneSmsSenderRequest(TypedDict, total=False):
+    is_default_sender: bool
+    is_test_sender: bool
+    properties: dict[str, Any]
 
 
 class _MessagingTemplateCreateMessageRequestRequired(TypedDict):
@@ -13059,13 +13249,8 @@ class MessagingVerificationListMessagesRequest(
     total=False,
 ):
     cursor: dict[str, Any]
-    filter: dict[str, Any]
     limit: Any
     sort: dict[str, str]
-
-
-class MessagingVerificationResendRequest(TypedDict):
-    params: dict[str, Any]
 
 
 class _RelayBroadcastCreateChannelRequestRequired(TypedDict):
@@ -13686,6 +13871,10 @@ class StorageContainerListQuery(TypedDict, total=False):
     limit: Any
     is_archived: bool
     query: dict[str, Any]
+
+
+class StorageContainerRequestDeletionQuery(TypedDict, total=False):
+    grace_period_days: Any
 
 
 class StorageContainerUpdateLifecyclePolicyRequest(TypedDict, total=False):

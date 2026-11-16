@@ -46,6 +46,7 @@ class CloudPublishableKeysResource:
             'POST',
             'cloud/publishable-keys/',
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     def list_count(
@@ -72,6 +73,7 @@ class CloudPublishableKeysResource:
             'POST',
             f'cloud/publishable-keys/{encode_path_param(publishable_key_id)}/rotate',
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     def update(
@@ -129,6 +131,7 @@ class AsyncCloudPublishableKeysResource:
             'POST',
             'cloud/publishable-keys/',
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     async def list_count(
@@ -155,6 +158,7 @@ class AsyncCloudPublishableKeysResource:
             'POST',
             f'cloud/publishable-keys/{encode_path_param(publishable_key_id)}/rotate',
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     async def update(

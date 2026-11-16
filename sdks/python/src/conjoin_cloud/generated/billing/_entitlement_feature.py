@@ -53,6 +53,7 @@ class BillingEntitlementFeaturesResource:
             body=data,
             cast_to=BillingEntitlementFeatureCreateResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     def list_count(
@@ -108,6 +109,7 @@ class BillingEntitlementFeaturesResource:
             f'billing/entitlement-features/{encode_path_param(entitlement_feature_id)}/archive',
             cast_to=BillingEntitlementFeatureArchiveResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
 
@@ -141,6 +143,7 @@ class AsyncBillingEntitlementFeaturesResource:
             body=data,
             cast_to=BillingEntitlementFeatureCreateResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     async def list_count(
@@ -196,4 +199,5 @@ class AsyncBillingEntitlementFeaturesResource:
             f'billing/entitlement-features/{encode_path_param(entitlement_feature_id)}/archive',
             cast_to=BillingEntitlementFeatureArchiveResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )

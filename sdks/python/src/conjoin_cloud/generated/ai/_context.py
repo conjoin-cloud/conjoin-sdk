@@ -54,6 +54,7 @@ class AiContextsResource:
             body=data,
             cast_to=AiContextCreateIndexResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     def read_index(
@@ -93,6 +94,7 @@ class AiContextsResource:
             f'ai/context/indexes/{encode_path_param(index_id)}/sync',
             cast_to=AiContextSyncIndexResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     def query(
@@ -107,6 +109,7 @@ class AiContextsResource:
             body=data,
             cast_to=AiContextQueryResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     def list_query_logs(
@@ -154,6 +157,7 @@ class AsyncAiContextsResource:
             body=data,
             cast_to=AiContextCreateIndexResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     async def read_index(
@@ -193,6 +197,7 @@ class AsyncAiContextsResource:
             f'ai/context/indexes/{encode_path_param(index_id)}/sync',
             cast_to=AiContextSyncIndexResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     async def query(
@@ -207,6 +212,7 @@ class AsyncAiContextsResource:
             body=data,
             cast_to=AiContextQueryResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     async def list_query_logs(

@@ -56,6 +56,7 @@ class CloudWebhooksResource:
             body=data,
             cast_to=CloudWebhookRegisterResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     def read_count(
@@ -171,6 +172,7 @@ class AsyncCloudWebhooksResource:
             body=data,
             cast_to=CloudWebhookRegisterResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     async def read_count(

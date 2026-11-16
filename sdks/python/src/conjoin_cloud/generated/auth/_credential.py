@@ -86,6 +86,7 @@ class AuthCredentialsResource:
             cast_to=AuthCredentialCreatePasswordResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     def rotate_password(
@@ -102,6 +103,7 @@ class AuthCredentialsResource:
             cast_to=AuthCredentialRotatePasswordResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     def enroll_totp(
@@ -118,6 +120,7 @@ class AuthCredentialsResource:
             cast_to=AuthCredentialEnrollTotpResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     def activate_totp(
@@ -134,6 +137,7 @@ class AuthCredentialsResource:
             cast_to=AuthCredentialActivateTotpResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     def rotate_totp_recovery_codes(
@@ -150,6 +154,7 @@ class AuthCredentialsResource:
             cast_to=AuthCredentialRotateTotpRecoveryCodesResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     def consume_totp_recovery_code(
@@ -166,6 +171,7 @@ class AuthCredentialsResource:
             cast_to=AuthCredentialConsumeTotpRecoveryCodeResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     def enroll_sms_mfa(
@@ -182,6 +188,7 @@ class AuthCredentialsResource:
             cast_to=AuthCredentialEnrollSmsMfaResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     def send_sms_mfa_activation_code(
@@ -196,6 +203,7 @@ class AuthCredentialsResource:
             cast_to=AuthCredentialSendSmsMfaActivationCodeResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     def activate_sms_mfa(
@@ -212,6 +220,7 @@ class AuthCredentialsResource:
             cast_to=AuthCredentialActivateSmsMfaResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     def verify_sms_mfa(
@@ -228,6 +237,7 @@ class AuthCredentialsResource:
             cast_to=AuthCredentialVerifySmsMfaResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     def send_sms_mfa_challenge(
@@ -242,6 +252,7 @@ class AuthCredentialsResource:
             cast_to=AuthCredentialSendSmsMfaChallengeResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     def read_api_key_usage(
@@ -272,6 +283,7 @@ class AuthCredentialsResource:
             cast_to=AuthCredentialIssueApiKeyResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     def rotate_api_key(
@@ -292,6 +304,7 @@ class AuthCredentialsResource:
             cast_to=AuthCredentialRotateApiKeyResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     def revoke_api_key(
@@ -312,6 +325,7 @@ class AuthCredentialsResource:
             cast_to=AuthCredentialRevokeApiKeyResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     def start_passkey_registration(
@@ -328,6 +342,7 @@ class AuthCredentialsResource:
             cast_to=AuthCredentialStartPasskeyRegistrationResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     def verify_passkey_registration(
@@ -344,6 +359,7 @@ class AuthCredentialsResource:
             cast_to=AuthCredentialVerifyPasskeyRegistrationResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     def start_passkeyentication(
@@ -358,6 +374,7 @@ class AuthCredentialsResource:
             cast_to=AuthCredentialStartPasskeyenticationResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     def verify_passkeyentication(
@@ -374,6 +391,7 @@ class AuthCredentialsResource:
             cast_to=AuthCredentialVerifyPasskeyenticationResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
 
@@ -415,6 +433,7 @@ class AsyncAuthCredentialsResource:
             cast_to=AuthCredentialCreatePasswordResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     async def rotate_password(
@@ -431,6 +450,7 @@ class AsyncAuthCredentialsResource:
             cast_to=AuthCredentialRotatePasswordResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     async def enroll_totp(
@@ -447,6 +467,7 @@ class AsyncAuthCredentialsResource:
             cast_to=AuthCredentialEnrollTotpResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     async def activate_totp(
@@ -463,6 +484,7 @@ class AsyncAuthCredentialsResource:
             cast_to=AuthCredentialActivateTotpResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     async def rotate_totp_recovery_codes(
@@ -479,6 +501,7 @@ class AsyncAuthCredentialsResource:
             cast_to=AuthCredentialRotateTotpRecoveryCodesResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     async def consume_totp_recovery_code(
@@ -495,6 +518,7 @@ class AsyncAuthCredentialsResource:
             cast_to=AuthCredentialConsumeTotpRecoveryCodeResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     async def enroll_sms_mfa(
@@ -511,6 +535,7 @@ class AsyncAuthCredentialsResource:
             cast_to=AuthCredentialEnrollSmsMfaResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     async def send_sms_mfa_activation_code(
@@ -525,6 +550,7 @@ class AsyncAuthCredentialsResource:
             cast_to=AuthCredentialSendSmsMfaActivationCodeResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     async def activate_sms_mfa(
@@ -541,6 +567,7 @@ class AsyncAuthCredentialsResource:
             cast_to=AuthCredentialActivateSmsMfaResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     async def verify_sms_mfa(
@@ -557,6 +584,7 @@ class AsyncAuthCredentialsResource:
             cast_to=AuthCredentialVerifySmsMfaResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     async def send_sms_mfa_challenge(
@@ -571,6 +599,7 @@ class AsyncAuthCredentialsResource:
             cast_to=AuthCredentialSendSmsMfaChallengeResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     async def read_api_key_usage(
@@ -601,6 +630,7 @@ class AsyncAuthCredentialsResource:
             cast_to=AuthCredentialIssueApiKeyResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     async def rotate_api_key(
@@ -621,6 +651,7 @@ class AsyncAuthCredentialsResource:
             cast_to=AuthCredentialRotateApiKeyResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     async def revoke_api_key(
@@ -641,6 +672,7 @@ class AsyncAuthCredentialsResource:
             cast_to=AuthCredentialRevokeApiKeyResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     async def start_passkey_registration(
@@ -657,6 +689,7 @@ class AsyncAuthCredentialsResource:
             cast_to=AuthCredentialStartPasskeyRegistrationResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     async def verify_passkey_registration(
@@ -673,6 +706,7 @@ class AsyncAuthCredentialsResource:
             cast_to=AuthCredentialVerifyPasskeyRegistrationResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     async def start_passkeyentication(
@@ -687,6 +721,7 @@ class AsyncAuthCredentialsResource:
             cast_to=AuthCredentialStartPasskeyenticationResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     async def verify_passkeyentication(
@@ -703,4 +738,5 @@ class AsyncAuthCredentialsResource:
             cast_to=AuthCredentialVerifyPasskeyenticationResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )

@@ -50,6 +50,7 @@ class BillingPaymentIntentsResource:
             body=data,
             request_options=request_options,
             scopes=('billing_entity_id',),
+            accepts_idempotency_key=True,
         )
 
     def list_count(
@@ -79,6 +80,7 @@ class BillingPaymentIntentsResource:
             cast_to=BillingPaymentIntentVerifyResponse,
             request_options=request_options,
             scopes=('billing_entity_id',),
+            accepts_idempotency_key=True,
         )
 
 
@@ -113,6 +115,7 @@ class AsyncBillingPaymentIntentsResource:
             body=data,
             request_options=request_options,
             scopes=('billing_entity_id',),
+            accepts_idempotency_key=True,
         )
 
     async def list_count(
@@ -142,4 +145,5 @@ class AsyncBillingPaymentIntentsResource:
             cast_to=BillingPaymentIntentVerifyResponse,
             request_options=request_options,
             scopes=('billing_entity_id',),
+            accepts_idempotency_key=True,
         )

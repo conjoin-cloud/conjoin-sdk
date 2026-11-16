@@ -64,6 +64,7 @@ class RelaySchedulersResource:
             body=data,
             cast_to=RelaySchedulerCreateDefinitionResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     def read_executions(
@@ -136,6 +137,7 @@ class RelaySchedulersResource:
             f'relay/schedules/{encode_path_param(schedule_id)}/pause',
             cast_to=RelaySchedulerPauseResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     def resume(
@@ -149,6 +151,7 @@ class RelaySchedulersResource:
             f'relay/schedules/{encode_path_param(schedule_id)}/resume',
             cast_to=RelaySchedulerResumeResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     def cancel(
@@ -162,6 +165,7 @@ class RelaySchedulersResource:
             f'relay/schedules/{encode_path_param(schedule_id)}/cancel',
             cast_to=RelaySchedulerCancelResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     def trigger_execution(
@@ -175,6 +179,7 @@ class RelaySchedulersResource:
             f'relay/schedules/{encode_path_param(schedule_id)}/trigger',
             cast_to=RelaySchedulerTriggerExecutionResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     def read_executions_count(
@@ -222,6 +227,7 @@ class RelaySchedulersResource:
             ),
             cast_to=RelaySchedulerReplayDeadLetterEntryResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
 
@@ -255,6 +261,7 @@ class AsyncRelaySchedulersResource:
             body=data,
             cast_to=RelaySchedulerCreateDefinitionResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     async def read_executions(
@@ -327,6 +334,7 @@ class AsyncRelaySchedulersResource:
             f'relay/schedules/{encode_path_param(schedule_id)}/pause',
             cast_to=RelaySchedulerPauseResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     async def resume(
@@ -340,6 +348,7 @@ class AsyncRelaySchedulersResource:
             f'relay/schedules/{encode_path_param(schedule_id)}/resume',
             cast_to=RelaySchedulerResumeResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     async def cancel(
@@ -353,6 +362,7 @@ class AsyncRelaySchedulersResource:
             f'relay/schedules/{encode_path_param(schedule_id)}/cancel',
             cast_to=RelaySchedulerCancelResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     async def trigger_execution(
@@ -366,6 +376,7 @@ class AsyncRelaySchedulersResource:
             f'relay/schedules/{encode_path_param(schedule_id)}/trigger',
             cast_to=RelaySchedulerTriggerExecutionResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     async def read_executions_count(
@@ -413,4 +424,5 @@ class AsyncRelaySchedulersResource:
             ),
             cast_to=RelaySchedulerReplayDeadLetterEntryResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )

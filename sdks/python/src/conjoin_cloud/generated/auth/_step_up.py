@@ -36,6 +36,7 @@ class AuthStepUpsResource:
             cast_to=AuthStepUpRequestResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     def verify(
@@ -52,6 +53,7 @@ class AuthStepUpsResource:
             cast_to=AuthStepUpVerifyResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     def validate_(
@@ -68,6 +70,7 @@ class AuthStepUpsResource:
             cast_to=AuthStepUpValidateResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
 
@@ -89,6 +92,7 @@ class AsyncAuthStepUpsResource:
             cast_to=AuthStepUpRequestResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     async def verify(
@@ -105,6 +109,7 @@ class AsyncAuthStepUpsResource:
             cast_to=AuthStepUpVerifyResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     async def validate_(
@@ -121,4 +126,5 @@ class AsyncAuthStepUpsResource:
             cast_to=AuthStepUpValidateResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )

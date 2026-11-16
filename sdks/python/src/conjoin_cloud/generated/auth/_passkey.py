@@ -4,6 +4,8 @@ from collections.abc import Mapping
 from typing import TYPE_CHECKING, Any
 
 from conjoin_cloud._models import AsyncPage, Page
+from conjoin_cloud._credential import Credential
+from conjoin_cloud._declared_headers import DeclaredHeader
 from conjoin_cloud._request_options import RequestOptions
 from conjoin_cloud._url import encode_path_param
 from conjoin_cloud.generated._models import (
@@ -78,6 +80,8 @@ class AuthPasskeysResource:
         account_id: str,
         passkey_id: str,
         *,
+        step_up_session_id: str | None = None,
+        step_up_token: Credential | None = None,
         request_options: RequestOptions | Mapping[str, Any] | None = None,
     ) -> AuthPasskeyDeleteResponse:
         return self._client.request(
@@ -89,6 +93,24 @@ class AuthPasskeysResource:
             cast_to=AuthPasskeyDeleteResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            declared_headers=(
+                DeclaredHeader(
+                    name='Step-Up-Session-ID',
+                    argument='step_up_session_id',
+                    value=step_up_session_id,
+                    min_length=1,
+                    max_length=48,
+                ),
+                DeclaredHeader(
+                    name='Step-Up-Token',
+                    argument='step_up_token',
+                    value=step_up_token,
+                    credential=True,
+                    min_length=1,
+                    max_length=256,
+                    pattern='^[0-9a-f]+$',
+                ),
+            ),
         )
 
 
@@ -151,6 +173,8 @@ class AsyncAuthPasskeysResource:
         account_id: str,
         passkey_id: str,
         *,
+        step_up_session_id: str | None = None,
+        step_up_token: Credential | None = None,
         request_options: RequestOptions | Mapping[str, Any] | None = None,
     ) -> AuthPasskeyDeleteResponse:
         return await self._client.request(
@@ -162,4 +186,22 @@ class AsyncAuthPasskeysResource:
             cast_to=AuthPasskeyDeleteResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            declared_headers=(
+                DeclaredHeader(
+                    name='Step-Up-Session-ID',
+                    argument='step_up_session_id',
+                    value=step_up_session_id,
+                    min_length=1,
+                    max_length=48,
+                ),
+                DeclaredHeader(
+                    name='Step-Up-Token',
+                    argument='step_up_token',
+                    value=step_up_token,
+                    credential=True,
+                    min_length=1,
+                    max_length=256,
+                    pattern='^[0-9a-f]+$',
+                ),
+            ),
         )

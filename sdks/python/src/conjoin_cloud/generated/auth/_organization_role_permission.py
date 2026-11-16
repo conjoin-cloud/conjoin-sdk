@@ -75,6 +75,7 @@ class AuthOrganizationRolePermissionsResource:
             cast_to=list[AuthOrganizationRolePermissionAssignOrgRolePermissionItem],
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     def remove_role_permission(
@@ -95,6 +96,7 @@ class AuthOrganizationRolePermissionsResource:
             cast_to=AuthOrganizationRolePermissionRemoveRolePermissionResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
 
@@ -152,6 +154,7 @@ class AsyncAuthOrganizationRolePermissionsResource:
             cast_to=list[AuthOrganizationRolePermissionAssignOrgRolePermissionItem],
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     async def remove_role_permission(
@@ -172,4 +175,5 @@ class AsyncAuthOrganizationRolePermissionsResource:
             cast_to=AuthOrganizationRolePermissionRemoveRolePermissionResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )

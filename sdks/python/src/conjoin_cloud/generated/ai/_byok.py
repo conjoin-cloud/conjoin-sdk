@@ -52,6 +52,7 @@ class AiBYOKsResource:
             body=data,
             cast_to=AiBYOKCreateByokConfigResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     def read_byok_config(
@@ -106,6 +107,7 @@ class AiBYOKsResource:
             f'ai/byok/{encode_path_param(byok_config_id)}/test',
             cast_to=AiBYOKTestByokConnectionResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
 
@@ -139,6 +141,7 @@ class AsyncAiBYOKsResource:
             body=data,
             cast_to=AiBYOKCreateByokConfigResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     async def read_byok_config(
@@ -193,4 +196,5 @@ class AsyncAiBYOKsResource:
             f'ai/byok/{encode_path_param(byok_config_id)}/test',
             cast_to=AiBYOKTestByokConnectionResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )

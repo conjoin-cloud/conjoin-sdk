@@ -50,6 +50,7 @@ class CloudAPIKeysResource:
             'cloud/api-keys/',
             body=data,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     def read_api_keys_count(
@@ -78,6 +79,7 @@ class CloudAPIKeysResource:
             f'cloud/api-keys/{encode_path_param(api_key_id)}/regenerate',
             body=data,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     def update_api_key(
@@ -137,6 +139,7 @@ class AsyncCloudAPIKeysResource:
             'cloud/api-keys/',
             body=data,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     async def read_api_keys_count(
@@ -165,6 +168,7 @@ class AsyncCloudAPIKeysResource:
             f'cloud/api-keys/{encode_path_param(api_key_id)}/regenerate',
             body=data,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     async def update_api_key(

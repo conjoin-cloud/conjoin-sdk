@@ -55,6 +55,7 @@ class BillingCreditWalletsResource:
             cast_to=BillingCreditWalletCreateResponse,
             request_options=request_options,
             scopes=('billing_entity_id',),
+            accepts_idempotency_key=True,
         )
 
     def list_count(
@@ -102,6 +103,7 @@ class BillingCreditWalletsResource:
             cast_to=BillingCreditWalletGrantCreditsResponse,
             request_options=request_options,
             scopes=('billing_entity_id',),
+            accepts_idempotency_key=True,
         )
 
 
@@ -137,6 +139,7 @@ class AsyncBillingCreditWalletsResource:
             cast_to=BillingCreditWalletCreateResponse,
             request_options=request_options,
             scopes=('billing_entity_id',),
+            accepts_idempotency_key=True,
         )
 
     async def list_count(
@@ -184,4 +187,5 @@ class AsyncBillingCreditWalletsResource:
             cast_to=BillingCreditWalletGrantCreditsResponse,
             request_options=request_options,
             scopes=('billing_entity_id',),
+            accepts_idempotency_key=True,
         )

@@ -67,6 +67,7 @@ class BillingPriceBundlesResource:
             cast_to=BillingPriceBundleActivateResponse,
             request_options=request_options,
             scopes=('billing_entity_id',),
+            accepts_idempotency_key=True,
         )
 
     def list_activations_count(
@@ -101,6 +102,7 @@ class BillingPriceBundlesResource:
             cast_to=BillingPriceBundleDeactivateResponse,
             request_options=request_options,
             scopes=('billing_entity_id',),
+            accepts_idempotency_key=True,
         )
 
     def read_available_bundle_transitions(
@@ -146,6 +148,7 @@ class BillingPriceBundlesResource:
             cast_to=BillingPriceBundleCreateResponse,
             request_options=request_options,
             scopes=('billing_entity_id',),
+            accepts_idempotency_key=True,
         )
 
     def list_count(
@@ -205,6 +208,7 @@ class BillingPriceBundlesResource:
             cast_to=BillingPriceBundleArchiveResponse,
             request_options=request_options,
             scopes=('billing_entity_id',),
+            accepts_idempotency_key=True,
         )
 
     def restore(
@@ -219,6 +223,7 @@ class BillingPriceBundlesResource:
             cast_to=BillingPriceBundleRestoreResponse,
             request_options=request_options,
             scopes=('billing_entity_id',),
+            accepts_idempotency_key=True,
         )
 
     def publish(
@@ -233,6 +238,7 @@ class BillingPriceBundlesResource:
             cast_to=BillingPriceBundlePublishResponse,
             request_options=request_options,
             scopes=('billing_entity_id',),
+            accepts_idempotency_key=True,
         )
 
 
@@ -268,6 +274,7 @@ class AsyncBillingPriceBundlesResource:
             cast_to=BillingPriceBundleActivateResponse,
             request_options=request_options,
             scopes=('billing_entity_id',),
+            accepts_idempotency_key=True,
         )
 
     async def list_activations_count(
@@ -302,6 +309,7 @@ class AsyncBillingPriceBundlesResource:
             cast_to=BillingPriceBundleDeactivateResponse,
             request_options=request_options,
             scopes=('billing_entity_id',),
+            accepts_idempotency_key=True,
         )
 
     async def read_available_bundle_transitions(
@@ -347,6 +355,7 @@ class AsyncBillingPriceBundlesResource:
             cast_to=BillingPriceBundleCreateResponse,
             request_options=request_options,
             scopes=('billing_entity_id',),
+            accepts_idempotency_key=True,
         )
 
     async def list_count(
@@ -406,6 +415,7 @@ class AsyncBillingPriceBundlesResource:
             cast_to=BillingPriceBundleArchiveResponse,
             request_options=request_options,
             scopes=('billing_entity_id',),
+            accepts_idempotency_key=True,
         )
 
     async def restore(
@@ -420,6 +430,7 @@ class AsyncBillingPriceBundlesResource:
             cast_to=BillingPriceBundleRestoreResponse,
             request_options=request_options,
             scopes=('billing_entity_id',),
+            accepts_idempotency_key=True,
         )
 
     async def publish(
@@ -434,4 +445,5 @@ class AsyncBillingPriceBundlesResource:
             cast_to=BillingPriceBundlePublishResponse,
             request_options=request_options,
             scopes=('billing_entity_id',),
+            accepts_idempotency_key=True,
         )

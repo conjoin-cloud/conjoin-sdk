@@ -61,6 +61,7 @@ class BillingInvoicesResource:
             cast_to=BillingInvoiceCreateResponse,
             request_options=request_options,
             scopes=('billing_entity_id',),
+            accepts_idempotency_key=True,
         )
 
     def list_count(
@@ -106,6 +107,7 @@ class BillingInvoicesResource:
             cast_to=BillingInvoiceFinalizeResponse,
             request_options=request_options,
             scopes=('billing_entity_id',),
+            accepts_idempotency_key=True,
         )
 
     def pay(
@@ -122,6 +124,7 @@ class BillingInvoicesResource:
             cast_to=BillingInvoicePayResponse,
             request_options=request_options,
             scopes=('billing_entity_id',),
+            accepts_idempotency_key=True,
         )
 
     def void(
@@ -136,6 +139,7 @@ class BillingInvoicesResource:
             cast_to=BillingInvoiceVoidResponse,
             request_options=request_options,
             scopes=('billing_entity_id',),
+            accepts_idempotency_key=True,
         )
 
     def pay_out_of_band(
@@ -152,6 +156,7 @@ class BillingInvoicesResource:
             cast_to=BillingInvoicePayOutOfBandResponse,
             request_options=request_options,
             scopes=('billing_entity_id',),
+            accepts_idempotency_key=True,
         )
 
     def send(
@@ -166,6 +171,7 @@ class BillingInvoicesResource:
             cast_to=BillingInvoiceSendResponse,
             request_options=request_options,
             scopes=('billing_entity_id',),
+            accepts_idempotency_key=True,
         )
 
     def export_pdf(
@@ -180,6 +186,7 @@ class BillingInvoicesResource:
             cast_to=BillingInvoiceExportPdfResponse,
             request_options=request_options,
             scopes=('billing_entity_id',),
+            accepts_idempotency_key=True,
         )
 
 
@@ -215,6 +222,7 @@ class AsyncBillingInvoicesResource:
             cast_to=BillingInvoiceCreateResponse,
             request_options=request_options,
             scopes=('billing_entity_id',),
+            accepts_idempotency_key=True,
         )
 
     async def list_count(
@@ -260,6 +268,7 @@ class AsyncBillingInvoicesResource:
             cast_to=BillingInvoiceFinalizeResponse,
             request_options=request_options,
             scopes=('billing_entity_id',),
+            accepts_idempotency_key=True,
         )
 
     async def pay(
@@ -276,6 +285,7 @@ class AsyncBillingInvoicesResource:
             cast_to=BillingInvoicePayResponse,
             request_options=request_options,
             scopes=('billing_entity_id',),
+            accepts_idempotency_key=True,
         )
 
     async def void(
@@ -290,6 +300,7 @@ class AsyncBillingInvoicesResource:
             cast_to=BillingInvoiceVoidResponse,
             request_options=request_options,
             scopes=('billing_entity_id',),
+            accepts_idempotency_key=True,
         )
 
     async def pay_out_of_band(
@@ -306,6 +317,7 @@ class AsyncBillingInvoicesResource:
             cast_to=BillingInvoicePayOutOfBandResponse,
             request_options=request_options,
             scopes=('billing_entity_id',),
+            accepts_idempotency_key=True,
         )
 
     async def send(
@@ -320,6 +332,7 @@ class AsyncBillingInvoicesResource:
             cast_to=BillingInvoiceSendResponse,
             request_options=request_options,
             scopes=('billing_entity_id',),
+            accepts_idempotency_key=True,
         )
 
     async def export_pdf(
@@ -334,4 +347,5 @@ class AsyncBillingInvoicesResource:
             cast_to=BillingInvoiceExportPdfResponse,
             request_options=request_options,
             scopes=('billing_entity_id',),
+            accepts_idempotency_key=True,
         )

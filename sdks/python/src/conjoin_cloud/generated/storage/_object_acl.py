@@ -39,6 +39,7 @@ class StorageObjectACLsResource:
             body=data,
             cast_to=StorageObjectACLGrantObjectAclResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     def revoke_object_acl(
@@ -58,6 +59,7 @@ class StorageObjectACLsResource:
             body=data,
             cast_to=StorageObjectACLRevokeObjectAclResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     def set_object_public(
@@ -101,6 +103,7 @@ class AsyncStorageObjectACLsResource:
             body=data,
             cast_to=StorageObjectACLGrantObjectAclResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     async def revoke_object_acl(
@@ -120,6 +123,7 @@ class AsyncStorageObjectACLsResource:
             body=data,
             cast_to=StorageObjectACLRevokeObjectAclResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     async def set_object_public(

@@ -32,6 +32,7 @@ class AuthDeprovisioningsResource:
             cast_to=AuthDeprovisioningDeprovisionAccountResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
 
@@ -53,4 +54,5 @@ class AsyncAuthDeprovisioningsResource:
             cast_to=AuthDeprovisioningDeprovisionAccountResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )

@@ -71,6 +71,7 @@ class RelayEventsResource:
             body=data,
             cast_to=RelayEventsCreateEventChannelResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     def read_event_subscriptions(
@@ -101,6 +102,7 @@ class RelayEventsResource:
             body=data,
             cast_to=RelayEventsCreateEventSubscriptionResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     def read(
@@ -227,6 +229,7 @@ class RelayEventsResource:
             ),
             cast_to=RelayEventsPauseEventSubscriptionResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     def resume_event_subscription(
@@ -244,6 +247,7 @@ class RelayEventsResource:
             ),
             cast_to=RelayEventsResumeEventSubscriptionResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     def publish_event(
@@ -259,6 +263,7 @@ class RelayEventsResource:
             body=data,
             cast_to=RelayEventsPublishEventResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     def read_count(
@@ -289,6 +294,7 @@ class RelayEventsResource:
             body=data,
             cast_to=RelayEventsReplayResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
             unwrap_data=False,
         )
 
@@ -323,6 +329,7 @@ class AsyncRelayEventsResource:
             body=data,
             cast_to=RelayEventsCreateEventChannelResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     async def read_event_subscriptions(
@@ -353,6 +360,7 @@ class AsyncRelayEventsResource:
             body=data,
             cast_to=RelayEventsCreateEventSubscriptionResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     async def read(
@@ -479,6 +487,7 @@ class AsyncRelayEventsResource:
             ),
             cast_to=RelayEventsPauseEventSubscriptionResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     async def resume_event_subscription(
@@ -496,6 +505,7 @@ class AsyncRelayEventsResource:
             ),
             cast_to=RelayEventsResumeEventSubscriptionResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     async def publish_event(
@@ -511,6 +521,7 @@ class AsyncRelayEventsResource:
             body=data,
             cast_to=RelayEventsPublishEventResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     async def read_count(
@@ -541,5 +552,6 @@ class AsyncRelayEventsResource:
             body=data,
             cast_to=RelayEventsReplayResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
             unwrap_data=False,
         )

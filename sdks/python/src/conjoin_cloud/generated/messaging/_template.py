@@ -40,6 +40,7 @@ class MessagingTemplatesResource:
             cast_to=MessagingTemplateCreateMessageResponse,
             request_options=request_options,
             scopes=('messaging_profile_id',),
+            accepts_idempotency_key=True,
         )
 
     def list_message(
@@ -55,6 +56,7 @@ class MessagingTemplatesResource:
             cast_to=Page[MessagingTemplateListMessageItem],
             request_options=request_options,
             scopes=('messaging_profile_id',),
+            accepts_idempotency_key=True,
         )
 
     def read_message(
@@ -135,6 +137,7 @@ class AsyncMessagingTemplatesResource:
             cast_to=MessagingTemplateCreateMessageResponse,
             request_options=request_options,
             scopes=('messaging_profile_id',),
+            accepts_idempotency_key=True,
         )
 
     async def list_message(
@@ -150,6 +153,7 @@ class AsyncMessagingTemplatesResource:
             cast_to=AsyncPage[MessagingTemplateListMessageItem],
             request_options=request_options,
             scopes=('messaging_profile_id',),
+            accepts_idempotency_key=True,
         )
 
     async def read_message(

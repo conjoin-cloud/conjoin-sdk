@@ -52,6 +52,7 @@ class BillingDiscountsResource:
             cast_to=BillingDiscountCreateResponse,
             request_options=request_options,
             scopes=('billing_entity_id',),
+            accepts_idempotency_key=True,
         )
 
     def list_count(
@@ -116,6 +117,7 @@ class AsyncBillingDiscountsResource:
             cast_to=BillingDiscountCreateResponse,
             request_options=request_options,
             scopes=('billing_entity_id',),
+            accepts_idempotency_key=True,
         )
 
     async def list_count(

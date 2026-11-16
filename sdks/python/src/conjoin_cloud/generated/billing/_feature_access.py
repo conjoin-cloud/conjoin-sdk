@@ -32,6 +32,7 @@ class BillingFeatureAccessesResource:
             cast_to=BillingFeatureAccessCheckEntitlementResponse,
             request_options=request_options,
             scopes=('billing_entity_id',),
+            accepts_idempotency_key=True,
         )
 
     def track_feature_usage(
@@ -47,6 +48,7 @@ class BillingFeatureAccessesResource:
             cast_to=BillingFeatureAccessTrackFeatureUsageResponse,
             request_options=request_options,
             scopes=('billing_entity_id',),
+            accepts_idempotency_key=True,
         )
 
 
@@ -67,6 +69,7 @@ class AsyncBillingFeatureAccessesResource:
             cast_to=BillingFeatureAccessCheckEntitlementResponse,
             request_options=request_options,
             scopes=('billing_entity_id',),
+            accepts_idempotency_key=True,
         )
 
     async def track_feature_usage(
@@ -82,4 +85,5 @@ class AsyncBillingFeatureAccessesResource:
             cast_to=BillingFeatureAccessTrackFeatureUsageResponse,
             request_options=request_options,
             scopes=('billing_entity_id',),
+            accepts_idempotency_key=True,
         )

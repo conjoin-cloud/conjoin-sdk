@@ -12,6 +12,7 @@ from conjoin_cloud.generated._models import (
     MessagingSMSSenderEnableSmsSenderResponse,
     MessagingSMSSenderListSmsSenderResponse,
     MessagingSMSSenderTransferSmsSenderResponse,
+    MessagingSMSSenderUpdateOneSmsSenderRequest,
     MessagingSMSSenderUpdateOneSmsSenderResponse,
 )
 
@@ -36,6 +37,7 @@ class MessagingSMSSendersResource:
             cast_to=MessagingSMSSenderCreateSmsSenderResponse,
             request_options=request_options,
             scopes=('messaging_profile_id',),
+            accepts_idempotency_key=True,
         )
 
     def enable_sms_sender(
@@ -83,12 +85,14 @@ class MessagingSMSSendersResource:
     def update_one_sms_sender(
         self,
         sender_id: str,
+        data: MessagingSMSSenderUpdateOneSmsSenderRequest,
         *,
         request_options: RequestOptions | Mapping[str, Any] | None = None,
     ) -> MessagingSMSSenderUpdateOneSmsSenderResponse:
         return self._client.request(
             'PATCH',
             f'messaging/sms/senders/{encode_path_param(sender_id)}',
+            body=data,
             cast_to=MessagingSMSSenderUpdateOneSmsSenderResponse,
             request_options=request_options,
             scopes=('messaging_profile_id',),
@@ -144,6 +148,7 @@ class AsyncMessagingSMSSendersResource:
             cast_to=MessagingSMSSenderCreateSmsSenderResponse,
             request_options=request_options,
             scopes=('messaging_profile_id',),
+            accepts_idempotency_key=True,
         )
 
     async def enable_sms_sender(
@@ -191,12 +196,14 @@ class AsyncMessagingSMSSendersResource:
     async def update_one_sms_sender(
         self,
         sender_id: str,
+        data: MessagingSMSSenderUpdateOneSmsSenderRequest,
         *,
         request_options: RequestOptions | Mapping[str, Any] | None = None,
     ) -> MessagingSMSSenderUpdateOneSmsSenderResponse:
         return await self._client.request(
             'PATCH',
             f'messaging/sms/senders/{encode_path_param(sender_id)}',
+            body=data,
             cast_to=MessagingSMSSenderUpdateOneSmsSenderResponse,
             request_options=request_options,
             scopes=('messaging_profile_id',),

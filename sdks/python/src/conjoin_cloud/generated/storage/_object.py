@@ -47,6 +47,7 @@ class StorageObjectsResource:
             body=data,
             cast_to=StorageObjectCreateUploadSignedUrlResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     def create_download_signed_url(
@@ -62,6 +63,7 @@ class StorageObjectsResource:
             body=data,
             cast_to=StorageObjectCreateDownloadSignedUrlResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     def rename(
@@ -170,6 +172,7 @@ class StorageObjectsResource:
             body=data,
             cast_to=StorageObjectRestoreVersionResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     def check_duplicate(
@@ -237,6 +240,7 @@ class AsyncStorageObjectsResource:
             body=data,
             cast_to=StorageObjectCreateUploadSignedUrlResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     async def create_download_signed_url(
@@ -252,6 +256,7 @@ class AsyncStorageObjectsResource:
             body=data,
             cast_to=StorageObjectCreateDownloadSignedUrlResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     async def rename(
@@ -360,6 +365,7 @@ class AsyncStorageObjectsResource:
             body=data,
             cast_to=StorageObjectRestoreVersionResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     async def check_duplicate(

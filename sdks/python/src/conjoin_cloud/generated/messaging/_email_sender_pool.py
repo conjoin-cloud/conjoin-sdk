@@ -35,6 +35,7 @@ class MessagingEmailSenderPoolsResource:
             cast_to=MessagingEmailSenderPoolCreateResponse,
             request_options=request_options,
             scopes=('messaging_profile_id',),
+            accepts_idempotency_key=True,
         )
 
     def add_email_senders_to_pool(
@@ -51,6 +52,7 @@ class MessagingEmailSenderPoolsResource:
             cast_to=MessagingEmailSenderPoolAddEmailSendersToPoolResponse,
             request_options=request_options,
             scopes=('messaging_profile_id',),
+            accepts_idempotency_key=True,
         )
 
     def get(
@@ -99,6 +101,7 @@ class AsyncMessagingEmailSenderPoolsResource:
             cast_to=MessagingEmailSenderPoolCreateResponse,
             request_options=request_options,
             scopes=('messaging_profile_id',),
+            accepts_idempotency_key=True,
         )
 
     async def add_email_senders_to_pool(
@@ -115,6 +118,7 @@ class AsyncMessagingEmailSenderPoolsResource:
             cast_to=MessagingEmailSenderPoolAddEmailSendersToPoolResponse,
             request_options=request_options,
             scopes=('messaging_profile_id',),
+            accepts_idempotency_key=True,
         )
 
     async def get(

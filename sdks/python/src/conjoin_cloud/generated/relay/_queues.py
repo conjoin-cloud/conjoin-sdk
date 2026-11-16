@@ -69,6 +69,7 @@ class RelayQueuesResource:
             body=data,
             cast_to=RelayQueuesCreateQueueDefinitionResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     def read_queue_tasks(
@@ -99,6 +100,7 @@ class RelayQueuesResource:
             body=data,
             cast_to=RelayQueuesEnqueueTaskResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     def read_dead_letter_tasks(
@@ -169,6 +171,7 @@ class RelayQueuesResource:
             f'relay/queues/{encode_path_param(queue_id)}/pause',
             cast_to=RelayQueuesPauseQueueResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     def resume_queue(
@@ -182,6 +185,7 @@ class RelayQueuesResource:
             f'relay/queues/{encode_path_param(queue_id)}/resume',
             cast_to=RelayQueuesResumeQueueResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     def batch_enqueue_tasks(
@@ -197,6 +201,7 @@ class RelayQueuesResource:
             body=data,
             cast_to=RelayQueuesBatchEnqueueTasksResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     def read_queue_tasks_count(
@@ -244,6 +249,7 @@ class RelayQueuesResource:
             ),
             cast_to=RelayQueuesReplayDeadLetterTaskResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     def purge_queue_tasks(
@@ -259,6 +265,7 @@ class RelayQueuesResource:
             body=data,
             cast_to=RelayQueuesPurgeQueueTasksResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
 
@@ -292,6 +299,7 @@ class AsyncRelayQueuesResource:
             body=data,
             cast_to=RelayQueuesCreateQueueDefinitionResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     async def read_queue_tasks(
@@ -322,6 +330,7 @@ class AsyncRelayQueuesResource:
             body=data,
             cast_to=RelayQueuesEnqueueTaskResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     async def read_dead_letter_tasks(
@@ -392,6 +401,7 @@ class AsyncRelayQueuesResource:
             f'relay/queues/{encode_path_param(queue_id)}/pause',
             cast_to=RelayQueuesPauseQueueResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     async def resume_queue(
@@ -405,6 +415,7 @@ class AsyncRelayQueuesResource:
             f'relay/queues/{encode_path_param(queue_id)}/resume',
             cast_to=RelayQueuesResumeQueueResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     async def batch_enqueue_tasks(
@@ -420,6 +431,7 @@ class AsyncRelayQueuesResource:
             body=data,
             cast_to=RelayQueuesBatchEnqueueTasksResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     async def read_queue_tasks_count(
@@ -467,6 +479,7 @@ class AsyncRelayQueuesResource:
             ),
             cast_to=RelayQueuesReplayDeadLetterTaskResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     async def purge_queue_tasks(
@@ -482,4 +495,5 @@ class AsyncRelayQueuesResource:
             body=data,
             cast_to=RelayQueuesPurgeQueueTasksResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )

@@ -64,6 +64,7 @@ class RelayPipelinesResource:
             body=data,
             cast_to=RelayPipelinesCreatePipelineDefinitionResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     def read_pipeline_definitions_count(
@@ -121,6 +122,7 @@ class RelayPipelinesResource:
             body=data,
             cast_to=RelayPipelinesTriggerPipelineRunResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     def read_pipeline_runs(
@@ -175,6 +177,7 @@ class RelayPipelinesResource:
             f'relay/pipeline-runs/{encode_path_param(pipeline_run_id)}/cancel',
             cast_to=RelayPipelinesCancelPipelineRunResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     def approve_pipeline_gate(
@@ -194,6 +197,7 @@ class RelayPipelinesResource:
             body=data,
             cast_to=RelayPipelinesApprovePipelineGateResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     def reject_pipeline_gate(
@@ -213,6 +217,7 @@ class RelayPipelinesResource:
             body=data,
             cast_to=RelayPipelinesRejectPipelineGateResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
 
@@ -246,6 +251,7 @@ class AsyncRelayPipelinesResource:
             body=data,
             cast_to=RelayPipelinesCreatePipelineDefinitionResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     async def read_pipeline_definitions_count(
@@ -303,6 +309,7 @@ class AsyncRelayPipelinesResource:
             body=data,
             cast_to=RelayPipelinesTriggerPipelineRunResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     async def read_pipeline_runs(
@@ -357,6 +364,7 @@ class AsyncRelayPipelinesResource:
             f'relay/pipeline-runs/{encode_path_param(pipeline_run_id)}/cancel',
             cast_to=RelayPipelinesCancelPipelineRunResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     async def approve_pipeline_gate(
@@ -376,6 +384,7 @@ class AsyncRelayPipelinesResource:
             body=data,
             cast_to=RelayPipelinesApprovePipelineGateResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     async def reject_pipeline_gate(
@@ -395,4 +404,5 @@ class AsyncRelayPipelinesResource:
             body=data,
             cast_to=RelayPipelinesRejectPipelineGateResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )

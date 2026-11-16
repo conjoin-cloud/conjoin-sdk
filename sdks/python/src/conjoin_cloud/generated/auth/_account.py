@@ -4,6 +4,8 @@ from collections.abc import Mapping
 from typing import TYPE_CHECKING, Any
 
 from conjoin_cloud._models import AsyncPage, Page
+from conjoin_cloud._credential import Credential
+from conjoin_cloud._declared_headers import DeclaredHeader
 from conjoin_cloud._request_options import RequestOptions
 from conjoin_cloud._url import encode_path_param
 from conjoin_cloud.generated._models import (
@@ -13,6 +15,7 @@ from conjoin_cloud.generated._models import (
     AuthAccountAddPhoneResponse,
     AuthAccountCreateRequest,
     AuthAccountCreateResponse,
+    AuthAccountDeleteQuery,
     AuthAccountDeleteResponse,
     AuthAccountExportResponse,
     AuthAccountGrantGlobalRoleRequest,
@@ -88,6 +91,7 @@ class AuthAccountsResource:
             cast_to=AuthAccountVerifyCredentialResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     def verify_credential_mfa_totp(
@@ -104,6 +108,7 @@ class AuthAccountsResource:
             cast_to=AuthAccountVerifyCredentialMfaTotpResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     def list_credentials_count(
@@ -156,6 +161,7 @@ class AuthAccountsResource:
             cast_to=AuthAccountRemoveCredentialResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     def list(
@@ -186,6 +192,7 @@ class AuthAccountsResource:
             cast_to=AuthAccountCreateResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     def list_organization_memberships(
@@ -232,6 +239,7 @@ class AuthAccountsResource:
             cast_to=AuthAccountMergeResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     def read(
@@ -267,15 +275,37 @@ class AuthAccountsResource:
     def delete(
         self,
         account_id: str,
+        query: AuthAccountDeleteQuery | None = None,
         *,
+        step_up_session_id: str | None = None,
+        step_up_token: Credential | None = None,
         request_options: RequestOptions | Mapping[str, Any] | None = None,
     ) -> AuthAccountDeleteResponse:
         return self._client.request(
             'DELETE',
             f'auth/accounts/{encode_path_param(account_id)}',
+            query=query,
             cast_to=AuthAccountDeleteResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            declared_headers=(
+                DeclaredHeader(
+                    name='Step-Up-Session-ID',
+                    argument='step_up_session_id',
+                    value=step_up_session_id,
+                    min_length=1,
+                    max_length=48,
+                ),
+                DeclaredHeader(
+                    name='Step-Up-Token',
+                    argument='step_up_token',
+                    value=step_up_token,
+                    credential=True,
+                    min_length=1,
+                    max_length=256,
+                    pattern='^[0-9a-f]+$',
+                ),
+            ),
         )
 
     def add_email(
@@ -292,6 +322,7 @@ class AuthAccountsResource:
             cast_to=AuthAccountAddEmailResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     def remove_email(
@@ -308,6 +339,7 @@ class AuthAccountsResource:
             cast_to=AuthAccountRemoveEmailResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     def add_phone(
@@ -324,6 +356,7 @@ class AuthAccountsResource:
             cast_to=AuthAccountAddPhoneResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     def remove_phone(
@@ -340,6 +373,7 @@ class AuthAccountsResource:
             cast_to=AuthAccountRemovePhoneResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     def grant_global_role(
@@ -356,6 +390,7 @@ class AuthAccountsResource:
             cast_to=AuthAccountGrantGlobalRoleResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     def revoke_global_role(
@@ -372,6 +407,7 @@ class AuthAccountsResource:
             cast_to=AuthAccountRevokeGlobalRoleResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     def list_organization_memberships_count(
@@ -402,6 +438,7 @@ class AuthAccountsResource:
             cast_to=AuthAccountExportResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     def import_password_hashes(
@@ -417,6 +454,7 @@ class AuthAccountsResource:
             cast_to=AuthAccountImportPasswordHashesResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
 
@@ -454,6 +492,7 @@ class AsyncAuthAccountsResource:
             cast_to=AuthAccountVerifyCredentialResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     async def verify_credential_mfa_totp(
@@ -470,6 +509,7 @@ class AsyncAuthAccountsResource:
             cast_to=AuthAccountVerifyCredentialMfaTotpResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     async def list_credentials_count(
@@ -522,6 +562,7 @@ class AsyncAuthAccountsResource:
             cast_to=AuthAccountRemoveCredentialResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     async def list(
@@ -552,6 +593,7 @@ class AsyncAuthAccountsResource:
             cast_to=AuthAccountCreateResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     async def list_organization_memberships(
@@ -598,6 +640,7 @@ class AsyncAuthAccountsResource:
             cast_to=AuthAccountMergeResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     async def read(
@@ -633,15 +676,37 @@ class AsyncAuthAccountsResource:
     async def delete(
         self,
         account_id: str,
+        query: AuthAccountDeleteQuery | None = None,
         *,
+        step_up_session_id: str | None = None,
+        step_up_token: Credential | None = None,
         request_options: RequestOptions | Mapping[str, Any] | None = None,
     ) -> AuthAccountDeleteResponse:
         return await self._client.request(
             'DELETE',
             f'auth/accounts/{encode_path_param(account_id)}',
+            query=query,
             cast_to=AuthAccountDeleteResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            declared_headers=(
+                DeclaredHeader(
+                    name='Step-Up-Session-ID',
+                    argument='step_up_session_id',
+                    value=step_up_session_id,
+                    min_length=1,
+                    max_length=48,
+                ),
+                DeclaredHeader(
+                    name='Step-Up-Token',
+                    argument='step_up_token',
+                    value=step_up_token,
+                    credential=True,
+                    min_length=1,
+                    max_length=256,
+                    pattern='^[0-9a-f]+$',
+                ),
+            ),
         )
 
     async def add_email(
@@ -658,6 +723,7 @@ class AsyncAuthAccountsResource:
             cast_to=AuthAccountAddEmailResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     async def remove_email(
@@ -674,6 +740,7 @@ class AsyncAuthAccountsResource:
             cast_to=AuthAccountRemoveEmailResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     async def add_phone(
@@ -690,6 +757,7 @@ class AsyncAuthAccountsResource:
             cast_to=AuthAccountAddPhoneResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     async def remove_phone(
@@ -706,6 +774,7 @@ class AsyncAuthAccountsResource:
             cast_to=AuthAccountRemovePhoneResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     async def grant_global_role(
@@ -722,6 +791,7 @@ class AsyncAuthAccountsResource:
             cast_to=AuthAccountGrantGlobalRoleResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     async def revoke_global_role(
@@ -738,6 +808,7 @@ class AsyncAuthAccountsResource:
             cast_to=AuthAccountRevokeGlobalRoleResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     async def list_organization_memberships_count(
@@ -768,6 +839,7 @@ class AsyncAuthAccountsResource:
             cast_to=AuthAccountExportResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     async def import_password_hashes(
@@ -783,4 +855,5 @@ class AsyncAuthAccountsResource:
             cast_to=AuthAccountImportPasswordHashesResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )

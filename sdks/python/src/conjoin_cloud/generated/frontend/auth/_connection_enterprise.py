@@ -4,6 +4,8 @@ from collections.abc import Mapping
 from typing import TYPE_CHECKING, Any
 
 from conjoin_cloud._multipart import MultipartBody
+from conjoin_cloud._credential import Credential
+from conjoin_cloud._declared_headers import DeclaredHeader
 from conjoin_cloud._request_options import AUTH_NONE, RequestOptions
 from conjoin_cloud._url import encode_path_param
 from conjoin_cloud.generated.frontend._models import (
@@ -24,6 +26,7 @@ class AuthConnectionEnterprisesResource:
         self,
         data: Mapping[str, Any],
         *,
+        portal_ticket: Credential,
         request_options: RequestOptions | Mapping[str, Any] | None = None,
     ) -> AuthConnectionEnterpriseConfigureSsoPortalConnectionResponse:
         return self._client.request(
@@ -33,6 +36,15 @@ class AuthConnectionEnterprisesResource:
             cast_to=AuthConnectionEnterpriseConfigureSsoPortalConnectionResponse,
             request_options=request_options,
             default_auth=AUTH_NONE,
+            declared_headers=(
+                DeclaredHeader(
+                    name='x-portal-ticket',
+                    argument='portal_ticket',
+                    value=portal_ticket,
+                    required=True,
+                    credential=True,
+                ),
+            ),
         )
 
     def update_sso_portal_connection(
@@ -40,6 +52,7 @@ class AuthConnectionEnterprisesResource:
         connection_id: str,
         data: Mapping[str, Any],
         *,
+        portal_ticket: Credential,
         request_options: RequestOptions | Mapping[str, Any] | None = None,
     ) -> AuthConnectionEnterpriseUpdateSsoPortalConnectionResponse:
         return self._client.request(
@@ -49,6 +62,15 @@ class AuthConnectionEnterprisesResource:
             cast_to=AuthConnectionEnterpriseUpdateSsoPortalConnectionResponse,
             request_options=request_options,
             default_auth=AUTH_NONE,
+            declared_headers=(
+                DeclaredHeader(
+                    name='x-portal-ticket',
+                    argument='portal_ticket',
+                    value=portal_ticket,
+                    required=True,
+                    credential=True,
+                ),
+            ),
         )
 
     def import_sso_portal_metadata(
@@ -56,6 +78,7 @@ class AuthConnectionEnterprisesResource:
         connection_id: str,
         data: Mapping[str, Any],
         *,
+        portal_ticket: Credential,
         request_options: RequestOptions | Mapping[str, Any] | None = None,
     ) -> AuthConnectionEnterpriseImportSsoPortalMetadataResponse:
         return self._client.request(
@@ -65,12 +88,22 @@ class AuthConnectionEnterprisesResource:
             cast_to=AuthConnectionEnterpriseImportSsoPortalMetadataResponse,
             request_options=request_options,
             default_auth=AUTH_NONE,
+            declared_headers=(
+                DeclaredHeader(
+                    name='x-portal-ticket',
+                    argument='portal_ticket',
+                    value=portal_ticket,
+                    required=True,
+                    credential=True,
+                ),
+            ),
         )
 
     def read_sso_portal_provider_config(
         self,
         connection_id: str,
         *,
+        portal_ticket: Credential,
         request_options: RequestOptions | Mapping[str, Any] | None = None,
     ) -> Any:
         return self._client.request(
@@ -78,6 +111,15 @@ class AuthConnectionEnterprisesResource:
             f'auth/portal/connections/{encode_path_param(connection_id)}/service-provider-settings',
             request_options=request_options,
             default_auth=AUTH_NONE,
+            declared_headers=(
+                DeclaredHeader(
+                    name='x-portal-ticket',
+                    argument='portal_ticket',
+                    value=portal_ticket,
+                    required=True,
+                    credential=True,
+                ),
+            ),
         )
 
 
@@ -89,6 +131,7 @@ class AsyncAuthConnectionEnterprisesResource:
         self,
         data: Mapping[str, Any],
         *,
+        portal_ticket: Credential,
         request_options: RequestOptions | Mapping[str, Any] | None = None,
     ) -> AuthConnectionEnterpriseConfigureSsoPortalConnectionResponse:
         return await self._client.request(
@@ -98,6 +141,15 @@ class AsyncAuthConnectionEnterprisesResource:
             cast_to=AuthConnectionEnterpriseConfigureSsoPortalConnectionResponse,
             request_options=request_options,
             default_auth=AUTH_NONE,
+            declared_headers=(
+                DeclaredHeader(
+                    name='x-portal-ticket',
+                    argument='portal_ticket',
+                    value=portal_ticket,
+                    required=True,
+                    credential=True,
+                ),
+            ),
         )
 
     async def update_sso_portal_connection(
@@ -105,6 +157,7 @@ class AsyncAuthConnectionEnterprisesResource:
         connection_id: str,
         data: Mapping[str, Any],
         *,
+        portal_ticket: Credential,
         request_options: RequestOptions | Mapping[str, Any] | None = None,
     ) -> AuthConnectionEnterpriseUpdateSsoPortalConnectionResponse:
         return await self._client.request(
@@ -114,6 +167,15 @@ class AsyncAuthConnectionEnterprisesResource:
             cast_to=AuthConnectionEnterpriseUpdateSsoPortalConnectionResponse,
             request_options=request_options,
             default_auth=AUTH_NONE,
+            declared_headers=(
+                DeclaredHeader(
+                    name='x-portal-ticket',
+                    argument='portal_ticket',
+                    value=portal_ticket,
+                    required=True,
+                    credential=True,
+                ),
+            ),
         )
 
     async def import_sso_portal_metadata(
@@ -121,6 +183,7 @@ class AsyncAuthConnectionEnterprisesResource:
         connection_id: str,
         data: Mapping[str, Any],
         *,
+        portal_ticket: Credential,
         request_options: RequestOptions | Mapping[str, Any] | None = None,
     ) -> AuthConnectionEnterpriseImportSsoPortalMetadataResponse:
         return await self._client.request(
@@ -130,12 +193,22 @@ class AsyncAuthConnectionEnterprisesResource:
             cast_to=AuthConnectionEnterpriseImportSsoPortalMetadataResponse,
             request_options=request_options,
             default_auth=AUTH_NONE,
+            declared_headers=(
+                DeclaredHeader(
+                    name='x-portal-ticket',
+                    argument='portal_ticket',
+                    value=portal_ticket,
+                    required=True,
+                    credential=True,
+                ),
+            ),
         )
 
     async def read_sso_portal_provider_config(
         self,
         connection_id: str,
         *,
+        portal_ticket: Credential,
         request_options: RequestOptions | Mapping[str, Any] | None = None,
     ) -> Any:
         return await self._client.request(
@@ -143,4 +216,13 @@ class AsyncAuthConnectionEnterprisesResource:
             f'auth/portal/connections/{encode_path_param(connection_id)}/service-provider-settings',
             request_options=request_options,
             default_auth=AUTH_NONE,
+            declared_headers=(
+                DeclaredHeader(
+                    name='x-portal-ticket',
+                    argument='portal_ticket',
+                    value=portal_ticket,
+                    required=True,
+                    credential=True,
+                ),
+            ),
         )

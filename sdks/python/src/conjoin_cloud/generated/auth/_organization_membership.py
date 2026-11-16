@@ -60,6 +60,7 @@ class AuthOrganizationMembershipsResource:
             cast_to=AuthOrganizationMembershipCreateMembershipResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     def list_memberships_count(
@@ -134,6 +135,7 @@ class AuthOrganizationMembershipsResource:
             cast_to=AuthOrganizationMembershipGrantOrgAccountRoleResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     def revoke_org_account_role(
@@ -154,6 +156,7 @@ class AuthOrganizationMembershipsResource:
             cast_to=AuthOrganizationMembershipRevokeOrgAccountRoleResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
 
@@ -191,6 +194,7 @@ class AsyncAuthOrganizationMembershipsResource:
             cast_to=AuthOrganizationMembershipCreateMembershipResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     async def list_memberships_count(
@@ -265,6 +269,7 @@ class AsyncAuthOrganizationMembershipsResource:
             cast_to=AuthOrganizationMembershipGrantOrgAccountRoleResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     async def revoke_org_account_role(
@@ -285,4 +290,5 @@ class AsyncAuthOrganizationMembershipsResource:
             cast_to=AuthOrganizationMembershipRevokeOrgAccountRoleResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )

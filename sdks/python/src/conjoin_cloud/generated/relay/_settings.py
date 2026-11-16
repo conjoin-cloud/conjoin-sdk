@@ -56,6 +56,7 @@ class RelaySettingsResource:
             'relay/settings/signing-secret/rotate',
             cast_to=RelaySettingsRotateSigningSecretResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     def reveal_signing_secret(
@@ -111,6 +112,7 @@ class AsyncRelaySettingsResource:
             'relay/settings/signing-secret/rotate',
             cast_to=RelaySettingsRotateSigningSecretResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     async def reveal_signing_secret(

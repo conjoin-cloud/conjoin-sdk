@@ -68,6 +68,7 @@ class BillingSubscriptionsResource:
             cast_to=BillingSubscriptionCreateResponse,
             request_options=request_options,
             scopes=('billing_entity_id',),
+            accepts_idempotency_key=True,
         )
 
     def list_cycles(
@@ -145,6 +146,7 @@ class BillingSubscriptionsResource:
             cast_to=BillingSubscriptionCreatePlanChangeResponse,
             request_options=request_options,
             scopes=('billing_entity_id',),
+            accepts_idempotency_key=True,
         )
 
     def cancel(
@@ -161,6 +163,7 @@ class BillingSubscriptionsResource:
             cast_to=BillingSubscriptionCancelResponse,
             request_options=request_options,
             scopes=('billing_entity_id',),
+            accepts_idempotency_key=True,
         )
 
     def pause(
@@ -177,6 +180,7 @@ class BillingSubscriptionsResource:
             cast_to=BillingSubscriptionPauseResponse,
             request_options=request_options,
             scopes=('billing_entity_id',),
+            accepts_idempotency_key=True,
         )
 
     def resume(
@@ -191,6 +195,7 @@ class BillingSubscriptionsResource:
             cast_to=BillingSubscriptionResumeResponse,
             request_options=request_options,
             scopes=('billing_entity_id',),
+            accepts_idempotency_key=True,
         )
 
     def record_usage(
@@ -206,6 +211,7 @@ class BillingSubscriptionsResource:
             body=data,
             request_options=request_options,
             scopes=('billing_entity_id',),
+            accepts_idempotency_key=True,
         )
 
     def read_usage_summary(
@@ -273,6 +279,7 @@ class AsyncBillingSubscriptionsResource:
             cast_to=BillingSubscriptionCreateResponse,
             request_options=request_options,
             scopes=('billing_entity_id',),
+            accepts_idempotency_key=True,
         )
 
     async def list_cycles(
@@ -350,6 +357,7 @@ class AsyncBillingSubscriptionsResource:
             cast_to=BillingSubscriptionCreatePlanChangeResponse,
             request_options=request_options,
             scopes=('billing_entity_id',),
+            accepts_idempotency_key=True,
         )
 
     async def cancel(
@@ -366,6 +374,7 @@ class AsyncBillingSubscriptionsResource:
             cast_to=BillingSubscriptionCancelResponse,
             request_options=request_options,
             scopes=('billing_entity_id',),
+            accepts_idempotency_key=True,
         )
 
     async def pause(
@@ -382,6 +391,7 @@ class AsyncBillingSubscriptionsResource:
             cast_to=BillingSubscriptionPauseResponse,
             request_options=request_options,
             scopes=('billing_entity_id',),
+            accepts_idempotency_key=True,
         )
 
     async def resume(
@@ -396,6 +406,7 @@ class AsyncBillingSubscriptionsResource:
             cast_to=BillingSubscriptionResumeResponse,
             request_options=request_options,
             scopes=('billing_entity_id',),
+            accepts_idempotency_key=True,
         )
 
     async def record_usage(
@@ -411,6 +422,7 @@ class AsyncBillingSubscriptionsResource:
             body=data,
             request_options=request_options,
             scopes=('billing_entity_id',),
+            accepts_idempotency_key=True,
         )
 
     async def read_usage_summary(
