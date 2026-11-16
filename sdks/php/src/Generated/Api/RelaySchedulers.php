@@ -32,6 +32,7 @@ final class RelaySchedulers
             method: HttpMethod::Post,
             path: 'relay/schedules/',
             body: $data,
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -76,6 +77,7 @@ final class RelaySchedulers
         return $this->client->send(new OperationRequest(
             method: HttpMethod::Post,
             path: 'relay/schedules/' . PathSegment::encode($scheduleId) . '/pause',
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -84,6 +86,7 @@ final class RelaySchedulers
         return $this->client->send(new OperationRequest(
             method: HttpMethod::Post,
             path: 'relay/schedules/' . PathSegment::encode($scheduleId) . '/resume',
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -92,6 +95,7 @@ final class RelaySchedulers
         return $this->client->send(new OperationRequest(
             method: HttpMethod::Post,
             path: 'relay/schedules/' . PathSegment::encode($scheduleId) . '/cancel',
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -100,6 +104,7 @@ final class RelaySchedulers
         return $this->client->send(new OperationRequest(
             method: HttpMethod::Post,
             path: 'relay/schedules/' . PathSegment::encode($scheduleId) . '/trigger',
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -130,6 +135,7 @@ final class RelaySchedulers
                 . '/dead-letters/'
                 . PathSegment::encode($deadLetterId)
                 . '/replay',
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 }

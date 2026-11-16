@@ -35,6 +35,7 @@ final class BillingSubscriptionSchedules
             path: 'billing/subscriptions/' . PathSegment::encode($subscriptionId) . '/schedules',
             body: $data,
             scopes: [Scope::BillingEntityId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -63,6 +64,7 @@ final class BillingSubscriptionSchedules
             method: HttpMethod::Post,
             path: 'billing/subscription-schedules/' . PathSegment::encode($subscriptionScheduleId) . '/cancel',
             scopes: [Scope::BillingEntityId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -72,6 +74,7 @@ final class BillingSubscriptionSchedules
             method: HttpMethod::Post,
             path: 'billing/subscription-schedules/' . PathSegment::encode($subscriptionScheduleId) . '/release',
             scopes: [Scope::BillingEntityId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 }

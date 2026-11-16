@@ -84,6 +84,7 @@ final class AuthSessions
             path: 'auth/sessions/' . PathSegment::encode($sessionId) . '/validate',
             body: $data,
             scopes: [Scope::AuthAppId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -93,6 +94,7 @@ final class AuthSessions
             method: HttpMethod::Post,
             path: 'auth/sessions/' . PathSegment::encode($sessionId) . '/revoke',
             scopes: [Scope::AuthAppId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -102,6 +104,7 @@ final class AuthSessions
             method: HttpMethod::Post,
             path: 'auth/accounts/' . PathSegment::encode($accountId) . '/sessions/revoke-all',
             scopes: [Scope::AuthAppId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -112,6 +115,7 @@ final class AuthSessions
             path: 'auth/accounts/' . PathSegment::encode($accountId) . '/sessions/revoke',
             body: $data,
             scopes: [Scope::AuthAppId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -122,6 +126,7 @@ final class AuthSessions
             path: 'auth/clients/' . PathSegment::encode($clientId) . '/sessions/revoke',
             body: $data,
             scopes: [Scope::AuthAppId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 }

@@ -25,6 +25,7 @@ final class MessagingPhoneNumbers
             path: 'messaging/phone-numbers/' . PathSegment::encode($phoneNumber) . '/provision',
             body: $data,
             scopes: [Scope::MessagingProfileId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -66,6 +67,7 @@ final class MessagingPhoneNumbers
             method: HttpMethod::Post,
             path: 'messaging/phone-numbers/' . PathSegment::encode($phoneNumber) . '/release',
             scopes: [Scope::MessagingProfileId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 }

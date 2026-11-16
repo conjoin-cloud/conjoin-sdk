@@ -47,7 +47,8 @@ final class RequestBuilder
         $requestId = self::resolveRequestId($config, $options);
         $idempotencyKey = self::resolveIdempotencyKey($request, $options);
         $body = EncodedBody::encode($request->body, $request->bodyType);
-        $headers = self::withoutManagedHeaders($options->headers);
+        $headers = self::withoutManagedHeaders($options->headers, DeclaredHeaders::names($request->declaredHeaders));
+        $headers = array_merge($headers, DeclaredHeaders::resolve($request->declaredHeaders));
         $authorization = self::authorization($config, $request);
 
         if ($authorization !== null) {
@@ -131,6 +132,13 @@ final class RequestBuilder
                 $request->bearerToken ?? throw new ConfigurationException('This call needs a bearer token, such as the SCIM token'),
                 'The bearer token',
             ),
+            AuthMode::PublishableKey => $config->isPublishableKey
+                ? 'Bearer ' . $config->key
+                : throw new ConfigurationException('This call needs publishableKey in the client settings'),
+            AuthMode::Session => 'Bearer ' . Validate::tokenValue(
+                $request->sessionToken?->reveal() ?? throw new ConfigurationException('This call needs sessionToken'),
+                'sessionToken',
+            ),
         };
     }
 
@@ -145,12 +153,13 @@ final class RequestBuilder
         return $value;
     }
 
-    private static function withoutManagedHeaders(#[\SensitiveParameter] array $headers): array
+    private static function withoutManagedHeaders(#[\SensitiveParameter] array $headers, array $declaredNames): array
     {
         $managed = array_merge(
             ['authorization', 'content-type', strtolower(RequestId::HEADER), strtolower(IdempotencyKey::HEADER)],
             array_map(static fn (Scope $scope): string => strtolower($scope->value), Scope::cases()),
             self::RESERVED_HEADER_NAMES,
+            $declaredNames,
         );
         $kept = [];
 

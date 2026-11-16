@@ -32,6 +32,7 @@ final class RelayQueues
             method: HttpMethod::Post,
             path: 'relay/queues/',
             body: $data,
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -50,6 +51,7 @@ final class RelayQueues
             method: HttpMethod::Post,
             path: 'relay/queues/' . PathSegment::encode($queueId) . '/tasks',
             body: $data,
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -93,6 +95,7 @@ final class RelayQueues
         return $this->client->send(new OperationRequest(
             method: HttpMethod::Post,
             path: 'relay/queues/' . PathSegment::encode($queueId) . '/pause',
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -101,6 +104,7 @@ final class RelayQueues
         return $this->client->send(new OperationRequest(
             method: HttpMethod::Post,
             path: 'relay/queues/' . PathSegment::encode($queueId) . '/resume',
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -110,6 +114,7 @@ final class RelayQueues
             method: HttpMethod::Post,
             path: 'relay/queues/' . PathSegment::encode($queueId) . '/enqueue-batch',
             body: $data,
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -140,6 +145,7 @@ final class RelayQueues
                 . '/dead-letters/'
                 . PathSegment::encode($deadLetterId)
                 . '/replay',
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -149,6 +155,7 @@ final class RelayQueues
             method: HttpMethod::Post,
             path: 'relay/queues/' . PathSegment::encode($queueId) . '/purge',
             body: $data,
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 }

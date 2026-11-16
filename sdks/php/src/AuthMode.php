@@ -9,4 +9,6 @@ enum AuthMode
     case ClientKey;
     case None;
     case Bearer;
+    case PublishableKey;
+    case Session;
 }

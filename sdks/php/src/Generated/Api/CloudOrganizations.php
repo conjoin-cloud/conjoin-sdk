@@ -32,6 +32,7 @@ final class CloudOrganizations
             method: HttpMethod::Post,
             path: 'cloud/organizations/',
             body: $data,
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 

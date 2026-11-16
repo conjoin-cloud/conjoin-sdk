@@ -35,6 +35,7 @@ final class BillingInvoices
             path: 'billing/invoices/',
             body: $data,
             scopes: [Scope::BillingEntityId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -64,6 +65,7 @@ final class BillingInvoices
             method: HttpMethod::Post,
             path: 'billing/invoices/' . PathSegment::encode($invoiceId) . '/finalize',
             scopes: [Scope::BillingEntityId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -74,6 +76,7 @@ final class BillingInvoices
             path: 'billing/invoices/' . PathSegment::encode($invoiceId) . '/pay',
             body: $data,
             scopes: [Scope::BillingEntityId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -83,6 +86,7 @@ final class BillingInvoices
             method: HttpMethod::Post,
             path: 'billing/invoices/' . PathSegment::encode($invoiceId) . '/void',
             scopes: [Scope::BillingEntityId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -93,6 +97,7 @@ final class BillingInvoices
             path: 'billing/invoices/' . PathSegment::encode($invoiceId) . '/pay-out-of-band',
             body: $data,
             scopes: [Scope::BillingEntityId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -102,6 +107,7 @@ final class BillingInvoices
             method: HttpMethod::Post,
             path: 'billing/invoices/' . PathSegment::encode($invoiceId) . '/send',
             scopes: [Scope::BillingEntityId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -111,6 +117,7 @@ final class BillingInvoices
             method: HttpMethod::Post,
             path: 'billing/invoices/' . PathSegment::encode($invoiceId) . '/export',
             scopes: [Scope::BillingEntityId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 }

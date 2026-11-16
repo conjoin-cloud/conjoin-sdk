@@ -23,6 +23,7 @@ final class AuthAccountRecoveries
             method: HttpMethod::Post,
             path: 'auth/accounts/' . PathSegment::encode($accountId) . '/recoveries/start',
             scopes: [Scope::AuthAppId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -33,6 +34,7 @@ final class AuthAccountRecoveries
             path: 'auth/accounts/' . PathSegment::encode($accountId) . '/recoveries/verify',
             body: $data,
             scopes: [Scope::AuthAppId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -43,6 +45,7 @@ final class AuthAccountRecoveries
             path: 'auth/accounts/' . PathSegment::encode($accountId) . '/recoveries/complete',
             body: $data,
             scopes: [Scope::AuthAppId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -52,6 +55,7 @@ final class AuthAccountRecoveries
             method: HttpMethod::Post,
             path: 'auth/accounts/' . PathSegment::encode($accountId) . '/reset-mfa',
             scopes: [Scope::AuthAppId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 }

@@ -6,6 +6,8 @@ namespace ConjoinCloud\Generated\Api;
 
 use ConjoinCloud\CallOptions;
 use ConjoinCloud\ConjoinClient;
+use ConjoinCloud\Credential;
+use ConjoinCloud\DeclaredHeader;
 use ConjoinCloud\HttpMethod;
 use ConjoinCloud\Internal\Request\PathSegment;
 use ConjoinCloud\OperationRequest;
@@ -47,12 +49,21 @@ final class AuthPasskeys
         ), $options)->dataArray();
     }
 
-    public function delete(string $accountId, string $passkeyId, ?CallOptions $options = null): array
-    {
+    public function delete(
+        string $accountId,
+        string $passkeyId,
+        ?string $stepUpSessionId = null,
+        #[\SensitiveParameter] ?Credential $stepUpToken = null,
+        ?CallOptions $options = null,
+    ): array {
         return $this->client->send(new OperationRequest(
             method: HttpMethod::Delete,
             path: 'auth/accounts/' . PathSegment::encode($accountId) . '/passkeys/' . PathSegment::encode($passkeyId),
             scopes: [Scope::AuthAppId],
+            declaredHeaders: [
+                new DeclaredHeader('Step-Up-Session-ID', 'stepUpSessionId', $stepUpSessionId, minLength: 1, maxLength: 48),
+                new DeclaredHeader('Step-Up-Token', 'stepUpToken', $stepUpToken, minLength: 1, maxLength: 256, pattern: '^[0-9a-f]+$'),
+            ],
         ), $options)->dataArray();
     }
 }

@@ -49,6 +49,7 @@ final class AuthOrganizationRolePermissions
                 . '/assign-permissions',
             body: $data,
             scopes: [Scope::AuthAppId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -63,6 +64,7 @@ final class AuthOrganizationRolePermissions
                 . '/remove-permissions',
             body: $data,
             scopes: [Scope::AuthAppId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 }

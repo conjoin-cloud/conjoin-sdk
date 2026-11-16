@@ -24,6 +24,7 @@ final class MessagingEmailSenderPools
             path: 'messaging/email/sender-pools/',
             body: $data,
             scopes: [Scope::MessagingProfileId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -34,6 +35,7 @@ final class MessagingEmailSenderPools
             path: 'messaging/email/sender-pools/' . PathSegment::encode($poolId) . '/senders',
             body: $data,
             scopes: [Scope::MessagingProfileId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 

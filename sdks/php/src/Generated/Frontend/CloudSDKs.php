@@ -21,7 +21,7 @@ final class CloudSDKs
         return $this->client->send(new OperationRequest(
             method: HttpMethod::Get,
             path: 'cloud/client/settings/',
-            auth: AuthMode::None,
+            auth: AuthMode::PublishableKey,
         ), $options)->dataArray();
     }
 }

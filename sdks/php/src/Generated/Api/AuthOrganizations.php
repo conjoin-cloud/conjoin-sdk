@@ -35,6 +35,7 @@ final class AuthOrganizations
             path: 'auth/organizations/',
             body: $data,
             scopes: [Scope::AuthAppId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -67,11 +68,12 @@ final class AuthOrganizations
         ), $options)->dataArray();
     }
 
-    public function delete(string $organizationId, ?CallOptions $options = null): array
+    public function delete(string $organizationId, ?array $query = null, ?CallOptions $options = null): array
     {
         return $this->client->send(new OperationRequest(
             method: HttpMethod::Delete,
             path: 'auth/organizations/' . PathSegment::encode($organizationId),
+            query: $query,
             scopes: [Scope::AuthAppId],
         ), $options)->dataArray();
     }

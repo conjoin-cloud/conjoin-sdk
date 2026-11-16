@@ -37,6 +37,7 @@ final class RelaySettings
         return $this->client->send(new OperationRequest(
             method: HttpMethod::Post,
             path: 'relay/settings/signing-secret/rotate',
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 

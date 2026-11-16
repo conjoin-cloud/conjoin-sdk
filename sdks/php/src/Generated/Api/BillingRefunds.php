@@ -34,6 +34,7 @@ final class BillingRefunds
             path: 'billing/refunds/',
             body: $data,
             scopes: [Scope::BillingEntityId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 

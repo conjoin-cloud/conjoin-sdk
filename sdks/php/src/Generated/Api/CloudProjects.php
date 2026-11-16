@@ -32,6 +32,7 @@ final class CloudProjects
             method: HttpMethod::Post,
             path: 'cloud/organizations/' . PathSegment::encode($organizationId) . '/projects/',
             body: $data,
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 

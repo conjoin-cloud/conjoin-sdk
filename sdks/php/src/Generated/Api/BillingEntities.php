@@ -32,6 +32,7 @@ final class BillingEntities
             method: HttpMethod::Post,
             path: 'billing/entities/',
             body: $data,
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -50,6 +51,7 @@ final class BillingEntities
             method: HttpMethod::Post,
             path: 'billing/entities/onboard',
             body: $data,
+            acceptsIdempotencyKey: true,
         ), $options)->bodyArray();
     }
 
@@ -77,6 +79,7 @@ final class BillingEntities
             method: HttpMethod::Post,
             path: 'billing/entities/' . PathSegment::encode($entityId) . '/payout-bank-accounts',
             body: $data,
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -86,6 +89,7 @@ final class BillingEntities
             method: HttpMethod::Post,
             path: 'billing/entities/' . PathSegment::encode($entityId) . '/account-links',
             body: $data,
+            acceptsIdempotencyKey: true,
         ), $options)->bodyArray();
     }
 
@@ -94,6 +98,7 @@ final class BillingEntities
         return $this->client->send(new OperationRequest(
             method: HttpMethod::Post,
             path: 'billing/entities/' . PathSegment::encode($entityId) . '/sync',
+            acceptsIdempotencyKey: true,
         ), $options)->bodyArray();
     }
 
@@ -103,6 +108,7 @@ final class BillingEntities
             method: HttpMethod::Post,
             path: 'billing/entities/' . PathSegment::encode($entityId) . '/paystack-credentials',
             body: $data,
+            acceptsIdempotencyKey: true,
         ), $options)->bodyArray();
     }
 }

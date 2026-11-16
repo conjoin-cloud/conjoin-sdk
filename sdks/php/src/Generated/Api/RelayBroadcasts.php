@@ -22,6 +22,7 @@ final class RelayBroadcasts
         return $this->client->send(new OperationRequest(
             method: HttpMethod::Post,
             path: 'relay/broadcast-connection-tokens/',
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -40,6 +41,7 @@ final class RelayBroadcasts
             method: HttpMethod::Post,
             path: 'relay/broadcast-channels/',
             body: $data,
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -75,6 +77,7 @@ final class RelayBroadcasts
             method: HttpMethod::Post,
             path: 'relay/broadcast-channels/' . PathSegment::encode($broadcastChannelId) . '/auth-tokens',
             body: $data,
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -84,6 +87,7 @@ final class RelayBroadcasts
             method: HttpMethod::Post,
             path: 'relay/broadcast-channels/' . PathSegment::encode($broadcastChannelId) . '/publish',
             body: $data,
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 

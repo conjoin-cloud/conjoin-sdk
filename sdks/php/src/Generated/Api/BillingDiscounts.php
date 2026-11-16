@@ -35,6 +35,7 @@ final class BillingDiscounts
             path: 'billing/discounts/',
             body: $data,
             scopes: [Scope::BillingEntityId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 

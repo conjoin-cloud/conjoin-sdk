@@ -24,9 +24,12 @@ final class SpecReader
 
     private readonly SchemaResolver $resolver;
 
+    private readonly SecurityReader $security;
+
     public function __construct(private readonly array $document)
     {
         $this->resolver = new SchemaResolver($document);
+        $this->security = new SecurityReader($document, $this->resolver);
     }
 
     public function groups(): array
@@ -78,6 +81,7 @@ final class SpecReader
     private function operation(string $path, string $method, string $operationId, array $operation): OperationInfo
     {
         $scopes = [];
+        $declaredHeaders = [];
         $acceptsIdempotencyKey = false;
         $hasQuery = false;
         $queryRequired = false;
@@ -102,8 +106,14 @@ final class SpecReader
             } elseif ($name === self::IDEMPOTENCY_KEY_HEADER) {
                 $acceptsIdempotencyKey = true;
             } elseif ($name !== self::REQUEST_ID_HEADER) {
-                throw new CodegenException(sprintf('%s declares the unknown header %s', $operationId, $name));
+                $declaredHeaders[] = $this->security->declaredHeader($parameter, $operationId);
             }
+        }
+
+        $auth = $this->security->authKind($operation, $operationId);
+
+        if ($auth === AuthKind::PortalTicket) {
+            $declaredHeaders[] = $this->security->portalTicketHeader($operationId);
         }
 
         $requestBody = isset($operation['requestBody']) ? $this->resolver->resolve($operation['requestBody']) : null;
@@ -130,7 +140,8 @@ final class SpecReader
             $queryRequired,
             array_values(array_unique($scopes)),
             $method === 'post' && $acceptsIdempotencyKey,
-            $this->auth($operation),
+            $auth,
+            $declaredHeaders,
         );
     }
 
@@ -166,28 +177,5 @@ final class SpecReader
             $isList ? ResponseKind::ListPage : ResponseKind::Envelope,
             ReturnType::forData($this->resolver, $properties['data']),
         );
-    }
-
-    private function auth(array $operation): AuthKind
-    {
-        $security = $operation['security'] ?? null;
-
-        if (!is_array($security)) {
-            return AuthKind::ClientKey;
-        }
-
-        $requirements = array_filter($security, 'is_array');
-
-        if ($security === [] || count($requirements) === count(array_filter($requirements, static fn (array $item): bool => $item === []))) {
-            return AuthKind::None;
-        }
-
-        foreach ($requirements as $requirement) {
-            if (array_key_exists('scimBearer', $requirement)) {
-                return AuthKind::ScimBearer;
-            }
-        }
-
-        return AuthKind::ClientKey;
     }
 }

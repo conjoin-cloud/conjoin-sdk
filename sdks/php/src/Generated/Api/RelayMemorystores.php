@@ -32,6 +32,7 @@ final class RelayMemorystores
             method: HttpMethod::Post,
             path: 'relay/memorystore-clusters/',
             body: $data,
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -74,6 +75,7 @@ final class RelayMemorystores
         return $this->client->send(new OperationRequest(
             method: HttpMethod::Post,
             path: 'relay/memorystore-clusters/' . PathSegment::encode($memorystoreClusterId) . '/suspend',
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -83,6 +85,7 @@ final class RelayMemorystores
             method: HttpMethod::Post,
             path: 'relay/memorystore-clusters/' . PathSegment::encode($memorystoreClusterId) . '/execute',
             body: $data,
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 }

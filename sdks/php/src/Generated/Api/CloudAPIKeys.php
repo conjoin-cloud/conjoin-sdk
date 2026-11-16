@@ -32,6 +32,7 @@ final class CloudAPIKeys
             method: HttpMethod::Post,
             path: 'cloud/api-keys/',
             body: $data,
+            acceptsIdempotencyKey: true,
         ), $options)->dataString();
     }
 
@@ -50,6 +51,7 @@ final class CloudAPIKeys
             method: HttpMethod::Post,
             path: 'cloud/api-keys/' . PathSegment::encode($apiKeyId) . '/regenerate',
             body: $data,
+            acceptsIdempotencyKey: true,
         ), $options)->dataString();
     }
 

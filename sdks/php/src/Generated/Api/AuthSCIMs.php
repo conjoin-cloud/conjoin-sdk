@@ -30,6 +30,7 @@ final class AuthSCIMs
             method: HttpMethod::Post,
             path: 'auth/scim/v2/' . PathSegment::encode($projectId) . '/' . PathSegment::encode($appId) . '/Bulk',
             body: $data,
+            acceptsIdempotencyKey: true,
             auth: AuthMode::Bearer,
             bearerToken: $this->scimToken,
         ), $options)->bodyArray();
@@ -51,6 +52,7 @@ final class AuthSCIMs
             method: HttpMethod::Post,
             path: 'auth/scim/v2/' . PathSegment::encode($projectId) . '/' . PathSegment::encode($appId) . '/Groups',
             body: $data,
+            acceptsIdempotencyKey: true,
             auth: AuthMode::Bearer,
             bearerToken: $this->scimToken,
         ), $options)->bodyArray();
@@ -161,6 +163,7 @@ final class AuthSCIMs
             method: HttpMethod::Post,
             path: 'auth/scim/v2/' . PathSegment::encode($projectId) . '/' . PathSegment::encode($appId) . '/Users',
             body: $data,
+            acceptsIdempotencyKey: true,
             auth: AuthMode::Bearer,
             bearerToken: $this->scimToken,
         ), $options)->bodyArray();

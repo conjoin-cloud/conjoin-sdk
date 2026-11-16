@@ -32,6 +32,7 @@ final class RelayPipelines
             method: HttpMethod::Post,
             path: 'relay/pipelines/',
             body: $data,
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -67,6 +68,7 @@ final class RelayPipelines
             method: HttpMethod::Post,
             path: 'relay/pipelines/' . PathSegment::encode($pipelineId) . '/trigger',
             body: $data,
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -101,6 +103,7 @@ final class RelayPipelines
         return $this->client->send(new OperationRequest(
             method: HttpMethod::Post,
             path: 'relay/pipeline-runs/' . PathSegment::encode($pipelineRunId) . '/cancel',
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -114,6 +117,7 @@ final class RelayPipelines
                 . PathSegment::encode($stepId)
                 . '/approve',
             body: $data,
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -127,6 +131,7 @@ final class RelayPipelines
                 . PathSegment::encode($stepId)
                 . '/reject',
             body: $data,
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 }

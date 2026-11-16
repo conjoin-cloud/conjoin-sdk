@@ -32,6 +32,7 @@ final class RelayEvents
             method: HttpMethod::Post,
             path: 'relay/event-channels/',
             body: $data,
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -50,6 +51,7 @@ final class RelayEvents
             method: HttpMethod::Post,
             path: 'relay/event-channels/' . PathSegment::encode($eventChannelId) . '/subscriptions',
             body: $data,
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -129,6 +131,7 @@ final class RelayEvents
                 . '/subscriptions/'
                 . PathSegment::encode($subscriptionId)
                 . '/pause',
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -141,6 +144,7 @@ final class RelayEvents
                 . '/subscriptions/'
                 . PathSegment::encode($subscriptionId)
                 . '/resume',
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -150,6 +154,7 @@ final class RelayEvents
             method: HttpMethod::Post,
             path: 'relay/event-channels/' . PathSegment::encode($eventChannelId) . '/publish',
             body: $data,
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -168,6 +173,7 @@ final class RelayEvents
             method: HttpMethod::Post,
             path: 'relay/event-channels/' . PathSegment::encode($eventChannelId) . '/replay',
             body: $data,
+            acceptsIdempotencyKey: true,
         ), $options)->bodyArray();
     }
 }

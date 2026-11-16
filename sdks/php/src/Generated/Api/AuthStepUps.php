@@ -24,6 +24,7 @@ final class AuthStepUps
             path: 'auth/accounts/' . PathSegment::encode($accountId) . '/step-ups/start',
             body: $data,
             scopes: [Scope::AuthAppId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -34,6 +35,7 @@ final class AuthStepUps
             path: 'auth/accounts/' . PathSegment::encode($accountId) . '/step-ups/verify',
             body: $data,
             scopes: [Scope::AuthAppId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -44,6 +46,7 @@ final class AuthStepUps
             path: 'auth/accounts/' . PathSegment::encode($accountId) . '/step-ups/validate',
             body: $data,
             scopes: [Scope::AuthAppId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 }

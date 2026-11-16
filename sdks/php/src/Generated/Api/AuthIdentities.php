@@ -24,6 +24,7 @@ final class AuthIdentities
             path: 'auth/accounts/discover',
             body: $data,
             scopes: [Scope::AuthAppId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -34,6 +35,7 @@ final class AuthIdentities
             path: 'auth/accounts/' . PathSegment::encode($accountId) . '/identities/link',
             body: $data,
             scopes: [Scope::AuthAppId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -44,6 +46,7 @@ final class AuthIdentities
             path: 'auth/accounts/' . PathSegment::encode($accountId) . '/identities/unlink',
             body: $data,
             scopes: [Scope::AuthAppId],
+            acceptsIdempotencyKey: true,
         ), $options)->data();
     }
 }

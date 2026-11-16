@@ -22,7 +22,7 @@ final class AuthAccounts
             method: HttpMethod::Post,
             path: 'auth/client/account-lookups/',
             body: $data,
-            auth: AuthMode::None,
+            auth: AuthMode::PublishableKey,
         ), $options)->dataArray();
     }
 }

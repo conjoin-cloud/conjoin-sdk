@@ -35,6 +35,7 @@ final class AuthOrganizationMemberships
             path: 'auth/organizations/' . PathSegment::encode($organizationId) . '/memberships/',
             body: $data,
             scopes: [Scope::AuthAppId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -84,6 +85,7 @@ final class AuthOrganizationMemberships
                 . '/grant-role',
             body: $data,
             scopes: [Scope::AuthAppId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -98,6 +100,7 @@ final class AuthOrganizationMemberships
                 . '/revoke-role',
             body: $data,
             scopes: [Scope::AuthAppId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 }

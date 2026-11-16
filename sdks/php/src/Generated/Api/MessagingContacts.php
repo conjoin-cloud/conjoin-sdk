@@ -25,6 +25,7 @@ final class MessagingContacts
             path: 'messaging/contacts/',
             body: $data,
             scopes: [Scope::MessagingProfileId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -64,33 +65,38 @@ final class MessagingContacts
             path: 'messaging/contacts/retrieve',
             body: $data,
             scopes: [Scope::MessagingProfileId],
+            acceptsIdempotencyKey: true,
         ), $options);
     }
 
-    public function addProperties(string $contactId, ?CallOptions $options = null): array
+    public function addProperties(string $contactId, array $data, ?CallOptions $options = null): array
     {
         return $this->client->send(new OperationRequest(
             method: HttpMethod::Put,
             path: 'messaging/contacts/' . PathSegment::encode($contactId) . '/properties',
+            body: $data,
             scopes: [Scope::MessagingProfileId],
         ), $options)->dataArray();
     }
 
-    public function updateProperty(string $contactId, ?CallOptions $options = null): array
+    public function updateProperty(string $contactId, array $data, ?CallOptions $options = null): array
     {
         return $this->client->send(new OperationRequest(
             method: HttpMethod::Patch,
             path: 'messaging/contacts/' . PathSegment::encode($contactId) . '/properties',
+            body: $data,
             scopes: [Scope::MessagingProfileId],
         ), $options)->dataArray();
     }
 
-    public function deleteProperties(string $contactId, ?CallOptions $options = null): array
+    public function deleteProperties(string $contactId, array $data, ?CallOptions $options = null): array
     {
         return $this->client->send(new OperationRequest(
-            method: HttpMethod::Delete,
-            path: 'messaging/contacts/' . PathSegment::encode($contactId) . '/properties',
+            method: HttpMethod::Post,
+            path: 'messaging/contacts/' . PathSegment::encode($contactId) . '/properties/remove',
+            body: $data,
             scopes: [Scope::MessagingProfileId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 }

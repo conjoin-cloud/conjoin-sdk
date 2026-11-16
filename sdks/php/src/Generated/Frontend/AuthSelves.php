@@ -7,6 +7,7 @@ namespace ConjoinCloud\Generated\Frontend;
 use ConjoinCloud\AuthMode;
 use ConjoinCloud\CallOptions;
 use ConjoinCloud\ConjoinClient;
+use ConjoinCloud\Credential;
 use ConjoinCloud\HttpMethod;
 use ConjoinCloud\Internal\Request\PathSegment;
 use ConjoinCloud\OperationRequest;
@@ -18,90 +19,99 @@ final class AuthSelves
     {
     }
 
-    public function listOrganizations(?array $query = null, ?CallOptions $options = null): ListPage
+    public function listOrganizations(#[\SensitiveParameter] Credential $sessionToken, ?array $query = null, ?CallOptions $options = null): ListPage
     {
         return $this->client->sendList(new OperationRequest(
             method: HttpMethod::Get,
             path: 'auth/self/organizations',
             query: $query,
-            auth: AuthMode::None,
+            auth: AuthMode::Session,
+            sessionToken: $sessionToken,
         ), $options);
     }
 
-    public function listSessions(?array $query = null, ?CallOptions $options = null): ListPage
+    public function listSessions(#[\SensitiveParameter] Credential $sessionToken, ?array $query = null, ?CallOptions $options = null): ListPage
     {
         return $this->client->sendList(new OperationRequest(
             method: HttpMethod::Get,
             path: 'auth/self/sessions',
             query: $query,
-            auth: AuthMode::None,
+            auth: AuthMode::Session,
+            sessionToken: $sessionToken,
         ), $options);
     }
 
-    public function readProfile(?CallOptions $options = null): array
+    public function readProfile(#[\SensitiveParameter] Credential $sessionToken, ?CallOptions $options = null): array
     {
         return $this->client->send(new OperationRequest(
             method: HttpMethod::Get,
             path: 'auth/self/',
-            auth: AuthMode::None,
+            auth: AuthMode::Session,
+            sessionToken: $sessionToken,
         ), $options)->dataArray();
     }
 
-    public function updateProfile(array $data, ?CallOptions $options = null): array
+    public function updateProfile(#[\SensitiveParameter] Credential $sessionToken, array $data, ?CallOptions $options = null): array
     {
         return $this->client->send(new OperationRequest(
             method: HttpMethod::Patch,
             path: 'auth/self/',
             body: $data,
-            auth: AuthMode::None,
+            auth: AuthMode::Session,
+            sessionToken: $sessionToken,
         ), $options)->dataArray();
     }
 
-    public function listSessionsCount(?array $query = null, ?CallOptions $options = null): array
+    public function listSessionsCount(#[\SensitiveParameter] Credential $sessionToken, ?array $query = null, ?CallOptions $options = null): array
     {
         return $this->client->send(new OperationRequest(
             method: HttpMethod::Get,
             path: 'auth/self/sessions/count',
             query: $query,
-            auth: AuthMode::None,
+            auth: AuthMode::Session,
+            sessionToken: $sessionToken,
         ), $options)->dataArray();
     }
 
-    public function revokeSession(string $sessionId, ?CallOptions $options = null): array
+    public function revokeSession(string $sessionId, #[\SensitiveParameter] Credential $sessionToken, ?CallOptions $options = null): array
     {
         return $this->client->send(new OperationRequest(
             method: HttpMethod::Delete,
             path: 'auth/self/sessions/' . PathSegment::encode($sessionId),
-            auth: AuthMode::None,
+            auth: AuthMode::Session,
+            sessionToken: $sessionToken,
         ), $options)->dataArray();
     }
 
-    public function listOrganizationsCount(?array $query = null, ?CallOptions $options = null): array
+    public function listOrganizationsCount(#[\SensitiveParameter] Credential $sessionToken, ?array $query = null, ?CallOptions $options = null): array
     {
         return $this->client->send(new OperationRequest(
             method: HttpMethod::Get,
             path: 'auth/self/organizations/count',
             query: $query,
-            auth: AuthMode::None,
+            auth: AuthMode::Session,
+            sessionToken: $sessionToken,
         ), $options)->dataArray();
     }
 
-    public function readActiveOrganization(?CallOptions $options = null): array
+    public function readActiveOrganization(#[\SensitiveParameter] Credential $sessionToken, ?CallOptions $options = null): array
     {
         return $this->client->send(new OperationRequest(
             method: HttpMethod::Get,
             path: 'auth/self/active-organization',
-            auth: AuthMode::None,
+            auth: AuthMode::Session,
+            sessionToken: $sessionToken,
         ), $options)->dataArray();
     }
 
-    public function updateActiveOrganization(array $data, ?CallOptions $options = null): array
+    public function updateActiveOrganization(#[\SensitiveParameter] Credential $sessionToken, array $data, ?CallOptions $options = null): array
     {
         return $this->client->send(new OperationRequest(
             method: HttpMethod::Patch,
             path: 'auth/self/active-organization',
             body: $data,
-            auth: AuthMode::None,
+            auth: AuthMode::Session,
+            sessionToken: $sessionToken,
         ), $options)->dataArray();
     }
 }

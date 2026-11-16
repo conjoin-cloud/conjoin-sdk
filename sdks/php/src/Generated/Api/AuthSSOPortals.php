@@ -43,6 +43,7 @@ final class AuthSSOPortals
             path: 'auth/organizations/' . PathSegment::encode($organizationId) . '/portal-tickets/',
             body: $data,
             scopes: [Scope::AuthAppId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -56,6 +57,7 @@ final class AuthSSOPortals
                 . PathSegment::encode($portalTicketId)
                 . '/revoke',
             scopes: [Scope::AuthAppId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 }

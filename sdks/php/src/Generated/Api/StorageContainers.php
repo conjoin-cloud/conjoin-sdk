@@ -32,6 +32,7 @@ final class StorageContainers
             method: HttpMethod::Post,
             path: 'storage/storage-container/',
             body: $data,
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -43,11 +44,12 @@ final class StorageContainers
         ), $options)->dataArray();
     }
 
-    public function requestDeletion(string $containerNameOrId, ?CallOptions $options = null): array
+    public function requestDeletion(string $containerNameOrId, ?array $query = null, ?CallOptions $options = null): array
     {
         return $this->client->send(new OperationRequest(
             method: HttpMethod::Delete,
             path: 'storage/storage-container/' . PathSegment::encode($containerNameOrId),
+            query: $query,
         ), $options)->dataArray();
     }
 

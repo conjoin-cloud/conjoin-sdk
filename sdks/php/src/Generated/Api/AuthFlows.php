@@ -24,6 +24,7 @@ final class AuthFlows
             path: 'auth/clients/' . PathSegment::encode($clientId) . '/sign-ups/start',
             body: $data,
             scopes: [Scope::AuthAppId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -34,6 +35,7 @@ final class AuthFlows
             path: 'auth/clients/' . PathSegment::encode($clientId) . '/sign-ups/complete',
             body: $data,
             scopes: [Scope::AuthAppId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -44,6 +46,7 @@ final class AuthFlows
             path: 'auth/clients/' . PathSegment::encode($clientId) . '/sign-ups/confirm-link',
             body: $data,
             scopes: [Scope::AuthAppId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -54,6 +57,7 @@ final class AuthFlows
             path: 'auth/clients/' . PathSegment::encode($clientId) . '/sign-ins/start',
             body: $data,
             scopes: [Scope::AuthAppId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -64,6 +68,7 @@ final class AuthFlows
             path: 'auth/clients/' . PathSegment::encode($clientId) . '/sign-ins/complete',
             body: $data,
             scopes: [Scope::AuthAppId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -74,6 +79,7 @@ final class AuthFlows
             path: 'auth/clients/' . PathSegment::encode($clientId) . '/password-resets/start',
             body: $data,
             scopes: [Scope::AuthAppId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -84,6 +90,7 @@ final class AuthFlows
             path: 'auth/clients/' . PathSegment::encode($clientId) . '/password-resets/complete',
             body: $data,
             scopes: [Scope::AuthAppId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 }

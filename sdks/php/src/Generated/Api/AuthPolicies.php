@@ -35,6 +35,7 @@ final class AuthPolicies
             path: 'auth/organizations/' . PathSegment::encode($organizationId) . '/policies/',
             body: $data,
             scopes: [Scope::AuthAppId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 

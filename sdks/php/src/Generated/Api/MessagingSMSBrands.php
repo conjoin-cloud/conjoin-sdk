@@ -25,6 +25,7 @@ final class MessagingSMSBrands
             path: 'messaging/sms/brands/',
             body: $data,
             scopes: [Scope::MessagingProfileId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -63,6 +64,7 @@ final class MessagingSMSBrands
             path: 'messaging/sms/brands/retrieve',
             body: $data,
             scopes: [Scope::MessagingProfileId],
+            acceptsIdempotencyKey: true,
         ), $options);
     }
 }

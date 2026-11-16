@@ -23,6 +23,7 @@ final class StorageObjects
             method: HttpMethod::Post,
             path: 'storage/storage-object/' . PathSegment::encode($containerNameOrId) . '/signed-url/upload',
             body: $data,
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -32,6 +33,7 @@ final class StorageObjects
             method: HttpMethod::Post,
             path: 'storage/storage-object/' . PathSegment::encode($containerNameOrId) . '/signed-url/download',
             body: $data,
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -104,6 +106,7 @@ final class StorageObjects
                 . '/'
                 . PathSegment::encode($objectNameOrId),
             body: $data,
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 

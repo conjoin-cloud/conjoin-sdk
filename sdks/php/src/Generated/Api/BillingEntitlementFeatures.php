@@ -32,6 +32,7 @@ final class BillingEntitlementFeatures
             method: HttpMethod::Post,
             path: 'billing/entitlement-features/',
             body: $data,
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -66,6 +67,7 @@ final class BillingEntitlementFeatures
         return $this->client->send(new OperationRequest(
             method: HttpMethod::Post,
             path: 'billing/entitlement-features/' . PathSegment::encode($entitlementFeatureId) . '/archive',
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 }

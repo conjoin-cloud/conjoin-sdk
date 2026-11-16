@@ -35,6 +35,7 @@ final class BillingCreditNotes
             path: 'billing/credit-notes/',
             body: $data,
             scopes: [Scope::BillingEntityId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -42,7 +43,7 @@ final class BillingCreditNotes
     {
         return $this->client->sendList(new OperationRequest(
             method: HttpMethod::Get,
-            path: 'billing/credit-notes/' . PathSegment::encode($customerId) . '/credit-balances',
+            path: 'billing/customers/' . PathSegment::encode($customerId) . '/credit-balances',
             query: $query,
             scopes: [Scope::BillingEntityId],
         ), $options);
@@ -64,6 +65,7 @@ final class BillingCreditNotes
             method: HttpMethod::Post,
             path: 'billing/credit-notes/' . PathSegment::encode($creditNoteId) . '/void',
             scopes: [Scope::BillingEntityId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -71,7 +73,7 @@ final class BillingCreditNotes
     {
         return $this->client->send(new OperationRequest(
             method: HttpMethod::Get,
-            path: 'billing/credit-notes/' . PathSegment::encode($customerId) . '/credit-balances/count',
+            path: 'billing/customers/' . PathSegment::encode($customerId) . '/credit-balances/count',
             query: $query,
             scopes: [Scope::BillingEntityId],
         ), $options)->dataArray();

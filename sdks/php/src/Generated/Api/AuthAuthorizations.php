@@ -24,6 +24,7 @@ final class AuthAuthorizations
             path: 'auth/organizations/' . PathSegment::encode($organizationId) . '/authorize',
             body: $data,
             scopes: [Scope::AuthAppId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -34,6 +35,7 @@ final class AuthAuthorizations
             path: 'auth/organizations/' . PathSegment::encode($organizationId) . '/check-role',
             body: $data,
             scopes: [Scope::AuthAppId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 

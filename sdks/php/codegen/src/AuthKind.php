@@ -9,4 +9,7 @@ enum AuthKind
     case ClientKey;
     case None;
     case ScimBearer;
+    case PublishableKey;
+    case Session;
+    case PortalTicket;
 }

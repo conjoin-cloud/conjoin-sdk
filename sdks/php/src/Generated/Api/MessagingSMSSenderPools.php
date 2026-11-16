@@ -24,6 +24,7 @@ final class MessagingSMSSenderPools
             path: 'messaging/sms/sender-pools/',
             body: $data,
             scopes: [Scope::MessagingProfileId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -34,6 +35,7 @@ final class MessagingSMSSenderPools
             path: 'messaging/sms/sender-pools/' . PathSegment::encode($poolId) . '/senders',
             body: $data,
             scopes: [Scope::MessagingProfileId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 

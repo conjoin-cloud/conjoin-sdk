@@ -22,7 +22,7 @@ final class CloudBrandings
             method: HttpMethod::Get,
             path: 'cloud/client/branding/',
             query: $query,
-            auth: AuthMode::None,
+            auth: AuthMode::PublishableKey,
         ), $options)->dataArray();
     }
 }

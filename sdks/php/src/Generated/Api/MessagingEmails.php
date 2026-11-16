@@ -27,6 +27,7 @@ final class MessagingEmails
             body: $data,
             bodyType: BodyType::Multipart,
             scopes: [Scope::MessagingProfileId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -37,15 +38,18 @@ final class MessagingEmails
             path: 'messaging/email/messages/' . PathSegment::encode($messageId),
             body: $data,
             scopes: [Scope::MessagingProfileId],
+            acceptsIdempotencyKey: true,
         ), $options);
     }
 
-    public function getSummary(?CallOptions $options = null): array
+    public function generateSummary(array $data, ?CallOptions $options = null): array
     {
         return $this->client->send(new OperationRequest(
-            method: HttpMethod::Get,
+            method: HttpMethod::Post,
             path: 'messaging/email/summary',
+            body: $data,
             scopes: [Scope::MessagingProfileId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 }
