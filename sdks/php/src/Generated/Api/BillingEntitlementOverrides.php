@@ -35,6 +35,7 @@ final class BillingEntitlementOverrides
             path: 'billing/entitlement-overrides/',
             body: $data,
             scopes: [Scope::BillingEntityId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 

@@ -32,6 +32,7 @@ final class AiContexts
             method: HttpMethod::Post,
             path: 'ai/context/indexes',
             body: $data,
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -56,6 +57,7 @@ final class AiContexts
         return $this->client->send(new OperationRequest(
             method: HttpMethod::Post,
             path: 'ai/context/indexes/' . PathSegment::encode($indexId) . '/sync',
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -65,6 +67,7 @@ final class AiContexts
             method: HttpMethod::Post,
             path: 'ai/context/query',
             body: $data,
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 

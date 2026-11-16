@@ -91,17 +91,21 @@ final class IdempotentCreateTest extends ServerTestCase
         self::assertSame(1, $this->server()->attemptCount());
     }
 
-    public function testNeverRetriesTheGeneratedCustomerCreateBecauseTheDocumentDeclaresNoKey(): void
+    public function testRetriesTheGeneratedCustomerCreateUnderOneKeyBecauseTheDocumentDeclaresIt(): void
     {
         $client = new ConjoinClient(apiKey: self::API_KEY, baseUrl: $this->server()->baseUrl(), backoffSeconds: 0.001, billingEntityId: 'ent_billing_owner');
         $this->server()->queue(Behaviour::dropAfterStore());
 
-        $error = self::caught(fn () => (new BillingCustomers($client))->create(self::NEW_CUSTOMER));
+        $customer = (new BillingCustomers($client))->create(self::NEW_CUSTOMER);
 
-        self::assertInstanceOf(NetworkException::class, $error);
-        self::assertSame(1, $this->server()->attemptCount());
-        self::assertSame('ent_billing_owner', $this->server()->attempt(0)->header('billing-entity-id'));
-        self::assertNull($this->server()->attempt(0)->header('idempotency-key'));
+        $keys = $this->server()->headerValues('idempotency-key');
+        self::assertSame(['customer_id' => 'cus_1', 'email' => self::NEW_CUSTOMER['email']], $customer);
+        self::assertCount(1, $this->server()->customers());
+        self::assertSame(2, $this->server()->attemptCount());
+        self::assertSame('ent_billing_owner', $this->server()->attempt(1)->header('billing-entity-id'));
+        self::assertIsString($keys[0]);
+        self::assertMatchesRegularExpression(self::SERVER_IDEMPOTENCY_KEY_PATTERN, $keys[0]);
+        self::assertSame($keys[0], $keys[1]);
     }
 
     public function testRefusesAMalformedCallerKeyBeforeSending(): void

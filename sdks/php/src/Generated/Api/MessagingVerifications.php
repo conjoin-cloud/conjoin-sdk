@@ -22,28 +22,29 @@ final class MessagingVerifications
     {
         return $this->client->send(new OperationRequest(
             method: HttpMethod::Post,
-            path: 'messaging/otps/send',
+            path: 'messaging/verifications/send',
             body: $data,
             scopes: [Scope::MessagingProfileId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
-    public function check(string $token, array $data, ?CallOptions $options = null): array
+    public function check(string $verificationId, array $data, ?CallOptions $options = null): array
     {
         return $this->client->send(new OperationRequest(
-            method: HttpMethod::Patch,
-            path: 'messaging/otps/verify/' . PathSegment::encode($token),
+            method: HttpMethod::Post,
+            path: 'messaging/verifications/' . PathSegment::encode($verificationId) . '/check',
             body: $data,
             scopes: [Scope::MessagingProfileId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
-    public function resend(string $verificationId, array $data, ?CallOptions $options = null): array
+    public function resend(string $verificationId, ?CallOptions $options = null): array
     {
         return $this->client->send(new OperationRequest(
             method: HttpMethod::Patch,
-            path: 'messaging/otps/resend/' . PathSegment::encode($verificationId),
-            body: $data,
+            path: 'messaging/verifications/resend/' . PathSegment::encode($verificationId),
             scopes: [Scope::MessagingProfileId],
         ), $options)->dataArray();
     }
@@ -52,9 +53,10 @@ final class MessagingVerifications
     {
         return $this->client->sendList(new OperationRequest(
             method: HttpMethod::Post,
-            path: 'messaging/otps/messages',
+            path: 'messaging/verifications/messages',
             body: $data,
             scopes: [Scope::MessagingProfileId],
+            acceptsIdempotencyKey: true,
         ), $options);
     }
 }

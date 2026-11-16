@@ -35,6 +35,7 @@ final class AuthResourceGrants
             path: 'auth/organizations/' . PathSegment::encode($organizationId) . '/resource-grants/',
             body: $data,
             scopes: [Scope::AuthAppId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -45,6 +46,7 @@ final class AuthResourceGrants
             path: 'auth/organizations/' . PathSegment::encode($organizationId) . '/check-resource-permission',
             body: $data,
             scopes: [Scope::AuthAppId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -69,6 +71,7 @@ final class AuthResourceGrants
                 . '/revoke',
             body: $data,
             scopes: [Scope::AuthAppId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 }

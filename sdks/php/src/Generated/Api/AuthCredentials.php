@@ -37,6 +37,7 @@ final class AuthCredentials
             path: 'auth/accounts/' . PathSegment::encode($accountId) . '/password-credentials',
             body: $data,
             scopes: [Scope::AuthAppId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -47,6 +48,7 @@ final class AuthCredentials
             path: 'auth/accounts/' . PathSegment::encode($accountId) . '/password-credentials/rotate',
             body: $data,
             scopes: [Scope::AuthAppId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -57,6 +59,7 @@ final class AuthCredentials
             path: 'auth/accounts/' . PathSegment::encode($accountId) . '/totp-credentials/enroll',
             body: $data,
             scopes: [Scope::AuthAppId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -67,6 +70,7 @@ final class AuthCredentials
             path: 'auth/accounts/' . PathSegment::encode($accountId) . '/totp-credentials/activate',
             body: $data,
             scopes: [Scope::AuthAppId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -77,6 +81,7 @@ final class AuthCredentials
             path: 'auth/accounts/' . PathSegment::encode($accountId) . '/totp-recovery-codes/rotate',
             body: $data,
             scopes: [Scope::AuthAppId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -87,6 +92,7 @@ final class AuthCredentials
             path: 'auth/accounts/' . PathSegment::encode($accountId) . '/totp-recovery-codes/consume',
             body: $data,
             scopes: [Scope::AuthAppId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -97,6 +103,7 @@ final class AuthCredentials
             path: 'auth/accounts/' . PathSegment::encode($accountId) . '/sms-credentials/enroll',
             body: $data,
             scopes: [Scope::AuthAppId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -106,6 +113,7 @@ final class AuthCredentials
             method: HttpMethod::Post,
             path: 'auth/accounts/' . PathSegment::encode($accountId) . '/sms-credentials/send-activation-code',
             scopes: [Scope::AuthAppId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -116,6 +124,7 @@ final class AuthCredentials
             path: 'auth/accounts/' . PathSegment::encode($accountId) . '/sms-credentials/activate',
             body: $data,
             scopes: [Scope::AuthAppId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -126,6 +135,7 @@ final class AuthCredentials
             path: 'auth/accounts/' . PathSegment::encode($accountId) . '/sms-credentials/verify',
             body: $data,
             scopes: [Scope::AuthAppId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -135,6 +145,7 @@ final class AuthCredentials
             method: HttpMethod::Post,
             path: 'auth/accounts/' . PathSegment::encode($accountId) . '/sms-credentials/send-challenge',
             scopes: [Scope::AuthAppId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -154,6 +165,7 @@ final class AuthCredentials
             path: 'auth/accounts/' . PathSegment::encode($accountId) . '/api-key-credentials',
             body: $data,
             scopes: [Scope::AuthAppId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -168,6 +180,7 @@ final class AuthCredentials
                 . '/rotate',
             body: $data,
             scopes: [Scope::AuthAppId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -182,6 +195,7 @@ final class AuthCredentials
                 . '/revoke',
             body: $data,
             scopes: [Scope::AuthAppId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -192,6 +206,7 @@ final class AuthCredentials
             path: 'auth/accounts/' . PathSegment::encode($accountId) . '/passkey-registrations/start',
             body: $data,
             scopes: [Scope::AuthAppId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -202,6 +217,7 @@ final class AuthCredentials
             path: 'auth/accounts/' . PathSegment::encode($accountId) . '/passkey-registrations/verify',
             body: $data,
             scopes: [Scope::AuthAppId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -211,6 +227,7 @@ final class AuthCredentials
             method: HttpMethod::Post,
             path: 'auth/accounts/' . PathSegment::encode($accountId) . '/passkey-authentications/start',
             scopes: [Scope::AuthAppId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -221,6 +238,7 @@ final class AuthCredentials
             path: 'auth/accounts/' . PathSegment::encode($accountId) . '/passkey-authentications/verify',
             body: $data,
             scopes: [Scope::AuthAppId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 }

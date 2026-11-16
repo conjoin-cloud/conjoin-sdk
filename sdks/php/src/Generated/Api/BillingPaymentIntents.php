@@ -35,6 +35,7 @@ final class BillingPaymentIntents
             path: 'billing/payment-intents/',
             body: $data,
             scopes: [Scope::BillingEntityId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataString();
     }
 
@@ -54,6 +55,7 @@ final class BillingPaymentIntents
             method: HttpMethod::Post,
             path: 'billing/payment-intents/' . PathSegment::encode($paymentIntentId) . '/verify',
             scopes: [Scope::BillingEntityId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 }

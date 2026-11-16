@@ -117,6 +117,25 @@ foreach ($page as $customer) {
 
 A list call returns a page with `response`, `data`, and `cursor`. `$page->nextPage()` fetches the page after it, or returns `null` on the last page, and `foreach` over the page walks every item across every page. The SDK throws a `ResponseException` when the server returns a cursor that it returned before, so a broken cursor can't loop forever.
 
+## Credentials that a call declares
+
+Each call sends only the credential that its API document declares. A frontend call that signs in nobody sends no `Authorization` header, a call that needs the publishable key throws a `ConfigurationException` when the client holds an API key, and none of them ever sends your API key. A call for the signed-in user takes the session token as its `sessionToken` argument, and an SSO portal call takes the portal ticket as its `portalTicket` argument, which the SDK sends only in the `x-portal-ticket` header.
+
+A call that declares a header of its own, such as the step-up headers on `AuthAccounts::delete`, takes each header as a named argument. The SDK checks each value against the documented length and format before it sends anything:
+
+```php
+use ConjoinCloud\Credential;
+use ConjoinCloud\Generated\Api\AuthAccounts;
+
+(new AuthAccounts($conjoin))->delete(
+    'acc_123',
+    stepUpSessionId: $stepUpSessionId,
+    stepUpToken: new Credential($stepUpToken),
+);
+```
+
+The step-up token, the session token, and the portal ticket take a `Credential`, which shows only `[redacted]` when you cast, print, dump, or JSON-encode it, and which refuses to serialize.
+
 ## Errors
 
 Every SDK exception extends `ConjoinException`:

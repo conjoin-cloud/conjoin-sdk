@@ -35,6 +35,7 @@ final class BillingSubscriptions
             path: 'billing/subscriptions/',
             body: $data,
             scopes: [Scope::BillingEntityId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -84,6 +85,7 @@ final class BillingSubscriptions
             path: 'billing/subscriptions/' . PathSegment::encode($subscriptionId) . '/plan-changes',
             body: $data,
             scopes: [Scope::BillingEntityId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -94,6 +96,7 @@ final class BillingSubscriptions
             path: 'billing/subscriptions/' . PathSegment::encode($subscriptionId) . '/cancel',
             body: $data,
             scopes: [Scope::BillingEntityId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -104,6 +107,7 @@ final class BillingSubscriptions
             path: 'billing/subscriptions/' . PathSegment::encode($subscriptionId) . '/pause',
             body: $data,
             scopes: [Scope::BillingEntityId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -113,6 +117,7 @@ final class BillingSubscriptions
             method: HttpMethod::Post,
             path: 'billing/subscriptions/' . PathSegment::encode($subscriptionId) . '/resume',
             scopes: [Scope::BillingEntityId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -123,6 +128,7 @@ final class BillingSubscriptions
             path: 'billing/subscriptions/' . PathSegment::encode($subscriptionId) . '/usage-records',
             body: $data,
             scopes: [Scope::BillingEntityId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataBool();
     }
 

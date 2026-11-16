@@ -23,6 +23,7 @@ final class MessagingProfiles
             method: HttpMethod::Post,
             path: 'messaging/profiles/',
             body: $data,
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -108,6 +109,7 @@ final class MessagingProfiles
             method: HttpMethod::Post,
             path: 'messaging/profiles/retrieve',
             body: $data,
+            acceptsIdempotencyKey: true,
         ), $options);
     }
 }

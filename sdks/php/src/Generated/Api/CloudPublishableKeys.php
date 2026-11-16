@@ -31,6 +31,7 @@ final class CloudPublishableKeys
         return $this->client->send(new OperationRequest(
             method: HttpMethod::Post,
             path: 'cloud/publishable-keys/',
+            acceptsIdempotencyKey: true,
         ), $options)->dataString();
     }
 
@@ -48,6 +49,7 @@ final class CloudPublishableKeys
         return $this->client->send(new OperationRequest(
             method: HttpMethod::Post,
             path: 'cloud/publishable-keys/' . PathSegment::encode($publishableKeyId) . '/rotate',
+            acceptsIdempotencyKey: true,
         ), $options)->dataString();
     }
 

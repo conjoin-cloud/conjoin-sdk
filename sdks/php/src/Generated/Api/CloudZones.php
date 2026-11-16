@@ -32,6 +32,7 @@ final class CloudZones
             method: HttpMethod::Post,
             path: 'cloud/zones/',
             body: $data,
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -65,6 +66,7 @@ final class CloudZones
         return $this->client->send(new OperationRequest(
             method: HttpMethod::Post,
             path: 'cloud/zones/' . PathSegment::encode($zoneId) . '/verify',
+            acceptsIdempotencyKey: true,
         ), $options)->data();
     }
 }

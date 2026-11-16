@@ -35,6 +35,7 @@ final class AuthGuards
             path: 'auth/guard-rules',
             body: $data,
             scopes: [Scope::AuthAppId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -103,6 +104,7 @@ final class AuthGuards
             path: 'auth/guard-trusted-ips',
             body: $data,
             scopes: [Scope::AuthAppId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -113,6 +115,7 @@ final class AuthGuards
             path: 'auth/guard-trusted-ips/remove',
             body: $data,
             scopes: [Scope::AuthAppId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -123,6 +126,7 @@ final class AuthGuards
             path: 'auth/guard-trusted-emails',
             body: $data,
             scopes: [Scope::AuthAppId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -133,6 +137,7 @@ final class AuthGuards
             path: 'auth/guard-trusted-emails/remove',
             body: $data,
             scopes: [Scope::AuthAppId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -143,6 +148,7 @@ final class AuthGuards
             path: 'auth/guard-trusted-domains',
             body: $data,
             scopes: [Scope::AuthAppId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -153,6 +159,7 @@ final class AuthGuards
             path: 'auth/guard-trusted-domains/remove',
             body: $data,
             scopes: [Scope::AuthAppId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -172,6 +179,7 @@ final class AuthGuards
             path: 'auth/guard-anonymous-ips',
             body: $data,
             scopes: [Scope::AuthAppId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -182,6 +190,7 @@ final class AuthGuards
             path: 'auth/guard-anonymous-ips/remove',
             body: $data,
             scopes: [Scope::AuthAppId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 }

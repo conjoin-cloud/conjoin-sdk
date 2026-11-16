@@ -25,15 +25,7 @@ final class MessagingContactProperties
             path: 'messaging/contacts/properties',
             body: $data,
             scopes: [Scope::MessagingProfileId],
-        ), $options)->dataArray();
-    }
-
-    public function deleteMany(?CallOptions $options = null): array
-    {
-        return $this->client->send(new OperationRequest(
-            method: HttpMethod::Delete,
-            path: 'messaging/contacts/properties',
-            scopes: [Scope::MessagingProfileId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -55,12 +47,25 @@ final class MessagingContactProperties
         ), $options)->dataArray();
     }
 
-    public function list(?CallOptions $options = null): ListPage
+    public function list(array $data, ?CallOptions $options = null): ListPage
     {
         return $this->client->sendList(new OperationRequest(
             method: HttpMethod::Post,
             path: 'messaging/contacts/properties/retrieve',
+            body: $data,
             scopes: [Scope::MessagingProfileId],
+            acceptsIdempotencyKey: true,
+        ), $options);
+    }
+
+    public function deleteMany(array $data, ?CallOptions $options = null): ListPage
+    {
+        return $this->client->sendList(new OperationRequest(
+            method: HttpMethod::Post,
+            path: 'messaging/contacts/properties/remove',
+            body: $data,
+            scopes: [Scope::MessagingProfileId],
+            acceptsIdempotencyKey: true,
         ), $options);
     }
 }

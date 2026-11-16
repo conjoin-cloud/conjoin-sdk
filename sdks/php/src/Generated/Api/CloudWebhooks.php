@@ -32,6 +32,7 @@ final class CloudWebhooks
             method: HttpMethod::Post,
             path: 'cloud/webhooks/',
             body: $data,
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 

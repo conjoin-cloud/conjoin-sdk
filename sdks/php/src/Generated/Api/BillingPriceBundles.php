@@ -35,6 +35,7 @@ final class BillingPriceBundles
             path: 'billing/price-bundle-activations/',
             body: $data,
             scopes: [Scope::BillingEntityId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -55,6 +56,7 @@ final class BillingPriceBundles
             path: 'billing/price-bundle-activations/' . PathSegment::encode($priceBundleActivationId) . '/deactivate',
             body: $data,
             scopes: [Scope::BillingEntityId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -85,6 +87,7 @@ final class BillingPriceBundles
             path: 'billing/price-bundles/',
             body: $data,
             scopes: [Scope::BillingEntityId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -123,6 +126,7 @@ final class BillingPriceBundles
             method: HttpMethod::Post,
             path: 'billing/price-bundles/' . PathSegment::encode($priceBundleId) . '/archive',
             scopes: [Scope::BillingEntityId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -132,6 +136,7 @@ final class BillingPriceBundles
             method: HttpMethod::Post,
             path: 'billing/price-bundles/' . PathSegment::encode($priceBundleId) . '/restore',
             scopes: [Scope::BillingEntityId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -141,6 +146,7 @@ final class BillingPriceBundles
             method: HttpMethod::Post,
             path: 'billing/price-bundles/' . PathSegment::encode($priceBundleId) . '/publish',
             scopes: [Scope::BillingEntityId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 }

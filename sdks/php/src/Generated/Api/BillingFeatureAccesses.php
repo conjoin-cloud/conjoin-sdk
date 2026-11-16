@@ -23,6 +23,7 @@ final class BillingFeatureAccesses
             path: 'billing/entitlements/check',
             body: $data,
             scopes: [Scope::BillingEntityId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -33,6 +34,7 @@ final class BillingFeatureAccesses
             path: 'billing/entitlements/track',
             body: $data,
             scopes: [Scope::BillingEntityId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 }

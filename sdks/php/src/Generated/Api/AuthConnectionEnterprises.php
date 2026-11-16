@@ -36,6 +36,7 @@ final class AuthConnectionEnterprises
             path: 'auth/organizations/' . PathSegment::encode($organizationId) . '/connections/',
             body: $data,
             scopes: [Scope::AuthAppId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -96,6 +97,7 @@ final class AuthConnectionEnterprises
                 . PathSegment::encode($connectionId)
                 . '/enable',
             scopes: [Scope::AuthAppId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -109,6 +111,7 @@ final class AuthConnectionEnterprises
                 . PathSegment::encode($connectionId)
                 . '/disable',
             scopes: [Scope::AuthAppId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -122,6 +125,7 @@ final class AuthConnectionEnterprises
                 . PathSegment::encode($connectionId)
                 . '/signing-keys/rotate',
             scopes: [Scope::AuthAppId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -135,6 +139,7 @@ final class AuthConnectionEnterprises
                 . PathSegment::encode($connectionId)
                 . '/signing-keys/activate',
             scopes: [Scope::AuthAppId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -148,6 +153,7 @@ final class AuthConnectionEnterprises
                 . PathSegment::encode($connectionId)
                 . '/signing-keys/cancel',
             scopes: [Scope::AuthAppId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -161,6 +167,7 @@ final class AuthConnectionEnterprises
                 . PathSegment::encode($connectionId)
                 . '/signing-keys/revoke',
             scopes: [Scope::AuthAppId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -189,6 +196,7 @@ final class AuthConnectionEnterprises
             body: $data,
             bodyType: BodyType::Multipart,
             scopes: [Scope::AuthAppId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -203,6 +211,7 @@ final class AuthConnectionEnterprises
                 . '/sync-metadata',
             body: $data,
             scopes: [Scope::AuthAppId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 }

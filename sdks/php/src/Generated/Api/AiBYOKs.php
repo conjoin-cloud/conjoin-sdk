@@ -32,6 +32,7 @@ final class AiBYOKs
             method: HttpMethod::Post,
             path: 'ai/byok/',
             body: $data,
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -65,6 +66,7 @@ final class AiBYOKs
         return $this->client->send(new OperationRequest(
             method: HttpMethod::Post,
             path: 'ai/byok/' . PathSegment::encode($byokConfigId) . '/test',
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 }

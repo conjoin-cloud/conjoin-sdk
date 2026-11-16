@@ -35,6 +35,7 @@ final class AuthOrganizationDomains
             path: 'auth/organizations/' . PathSegment::encode($organizationId) . '/domains/',
             body: $data,
             scopes: [Scope::AuthAppId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -58,6 +59,7 @@ final class AuthOrganizationDomains
                 . PathSegment::encode($domainId)
                 . '/verify',
             scopes: [Scope::AuthAppId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 

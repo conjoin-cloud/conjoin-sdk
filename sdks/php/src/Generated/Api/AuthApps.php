@@ -32,6 +32,7 @@ final class AuthApps
             method: HttpMethod::Post,
             path: 'auth/apps/',
             body: $data,
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -75,6 +76,7 @@ final class AuthApps
         return $this->client->send(new OperationRequest(
             method: HttpMethod::Post,
             path: 'auth/apps/' . PathSegment::encode($appId) . '/signing-keys/rotate',
+            acceptsIdempotencyKey: true,
         ), $options)->bodyArray();
     }
 }

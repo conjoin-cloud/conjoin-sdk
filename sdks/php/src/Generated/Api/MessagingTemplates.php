@@ -25,6 +25,7 @@ final class MessagingTemplates
             path: 'messaging/templates/',
             body: $data,
             scopes: [Scope::MessagingProfileId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -35,6 +36,7 @@ final class MessagingTemplates
             path: 'messaging/templates/retrieve',
             body: $data,
             scopes: [Scope::MessagingProfileId],
+            acceptsIdempotencyKey: true,
         ), $options);
     }
 

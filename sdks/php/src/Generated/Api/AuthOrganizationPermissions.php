@@ -35,6 +35,7 @@ final class AuthOrganizationPermissions
             path: 'auth/organizations/' . PathSegment::encode($organizationId) . '/permissions/',
             body: $data,
             scopes: [Scope::AuthAppId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -95,6 +96,7 @@ final class AuthOrganizationPermissions
                 . PathSegment::encode($permissionId)
                 . '/archive',
             scopes: [Scope::AuthAppId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -108,6 +110,7 @@ final class AuthOrganizationPermissions
                 . PathSegment::encode($permissionId)
                 . '/restore',
             scopes: [Scope::AuthAppId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 }

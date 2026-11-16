@@ -23,6 +23,7 @@ final class AiInferences
             method: HttpMethod::Post,
             path: 'ai/inference/chat/completions',
             body: $data,
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -32,6 +33,7 @@ final class AiInferences
             method: HttpMethod::Post,
             path: 'ai/inference/multi-model',
             body: $data,
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -41,6 +43,7 @@ final class AiInferences
             method: HttpMethod::Post,
             path: 'ai/inference/best-of-n',
             body: $data,
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 

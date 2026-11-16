@@ -35,6 +35,7 @@ final class BillingPrices
             path: 'billing/prices/',
             body: $data,
             scopes: [Scope::BillingEntityId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -82,6 +83,7 @@ final class BillingPrices
             method: HttpMethod::Post,
             path: 'billing/prices/' . PathSegment::encode($priceId) . '/archive',
             scopes: [Scope::BillingEntityId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -91,6 +93,7 @@ final class BillingPrices
             method: HttpMethod::Post,
             path: 'billing/prices/' . PathSegment::encode($priceId) . '/restore',
             scopes: [Scope::BillingEntityId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 }

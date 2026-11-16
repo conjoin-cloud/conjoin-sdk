@@ -24,6 +24,7 @@ final class AuthSLOs
             path: 'auth/accounts/' . PathSegment::encode($accountId) . '/logout-oidc',
             body: $data,
             scopes: [Scope::AuthAppId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -34,6 +35,7 @@ final class AuthSLOs
             path: 'auth/accounts/' . PathSegment::encode($accountId) . '/logout-saml',
             body: $data,
             scopes: [Scope::AuthAppId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -44,6 +46,7 @@ final class AuthSLOs
             path: 'auth/saml-logout-requests',
             body: $data,
             scopes: [Scope::AuthAppId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 }

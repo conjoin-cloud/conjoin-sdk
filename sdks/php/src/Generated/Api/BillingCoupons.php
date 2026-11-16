@@ -32,6 +32,7 @@ final class BillingCoupons
             method: HttpMethod::Post,
             path: 'billing/coupons/',
             body: $data,
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 

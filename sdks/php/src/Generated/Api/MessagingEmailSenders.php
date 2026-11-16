@@ -34,6 +34,7 @@ final class MessagingEmailSenders
             path: 'messaging/email/senders/retrieve',
             body: $data,
             scopes: [Scope::MessagingProfileId],
+            acceptsIdempotencyKey: true,
         ), $options);
     }
 
@@ -62,25 +63,24 @@ final class MessagingEmailSenders
             path: 'messaging/email/senders/',
             body: $data,
             scopes: [Scope::MessagingProfileId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
-    public function enable(string $senderId, array $data, ?CallOptions $options = null): array
+    public function enable(string $senderId, ?CallOptions $options = null): array
     {
         return $this->client->send(new OperationRequest(
             method: HttpMethod::Patch,
             path: 'messaging/email/senders/' . PathSegment::encode($senderId) . '/enable',
-            body: $data,
             scopes: [Scope::MessagingProfileId],
         ), $options)->dataArray();
     }
 
-    public function disable(string $senderId, array $data, ?CallOptions $options = null): array
+    public function disable(string $senderId, ?CallOptions $options = null): array
     {
         return $this->client->send(new OperationRequest(
             method: HttpMethod::Patch,
             path: 'messaging/email/senders/' . PathSegment::encode($senderId) . '/disable',
-            body: $data,
             scopes: [Scope::MessagingProfileId],
         ), $options)->dataArray();
     }

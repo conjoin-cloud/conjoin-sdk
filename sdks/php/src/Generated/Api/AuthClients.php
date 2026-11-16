@@ -35,6 +35,7 @@ final class AuthClients
             path: 'auth/clients/',
             body: $data,
             scopes: [Scope::AuthAppId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 

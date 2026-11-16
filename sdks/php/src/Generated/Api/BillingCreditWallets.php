@@ -35,6 +35,7 @@ final class BillingCreditWallets
             path: 'billing/credit-wallets/',
             body: $data,
             scopes: [Scope::BillingEntityId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -65,6 +66,7 @@ final class BillingCreditWallets
             path: 'billing/credit-wallets/' . PathSegment::encode($creditWalletId) . '/grant',
             body: $data,
             scopes: [Scope::BillingEntityId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 }

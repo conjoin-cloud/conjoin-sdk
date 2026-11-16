@@ -6,6 +6,8 @@ namespace ConjoinCloud\Generated\Api;
 
 use ConjoinCloud\CallOptions;
 use ConjoinCloud\ConjoinClient;
+use ConjoinCloud\Credential;
+use ConjoinCloud\DeclaredHeader;
 use ConjoinCloud\HttpMethod;
 use ConjoinCloud\Internal\Request\PathSegment;
 use ConjoinCloud\OperationRequest;
@@ -35,6 +37,7 @@ final class AuthAccounts
             path: 'auth/accounts/' . PathSegment::encode($accountId) . '/credentials/verify',
             body: $data,
             scopes: [Scope::AuthAppId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -45,6 +48,7 @@ final class AuthAccounts
             path: 'auth/accounts/' . PathSegment::encode($accountId) . '/totp-credentials/verify',
             body: $data,
             scopes: [Scope::AuthAppId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -80,6 +84,7 @@ final class AuthAccounts
                 . PathSegment::encode($credentialId)
                 . '/remove',
             scopes: [Scope::AuthAppId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -100,6 +105,7 @@ final class AuthAccounts
             path: 'auth/accounts/',
             body: $data,
             scopes: [Scope::AuthAppId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -130,6 +136,7 @@ final class AuthAccounts
             path: 'auth/accounts/merge',
             body: $data,
             scopes: [Scope::AuthAppId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -152,12 +159,22 @@ final class AuthAccounts
         ), $options)->dataArray();
     }
 
-    public function delete(string $accountId, ?CallOptions $options = null): array
-    {
+    public function delete(
+        string $accountId,
+        ?array $query = null,
+        ?string $stepUpSessionId = null,
+        #[\SensitiveParameter] ?Credential $stepUpToken = null,
+        ?CallOptions $options = null,
+    ): array {
         return $this->client->send(new OperationRequest(
             method: HttpMethod::Delete,
             path: 'auth/accounts/' . PathSegment::encode($accountId),
+            query: $query,
             scopes: [Scope::AuthAppId],
+            declaredHeaders: [
+                new DeclaredHeader('Step-Up-Session-ID', 'stepUpSessionId', $stepUpSessionId, minLength: 1, maxLength: 48),
+                new DeclaredHeader('Step-Up-Token', 'stepUpToken', $stepUpToken, minLength: 1, maxLength: 256, pattern: '^[0-9a-f]+$'),
+            ],
         ), $options)->dataArray();
     }
 
@@ -168,6 +185,7 @@ final class AuthAccounts
             path: 'auth/accounts/' . PathSegment::encode($accountId) . '/emails/add',
             body: $data,
             scopes: [Scope::AuthAppId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -178,6 +196,7 @@ final class AuthAccounts
             path: 'auth/accounts/' . PathSegment::encode($accountId) . '/emails/remove',
             body: $data,
             scopes: [Scope::AuthAppId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -188,6 +207,7 @@ final class AuthAccounts
             path: 'auth/accounts/' . PathSegment::encode($accountId) . '/phones/add',
             body: $data,
             scopes: [Scope::AuthAppId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -198,6 +218,7 @@ final class AuthAccounts
             path: 'auth/accounts/' . PathSegment::encode($accountId) . '/phones/remove',
             body: $data,
             scopes: [Scope::AuthAppId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -208,6 +229,7 @@ final class AuthAccounts
             path: 'auth/accounts/' . PathSegment::encode($accountId) . '/global-roles/grant',
             body: $data,
             scopes: [Scope::AuthAppId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -218,6 +240,7 @@ final class AuthAccounts
             path: 'auth/accounts/' . PathSegment::encode($accountId) . '/global-roles/revoke',
             body: $data,
             scopes: [Scope::AuthAppId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -237,6 +260,7 @@ final class AuthAccounts
             method: HttpMethod::Post,
             path: 'auth/accounts/' . PathSegment::encode($accountId) . '/export',
             scopes: [Scope::AuthAppId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -247,6 +271,7 @@ final class AuthAccounts
             path: 'auth/accounts/import-password-hashes',
             body: $data,
             scopes: [Scope::AuthAppId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 }

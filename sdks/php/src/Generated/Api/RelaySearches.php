@@ -32,6 +32,7 @@ final class RelaySearches
             method: HttpMethod::Post,
             path: 'relay/search/indexes',
             body: $data,
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -49,6 +50,7 @@ final class RelaySearches
             method: HttpMethod::Post,
             path: 'relay/search/indexes/' . PathSegment::encode($indexId) . '/documents',
             body: $data,
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -58,6 +60,7 @@ final class RelaySearches
             method: HttpMethod::Post,
             path: 'relay/search/indexes/' . PathSegment::encode($indexId) . '/documents/batch',
             body: $data,
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -78,6 +81,7 @@ final class RelaySearches
             method: HttpMethod::Post,
             path: 'relay/search/indexes/' . PathSegment::encode($indexId) . '/query',
             body: $data,
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -87,6 +91,7 @@ final class RelaySearches
             method: HttpMethod::Post,
             path: 'relay/search/indexes/' . PathSegment::encode($indexId) . '/suggest',
             body: $data,
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 }

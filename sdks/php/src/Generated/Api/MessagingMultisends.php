@@ -24,6 +24,7 @@ final class MessagingMultisends
             path: 'messaging/multisend/send',
             body: $data,
             scopes: [Scope::MessagingProfileId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 

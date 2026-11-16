@@ -21,6 +21,7 @@ final class OperationInfo
         public readonly array $scopes,
         public readonly bool $acceptsIdempotencyKey,
         public readonly AuthKind $auth,
+        public readonly array $declaredHeaders = [],
     ) {
     }
 }

@@ -32,6 +32,7 @@ final class CloudRoles
             method: HttpMethod::Post,
             path: 'cloud/roles/',
             body: $data,
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 

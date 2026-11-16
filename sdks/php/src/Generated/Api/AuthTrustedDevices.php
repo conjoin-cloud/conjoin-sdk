@@ -44,6 +44,7 @@ final class AuthTrustedDevices
             method: HttpMethod::Post,
             path: 'auth/accounts/' . PathSegment::encode($accountId) . '/trusted-devices/revoke-all',
             scopes: [Scope::AuthAppId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -57,6 +58,7 @@ final class AuthTrustedDevices
                 . PathSegment::encode($trustedDeviceId)
                 . '/revoke',
             scopes: [Scope::AuthAppId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 }

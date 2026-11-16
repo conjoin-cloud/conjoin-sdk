@@ -46,6 +46,7 @@ final class AuthSCIMManagements
                 . PathSegment::encode($membershipId)
                 . '/sync-scim-roles',
             scopes: [Scope::AuthAppId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -59,6 +60,7 @@ final class AuthSCIMManagements
                 . PathSegment::encode($groupId)
                 . '/sync-scim-roles',
             scopes: [Scope::AuthAppId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -69,6 +71,7 @@ final class AuthSCIMManagements
             path: 'auth/organizations/' . PathSegment::encode($organizationId) . '/reconcile-scim-users',
             body: $data,
             scopes: [Scope::AuthAppId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -79,6 +82,7 @@ final class AuthSCIMManagements
             path: 'auth/organizations/' . PathSegment::encode($organizationId) . '/reconcile-scim-groups',
             body: $data,
             scopes: [Scope::AuthAppId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -89,6 +93,7 @@ final class AuthSCIMManagements
             path: 'auth/organizations/' . PathSegment::encode($organizationId) . '/reconcile-scim-group-members',
             body: $data,
             scopes: [Scope::AuthAppId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 }

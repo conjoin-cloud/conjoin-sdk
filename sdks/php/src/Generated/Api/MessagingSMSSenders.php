@@ -24,6 +24,7 @@ final class MessagingSMSSenders
             path: 'messaging/sms/senders/',
             body: $data,
             scopes: [Scope::MessagingProfileId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -54,11 +55,12 @@ final class MessagingSMSSenders
         ), $options)->dataArray();
     }
 
-    public function updateOneSmsSender(string $senderId, ?CallOptions $options = null): array
+    public function updateOneSmsSender(string $senderId, array $data, ?CallOptions $options = null): array
     {
         return $this->client->send(new OperationRequest(
             method: HttpMethod::Patch,
             path: 'messaging/sms/senders/' . PathSegment::encode($senderId),
+            body: $data,
             scopes: [Scope::MessagingProfileId],
         ), $options)->dataArray();
     }

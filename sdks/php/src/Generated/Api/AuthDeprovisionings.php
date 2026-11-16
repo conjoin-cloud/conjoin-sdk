@@ -24,6 +24,7 @@ final class AuthDeprovisionings
             path: 'auth/accounts/' . PathSegment::encode($accountId) . '/deprovision',
             body: $data,
             scopes: [Scope::AuthAppId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 }

@@ -25,6 +25,7 @@ final class MessagingConversations
             path: 'messaging/conversations/',
             body: $data,
             scopes: [Scope::MessagingProfileId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -35,6 +36,7 @@ final class MessagingConversations
             path: 'messaging/conversations/' . PathSegment::encode($conversationId) . '/clone',
             body: $data,
             scopes: [Scope::MessagingProfileId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -45,6 +47,7 @@ final class MessagingConversations
             path: 'messaging/conversations/' . PathSegment::encode($conversationId) . '/send',
             body: $data,
             scopes: [Scope::MessagingProfileId],
+            acceptsIdempotencyKey: true,
         ), $options)->data();
     }
 
@@ -67,12 +70,11 @@ final class MessagingConversations
         ), $options)->dataArray();
     }
 
-    public function archive(string $conversationId, array $data, ?CallOptions $options = null): array
+    public function archive(string $conversationId, ?CallOptions $options = null): array
     {
         return $this->client->send(new OperationRequest(
             method: HttpMethod::Patch,
             path: 'messaging/conversations/' . PathSegment::encode($conversationId) . '/archive',
-            body: $data,
             scopes: [Scope::MessagingProfileId],
         ), $options)->dataArray();
     }
@@ -84,10 +86,11 @@ final class MessagingConversations
             path: 'messaging/conversations/retrieve',
             body: $data,
             scopes: [Scope::MessagingProfileId],
+            acceptsIdempotencyKey: true,
         ), $options);
     }
 
-    public function readMessages(string $conversationId, string $parentMessageId, ?CallOptions $options = null): ListPage
+    public function readMessages(string $conversationId, string $parentMessageId, array $data, ?CallOptions $options = null): ListPage
     {
         return $this->client->sendList(new OperationRequest(
             method: HttpMethod::Post,
@@ -95,7 +98,9 @@ final class MessagingConversations
                 . PathSegment::encode($conversationId)
                 . '/messages/'
                 . PathSegment::encode($parentMessageId),
+            body: $data,
             scopes: [Scope::MessagingProfileId],
+            acceptsIdempotencyKey: true,
         ), $options);
     }
 
@@ -123,30 +128,36 @@ final class MessagingConversations
         ), $options)->dataArray();
     }
 
-    public function readManyRecipients(string $conversationId, ?CallOptions $options = null): ListPage
+    public function readManyRecipients(string $conversationId, array $data, ?CallOptions $options = null): ListPage
     {
         return $this->client->sendList(new OperationRequest(
             method: HttpMethod::Post,
             path: 'messaging/conversations/' . PathSegment::encode($conversationId) . '/recipients/retrieve',
+            body: $data,
             scopes: [Scope::MessagingProfileId],
+            acceptsIdempotencyKey: true,
         ), $options);
     }
 
-    public function addOneRecipient(string $conversationId, ?CallOptions $options = null): array
+    public function addOneRecipient(string $conversationId, array $data, ?CallOptions $options = null): array
     {
         return $this->client->send(new OperationRequest(
             method: HttpMethod::Post,
             path: 'messaging/conversations/' . PathSegment::encode($conversationId) . '/recipients',
+            body: $data,
             scopes: [Scope::MessagingProfileId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
-    public function addManyRecipients(string $conversationId, ?CallOptions $options = null): ListPage
+    public function addManyRecipients(string $conversationId, array $data, ?CallOptions $options = null): ListPage
     {
         return $this->client->sendList(new OperationRequest(
             method: HttpMethod::Post,
             path: 'messaging/conversations/' . PathSegment::encode($conversationId) . '/recipients/batch',
+            body: $data,
             scopes: [Scope::MessagingProfileId],
+            acceptsIdempotencyKey: true,
         ), $options);
     }
 }

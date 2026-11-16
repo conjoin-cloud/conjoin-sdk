@@ -35,6 +35,7 @@ final class AuthOrganizationGroups
             path: 'auth/organizations/' . PathSegment::encode($organizationId) . '/groups/',
             body: $data,
             scopes: [Scope::AuthAppId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -104,6 +105,7 @@ final class AuthOrganizationGroups
                 . '/add-members',
             body: $data,
             scopes: [Scope::AuthAppId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -118,6 +120,7 @@ final class AuthOrganizationGroups
                 . '/remove-members',
             body: $data,
             scopes: [Scope::AuthAppId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -132,6 +135,7 @@ final class AuthOrganizationGroups
                 . '/sync-members',
             body: $data,
             scopes: [Scope::AuthAppId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 }

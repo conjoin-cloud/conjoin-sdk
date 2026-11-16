@@ -26,6 +26,7 @@ final class StorageObjectACLs
                 . PathSegment::encode($objectNameOrId)
                 . '/acl/grant',
             body: $data,
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -39,6 +40,7 @@ final class StorageObjectACLs
                 . PathSegment::encode($objectNameOrId)
                 . '/acl/revoke',
             body: $data,
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 

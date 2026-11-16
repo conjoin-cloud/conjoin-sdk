@@ -10,6 +10,8 @@ final class OperationRequest
 {
     public readonly array $scopes;
 
+    public readonly array $declaredHeaders;
+
     public function __construct(
         public readonly HttpMethod $method,
         public readonly string $path,
@@ -20,6 +22,8 @@ final class OperationRequest
         public readonly bool $acceptsIdempotencyKey = false,
         public readonly AuthMode $auth = AuthMode::ClientKey,
         #[\SensitiveParameter] public readonly ?string $bearerToken = null,
+        #[\SensitiveParameter] array $declaredHeaders = [],
+        #[\SensitiveParameter] public readonly ?Credential $sessionToken = null,
     ) {
         foreach ($scopes as $scope) {
             if (!$scope instanceof Scope) {
@@ -27,7 +31,14 @@ final class OperationRequest
             }
         }
 
+        foreach ($declaredHeaders as $header) {
+            if (!$header instanceof DeclaredHeader) {
+                throw new ConfigurationException('Every declared header must be a DeclaredHeader');
+            }
+        }
+
         $this->scopes = array_values($scopes);
+        $this->declaredHeaders = array_values($declaredHeaders);
     }
 
     public function withQuery(?array $query): self
@@ -42,6 +53,8 @@ final class OperationRequest
             $this->acceptsIdempotencyKey,
             $this->auth,
             $this->bearerToken,
+            $this->declaredHeaders,
+            $this->sessionToken,
         );
     }
 
@@ -53,6 +66,7 @@ final class OperationRequest
             'scopes' => $this->scopes,
             'acceptsIdempotencyKey' => $this->acceptsIdempotencyKey,
             'auth' => $this->auth,
+            'declaredHeaders' => $this->declaredHeaders,
         ];
     }
 }

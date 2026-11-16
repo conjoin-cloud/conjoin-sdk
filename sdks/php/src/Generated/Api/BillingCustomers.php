@@ -35,6 +35,7 @@ final class BillingCustomers
             path: 'billing/customers/',
             body: $data,
             scopes: [Scope::BillingEntityId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -73,6 +74,7 @@ final class BillingCustomers
             method: HttpMethod::Post,
             path: 'billing/customers/' . PathSegment::encode($customerId) . '/archive',
             scopes: [Scope::BillingEntityId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -82,6 +84,7 @@ final class BillingCustomers
             method: HttpMethod::Post,
             path: 'billing/customers/' . PathSegment::encode($customerId) . '/restore',
             scopes: [Scope::BillingEntityId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 }

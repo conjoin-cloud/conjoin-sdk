@@ -33,6 +33,7 @@ final class AuthConnections
             path: 'auth/connection-configs/',
             body: $data,
             scopes: [Scope::AuthAppId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 }

@@ -35,6 +35,7 @@ final class BillingPaymentMethods
             path: 'billing/payment-methods/',
             body: $data,
             scopes: [Scope::BillingEntityId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataString();
     }
 

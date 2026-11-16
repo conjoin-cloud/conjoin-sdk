@@ -23,6 +23,7 @@ final class AiPolicies
             method: HttpMethod::Post,
             path: 'ai/policy/check',
             body: $data,
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -41,6 +42,7 @@ final class AiPolicies
             method: HttpMethod::Post,
             path: 'ai/policy/rules',
             body: $data,
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 

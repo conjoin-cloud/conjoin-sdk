@@ -35,6 +35,7 @@ final class AuthOrganizationInvitations
             path: 'auth/organizations/' . PathSegment::encode($organizationId) . '/invitations/',
             body: $data,
             scopes: [Scope::AuthAppId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -58,6 +59,7 @@ final class AuthOrganizationInvitations
                 . PathSegment::encode($invitationId)
                 . '/revoke',
             scopes: [Scope::AuthAppId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -72,6 +74,7 @@ final class AuthOrganizationInvitations
                 . '/resend',
             body: $data,
             scopes: [Scope::AuthAppId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 }

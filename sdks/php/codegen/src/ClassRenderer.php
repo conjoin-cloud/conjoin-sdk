@@ -6,7 +6,7 @@ namespace ConjoinCloud\Codegen;
 
 final class ClassRenderer
 {
-    private const RESERVED_PARAMETER_NAMES = ['client', 'data', 'query', 'options', 'scimToken', 'this'];
+    private const RESERVED_PARAMETER_NAMES = ['client', 'data', 'query', 'options', 'scimToken', 'sessionToken', 'this'];
 
     private const PARAMETER_PATTERN = '/^[a-z][A-Za-z0-9]*$/D';
 
@@ -15,6 +15,8 @@ final class ClassRenderer
     private const FIELD_INDENT = '            ';
 
     private const MAX_FIELD_LINE_LENGTH = 120;
+
+    private const MAX_SIGNATURE_LINE_LENGTH = 160;
 
     private function __construct()
     {
@@ -82,6 +84,14 @@ final class ClassRenderer
             $imports->add('ConjoinCloud\\AuthMode');
         }
 
+        if ($operation->declaredHeaders !== []) {
+            $imports->add('ConjoinCloud\\DeclaredHeader');
+        }
+
+        if ($operation->auth === AuthKind::Session || self::takesCredentialHeader($operation)) {
+            $imports->add('ConjoinCloud\\Credential');
+        }
+
         if ($operation->multipart && $operation->hasRequestBody) {
             $imports->add('ConjoinCloud\\BodyType');
         }
@@ -94,14 +104,25 @@ final class ClassRenderer
     private static function method(string $name, OperationInfo $operation): string
     {
         $call = sprintf("new OperationRequest(\n%s        ), \$options", self::requestFields($operation));
-        $signature = sprintf('    public function %s(%s): %s', $name, self::parameters($operation), self::returnType($operation));
         $body = match ($operation->responseKind) {
             ResponseKind::ListPage => sprintf('        return $this->client->sendList(%s);', $call),
             ResponseKind::Empty => sprintf('        $this->client->send(%s);', $call),
             ResponseKind::Envelope, ResponseKind::Body => sprintf('        return $this->client->send(%s)%s;', $call, self::accessor($operation->returnType)),
         };
 
-        return sprintf("%s\n    {\n%s\n    }", $signature, $body);
+        return sprintf("%s\n%s\n    }", self::signature($name, $operation), $body);
+    }
+
+    private static function signature(string $name, OperationInfo $operation): string
+    {
+        $returnType = self::returnType($operation);
+        $inline = sprintf('    public function %s(%s): %s', $name, self::parameters($operation, ', '), $returnType);
+
+        if (strlen($inline) <= self::MAX_SIGNATURE_LINE_LENGTH) {
+            return $inline . "\n    {";
+        }
+
+        return sprintf("    public function %s(\n        %s,\n    ): %s {", $name, self::parameters($operation, ",\n        "), $returnType);
     }
 
     private static function returnType(OperationInfo $operation): string
@@ -118,33 +139,127 @@ final class ClassRenderer
         return $returnType->accessor === 'body' ? '->body' : sprintf('->%s()', $returnType->accessor);
     }
 
-    private static function parameters(OperationInfo $operation): string
+    private static function parameters(OperationInfo $operation, string $separator): string
     {
-        $parameters = '';
+        $parameters = [];
 
         foreach ($operation->pathParameters as $pathParameter) {
-            if (!is_string($pathParameter)) {
-                throw new CodegenException(sprintf('%s has a path parameter that is not a string', $operation->operationId));
-            }
+            $parameters[] = sprintf('string $%s', self::parameterName(self::pathParameter($pathParameter, $operation)));
+        }
 
-            $parameters .= sprintf('string $%s, ', self::parameterName($pathParameter));
+        if ($operation->auth === AuthKind::Session) {
+            $parameters[] = '#[\\SensitiveParameter] Credential $sessionToken';
+        }
+
+        foreach ($operation->declaredHeaders as $entry) {
+            $header = self::header($entry, $operation);
+
+            if ($header->required) {
+                $parameters[] = self::headerParameter($header, $operation);
+            }
         }
 
         $bodyNeedsValue = $operation->hasRequestBody && ($operation->requestBodyRequired || $operation->queryRequired);
 
         if ($operation->hasRequestBody) {
-            $parameters .= match (true) {
-                $operation->requestBodyRequired => 'array $data, ',
-                $bodyNeedsValue => '?array $data, ',
-                default => '?array $data = null, ',
+            $parameters[] = match (true) {
+                $operation->requestBodyRequired => 'array $data',
+                $bodyNeedsValue => '?array $data',
+                default => '?array $data = null',
             };
         }
 
         if ($operation->hasQuery) {
-            $parameters .= $operation->queryRequired ? 'array $query, ' : '?array $query = null, ';
+            $parameters[] = $operation->queryRequired ? 'array $query' : '?array $query = null';
         }
 
-        return $parameters . '?CallOptions $options = null';
+        foreach ($operation->declaredHeaders as $entry) {
+            $header = self::header($entry, $operation);
+
+            if (!$header->required) {
+                $parameters[] = self::headerParameter($header, $operation);
+            }
+        }
+
+        $parameters[] = '?CallOptions $options = null';
+
+        return implode($separator, $parameters);
+    }
+
+    private static function pathParameter(mixed $pathParameter, OperationInfo $operation): string
+    {
+        return is_string($pathParameter)
+            ? $pathParameter
+            : throw new CodegenException(sprintf('%s has a path parameter that is not a string', $operation->operationId));
+    }
+
+    private static function header(mixed $header, OperationInfo $operation): DeclaredHeaderInfo
+    {
+        return $header instanceof DeclaredHeaderInfo
+            ? $header
+            : throw new CodegenException(sprintf('%s has a declared header that is not a DeclaredHeaderInfo', $operation->operationId));
+    }
+
+    private static function takesCredentialHeader(OperationInfo $operation): bool
+    {
+        foreach ($operation->declaredHeaders as $entry) {
+            if (self::header($entry, $operation)->credential) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static function headerParameter(DeclaredHeaderInfo $header, OperationInfo $operation): string
+    {
+        $name = Naming::assertIdentifier($header->parameterName, self::PARAMETER_PATTERN, 'The header parameter');
+        $pathNames = [];
+
+        foreach ($operation->pathParameters as $pathParameter) {
+            $pathNames[] = Naming::camel(self::pathParameter($pathParameter, $operation));
+        }
+
+        if (in_array($name, self::RESERVED_PARAMETER_NAMES, true) || in_array($name, $pathNames, true)) {
+            throw new CodegenException(sprintf('The header %s of %s collides with another parameter', $header->name, $operation->operationId));
+        }
+
+        $type = $header->credential ? 'Credential' : 'string';
+        $attribute = $header->credential ? '#[\\SensitiveParameter] ' : '';
+
+        return $header->required
+            ? sprintf('%s%s $%s', $attribute, $type, $name)
+            : sprintf('%s?%s $%s = null', $attribute, $type, $name);
+    }
+
+    private static function declaredHeadersField(OperationInfo $operation): string
+    {
+        $entries = '';
+
+        foreach ($operation->declaredHeaders as $entry) {
+            $header = self::header($entry, $operation);
+            $arguments = [var_export($header->name, true), var_export($header->parameterName, true), '$' . $header->parameterName];
+
+            if ($header->required) {
+                $arguments[] = 'required: true';
+            }
+
+            if ($header->minLength !== null) {
+                $arguments[] = sprintf('minLength: %d', $header->minLength);
+            }
+
+            if ($header->maxLength !== null) {
+                $arguments[] = sprintf('maxLength: %d', $header->maxLength);
+            }
+
+            if ($header->pattern !== null) {
+                $arguments[] = 'pattern: ' . var_export($header->pattern, true);
+            }
+
+            $entries .= sprintf("%s    new DeclaredHeader(%s),\n", self::FIELD_INDENT, implode(', ', $arguments));
+        }
+
+        return sprintf("declaredHeaders: [\n%s%s]", $entries, self::FIELD_INDENT);
     }
 
     private static function requestFields(OperationInfo $operation): string
@@ -172,8 +287,20 @@ final class ClassRenderer
             $fields .= self::field('acceptsIdempotencyKey: true');
         }
 
-        if ($operation->auth === AuthKind::None) {
+        if ($operation->auth === AuthKind::None || $operation->auth === AuthKind::PortalTicket) {
             $fields .= self::field('auth: AuthMode::None');
+        }
+
+        if ($operation->auth === AuthKind::PublishableKey) {
+            $fields .= self::field('auth: AuthMode::PublishableKey');
+        }
+
+        if ($operation->auth === AuthKind::Session) {
+            $fields .= self::field('auth: AuthMode::Session') . self::field('sessionToken: $sessionToken');
+        }
+
+        if ($operation->declaredHeaders !== []) {
+            $fields .= self::field(self::declaredHeadersField($operation));
         }
 
         if ($operation->auth === AuthKind::ScimBearer) {

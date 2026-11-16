@@ -21,6 +21,10 @@ final class SchemaSampler
         'uuid' => '0198f0f7-5d0b-4b4a-8d5a-cf5693f0b2c1',
     ];
 
+    private const PATTERN_SAMPLES = [
+        '^[0-9a-f]+$' => '9f86d081884c7d65',
+    ];
+
     public function __construct(private readonly DocumentOperations $document)
     {
     }
@@ -150,6 +154,12 @@ final class SchemaSampler
 
         if (is_string($format) && isset(self::FORMAT_SAMPLES[$format])) {
             return self::FORMAT_SAMPLES[$format];
+        }
+
+        $pattern = $schema['pattern'] ?? null;
+
+        if (is_string($pattern) && isset(self::PATTERN_SAMPLES[$pattern])) {
+            return self::PATTERN_SAMPLES[$pattern];
         }
 
         $minLength = is_int($schema['minLength'] ?? null) ? $schema['minLength'] : 1;
