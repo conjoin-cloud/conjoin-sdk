@@ -266,12 +266,32 @@ export async function conjoinFetchListWithResponse<T>(
   const result = await sendConjoinRequest(config, path, options, true)
   const json = await readJsonBody(result)
   const metadata = metadataOf(result)
-  const query = options.query ?? {}
   const fetchNext = async (next: string, seen: ReadonlySet<string>): Promise<ConjoinListPage<T>> =>
-    (await conjoinFetchListWithResponse<T>(config, path, { ...options, query: { ...query, cursor: { next } } }, seen))
-      .data
+    (await conjoinFetchListWithResponse<T>(config, path, nextPageOptions(options, next), seen)).data
+  const takesCursor = options.cursorLocation !== 'none'
 
-  return { data: createListPage<T>(json, metadata.status, metadata.requestId, fetchNext, seenCursors), metadata }
+  return {
+    data: createListPage<T>(
+      json,
+      metadata.status,
+      metadata.requestId,
+      takesCursor ? fetchNext : undefined,
+      seenCursors,
+    ),
+    metadata,
+  }
+}
+
+function nextPageOptions(options: RequestOptions, next: string): RequestOptions {
+  if (options.cursorLocation !== 'body') {
+    return { ...options, query: { ...(options.query ?? {}), cursor: { next } } }
+  }
+
+  const body = options.body && typeof options.body === 'object' ? options.body : {}
+
+  const idempotencyKey = options.acceptsIdempotencyKey ? generateIdempotencyKey() : options.idempotencyKey
+
+  return { ...options, body: { ...body, cursor: { next } }, idempotencyKey }
 }
 
 export async function conjoinFetchList<T>(

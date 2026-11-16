@@ -26,6 +26,6 @@ export function createMessagingSMSCampaigns(client: ConjoinClient) {
       client.fetch<DeleteSmsCampaignData>(`messaging/sms/campaigns/${encodePathParam(campaignId)}`, { ...options, method: 'DELETE', scopes: ['messagingProfileId'] }),
 
     listSmsCampaigns: (data: ListSmsCampaignsBody, options?: ConjoinCallOptions) =>
-      client.fetchList<ListSmsCampaignsData>('messaging/sms/campaigns/retrieve', { ...options, method: 'POST', body: data, scopes: ['messagingProfileId'], acceptsIdempotencyKey: true }),
+      client.fetchList<ListSmsCampaignsData>('messaging/sms/campaigns/retrieve', { ...options, method: 'POST', body: data, scopes: ['messagingProfileId'], acceptsIdempotencyKey: true, cursorLocation: 'body' }),
   }
 }

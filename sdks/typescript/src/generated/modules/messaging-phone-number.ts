@@ -20,7 +20,7 @@ export function createMessagingPhoneNumbers(client: ConjoinClient) {
       client.fetch<UpdateData>(`messaging/phone-numbers/transfer/${encodePathParam(phoneNumber)}/project/${encodePathParam(projectId)}`, { ...options, method: 'PATCH', scopes: ['messagingProfileId'] }),
 
     listAvailable: (query?: ListAvailableQuery, options?: ConjoinCallOptions) =>
-      client.fetchList<ListAvailableData>('messaging/phone-numbers/available', { ...options, method: 'GET', query: query as Record<string, unknown> | undefined, scopes: ['messagingProfileId'] }),
+      client.fetchList<ListAvailableData>('messaging/phone-numbers/available', { ...options, method: 'GET', query: query as Record<string, unknown> | undefined, scopes: ['messagingProfileId'], cursorLocation: 'none' }),
 
     list: (query?: ListQuery, options?: ConjoinCallOptions) =>
       client.fetchList<ListData>('messaging/phone-numbers/', { ...options, method: 'GET', query: query as Record<string, unknown> | undefined, scopes: ['messagingProfileId'] }),

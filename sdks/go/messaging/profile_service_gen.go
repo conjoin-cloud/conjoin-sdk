@@ -147,5 +147,6 @@ func (s *ProfilesService) List(ctx context.Context, body *ListProfilesRequest, o
 		Body:                  body,
 		BodyRequired:          true,
 		AcceptsIdempotencyKey: true,
+		Cursor:                conjoin.CursorInBody,
 	}, opts...)
 }

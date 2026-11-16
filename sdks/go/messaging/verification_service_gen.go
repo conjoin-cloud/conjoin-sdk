@@ -62,5 +62,6 @@ func (s *VerificationsService) ListMessages(ctx context.Context, body *ListVerif
 		BodyRequired:          true,
 		Scopes:                []conjoin.ScopeName{conjoin.ScopeMessagingProfile},
 		AcceptsIdempotencyKey: true,
+		Cursor:                conjoin.CursorInBody,
 	}, opts...)
 }

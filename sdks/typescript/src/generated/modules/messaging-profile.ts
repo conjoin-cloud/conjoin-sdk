@@ -53,6 +53,6 @@ export function createMessagingProfiles(client: ConjoinClient) {
       client.fetch<UpdateVerificationsConfigData>(`messaging/profiles/${encodePathParam(profileId)}/verifications-config`, { ...options, method: 'PATCH', body: data }),
 
     list: (data: ListBody, options?: ConjoinCallOptions) =>
-      client.fetchList<ListData>('messaging/profiles/retrieve', { ...options, method: 'POST', body: data, acceptsIdempotencyKey: true }),
+      client.fetchList<ListData>('messaging/profiles/retrieve', { ...options, method: 'POST', body: data, acceptsIdempotencyKey: true, cursorLocation: 'body' }),
   }
 }

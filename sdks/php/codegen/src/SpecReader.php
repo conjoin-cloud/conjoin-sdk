@@ -85,6 +85,7 @@ final class SpecReader
         $acceptsIdempotencyKey = false;
         $hasQuery = false;
         $queryRequired = false;
+        $queryTakesCursor = false;
 
         foreach (is_array($operation['parameters'] ?? null) ? $operation['parameters'] : [] as $raw) {
             $parameter = $this->resolver->resolve($raw);
@@ -94,6 +95,7 @@ final class SpecReader
             if ($location === 'query') {
                 $hasQuery = true;
                 $queryRequired = $queryRequired || ($parameter['required'] ?? false) === true;
+                $queryTakesCursor = $queryTakesCursor || ($parameter['name'] ?? null) === 'cursor';
                 continue;
             }
 
@@ -125,6 +127,9 @@ final class SpecReader
         $requestContent = is_array($requestBody['content'] ?? null) ? $requestBody['content'] : [];
         $requestContentType = strtolower((string) (array_key_first($requestContent) ?? 'application/json'));
         $success = $this->successShape($operation);
+        $cursor = $success->kind === ResponseKind::ListPage
+            ? $this->cursorKind($operationId, $requestContent, $queryTakesCursor)
+            : CursorKind::NotAccepted;
 
         return new OperationInfo(
             $operationId,
@@ -142,7 +147,25 @@ final class SpecReader
             $method === 'post' && $acceptsIdempotencyKey,
             $auth,
             $declaredHeaders,
+            $cursor,
         );
+    }
+
+    private function cursorKind(string $operationId, array $requestContent, bool $queryTakesCursor): CursorKind
+    {
+        $media = is_array($requestContent['application/json'] ?? null) ? $requestContent['application/json'] : [];
+        $schema = $this->resolver->resolve($media['schema'] ?? null);
+        $bodyTakesCursor = is_array($schema['properties'] ?? null) && array_key_exists('cursor', $schema['properties']);
+
+        if ($bodyTakesCursor && $queryTakesCursor) {
+            throw new CodegenException(sprintf('%s declares a cursor in both its query and its body', $operationId));
+        }
+
+        return match (true) {
+            $bodyTakesCursor => CursorKind::Body,
+            $queryTakesCursor => CursorKind::Query,
+            default => CursorKind::NotAccepted,
+        };
     }
 
     private function successShape(array $operation): SuccessShape

@@ -60,6 +60,7 @@ class MessagingSMsResource:
             request_options=request_options,
             scopes=('messaging_profile_id',),
             accepts_idempotency_key=True,
+            cursor_location='body',
         )
 
     def generate_sms_summary(
@@ -114,6 +115,7 @@ class AsyncMessagingSMsResource:
             request_options=request_options,
             scopes=('messaging_profile_id',),
             accepts_idempotency_key=True,
+            cursor_location='body',
         )
 
     async def generate_sms_summary(

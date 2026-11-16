@@ -22,6 +22,6 @@ export function createMessagingVerifications(client: ConjoinClient) {
       client.fetch<ResendData>(`messaging/verifications/resend/${encodePathParam(verificationId)}`, { ...options, method: 'PATCH', scopes: ['messagingProfileId'] }),
 
     listMessages: (data: ListMessagesBody, options?: ConjoinCallOptions) =>
-      client.fetchList<ListMessagesData>('messaging/verifications/messages', { ...options, method: 'POST', body: data, scopes: ['messagingProfileId'], acceptsIdempotencyKey: true }),
+      client.fetchList<ListMessagesData>('messaging/verifications/messages', { ...options, method: 'POST', body: data, scopes: ['messagingProfileId'], acceptsIdempotencyKey: true, cursorLocation: 'body' }),
   }
 }

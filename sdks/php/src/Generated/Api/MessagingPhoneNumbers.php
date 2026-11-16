@@ -6,6 +6,7 @@ namespace ConjoinCloud\Generated\Api;
 
 use ConjoinCloud\CallOptions;
 use ConjoinCloud\ConjoinClient;
+use ConjoinCloud\CursorLocation;
 use ConjoinCloud\HttpMethod;
 use ConjoinCloud\Internal\Request\PathSegment;
 use ConjoinCloud\OperationRequest;
@@ -48,6 +49,7 @@ final class MessagingPhoneNumbers
             path: 'messaging/phone-numbers/available',
             query: $query,
             scopes: [Scope::MessagingProfileId],
+            cursor: CursorLocation::NotAccepted,
         ), $options);
     }
 

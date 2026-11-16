@@ -70,6 +70,9 @@ func operationLiteral(op *operation, pathArgs []string, types operationTypes) []
 	case responseEmpty:
 		fields = append(fields, "Response: conjoin.ResponseEmpty,")
 	}
+	if op.cursor != "" {
+		fields = append(fields, "Cursor: "+op.cursor+",")
+	}
 	return fields
 }
 

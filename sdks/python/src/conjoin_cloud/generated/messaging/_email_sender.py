@@ -54,6 +54,7 @@ class MessagingEmailSendersResource:
             request_options=request_options,
             scopes=('messaging_profile_id',),
             accepts_idempotency_key=True,
+            cursor_location='body',
         )
 
     def list_one(
@@ -179,6 +180,7 @@ class AsyncMessagingEmailSendersResource:
             request_options=request_options,
             scopes=('messaging_profile_id',),
             accepts_idempotency_key=True,
+            cursor_location='body',
         )
 
     async def list_one(

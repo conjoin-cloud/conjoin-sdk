@@ -33,6 +33,7 @@ SCOPE_HEADER_NAMES = {
 RESERVED_PARAMETER_NAMES = frozenset({"self", "data", "query", "request_options", "session_token"})
 
 ResponseKind = Literal["envelope", "list", "body", "empty"]
+CursorLocation = Literal["query", "body", "none"]
 
 
 @dataclass(frozen=True)
@@ -54,6 +55,7 @@ class Operation:
     has_request_body: bool
     request_body_required: bool
     response_kind: ResponseKind
+    cursor_location: CursorLocation
     path_parameters: tuple[Parameter, ...]
     query_parameters: tuple[Parameter, ...]
     request_schema: dict[str, Any] | None
@@ -151,6 +153,7 @@ def _build_operation(
     response_kind, response_schema = _response(spec, raw_operation)
     response_data_schema = _data_schema(spec, response_schema)
     request_body = maybe_resolve_ref(spec, raw_operation.get("requestBody"))
+    query_parameters = _query_parameters(spec, parameters)
 
     return Operation(
         operation_id=operation_id,
@@ -166,8 +169,11 @@ def _build_operation(
             isinstance(request_body, dict) and request_body.get("required") is True
         ),
         response_kind=response_kind,
+        cursor_location=_cursor_location(
+            response_kind, request_content_type, request_schema, query_parameters, operation_id
+        ),
         path_parameters=path_parameters,
-        query_parameters=_query_parameters(spec, parameters),
+        query_parameters=query_parameters,
         request_schema=request_schema,
         response_schema=response_schema,
         response_data_schema=response_data_schema,
@@ -266,6 +272,29 @@ def _query_parameters(
             )
         )
     return tuple(query)
+
+
+def _cursor_location(
+    response_kind: ResponseKind,
+    request_content_type: str,
+    request_schema: dict[str, Any] | None,
+    query_parameters: tuple[Parameter, ...],
+    operation_id: str,
+) -> CursorLocation:
+    if response_kind != "list":
+        return "none"
+    properties = request_schema.get("properties") if request_schema is not None else None
+    in_body = (
+        request_content_type == "application/json"
+        and isinstance(properties, dict)
+        and "cursor" in properties
+    )
+    in_query = any(parameter.name == "cursor" for parameter in query_parameters)
+    if in_body and in_query:
+        raise ValueError(f"{operation_id} declares a cursor in both its query and its body")
+    if in_body:
+        return "body"
+    return "query" if in_query else "none"
 
 
 def _request_schema(
