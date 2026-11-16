@@ -157,7 +157,7 @@ export async function sendConjoinRequest(
     let bodyText: string | undefined
 
     try {
-      response = await fetch(url, { method, headers, body, signal, credentials })
+      response = await fetch(url, { method, headers, body, signal, credentials, redirect: 'error' })
       if (bufferResponse && response.ok) {
         bodyText = await readBoundedText(response, config.maxResponseBytes, requestId)
       }

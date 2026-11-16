@@ -53,7 +53,7 @@ Calls that need a scope read it from the client. Set `billingEntityId`, `messagi
 
 The SDK reads at most 64 KiB of an error body and at most `maxResponseBytes` of a success body, which defaults to 16 MiB. A larger success body throws a `ResponseException` with the code `response_too_large`.
 
-To send requests through another HTTP client, pass any PSR-18 client as `httpClient`. The SDK then applies its retries, request IDs, and body limit, while the timeout and any cancellation during a request depend on that client.
+To send requests through another HTTP client, pass any PSR-18 client as `httpClient`. The SDK then applies its retries, request IDs, and body limit, while the timeout and any cancellation during a request depend on that client. The SDK's own sender and Guzzle's PSR-18 client never follow a redirect, so a credential such as a step-up token stays on the Conjoin host. Configure any other client so that it doesn't follow redirects either, because PSR-18 lets a client follow them and pass every header on to the new host.
 
 ### Retries
 
