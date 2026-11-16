@@ -75,7 +75,7 @@ client, err := conjoin.NewClient(
 )
 ```
 
-Use `WithAPIKey` on a server and `WithPublishableKey` in a client that runs on a customer's device, and pass exactly one of them. The SDK picks the regional host from the key, so a `cak_eu_live_` or `cpk_eu_live_` key calls `https://api.eu.conjoin.cloud`, a `gh` key calls `https://api.gh.conjoin.cloud`, and a key with no region code calls `https://api.conjoin.cloud`. Pass `WithBaseURL` only when you need to reach another host, and pass `WithHTTPClient` to use your own `*http.Client`.
+Use `WithAPIKey` on a server and `WithPublishableKey` in a client that runs on a customer's device, and pass exactly one of them. The SDK picks the regional host from the key, so a `cak_eu_live_` or `cpk_eu_live_` key calls `https://api.eu.conjoin.cloud`, a `gh` key calls `https://api.gh.conjoin.cloud`, and a key with no region code calls `https://api.conjoin.cloud`. Pass `WithBaseURL` only when you need to reach another host, and pass `WithHTTPClient` to use your own `*http.Client`. The SDK uses a copy of that client that refuses every redirect, so a credential such as a step-up token stays on the Conjoin host, and your client keeps its own redirect policy.
 
 Calls that need a scope read it from the client. Pass `WithBillingEntityID`, `WithMessagingProfileID`, or `WithAuthAppID` when you create the client, or call `client.WithScope(conjoin.Scope{AuthAppID: "app_123"})` to get a scoped copy. The SDK sends them as the `Billing-Entity-ID`, `Messaging-Profile-ID`, and `Auth-App-ID` headers. When a call needs a scope that you didn't set, it returns an error that matches `conjoin.ErrConfiguration` before it sends anything.
 

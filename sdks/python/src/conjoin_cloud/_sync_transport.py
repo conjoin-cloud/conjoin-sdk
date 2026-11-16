@@ -41,7 +41,7 @@ def send_call(
     while True:
         can_retry_again = call.retry_allowed and attempt < call.max_retries
         try:
-            response = client.send(request, stream=True)
+            response = client.send(request, stream=True, follow_redirects=False)
             if buffer_response and response.is_success:
                 response.extensions[BUFFERED_BODY_EXTENSION] = _read_success(
                     response, call.request_id

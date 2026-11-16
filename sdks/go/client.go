@@ -50,10 +50,7 @@ func NewClient(opts ...ClientOption) (*Client, error) {
 		return nil, err
 	}
 
-	httpClient := settings.httpClient
-	if httpClient == nil {
-		httpClient = &http.Client{}
-	}
+	httpClient := withoutRedirects(settings.httpClient)
 
 	publishableAuthorization := ""
 	if settings.publishableKey != "" {
@@ -118,6 +115,20 @@ func resolveKey(apiKey, publishableKey string) (string, error) {
 		return "", configurationError("the key must be a value without spaces or control characters")
 	}
 	return key, nil
+}
+
+func withoutRedirects(supplied *http.Client) *http.Client {
+	client := &http.Client{}
+	if supplied != nil {
+		copied := *supplied
+		client = &copied
+	}
+	client.CheckRedirect = refuseRedirect
+	return client
+}
+
+func refuseRedirect(*http.Request, []*http.Request) error {
+	return http.ErrUseLastResponse
 }
 
 func resolveBaseURL(baseURL, key string) (string, error) {
