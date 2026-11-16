@@ -21,10 +21,11 @@ func (s *AppsService) List(ctx context.Context, query *ListAppsQuery, opts ...co
 func (s *AppsService) Create(ctx context.Context, body *CreateAppRequest, opts ...conjoin.CallOption) (*CreateAppResponse, error) {
 	var out CreateAppResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "auth/apps/",
-		Body:         body,
-		BodyRequired: true,
+		Method:                "POST",
+		Path:                  "auth/apps/",
+		Body:                  body,
+		BodyRequired:          true,
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -86,10 +87,11 @@ func (s *AppsService) UpdateSettings(ctx context.Context, appID string, body *Up
 func (s *AppsService) RotateSigningKeys(ctx context.Context, appID string, opts ...conjoin.CallOption) (*RotateAppSigningKeysResponse, error) {
 	var out RotateAppSigningKeysResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:     "POST",
-		Path:       "auth/apps/{app_id}/signing-keys/rotate",
-		PathParams: []string{appID},
-		Response:   conjoin.ResponseBody,
+		Method:                "POST",
+		Path:                  "auth/apps/{app_id}/signing-keys/rotate",
+		PathParams:            []string{appID},
+		AcceptsIdempotencyKey: true,
+		Response:              conjoin.ResponseBody,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}

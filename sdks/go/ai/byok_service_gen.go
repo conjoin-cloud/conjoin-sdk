@@ -13,10 +13,11 @@ type BYOKsService struct {
 func (s *BYOKsService) CreateByokConfig(ctx context.Context, body *CreateByokConfigRequest, opts ...conjoin.CallOption) (*CreateByokConfigResponse, error) {
 	var out CreateByokConfigResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "ai/byok/",
-		Body:         body,
-		BodyRequired: true,
+		Method:                "POST",
+		Path:                  "ai/byok/",
+		Body:                  body,
+		BodyRequired:          true,
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -72,9 +73,10 @@ func (s *BYOKsService) DeleteByokConfig(ctx context.Context, byokConfigID string
 func (s *BYOKsService) TestByokConnection(ctx context.Context, byokConfigID string, opts ...conjoin.CallOption) (*TestByokConnectionResponse, error) {
 	var out TestByokConnectionResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:     "POST",
-		Path:       "ai/byok/{byok_config_id}/test",
-		PathParams: []string{byokConfigID},
+		Method:                "POST",
+		Path:                  "ai/byok/{byok_config_id}/test",
+		PathParams:            []string{byokConfigID},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}

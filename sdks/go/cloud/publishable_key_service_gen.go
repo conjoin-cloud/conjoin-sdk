@@ -21,8 +21,9 @@ func (s *PublishableKeysService) List(ctx context.Context, query *ListPublishabl
 func (s *PublishableKeysService) Create(ctx context.Context, opts ...conjoin.CallOption) (string, error) {
 	var out string
 	err := s.client.Do(ctx, conjoin.Operation{
-		Method: "POST",
-		Path:   "cloud/publishable-keys/",
+		Method:                "POST",
+		Path:                  "cloud/publishable-keys/",
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...)
 	return out, err
 }
@@ -42,9 +43,10 @@ func (s *PublishableKeysService) ListCount(ctx context.Context, query *ListPubli
 func (s *PublishableKeysService) Rotate(ctx context.Context, publishableKeyID string, opts ...conjoin.CallOption) (string, error) {
 	var out string
 	err := s.client.Do(ctx, conjoin.Operation{
-		Method:     "POST",
-		Path:       "cloud/publishable-keys/{publishable_key_id}/rotate",
-		PathParams: []string{publishableKeyID},
+		Method:                "POST",
+		Path:                  "cloud/publishable-keys/{publishable_key_id}/rotate",
+		PathParams:            []string{publishableKeyID},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...)
 	return out, err
 }

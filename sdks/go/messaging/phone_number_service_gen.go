@@ -13,12 +13,13 @@ type PhoneNumbersService struct {
 func (s *PhoneNumbersService) Purchase(ctx context.Context, phoneNumber string, body *PurchasePhoneNumberRequest, opts ...conjoin.CallOption) (*PurchasePhoneNumberResponse, error) {
 	var out PurchasePhoneNumberResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "messaging/phone-numbers/{phone_number}/provision",
-		PathParams:   []string{phoneNumber},
-		Body:         body,
-		BodyRequired: true,
-		Scopes:       []conjoin.ScopeName{conjoin.ScopeMessagingProfile},
+		Method:                "POST",
+		Path:                  "messaging/phone-numbers/{phone_number}/provision",
+		PathParams:            []string{phoneNumber},
+		Body:                  body,
+		BodyRequired:          true,
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeMessagingProfile},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -59,10 +60,11 @@ func (s *PhoneNumbersService) List(ctx context.Context, query *ListPhoneNumbersQ
 func (s *PhoneNumbersService) Release(ctx context.Context, phoneNumber string, opts ...conjoin.CallOption) (*ReleasePhoneNumberResponse, error) {
 	var out ReleasePhoneNumberResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:     "POST",
-		Path:       "messaging/phone-numbers/{phone_number}/release",
-		PathParams: []string{phoneNumber},
-		Scopes:     []conjoin.ScopeName{conjoin.ScopeMessagingProfile},
+		Method:                "POST",
+		Path:                  "messaging/phone-numbers/{phone_number}/release",
+		PathParams:            []string{phoneNumber},
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeMessagingProfile},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}

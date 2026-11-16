@@ -13,12 +13,13 @@ type DeprovisioningsService struct {
 func (s *DeprovisioningsService) DeprovisionAccount(ctx context.Context, accountID string, body *DeprovisionAccountRequest, opts ...conjoin.CallOption) (*DeprovisionAccountResponse, error) {
 	var out DeprovisionAccountResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "auth/accounts/{account_id}/deprovision",
-		PathParams:   []string{accountID},
-		Body:         body,
-		BodyRequired: true,
-		Scopes:       []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		Method:                "POST",
+		Path:                  "auth/accounts/{account_id}/deprovision",
+		PathParams:            []string{accountID},
+		Body:                  body,
+		BodyRequired:          true,
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}

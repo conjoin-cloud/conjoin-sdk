@@ -39,12 +39,13 @@ func (s *SSOPortalsService) UpdateSsoPortalSettings(ctx context.Context, body *U
 func (s *SSOPortalsService) MintSsoPortalTicket(ctx context.Context, organizationID string, body map[string]any, opts ...conjoin.CallOption) (*MintSsoPortalTicketResponse, error) {
 	var out MintSsoPortalTicketResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "auth/organizations/{organization_id}/portal-tickets/",
-		PathParams:   []string{organizationID},
-		Body:         body,
-		BodyRequired: true,
-		Scopes:       []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		Method:                "POST",
+		Path:                  "auth/organizations/{organization_id}/portal-tickets/",
+		PathParams:            []string{organizationID},
+		Body:                  body,
+		BodyRequired:          true,
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -54,10 +55,11 @@ func (s *SSOPortalsService) MintSsoPortalTicket(ctx context.Context, organizatio
 func (s *SSOPortalsService) RevokeSsoPortalTicket(ctx context.Context, organizationID string, portalTicketID string, opts ...conjoin.CallOption) (*RevokeSsoPortalTicketResponse, error) {
 	var out RevokeSsoPortalTicketResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:     "POST",
-		Path:       "auth/organizations/{organization_id}/portal-tickets/{portal_ticket_id}/revoke",
-		PathParams: []string{organizationID, portalTicketID},
-		Scopes:     []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		Method:                "POST",
+		Path:                  "auth/organizations/{organization_id}/portal-tickets/{portal_ticket_id}/revoke",
+		PathParams:            []string{organizationID, portalTicketID},
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}

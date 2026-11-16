@@ -23,12 +23,13 @@ func (s *OrganizationRolesService) ListOrgRoles(ctx context.Context, organizatio
 func (s *OrganizationRolesService) CreateOrgRole(ctx context.Context, organizationID string, body *CreateOrgRoleRequest, opts ...conjoin.CallOption) (*CreateOrgRoleResponse, error) {
 	var out CreateOrgRoleResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "auth/organizations/{organization_id}/roles/",
-		PathParams:   []string{organizationID},
-		Body:         body,
-		BodyRequired: true,
-		Scopes:       []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		Method:                "POST",
+		Path:                  "auth/organizations/{organization_id}/roles/",
+		PathParams:            []string{organizationID},
+		Body:                  body,
+		BodyRequired:          true,
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -93,10 +94,11 @@ func (s *OrganizationRolesService) DeleteOrgRole(ctx context.Context, organizati
 func (s *OrganizationRolesService) ArchiveOrgRole(ctx context.Context, organizationID string, roleID string, opts ...conjoin.CallOption) (*ArchiveOrgRoleResponse, error) {
 	var out ArchiveOrgRoleResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:     "POST",
-		Path:       "auth/organizations/{organization_id}/roles/{role_id}/archive",
-		PathParams: []string{organizationID, roleID},
-		Scopes:     []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		Method:                "POST",
+		Path:                  "auth/organizations/{organization_id}/roles/{role_id}/archive",
+		PathParams:            []string{organizationID, roleID},
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -106,10 +108,11 @@ func (s *OrganizationRolesService) ArchiveOrgRole(ctx context.Context, organizat
 func (s *OrganizationRolesService) RestoreOrgRole(ctx context.Context, organizationID string, roleID string, opts ...conjoin.CallOption) (*RestoreOrgRoleResponse, error) {
 	var out RestoreOrgRoleResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:     "POST",
-		Path:       "auth/organizations/{organization_id}/roles/{role_id}/restore",
-		PathParams: []string{organizationID, roleID},
-		Scopes:     []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		Method:                "POST",
+		Path:                  "auth/organizations/{organization_id}/roles/{role_id}/restore",
+		PathParams:            []string{organizationID, roleID},
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}

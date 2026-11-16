@@ -21,10 +21,11 @@ func (s *PipelinesService) ReadPipelineDefinitions(ctx context.Context, query *R
 func (s *PipelinesService) CreatePipelineDefinition(ctx context.Context, body *CreatePipelineDefinitionRequest, opts ...conjoin.CallOption) (*CreatePipelineDefinitionResponse, error) {
 	var out CreatePipelineDefinitionResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "relay/pipelines/",
-		Body:         body,
-		BodyRequired: true,
+		Method:                "POST",
+		Path:                  "relay/pipelines/",
+		Body:                  body,
+		BodyRequired:          true,
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -72,11 +73,12 @@ func (s *PipelinesService) DeletePipelineDefinition(ctx context.Context, pipelin
 func (s *PipelinesService) TriggerPipelineRun(ctx context.Context, pipelineID string, body *TriggerPipelineRunRequest, opts ...conjoin.CallOption) (*TriggerPipelineRunResponse, error) {
 	var out TriggerPipelineRunResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "relay/pipelines/{pipeline_id}/trigger",
-		PathParams:   []string{pipelineID},
-		Body:         body,
-		BodyRequired: true,
+		Method:                "POST",
+		Path:                  "relay/pipelines/{pipeline_id}/trigger",
+		PathParams:            []string{pipelineID},
+		Body:                  body,
+		BodyRequired:          true,
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -118,9 +120,10 @@ func (s *PipelinesService) ReadPipelineRun(ctx context.Context, pipelineRunID st
 func (s *PipelinesService) CancelPipelineRun(ctx context.Context, pipelineRunID string, opts ...conjoin.CallOption) (*CancelPipelineRunResponse, error) {
 	var out CancelPipelineRunResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:     "POST",
-		Path:       "relay/pipeline-runs/{pipeline_run_id}/cancel",
-		PathParams: []string{pipelineRunID},
+		Method:                "POST",
+		Path:                  "relay/pipeline-runs/{pipeline_run_id}/cancel",
+		PathParams:            []string{pipelineRunID},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -130,11 +133,12 @@ func (s *PipelinesService) CancelPipelineRun(ctx context.Context, pipelineRunID 
 func (s *PipelinesService) ApprovePipelineGate(ctx context.Context, pipelineRunID string, stepID string, body *ApprovePipelineGateRequest, opts ...conjoin.CallOption) (*ApprovePipelineGateResponse, error) {
 	var out ApprovePipelineGateResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "relay/pipeline-runs/{pipeline_run_id}/steps/{step_id}/approve",
-		PathParams:   []string{pipelineRunID, stepID},
-		Body:         body,
-		BodyRequired: true,
+		Method:                "POST",
+		Path:                  "relay/pipeline-runs/{pipeline_run_id}/steps/{step_id}/approve",
+		PathParams:            []string{pipelineRunID, stepID},
+		Body:                  body,
+		BodyRequired:          true,
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -144,11 +148,12 @@ func (s *PipelinesService) ApprovePipelineGate(ctx context.Context, pipelineRunI
 func (s *PipelinesService) RejectPipelineGate(ctx context.Context, pipelineRunID string, stepID string, body *RejectPipelineGateRequest, opts ...conjoin.CallOption) (*RejectPipelineGateResponse, error) {
 	var out RejectPipelineGateResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "relay/pipeline-runs/{pipeline_run_id}/steps/{step_id}/reject",
-		PathParams:   []string{pipelineRunID, stepID},
-		Body:         body,
-		BodyRequired: true,
+		Method:                "POST",
+		Path:                  "relay/pipeline-runs/{pipeline_run_id}/steps/{step_id}/reject",
+		PathParams:            []string{pipelineRunID, stepID},
+		Body:                  body,
+		BodyRequired:          true,
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}

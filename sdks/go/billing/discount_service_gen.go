@@ -22,11 +22,12 @@ func (s *DiscountsService) List(ctx context.Context, query *ListDiscountsQuery, 
 func (s *DiscountsService) Create(ctx context.Context, body *CreateDiscountRequest, opts ...conjoin.CallOption) (*CreateDiscountResponse, error) {
 	var out CreateDiscountResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "billing/discounts/",
-		Body:         body,
-		BodyRequired: true,
-		Scopes:       []conjoin.ScopeName{conjoin.ScopeBillingEntity},
+		Method:                "POST",
+		Path:                  "billing/discounts/",
+		Body:                  body,
+		BodyRequired:          true,
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeBillingEntity},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}

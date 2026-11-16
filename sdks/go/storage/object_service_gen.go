@@ -13,11 +13,12 @@ type ObjectsService struct {
 func (s *ObjectsService) CreateUploadSignedUrl(ctx context.Context, containerNameOrID string, body *CreateUploadSignedUrlRequest, opts ...conjoin.CallOption) (*CreateUploadSignedUrlResponse, error) {
 	var out CreateUploadSignedUrlResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "storage/storage-object/{container_name_or_id}/signed-url/upload",
-		PathParams:   []string{containerNameOrID},
-		Body:         body,
-		BodyRequired: true,
+		Method:                "POST",
+		Path:                  "storage/storage-object/{container_name_or_id}/signed-url/upload",
+		PathParams:            []string{containerNameOrID},
+		Body:                  body,
+		BodyRequired:          true,
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -27,11 +28,12 @@ func (s *ObjectsService) CreateUploadSignedUrl(ctx context.Context, containerNam
 func (s *ObjectsService) CreateDownloadSignedUrl(ctx context.Context, containerNameOrID string, body *CreateDownloadSignedUrlRequest, opts ...conjoin.CallOption) (*CreateDownloadSignedUrlResponse, error) {
 	var out CreateDownloadSignedUrlResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "storage/storage-object/{container_name_or_id}/signed-url/download",
-		PathParams:   []string{containerNameOrID},
-		Body:         body,
-		BodyRequired: true,
+		Method:                "POST",
+		Path:                  "storage/storage-object/{container_name_or_id}/signed-url/download",
+		PathParams:            []string{containerNameOrID},
+		Body:                  body,
+		BodyRequired:          true,
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -98,11 +100,12 @@ func (s *ObjectsService) ListVersions(ctx context.Context, containerNameOrID str
 func (s *ObjectsService) RestoreVersion(ctx context.Context, containerNameOrID string, objectNameOrID string, body *RestoreObjectVersionRequest, opts ...conjoin.CallOption) (*RestoreObjectVersionResponse, error) {
 	var out RestoreObjectVersionResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "storage/storage-object/versions/restore/{container_name_or_id}/{object_name_or_id}",
-		PathParams:   []string{containerNameOrID, objectNameOrID},
-		Body:         body,
-		BodyRequired: true,
+		Method:                "POST",
+		Path:                  "storage/storage-object/versions/restore/{container_name_or_id}/{object_name_or_id}",
+		PathParams:            []string{containerNameOrID, objectNameOrID},
+		Body:                  body,
+		BodyRequired:          true,
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}

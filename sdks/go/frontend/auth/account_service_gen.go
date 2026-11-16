@@ -17,7 +17,7 @@ func (s *AccountsService) BatchLookup(ctx context.Context, body *BatchLookupAcco
 		Path:         "auth/client/account-lookups/",
 		Body:         body,
 		BodyRequired: true,
-		Auth:         conjoin.AuthNone,
+		Auth:         conjoin.AuthPublishableKey,
 	}, &out, opts...)
 	return out, err
 }

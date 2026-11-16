@@ -22,11 +22,12 @@ func (s *CreditNotesService) List(ctx context.Context, query *ListCreditNotesQue
 func (s *CreditNotesService) Create(ctx context.Context, body *CreateCreditNoteRequest, opts ...conjoin.CallOption) (*CreateCreditNoteResponse, error) {
 	var out CreateCreditNoteResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "billing/credit-notes/",
-		Body:         body,
-		BodyRequired: true,
-		Scopes:       []conjoin.ScopeName{conjoin.ScopeBillingEntity},
+		Method:                "POST",
+		Path:                  "billing/credit-notes/",
+		Body:                  body,
+		BodyRequired:          true,
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeBillingEntity},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -36,7 +37,7 @@ func (s *CreditNotesService) Create(ctx context.Context, body *CreateCreditNoteR
 func (s *CreditNotesService) ListCustomerCreditBalances(ctx context.Context, customerID string, query *ListCustomerCreditBalancesQuery, opts ...conjoin.CallOption) (*conjoin.Page[ListCustomerCreditBalancesItem], error) {
 	return conjoin.List[ListCustomerCreditBalancesItem](ctx, s.client, conjoin.Operation{
 		Method:     "GET",
-		Path:       "billing/credit-notes/{customer_id}/credit-balances",
+		Path:       "billing/customers/{customer_id}/credit-balances",
 		PathParams: []string{customerID},
 		Query:      query,
 		Scopes:     []conjoin.ScopeName{conjoin.ScopeBillingEntity},
@@ -59,10 +60,11 @@ func (s *CreditNotesService) ListCount(ctx context.Context, query *ListCreditNot
 func (s *CreditNotesService) Void(ctx context.Context, creditNoteID string, opts ...conjoin.CallOption) (*VoidCreditNoteResponse, error) {
 	var out VoidCreditNoteResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:     "POST",
-		Path:       "billing/credit-notes/{credit_note_id}/void",
-		PathParams: []string{creditNoteID},
-		Scopes:     []conjoin.ScopeName{conjoin.ScopeBillingEntity},
+		Method:                "POST",
+		Path:                  "billing/credit-notes/{credit_note_id}/void",
+		PathParams:            []string{creditNoteID},
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeBillingEntity},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -73,7 +75,7 @@ func (s *CreditNotesService) ListCustomerCreditBalancesCount(ctx context.Context
 	var out ListCustomerCreditBalancesCountResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
 		Method:     "GET",
-		Path:       "billing/credit-notes/{customer_id}/credit-balances/count",
+		Path:       "billing/customers/{customer_id}/credit-balances/count",
 		PathParams: []string{customerID},
 		Query:      query,
 		Scopes:     []conjoin.ScopeName{conjoin.ScopeBillingEntity},

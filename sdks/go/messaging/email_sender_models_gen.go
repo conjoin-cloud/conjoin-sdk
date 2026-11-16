@@ -45,12 +45,12 @@ type ListManyEmailSendersRequestQuery struct {
 }
 
 type ListManyEmailSendersRequest struct {
-	Cursor *ListContactsRequestCursor        `json:"cursor,omitzero"`
-	Filter map[string]bool                   `json:"filter,omitzero"`
-	Query  *ListManyEmailSendersRequestQuery `json:"query,omitzero"`
-	Search *ListContactsRequestSearch        `json:"search,omitzero"`
-	Sort   map[string]string                 `json:"sort,omitzero"`
-	Limit  any                               `json:"limit,omitzero"`
+	Cursor *ListChannelAnalyticsRequestCursor `json:"cursor,omitzero"`
+	Filter map[string]bool                    `json:"filter,omitzero"`
+	Query  *ListManyEmailSendersRequestQuery  `json:"query,omitzero"`
+	Search *ListContactsRequestSearch         `json:"search,omitzero"`
+	Sort   map[string]string                  `json:"sort,omitzero"`
+	Limit  any                                `json:"limit,omitzero"`
 }
 
 type ListManyEmailSendersItem = VerifyEmailSenderResponse
@@ -89,17 +89,7 @@ type CreateEmailSenderRequest struct {
 
 type CreateEmailSenderResponse = VerifyEmailSenderResponse
 
-type EnableEmailSenderRequestParams struct {
-	SenderID string `json:"sender_id"`
-}
-
-type EnableEmailSenderRequest struct {
-	Params EnableEmailSenderRequestParams `json:"params"`
-}
-
 type EnableEmailSenderResponse = VerifyEmailSenderResponse
-
-type DisableEmailSenderRequest = EnableEmailSenderRequest
 
 type DisableEmailSenderResponse = VerifyEmailSenderResponse
 

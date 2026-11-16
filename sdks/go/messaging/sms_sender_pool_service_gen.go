@@ -13,11 +13,12 @@ type SMSSenderPoolsService struct {
 func (s *SMSSenderPoolsService) CreateSmsSenderPool(ctx context.Context, body *CreateSmsSenderPoolRequest, opts ...conjoin.CallOption) (*CreateSmsSenderPoolResponse, error) {
 	var out CreateSmsSenderPoolResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "messaging/sms/sender-pools/",
-		Body:         body,
-		BodyRequired: true,
-		Scopes:       []conjoin.ScopeName{conjoin.ScopeMessagingProfile},
+		Method:                "POST",
+		Path:                  "messaging/sms/sender-pools/",
+		Body:                  body,
+		BodyRequired:          true,
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeMessagingProfile},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -27,12 +28,13 @@ func (s *SMSSenderPoolsService) CreateSmsSenderPool(ctx context.Context, body *C
 func (s *SMSSenderPoolsService) AddSmsSendersToPool(ctx context.Context, poolID string, body *AddSmsSendersToPoolRequest, opts ...conjoin.CallOption) (*AddSmsSendersToPoolResponse, error) {
 	var out AddSmsSendersToPoolResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "messaging/sms/sender-pools/{pool_id}/senders",
-		PathParams:   []string{poolID},
-		Body:         body,
-		BodyRequired: true,
-		Scopes:       []conjoin.ScopeName{conjoin.ScopeMessagingProfile},
+		Method:                "POST",
+		Path:                  "messaging/sms/sender-pools/{pool_id}/senders",
+		PathParams:            []string{poolID},
+		Body:                  body,
+		BodyRequired:          true,
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeMessagingProfile},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}

@@ -13,11 +13,12 @@ type SMSCampaignsService struct {
 func (s *SMSCampaignsService) CreateSmsCampaign(ctx context.Context, body *CreateSmsCampaignRequest, opts ...conjoin.CallOption) (*CreateSmsCampaignResponse, error) {
 	var out CreateSmsCampaignResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "messaging/sms/campaigns/",
-		Body:         body,
-		BodyRequired: true,
-		Scopes:       []conjoin.ScopeName{conjoin.ScopeMessagingProfile},
+		Method:                "POST",
+		Path:                  "messaging/sms/campaigns/",
+		Body:                  body,
+		BodyRequired:          true,
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeMessagingProfile},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -67,10 +68,11 @@ func (s *SMSCampaignsService) DeleteSmsCampaign(ctx context.Context, campaignID 
 
 func (s *SMSCampaignsService) ListSmsCampaigns(ctx context.Context, body *ListSmsCampaignsRequest, opts ...conjoin.CallOption) (*conjoin.Page[ListSmsCampaignsItem], error) {
 	return conjoin.List[ListSmsCampaignsItem](ctx, s.client, conjoin.Operation{
-		Method:       "POST",
-		Path:         "messaging/sms/campaigns/retrieve",
-		Body:         body,
-		BodyRequired: true,
-		Scopes:       []conjoin.ScopeName{conjoin.ScopeMessagingProfile},
+		Method:                "POST",
+		Path:                  "messaging/sms/campaigns/retrieve",
+		Body:                  body,
+		BodyRequired:          true,
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeMessagingProfile},
+		AcceptsIdempotencyKey: true,
 	}, opts...)
 }

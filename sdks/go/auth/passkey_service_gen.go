@@ -47,12 +47,18 @@ func (s *PasskeysService) Read(ctx context.Context, accountID string, passkeyID 
 	return &out, nil
 }
 
-func (s *PasskeysService) Delete(ctx context.Context, accountID string, passkeyID string, opts ...conjoin.CallOption) (*DeletePasskeyResponse, error) {
+type DeletePasskeyHeaders struct {
+	StepUpSessionID string             `header:"Step-Up-Session-ID"`
+	StepUpToken     conjoin.Credential `header:"Step-Up-Token"`
+}
+
+func (s *PasskeysService) Delete(ctx context.Context, accountID string, passkeyID string, headers DeletePasskeyHeaders, opts ...conjoin.CallOption) (*DeletePasskeyResponse, error) {
 	var out DeletePasskeyResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
 		Method:     "DELETE",
 		Path:       "auth/accounts/{account_id}/passkeys/{passkey_id}",
 		PathParams: []string{accountID, passkeyID},
+		Headers:    []conjoin.DeclaredHeader{{Name: "Step-Up-Session-ID", Argument: "StepUpSessionID", Value: conjoin.Credential(headers.StepUpSessionID), MinLength: 1, MaxLength: 48}, {Name: "Step-Up-Token", Argument: "StepUpToken", Value: headers.StepUpToken, MinLength: 1, MaxLength: 256, Pattern: "^[0-9a-f]+$"}},
 		Scopes:     []conjoin.ScopeName{conjoin.ScopeAuthApp},
 	}, &out, opts...); err != nil {
 		return nil, err

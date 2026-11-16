@@ -21,10 +21,11 @@ func (s *CouponsService) List(ctx context.Context, query *ListCouponsQuery, opts
 func (s *CouponsService) Create(ctx context.Context, body *CreateCouponRequest, opts ...conjoin.CallOption) (*CreateCouponResponse, error) {
 	var out CreateCouponResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "billing/coupons/",
-		Body:         body,
-		BodyRequired: true,
+		Method:                "POST",
+		Path:                  "billing/coupons/",
+		Body:                  body,
+		BodyRequired:          true,
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}

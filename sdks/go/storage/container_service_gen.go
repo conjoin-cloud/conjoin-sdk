@@ -13,10 +13,11 @@ type ContainersService struct {
 func (s *ContainersService) Create(ctx context.Context, body *CreateContainerRequest, opts ...conjoin.CallOption) (*CreateContainerResponse, error) {
 	var out CreateContainerResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "storage/storage-container/",
-		Body:         body,
-		BodyRequired: true,
+		Method:                "POST",
+		Path:                  "storage/storage-container/",
+		Body:                  body,
+		BodyRequired:          true,
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -43,12 +44,13 @@ func (s *ContainersService) Read(ctx context.Context, containerNameOrID string, 
 	return &out, nil
 }
 
-func (s *ContainersService) RequestDeletion(ctx context.Context, containerNameOrID string, opts ...conjoin.CallOption) (*RequestContainerDeletionResponse, error) {
+func (s *ContainersService) RequestDeletion(ctx context.Context, containerNameOrID string, query *RequestContainerDeletionQuery, opts ...conjoin.CallOption) (*RequestContainerDeletionResponse, error) {
 	var out RequestContainerDeletionResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
 		Method:     "DELETE",
 		Path:       "storage/storage-container/{container_name_or_id}",
 		PathParams: []string{containerNameOrID},
+		Query:      query,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}

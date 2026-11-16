@@ -13,8 +13,9 @@ type BroadcastsService struct {
 func (s *BroadcastsService) GenerateConnectionToken(ctx context.Context, opts ...conjoin.CallOption) (*GenerateBroadcastConnectionTokenResponse, error) {
 	var out GenerateBroadcastConnectionTokenResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method: "POST",
-		Path:   "relay/broadcast-connection-tokens/",
+		Method:                "POST",
+		Path:                  "relay/broadcast-connection-tokens/",
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -32,10 +33,11 @@ func (s *BroadcastsService) ReadChannels(ctx context.Context, query *ReadBroadca
 func (s *BroadcastsService) CreateChannel(ctx context.Context, body *CreateBroadcastChannelRequest, opts ...conjoin.CallOption) (*CreateBroadcastChannelResponse, error) {
 	var out CreateBroadcastChannelResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "relay/broadcast-channels/",
-		Body:         body,
-		BodyRequired: true,
+		Method:                "POST",
+		Path:                  "relay/broadcast-channels/",
+		Body:                  body,
+		BodyRequired:          true,
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -83,11 +85,12 @@ func (s *BroadcastsService) DeleteChannel(ctx context.Context, broadcastChannelI
 func (s *BroadcastsService) GenerateAuthToken(ctx context.Context, broadcastChannelID string, body *GenerateBroadcastAuthTokenRequest, opts ...conjoin.CallOption) (*GenerateBroadcastAuthTokenResponse, error) {
 	var out GenerateBroadcastAuthTokenResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "relay/broadcast-channels/{broadcast_channel_id}/auth-tokens",
-		PathParams:   []string{broadcastChannelID},
-		Body:         body,
-		BodyRequired: true,
+		Method:                "POST",
+		Path:                  "relay/broadcast-channels/{broadcast_channel_id}/auth-tokens",
+		PathParams:            []string{broadcastChannelID},
+		Body:                  body,
+		BodyRequired:          true,
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -97,11 +100,12 @@ func (s *BroadcastsService) GenerateAuthToken(ctx context.Context, broadcastChan
 func (s *BroadcastsService) PublishTo(ctx context.Context, broadcastChannelID string, body *PublishToBroadcastRequest, opts ...conjoin.CallOption) (*PublishToBroadcastResponse, error) {
 	var out PublishToBroadcastResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "relay/broadcast-channels/{broadcast_channel_id}/publish",
-		PathParams:   []string{broadcastChannelID},
-		Body:         body,
-		BodyRequired: true,
+		Method:                "POST",
+		Path:                  "relay/broadcast-channels/{broadcast_channel_id}/publish",
+		PathParams:            []string{broadcastChannelID},
+		Body:                  body,
+		BodyRequired:          true,
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}

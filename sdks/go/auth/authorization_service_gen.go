@@ -13,12 +13,13 @@ type AuthorizationsService struct {
 func (s *AuthorizationsService) AuthorizeAction(ctx context.Context, organizationID string, body *AuthorizeActionRequest, opts ...conjoin.CallOption) (*AuthorizeActionResponse, error) {
 	var out AuthorizeActionResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "auth/organizations/{organization_id}/authorize",
-		PathParams:   []string{organizationID},
-		Body:         body,
-		BodyRequired: true,
-		Scopes:       []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		Method:                "POST",
+		Path:                  "auth/organizations/{organization_id}/authorize",
+		PathParams:            []string{organizationID},
+		Body:                  body,
+		BodyRequired:          true,
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -28,12 +29,13 @@ func (s *AuthorizationsService) AuthorizeAction(ctx context.Context, organizatio
 func (s *AuthorizationsService) CheckRole(ctx context.Context, organizationID string, body *CheckRoleRequest, opts ...conjoin.CallOption) (*CheckRoleResponse, error) {
 	var out CheckRoleResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "auth/organizations/{organization_id}/check-role",
-		PathParams:   []string{organizationID},
-		Body:         body,
-		BodyRequired: true,
-		Scopes:       []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		Method:                "POST",
+		Path:                  "auth/organizations/{organization_id}/check-role",
+		PathParams:            []string{organizationID},
+		Body:                  body,
+		BodyRequired:          true,
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}

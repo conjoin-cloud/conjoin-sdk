@@ -21,10 +21,11 @@ func (s *ZonesService) List(ctx context.Context, query *ReadZonesQuery, opts ...
 func (s *ZonesService) Create(ctx context.Context, body *CreateZoneRequest, opts ...conjoin.CallOption) (*CreateZoneResponse, error) {
 	var out CreateZoneResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "cloud/zones/",
-		Body:         body,
-		BodyRequired: true,
+		Method:                "POST",
+		Path:                  "cloud/zones/",
+		Body:                  body,
+		BodyRequired:          true,
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -68,9 +69,10 @@ func (s *ZonesService) Delete(ctx context.Context, zoneID string, opts ...conjoi
 func (s *ZonesService) VerifyDns(ctx context.Context, zoneID string, opts ...conjoin.CallOption) (any, error) {
 	var out any
 	err := s.client.Do(ctx, conjoin.Operation{
-		Method:     "POST",
-		Path:       "cloud/zones/{zone_id}/verify",
-		PathParams: []string{zoneID},
+		Method:                "POST",
+		Path:                  "cloud/zones/{zone_id}/verify",
+		PathParams:            []string{zoneID},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...)
 	return out, err
 }

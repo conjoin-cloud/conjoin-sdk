@@ -21,10 +21,11 @@ func (s *EntitlementFeaturesService) List(ctx context.Context, query *ListEntitl
 func (s *EntitlementFeaturesService) Create(ctx context.Context, body *CreateEntitlementFeatureRequest, opts ...conjoin.CallOption) (*CreateEntitlementFeatureResponse, error) {
 	var out CreateEntitlementFeatureResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "billing/entitlement-features/",
-		Body:         body,
-		BodyRequired: true,
+		Method:                "POST",
+		Path:                  "billing/entitlement-features/",
+		Body:                  body,
+		BodyRequired:          true,
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -72,9 +73,10 @@ func (s *EntitlementFeaturesService) Update(ctx context.Context, entitlementFeat
 func (s *EntitlementFeaturesService) Archive(ctx context.Context, entitlementFeatureID string, opts ...conjoin.CallOption) (*ArchiveEntitlementFeatureResponse, error) {
 	var out ArchiveEntitlementFeatureResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:     "POST",
-		Path:       "billing/entitlement-features/{entitlement_feature_id}/archive",
-		PathParams: []string{entitlementFeatureID},
+		Method:                "POST",
+		Path:                  "billing/entitlement-features/{entitlement_feature_id}/archive",
+		PathParams:            []string{entitlementFeatureID},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}

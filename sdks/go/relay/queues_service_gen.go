@@ -21,10 +21,11 @@ func (s *QueuesService) ReadQueueDefinitions(ctx context.Context, query *ReadQue
 func (s *QueuesService) CreateQueueDefinition(ctx context.Context, body *CreateQueueDefinitionRequest, opts ...conjoin.CallOption) (*CreateQueueDefinitionResponse, error) {
 	var out CreateQueueDefinitionResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "relay/queues/",
-		Body:         body,
-		BodyRequired: true,
+		Method:                "POST",
+		Path:                  "relay/queues/",
+		Body:                  body,
+		BodyRequired:          true,
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -43,11 +44,12 @@ func (s *QueuesService) ReadQueueTasks(ctx context.Context, queueID string, quer
 func (s *QueuesService) EnqueueTask(ctx context.Context, queueID string, body *EnqueueTaskRequest, opts ...conjoin.CallOption) (*EnqueueTaskResponse, error) {
 	var out EnqueueTaskResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "relay/queues/{queue_id}/tasks",
-		PathParams:   []string{queueID},
-		Body:         body,
-		BodyRequired: true,
+		Method:                "POST",
+		Path:                  "relay/queues/{queue_id}/tasks",
+		PathParams:            []string{queueID},
+		Body:                  body,
+		BodyRequired:          true,
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -104,9 +106,10 @@ func (s *QueuesService) DeleteQueueDefinition(ctx context.Context, queueID strin
 func (s *QueuesService) PauseQueue(ctx context.Context, queueID string, opts ...conjoin.CallOption) (*PauseQueueResponse, error) {
 	var out PauseQueueResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:     "POST",
-		Path:       "relay/queues/{queue_id}/pause",
-		PathParams: []string{queueID},
+		Method:                "POST",
+		Path:                  "relay/queues/{queue_id}/pause",
+		PathParams:            []string{queueID},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -116,9 +119,10 @@ func (s *QueuesService) PauseQueue(ctx context.Context, queueID string, opts ...
 func (s *QueuesService) ResumeQueue(ctx context.Context, queueID string, opts ...conjoin.CallOption) (*ResumeQueueResponse, error) {
 	var out ResumeQueueResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:     "POST",
-		Path:       "relay/queues/{queue_id}/resume",
-		PathParams: []string{queueID},
+		Method:                "POST",
+		Path:                  "relay/queues/{queue_id}/resume",
+		PathParams:            []string{queueID},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -128,11 +132,12 @@ func (s *QueuesService) ResumeQueue(ctx context.Context, queueID string, opts ..
 func (s *QueuesService) BatchEnqueueTasks(ctx context.Context, queueID string, body *BatchEnqueueTasksRequest, opts ...conjoin.CallOption) (*BatchEnqueueTasksResponse, error) {
 	var out BatchEnqueueTasksResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "relay/queues/{queue_id}/enqueue-batch",
-		PathParams:   []string{queueID},
-		Body:         body,
-		BodyRequired: true,
+		Method:                "POST",
+		Path:                  "relay/queues/{queue_id}/enqueue-batch",
+		PathParams:            []string{queueID},
+		Body:                  body,
+		BodyRequired:          true,
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -168,9 +173,10 @@ func (s *QueuesService) ReadDeadLetterTasksCount(ctx context.Context, queueID st
 func (s *QueuesService) ReplayDeadLetterTask(ctx context.Context, queueID string, deadLetterID string, opts ...conjoin.CallOption) (*ReplayDeadLetterTaskResponse, error) {
 	var out ReplayDeadLetterTaskResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:     "POST",
-		Path:       "relay/queues/{queue_id}/dead-letters/{dead_letter_id}/replay",
-		PathParams: []string{queueID, deadLetterID},
+		Method:                "POST",
+		Path:                  "relay/queues/{queue_id}/dead-letters/{dead_letter_id}/replay",
+		PathParams:            []string{queueID, deadLetterID},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -180,11 +186,12 @@ func (s *QueuesService) ReplayDeadLetterTask(ctx context.Context, queueID string
 func (s *QueuesService) PurgeQueueTasks(ctx context.Context, queueID string, body *PurgeQueueTasksRequest, opts ...conjoin.CallOption) (*PurgeQueueTasksResponse, error) {
 	var out PurgeQueueTasksResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "relay/queues/{queue_id}/purge",
-		PathParams:   []string{queueID},
-		Body:         body,
-		BodyRequired: true,
+		Method:                "POST",
+		Path:                  "relay/queues/{queue_id}/purge",
+		PathParams:            []string{queueID},
+		Body:                  body,
+		BodyRequired:          true,
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}

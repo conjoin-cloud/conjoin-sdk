@@ -34,6 +34,7 @@ type operation struct {
 	scopes                []string
 	acceptsIdempotencyKey bool
 	auth                  string
+	headers               []declaredHeader
 	methodName            string
 }
 
@@ -61,25 +62,20 @@ const (
 	noContentStatus          = "204"
 )
 
-func authMode(op *object) string {
-	if !op.has("security") {
-		return ""
+func (d *document) readSecurity(op *object, built *operation) error {
+	security, err := resolveSecurity(op, built.id)
+	if err != nil {
+		return err
 	}
-	requirements := op.list("security")
-	allEmpty := true
-	for _, requirement := range requirements {
-		entry, _ := requirement.(*object)
-		if entry.has("scimBearer") {
-			return "conjoin.AuthBearerToken"
+	built.auth = security.auth
+	if security.sendsPortalKey {
+		ticket, err := d.portalTicketHeader(built.id)
+		if err != nil {
+			return err
 		}
-		if len(entry.orderedKeys()) > 0 {
-			allEmpty = false
-		}
+		built.headers = append(built.headers, ticket)
 	}
-	if allEmpty {
-		return "conjoin.AuthNone"
-	}
-	return ""
+	return checkDeclaredHeaderFields(built.headers, built.id)
 }
 
 func (d *document) readParameters(op *object, built *operation) error {
@@ -100,7 +96,11 @@ func (d *document) readParameters(op *object, built *operation) error {
 			} else if lower == idempotencyKeyHeaderName {
 				built.acceptsIdempotencyKey = built.method == "POST"
 			} else if lower != requestIDHeaderName {
-				return fmt.Errorf("%s declares the unknown header %s", built.id, name)
+				header, err := d.readDeclaredHeader(parameter, built.id)
+				if err != nil {
+					return err
+				}
+				built.headers = append(built.headers, header)
 			}
 		default:
 			return fmt.Errorf("%s declares the parameter %s in %q, which the generator does not support", built.id, name, parameter.text("in"))
@@ -203,8 +203,11 @@ func (d *document) collectGroups() ([]*resourceGroup, error) {
 				return nil, fmt.Errorf("%s %s has the tag %s without a service and a resource", strings.ToUpper(method), path, tag)
 			}
 
-			built := &operation{id: operationID, method: strings.ToUpper(method), path: path, pathParams: pathParameters(path), auth: authMode(op)}
+			built := &operation{id: operationID, method: strings.ToUpper(method), path: path, pathParams: pathParameters(path)}
 			if err := d.readParameters(op, built); err != nil {
+				return nil, err
+			}
+			if err := d.readSecurity(op, built); err != nil {
 				return nil, err
 			}
 			if err := d.readRequestBody(op, built); err != nil {

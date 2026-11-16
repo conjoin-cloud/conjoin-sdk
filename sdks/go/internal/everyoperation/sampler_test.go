@@ -4,6 +4,10 @@ import "strings"
 
 const maxSampleDepth = 48
 
+var patternSamples = map[string]string{
+	"^[0-9a-f]+$": "9f86d081884c7d65",
+}
+
 type sampler struct {
 	doc *openAPIDocument
 }
@@ -109,6 +113,9 @@ func (s *sampler) sampleObject(schema jsonObject, depth int) any {
 func (s *sampler) sampleType(schema jsonObject, typeName string, depth int) any {
 	switch typeName {
 	case "string":
+		if pattern, _ := schema["pattern"].(string); patternSamples[pattern] != "" {
+			return patternSamples[pattern]
+		}
 		minimum, _ := schema["minLength"].(float64)
 		maximum, hasMaximum := schema["maxLength"].(float64)
 		text := strings.Repeat("harbourledger", int(minimum)/13+1)

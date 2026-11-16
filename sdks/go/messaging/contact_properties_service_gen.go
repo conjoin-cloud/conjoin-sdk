@@ -13,23 +13,12 @@ type ContactPropertiesService struct {
 func (s *ContactPropertiesService) CreateContactProperty(ctx context.Context, body *CreateContactPropertyRequest, opts ...conjoin.CallOption) (*CreateContactPropertyResponse, error) {
 	var out CreateContactPropertyResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "messaging/contacts/properties",
-		Body:         body,
-		BodyRequired: true,
-		Scopes:       []conjoin.ScopeName{conjoin.ScopeMessagingProfile},
-	}, &out, opts...); err != nil {
-		return nil, err
-	}
-	return &out, nil
-}
-
-func (s *ContactPropertiesService) DeleteMany(ctx context.Context, opts ...conjoin.CallOption) (*DeleteManyContactPropertiesResponse, error) {
-	var out DeleteManyContactPropertiesResponse
-	if err := s.client.Do(ctx, conjoin.Operation{
-		Method: "DELETE",
-		Path:   "messaging/contacts/properties",
-		Scopes: []conjoin.ScopeName{conjoin.ScopeMessagingProfile},
+		Method:                "POST",
+		Path:                  "messaging/contacts/properties",
+		Body:                  body,
+		BodyRequired:          true,
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeMessagingProfile},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -62,10 +51,24 @@ func (s *ContactPropertiesService) DeleteContactProperty(ctx context.Context, pr
 	return &out, nil
 }
 
-func (s *ContactPropertiesService) List(ctx context.Context, opts ...conjoin.CallOption) (*conjoin.Page[ListContactPropertiesItem], error) {
+func (s *ContactPropertiesService) List(ctx context.Context, body *ListContactPropertiesRequest, opts ...conjoin.CallOption) (*conjoin.Page[ListContactPropertiesItem], error) {
 	return conjoin.List[ListContactPropertiesItem](ctx, s.client, conjoin.Operation{
-		Method: "POST",
-		Path:   "messaging/contacts/properties/retrieve",
-		Scopes: []conjoin.ScopeName{conjoin.ScopeMessagingProfile},
+		Method:                "POST",
+		Path:                  "messaging/contacts/properties/retrieve",
+		Body:                  body,
+		BodyRequired:          true,
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeMessagingProfile},
+		AcceptsIdempotencyKey: true,
+	}, opts...)
+}
+
+func (s *ContactPropertiesService) DeleteMany(ctx context.Context, body *DeleteManyContactPropertiesRequest, opts ...conjoin.CallOption) (*conjoin.Page[DeleteManyContactPropertiesItem], error) {
+	return conjoin.List[DeleteManyContactPropertiesItem](ctx, s.client, conjoin.Operation{
+		Method:                "POST",
+		Path:                  "messaging/contacts/properties/remove",
+		Body:                  body,
+		BodyRequired:          true,
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeMessagingProfile},
+		AcceptsIdempotencyKey: true,
 	}, opts...)
 }

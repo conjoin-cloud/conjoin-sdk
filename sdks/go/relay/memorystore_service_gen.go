@@ -21,10 +21,11 @@ func (s *MemorystoresService) ReadClusters(ctx context.Context, query *ReadMemor
 func (s *MemorystoresService) CreateCluster(ctx context.Context, body *CreateMemorystoreClusterRequest, opts ...conjoin.CallOption) (*CreateMemorystoreClusterResponse, error) {
 	var out CreateMemorystoreClusterResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "relay/memorystore-clusters/",
-		Body:         body,
-		BodyRequired: true,
+		Method:                "POST",
+		Path:                  "relay/memorystore-clusters/",
+		Body:                  body,
+		BodyRequired:          true,
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -84,9 +85,10 @@ func (s *MemorystoresService) DeleteCluster(ctx context.Context, memorystoreClus
 func (s *MemorystoresService) SuspendCluster(ctx context.Context, memorystoreClusterID string, opts ...conjoin.CallOption) (*SuspendMemorystoreClusterResponse, error) {
 	var out SuspendMemorystoreClusterResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:     "POST",
-		Path:       "relay/memorystore-clusters/{memorystore_cluster_id}/suspend",
-		PathParams: []string{memorystoreClusterID},
+		Method:                "POST",
+		Path:                  "relay/memorystore-clusters/{memorystore_cluster_id}/suspend",
+		PathParams:            []string{memorystoreClusterID},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -96,11 +98,12 @@ func (s *MemorystoresService) SuspendCluster(ctx context.Context, memorystoreClu
 func (s *MemorystoresService) ExecuteCommand(ctx context.Context, memorystoreClusterID string, body *ExecuteMemorystoreCommandRequest, opts ...conjoin.CallOption) (*ExecuteMemorystoreCommandResponse, error) {
 	var out ExecuteMemorystoreCommandResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "relay/memorystore-clusters/{memorystore_cluster_id}/execute",
-		PathParams:   []string{memorystoreClusterID},
-		Body:         body,
-		BodyRequired: true,
+		Method:                "POST",
+		Path:                  "relay/memorystore-clusters/{memorystore_cluster_id}/execute",
+		PathParams:            []string{memorystoreClusterID},
+		Body:                  body,
+		BodyRequired:          true,
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}

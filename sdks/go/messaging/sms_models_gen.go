@@ -38,7 +38,7 @@ type SendSmsResponse struct {
 	DateDeleted         conjoin.Nullable[string] `json:"date_deleted,omitzero"`
 }
 
-type ReadSmsMessagesRequestBodyQuery struct {
+type ReadSmsMessagesRequestQuery struct {
 	ConversationID any `json:"conversation_id,omitzero"`
 	BroadcastID    any `json:"broadcast_id,omitzero"`
 	RequestID      any `json:"request_id,omitzero"`
@@ -49,18 +49,35 @@ type ReadSmsMessagesRequestBodyQuery struct {
 	Status         any `json:"status,omitzero"`
 }
 
-type ReadSmsMessagesRequestBody struct {
-	Cursor *ListContactsRequestCursor       `json:"cursor,omitzero"`
-	Query  *ReadSmsMessagesRequestBodyQuery `json:"query,omitzero"`
-	Search *ListContactsRequestSearch       `json:"search,omitzero"`
-	Sort   map[string]string                `json:"sort,omitzero"`
-	Limit  any                              `json:"limit,omitzero"`
-}
-
 type ReadSmsMessagesRequest struct {
-	Body ReadSmsMessagesRequestBody `json:"body"`
+	Cursor *ListChannelAnalyticsRequestCursor `json:"cursor,omitzero"`
+	Query  *ReadSmsMessagesRequestQuery       `json:"query,omitzero"`
+	Search *ListContactsRequestSearch         `json:"search,omitzero"`
+	Sort   map[string]string                  `json:"sort,omitzero"`
+	Limit  any                                `json:"limit,omitzero"`
 }
 
 type ReadSmsMessagesItem = SendSmsResponse
 
-type GetSmsSummaryResponse = GetEmailSummaryResponse
+type GenerateSmsSummaryRequest struct {
+	Currency            string            `json:"currency"`
+	Message             string            `json:"message"`
+	To                  []any             `json:"to,omitzero"`
+	DefaultPlaceholders map[string]string `json:"default_placeholders,omitzero"`
+	TruncateMessage     *bool             `json:"truncate_message,omitzero"`
+}
+
+type GenerateSmsSummaryResponseDestinationsValue struct {
+	TotalRecipients float64 `json:"total_recipients"`
+	MessageParts    float64 `json:"message_parts"`
+}
+
+type GenerateSmsSummaryResponse struct {
+	Destinations      map[string]GenerateSmsSummaryResponseDestinationsValue `json:"destinations"`
+	TotalMessageParts float64                                                `json:"total_message_parts"`
+	MessageBody       string                                                 `json:"message_body"`
+	MaxCharacters     float64                                                `json:"max_characters"`
+	PricePerPart      float64                                                `json:"price_per_part"`
+	TotalPrice        float64                                                `json:"total_price"`
+	Currency          string                                                 `json:"currency"`
+}

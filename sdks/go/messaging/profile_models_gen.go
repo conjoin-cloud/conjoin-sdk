@@ -116,10 +116,11 @@ type ListProfilesRequestQuery struct {
 }
 
 type ListProfilesRequest struct {
-	Filter map[string]bool           `json:"filter,omitzero"`
-	Query  *ListProfilesRequestQuery `json:"query,omitzero"`
-	Sort   map[string]string         `json:"sort"`
-	Limit  any                       `json:"limit,omitzero"`
+	Filter map[string]bool                    `json:"filter,omitzero"`
+	Cursor *ListChannelAnalyticsRequestCursor `json:"cursor,omitzero"`
+	Query  *ListProfilesRequestQuery          `json:"query,omitzero"`
+	Sort   map[string]string                  `json:"sort,omitzero"`
+	Limit  any                                `json:"limit,omitzero"`
 }
 
 type ListProfilesItem = CreateProfileResponse

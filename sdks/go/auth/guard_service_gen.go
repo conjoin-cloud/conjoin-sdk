@@ -22,11 +22,12 @@ func (s *GuardsService) ListRules(ctx context.Context, query *ListGuardRulesQuer
 func (s *GuardsService) CreateRule(ctx context.Context, body *CreateGuardRuleRequest, opts ...conjoin.CallOption) (*CreateGuardRuleResponse, error) {
 	var out CreateGuardRuleResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "auth/guard-rules",
-		Body:         body,
-		BodyRequired: true,
-		Scopes:       []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		Method:                "POST",
+		Path:                  "auth/guard-rules",
+		Body:                  body,
+		BodyRequired:          true,
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -112,11 +113,12 @@ func (s *GuardsService) ListEventsCount(ctx context.Context, query *ListGuardEve
 func (s *GuardsService) AddTrustedIp(ctx context.Context, body *AddGuardTrustedIpRequest, opts ...conjoin.CallOption) (*AddGuardTrustedIpResponse, error) {
 	var out AddGuardTrustedIpResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "auth/guard-trusted-ips",
-		Body:         body,
-		BodyRequired: true,
-		Scopes:       []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		Method:                "POST",
+		Path:                  "auth/guard-trusted-ips",
+		Body:                  body,
+		BodyRequired:          true,
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -126,11 +128,12 @@ func (s *GuardsService) AddTrustedIp(ctx context.Context, body *AddGuardTrustedI
 func (s *GuardsService) RemoveTrustedIp(ctx context.Context, body *RemoveGuardTrustedIpRequest, opts ...conjoin.CallOption) (*RemoveGuardTrustedIpResponse, error) {
 	var out RemoveGuardTrustedIpResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "auth/guard-trusted-ips/remove",
-		Body:         body,
-		BodyRequired: true,
-		Scopes:       []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		Method:                "POST",
+		Path:                  "auth/guard-trusted-ips/remove",
+		Body:                  body,
+		BodyRequired:          true,
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -140,11 +143,12 @@ func (s *GuardsService) RemoveTrustedIp(ctx context.Context, body *RemoveGuardTr
 func (s *GuardsService) AddTrustedEmail(ctx context.Context, body *AddGuardTrustedEmailRequest, opts ...conjoin.CallOption) (*AddGuardTrustedEmailResponse, error) {
 	var out AddGuardTrustedEmailResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "auth/guard-trusted-emails",
-		Body:         body,
-		BodyRequired: true,
-		Scopes:       []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		Method:                "POST",
+		Path:                  "auth/guard-trusted-emails",
+		Body:                  body,
+		BodyRequired:          true,
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -154,11 +158,12 @@ func (s *GuardsService) AddTrustedEmail(ctx context.Context, body *AddGuardTrust
 func (s *GuardsService) RemoveTrustedEmail(ctx context.Context, body *RemoveGuardTrustedEmailRequest, opts ...conjoin.CallOption) (*RemoveGuardTrustedEmailResponse, error) {
 	var out RemoveGuardTrustedEmailResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "auth/guard-trusted-emails/remove",
-		Body:         body,
-		BodyRequired: true,
-		Scopes:       []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		Method:                "POST",
+		Path:                  "auth/guard-trusted-emails/remove",
+		Body:                  body,
+		BodyRequired:          true,
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -168,11 +173,12 @@ func (s *GuardsService) RemoveTrustedEmail(ctx context.Context, body *RemoveGuar
 func (s *GuardsService) AddTrustedDomain(ctx context.Context, body *AddGuardTrustedDomainRequest, opts ...conjoin.CallOption) (*AddGuardTrustedDomainResponse, error) {
 	var out AddGuardTrustedDomainResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "auth/guard-trusted-domains",
-		Body:         body,
-		BodyRequired: true,
-		Scopes:       []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		Method:                "POST",
+		Path:                  "auth/guard-trusted-domains",
+		Body:                  body,
+		BodyRequired:          true,
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -182,11 +188,12 @@ func (s *GuardsService) AddTrustedDomain(ctx context.Context, body *AddGuardTrus
 func (s *GuardsService) RemoveTrustedDomain(ctx context.Context, body *RemoveGuardTrustedDomainRequest, opts ...conjoin.CallOption) (*RemoveGuardTrustedDomainResponse, error) {
 	var out RemoveGuardTrustedDomainResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "auth/guard-trusted-domains/remove",
-		Body:         body,
-		BodyRequired: true,
-		Scopes:       []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		Method:                "POST",
+		Path:                  "auth/guard-trusted-domains/remove",
+		Body:                  body,
+		BodyRequired:          true,
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -208,11 +215,12 @@ func (s *GuardsService) ListAnonymousIps(ctx context.Context, opts ...conjoin.Ca
 func (s *GuardsService) AddAnonymousIps(ctx context.Context, body *AddGuardAnonymousIpsRequest, opts ...conjoin.CallOption) (*AddGuardAnonymousIpsResponse, error) {
 	var out AddGuardAnonymousIpsResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "auth/guard-anonymous-ips",
-		Body:         body,
-		BodyRequired: true,
-		Scopes:       []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		Method:                "POST",
+		Path:                  "auth/guard-anonymous-ips",
+		Body:                  body,
+		BodyRequired:          true,
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -222,11 +230,12 @@ func (s *GuardsService) AddAnonymousIps(ctx context.Context, body *AddGuardAnony
 func (s *GuardsService) RemoveAnonymousIps(ctx context.Context, body *RemoveGuardAnonymousIpsRequest, opts ...conjoin.CallOption) (*RemoveGuardAnonymousIpsResponse, error) {
 	var out RemoveGuardAnonymousIpsResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "auth/guard-anonymous-ips/remove",
-		Body:         body,
-		BodyRequired: true,
-		Scopes:       []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		Method:                "POST",
+		Path:                  "auth/guard-anonymous-ips/remove",
+		Body:                  body,
+		BodyRequired:          true,
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}

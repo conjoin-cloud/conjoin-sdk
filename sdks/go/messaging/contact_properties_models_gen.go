@@ -19,10 +19,29 @@ type CreateContactPropertyResponse struct {
 	DateUpdated      string `json:"date_updated"`
 }
 
-type DeleteManyContactPropertiesResponse = CreateContactPropertyResponse
-
 type FetchOneContactPropertyResponse = CreateContactPropertyResponse
 
 type DeleteContactPropertyResponse = CreateContactPropertyResponse
 
+type ListContactPropertiesRequestQuery struct {
+	PropertyID  any                                          `json:"property_id,omitzero"`
+	Key         any                                          `json:"key,omitzero"`
+	DateCreated *ListChannelAnalyticsRequestQueryDateCreated `json:"date_created,omitzero"`
+}
+
+type ListContactPropertiesRequest struct {
+	Cursor *ListChannelAnalyticsRequestCursor `json:"cursor,omitzero"`
+	Query  *ListContactPropertiesRequestQuery `json:"query,omitzero"`
+	Sort   map[string]string                  `json:"sort,omitzero"`
+	Limit  any                                `json:"limit,omitzero"`
+}
+
 type ListContactPropertiesItem = CreateContactPropertyResponse
+
+type DeleteManyContactPropertiesRequest struct {
+	Type        *string  `json:"type,omitzero"`
+	Keys        []string `json:"keys,omitzero"`
+	PropertyIDs []string `json:"property_ids,omitzero"`
+}
+
+type DeleteManyContactPropertiesItem = CreateContactPropertyResponse

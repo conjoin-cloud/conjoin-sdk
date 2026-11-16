@@ -13,10 +13,11 @@ type SearchesService struct {
 func (s *SearchesService) CreateIndex(ctx context.Context, body *CreateSearchIndexRequest, opts ...conjoin.CallOption) (*CreateSearchIndexResponse, error) {
 	var out CreateSearchIndexResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "relay/search/indexes",
-		Body:         body,
-		BodyRequired: true,
+		Method:                "POST",
+		Path:                  "relay/search/indexes",
+		Body:                  body,
+		BodyRequired:          true,
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -46,11 +47,12 @@ func (s *SearchesService) DeleteIndex(ctx context.Context, indexID string, opts 
 func (s *SearchesService) IndexDocument(ctx context.Context, indexID string, body *IndexSearchDocumentRequest, opts ...conjoin.CallOption) (*IndexSearchDocumentResponse, error) {
 	var out IndexSearchDocumentResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "relay/search/indexes/{index_id}/documents",
-		PathParams:   []string{indexID},
-		Body:         body,
-		BodyRequired: true,
+		Method:                "POST",
+		Path:                  "relay/search/indexes/{index_id}/documents",
+		PathParams:            []string{indexID},
+		Body:                  body,
+		BodyRequired:          true,
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -60,11 +62,12 @@ func (s *SearchesService) IndexDocument(ctx context.Context, indexID string, bod
 func (s *SearchesService) IndexDocumentBatch(ctx context.Context, indexID string, body *IndexSearchDocumentBatchRequest, opts ...conjoin.CallOption) (*IndexSearchDocumentBatchResponse, error) {
 	var out IndexSearchDocumentBatchResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "relay/search/indexes/{index_id}/documents/batch",
-		PathParams:   []string{indexID},
-		Body:         body,
-		BodyRequired: true,
+		Method:                "POST",
+		Path:                  "relay/search/indexes/{index_id}/documents/batch",
+		PathParams:            []string{indexID},
+		Body:                  body,
+		BodyRequired:          true,
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -86,11 +89,12 @@ func (s *SearchesService) RemoveDocument(ctx context.Context, indexID string, do
 func (s *SearchesService) SearchQuery(ctx context.Context, indexID string, body *SearchQueryRequest, opts ...conjoin.CallOption) (*SearchQueryResponse, error) {
 	var out SearchQueryResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "relay/search/indexes/{index_id}/query",
-		PathParams:   []string{indexID},
-		Body:         body,
-		BodyRequired: true,
+		Method:                "POST",
+		Path:                  "relay/search/indexes/{index_id}/query",
+		PathParams:            []string{indexID},
+		Body:                  body,
+		BodyRequired:          true,
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -100,11 +104,12 @@ func (s *SearchesService) SearchQuery(ctx context.Context, indexID string, body 
 func (s *SearchesService) AutoSuggest(ctx context.Context, indexID string, body *AutoSuggestSearchRequest, opts ...conjoin.CallOption) (*AutoSuggestSearchResponse, error) {
 	var out AutoSuggestSearchResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "relay/search/indexes/{index_id}/suggest",
-		PathParams:   []string{indexID},
-		Body:         body,
-		BodyRequired: true,
+		Method:                "POST",
+		Path:                  "relay/search/indexes/{index_id}/suggest",
+		PathParams:            []string{indexID},
+		Body:                  body,
+		BodyRequired:          true,
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}

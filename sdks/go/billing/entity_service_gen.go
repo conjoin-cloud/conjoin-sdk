@@ -21,10 +21,11 @@ func (s *EntitiesService) List(ctx context.Context, query *ListEntitiesQuery, op
 func (s *EntitiesService) Create(ctx context.Context, body *CreateEntityRequest, opts ...conjoin.CallOption) (*CreateEntityResponse, error) {
 	var out CreateEntityResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "billing/entities/",
-		Body:         body,
-		BodyRequired: true,
+		Method:                "POST",
+		Path:                  "billing/entities/",
+		Body:                  body,
+		BodyRequired:          true,
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -46,11 +47,12 @@ func (s *EntitiesService) ListCount(ctx context.Context, query *ListEntitiesCoun
 func (s *EntitiesService) Onboard(ctx context.Context, body *OnboardEntitiesRequest, opts ...conjoin.CallOption) (*OnboardEntitiesResponse, error) {
 	var out OnboardEntitiesResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "billing/entities/onboard",
-		Body:         body,
-		BodyRequired: true,
-		Response:     conjoin.ResponseBody,
+		Method:                "POST",
+		Path:                  "billing/entities/onboard",
+		Body:                  body,
+		BodyRequired:          true,
+		AcceptsIdempotencyKey: true,
+		Response:              conjoin.ResponseBody,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -87,11 +89,12 @@ func (s *EntitiesService) Update(ctx context.Context, entityID string, body *Upd
 func (s *EntitiesService) CreatePayoutBankAccount(ctx context.Context, entityID string, body *CreatePayoutBankAccountRequest, opts ...conjoin.CallOption) (*CreatePayoutBankAccountResponse, error) {
 	var out CreatePayoutBankAccountResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "billing/entities/{entity_id}/payout-bank-accounts",
-		PathParams:   []string{entityID},
-		Body:         body,
-		BodyRequired: true,
+		Method:                "POST",
+		Path:                  "billing/entities/{entity_id}/payout-bank-accounts",
+		PathParams:            []string{entityID},
+		Body:                  body,
+		BodyRequired:          true,
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -101,12 +104,13 @@ func (s *EntitiesService) CreatePayoutBankAccount(ctx context.Context, entityID 
 func (s *EntitiesService) CreateAccountLink(ctx context.Context, entityID string, body *CreateEntityAccountLinkRequest, opts ...conjoin.CallOption) (*CreateEntityAccountLinkResponse, error) {
 	var out CreateEntityAccountLinkResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "billing/entities/{entity_id}/account-links",
-		PathParams:   []string{entityID},
-		Body:         body,
-		BodyRequired: true,
-		Response:     conjoin.ResponseBody,
+		Method:                "POST",
+		Path:                  "billing/entities/{entity_id}/account-links",
+		PathParams:            []string{entityID},
+		Body:                  body,
+		BodyRequired:          true,
+		AcceptsIdempotencyKey: true,
+		Response:              conjoin.ResponseBody,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -116,10 +120,11 @@ func (s *EntitiesService) CreateAccountLink(ctx context.Context, entityID string
 func (s *EntitiesService) SyncOnboarding(ctx context.Context, entityID string, opts ...conjoin.CallOption) (*SyncEntityOnboardingResponse, error) {
 	var out SyncEntityOnboardingResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:     "POST",
-		Path:       "billing/entities/{entity_id}/sync",
-		PathParams: []string{entityID},
-		Response:   conjoin.ResponseBody,
+		Method:                "POST",
+		Path:                  "billing/entities/{entity_id}/sync",
+		PathParams:            []string{entityID},
+		AcceptsIdempotencyKey: true,
+		Response:              conjoin.ResponseBody,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -129,12 +134,13 @@ func (s *EntitiesService) SyncOnboarding(ctx context.Context, entityID string, o
 func (s *EntitiesService) CreatePaystackCredentials(ctx context.Context, entityID string, body *CreateEntityPaystackCredentialsRequest, opts ...conjoin.CallOption) (*CreateEntityPaystackCredentialsResponse, error) {
 	var out CreateEntityPaystackCredentialsResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "billing/entities/{entity_id}/paystack-credentials",
-		PathParams:   []string{entityID},
-		Body:         body,
-		BodyRequired: true,
-		Response:     conjoin.ResponseBody,
+		Method:                "POST",
+		Path:                  "billing/entities/{entity_id}/paystack-credentials",
+		PathParams:            []string{entityID},
+		Body:                  body,
+		BodyRequired:          true,
+		AcceptsIdempotencyKey: true,
+		Response:              conjoin.ResponseBody,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}

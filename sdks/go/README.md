@@ -180,6 +180,21 @@ directory := auth.New(client).SCIMs
 groups, err := directory.ScimListGroups(ctx, "project_123", "app_123", conjoin.WithBearerToken(scimToken))
 ```
 
+## Credentials that a call declares
+
+Each call sends only the credential that its API document declares. A frontend call that signs in nobody sends no `Authorization` header, a call that needs the publishable key returns a `conjoin.ErrConfiguration` error when the client holds an API key, and none of them ever sends your API key. A call for the signed-in user takes the session token as its `sessionToken` argument, and an SSO portal call takes the portal ticket in its headers argument, which the SDK sends only in the `x-portal-ticket` header. These calls refuse `WithBearerToken`.
+
+A call that declares a header of its own, such as the step-up headers on `Accounts.Delete`, takes a headers struct. The SDK checks each value against the documented length and format before it sends anything:
+
+```go
+deleted, err := auth.New(client).Accounts.Delete(ctx, "acc_123", nil, auth.DeleteAccountHeaders{
+	StepUpSessionID: stepUpSessionID,
+	StepUpToken:     conjoin.Credential(stepUpToken),
+})
+```
+
+The step-up token, the session token, and the portal ticket have the type `conjoin.Credential`, which prints, logs, and encodes as `[redacted]`.
+
 ## Development
 
 The generator reads `spec/openapi.json` and `spec/openapi-frontend.json` and writes every `*_gen.go` file:

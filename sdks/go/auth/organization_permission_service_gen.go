@@ -23,12 +23,13 @@ func (s *OrganizationPermissionsService) ListOrgPermissions(ctx context.Context,
 func (s *OrganizationPermissionsService) CreateOrgPermission(ctx context.Context, organizationID string, body *CreateOrgPermissionRequest, opts ...conjoin.CallOption) (*CreateOrgPermissionResponse, error) {
 	var out CreateOrgPermissionResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "auth/organizations/{organization_id}/permissions/",
-		PathParams:   []string{organizationID},
-		Body:         body,
-		BodyRequired: true,
-		Scopes:       []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		Method:                "POST",
+		Path:                  "auth/organizations/{organization_id}/permissions/",
+		PathParams:            []string{organizationID},
+		Body:                  body,
+		BodyRequired:          true,
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -93,10 +94,11 @@ func (s *OrganizationPermissionsService) DeleteOrgPermission(ctx context.Context
 func (s *OrganizationPermissionsService) ArchiveOrgPermission(ctx context.Context, organizationID string, permissionID string, opts ...conjoin.CallOption) (*ArchiveOrgPermissionResponse, error) {
 	var out ArchiveOrgPermissionResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:     "POST",
-		Path:       "auth/organizations/{organization_id}/permissions/{permission_id}/archive",
-		PathParams: []string{organizationID, permissionID},
-		Scopes:     []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		Method:                "POST",
+		Path:                  "auth/organizations/{organization_id}/permissions/{permission_id}/archive",
+		PathParams:            []string{organizationID, permissionID},
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -106,10 +108,11 @@ func (s *OrganizationPermissionsService) ArchiveOrgPermission(ctx context.Contex
 func (s *OrganizationPermissionsService) RestoreOrgPermission(ctx context.Context, organizationID string, permissionID string, opts ...conjoin.CallOption) (*RestoreOrgPermissionResponse, error) {
 	var out RestoreOrgPermissionResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:     "POST",
-		Path:       "auth/organizations/{organization_id}/permissions/{permission_id}/restore",
-		PathParams: []string{organizationID, permissionID},
-		Scopes:     []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		Method:                "POST",
+		Path:                  "auth/organizations/{organization_id}/permissions/{permission_id}/restore",
+		PathParams:            []string{organizationID, permissionID},
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}

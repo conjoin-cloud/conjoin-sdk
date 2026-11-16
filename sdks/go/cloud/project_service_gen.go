@@ -22,11 +22,12 @@ func (s *ProjectsService) List(ctx context.Context, organizationID string, query
 func (s *ProjectsService) Create(ctx context.Context, organizationID string, body *CreateProjectRequest, opts ...conjoin.CallOption) (*CreateProjectResponse, error) {
 	var out CreateProjectResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "cloud/organizations/{organization_id}/projects/",
-		PathParams:   []string{organizationID},
-		Body:         body,
-		BodyRequired: true,
+		Method:                "POST",
+		Path:                  "cloud/organizations/{organization_id}/projects/",
+		PathParams:            []string{organizationID},
+		Body:                  body,
+		BodyRequired:          true,
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}

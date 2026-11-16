@@ -8,16 +8,17 @@ import (
 )
 
 type Client struct {
-	authorization string
-	baseURL       string
-	httpClient    *http.Client
-	apiVersion    string
-	timeout       time.Duration
-	maxRetries    int
-	retryBackoff  time.Duration
-	maxRetryDelay time.Duration
-	requestID     string
-	scope         Scope
+	authorization            string
+	publishableAuthorization string
+	baseURL                  string
+	httpClient               *http.Client
+	apiVersion               string
+	timeout                  time.Duration
+	maxRetries               int
+	retryBackoff             time.Duration
+	maxRetryDelay            time.Duration
+	requestID                string
+	scope                    Scope
 }
 
 func NewClient(opts ...ClientOption) (*Client, error) {
@@ -54,17 +55,23 @@ func NewClient(opts ...ClientOption) (*Client, error) {
 		httpClient = &http.Client{}
 	}
 
+	publishableAuthorization := ""
+	if settings.publishableKey != "" {
+		publishableAuthorization = "Bearer " + key
+	}
+
 	return &Client{
-		authorization: "Bearer " + key,
-		baseURL:       baseURL,
-		httpClient:    httpClient,
-		apiVersion:    settings.apiVersion,
-		timeout:       settings.timeout,
-		maxRetries:    settings.maxRetries,
-		retryBackoff:  settings.retryBackoff,
-		maxRetryDelay: settings.maxRetryDelay,
-		requestID:     settings.requestID,
-		scope:         settings.scope,
+		authorization:            "Bearer " + key,
+		publishableAuthorization: publishableAuthorization,
+		baseURL:                  baseURL,
+		httpClient:               httpClient,
+		apiVersion:               settings.apiVersion,
+		timeout:                  settings.timeout,
+		maxRetries:               settings.maxRetries,
+		retryBackoff:             settings.retryBackoff,
+		maxRetryDelay:            settings.maxRetryDelay,
+		requestID:                settings.requestID,
+		scope:                    settings.scope,
 	}, nil
 }
 

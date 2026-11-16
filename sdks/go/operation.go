@@ -26,6 +26,8 @@ const (
 	AuthDefault AuthMode = iota
 	AuthNone
 	AuthBearerToken
+	AuthPublishableKey
+	AuthSession
 )
 
 type ResponseShape int
@@ -45,6 +47,8 @@ type Operation struct {
 	Body                  any
 	BodyRequired          bool
 	Multipart             bool
+	Headers               []DeclaredHeader
+	SessionToken          Credential
 	Scopes                []ScopeName
 	AcceptsIdempotencyKey bool
 	Auth                  AuthMode

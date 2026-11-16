@@ -13,11 +13,12 @@ type TemplatesService struct {
 func (s *TemplatesService) CreateMessage(ctx context.Context, body *CreateMessageTemplateRequest, opts ...conjoin.CallOption) (*CreateMessageTemplateResponse, error) {
 	var out CreateMessageTemplateResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "messaging/templates/",
-		Body:         body,
-		BodyRequired: true,
-		Scopes:       []conjoin.ScopeName{conjoin.ScopeMessagingProfile},
+		Method:                "POST",
+		Path:                  "messaging/templates/",
+		Body:                  body,
+		BodyRequired:          true,
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeMessagingProfile},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -26,11 +27,12 @@ func (s *TemplatesService) CreateMessage(ctx context.Context, body *CreateMessag
 
 func (s *TemplatesService) ListMessage(ctx context.Context, body *ListMessageTemplatesRequest, opts ...conjoin.CallOption) (*conjoin.Page[ListMessageTemplatesItem], error) {
 	return conjoin.List[ListMessageTemplatesItem](ctx, s.client, conjoin.Operation{
-		Method:       "POST",
-		Path:         "messaging/templates/retrieve",
-		Body:         body,
-		BodyRequired: true,
-		Scopes:       []conjoin.ScopeName{conjoin.ScopeMessagingProfile},
+		Method:                "POST",
+		Path:                  "messaging/templates/retrieve",
+		Body:                  body,
+		BodyRequired:          true,
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeMessagingProfile},
+		AcceptsIdempotencyKey: true,
 	}, opts...)
 }
 

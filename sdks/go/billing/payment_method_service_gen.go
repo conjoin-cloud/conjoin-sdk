@@ -22,11 +22,12 @@ func (s *PaymentMethodsService) List(ctx context.Context, query *ListPaymentMeth
 func (s *PaymentMethodsService) Create(ctx context.Context, body *CreatePaymentMethodRequest, opts ...conjoin.CallOption) (string, error) {
 	var out string
 	err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "billing/payment-methods/",
-		Body:         body,
-		BodyRequired: true,
-		Scopes:       []conjoin.ScopeName{conjoin.ScopeBillingEntity},
+		Method:                "POST",
+		Path:                  "billing/payment-methods/",
+		Body:                  body,
+		BodyRequired:          true,
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeBillingEntity},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...)
 	return out, err
 }

@@ -23,12 +23,13 @@ func (s *PoliciesService) List(ctx context.Context, organizationID string, query
 func (s *PoliciesService) Create(ctx context.Context, organizationID string, body *CreatePolicyRequest, opts ...conjoin.CallOption) (*CreatePolicyResponse, error) {
 	var out CreatePolicyResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "auth/organizations/{organization_id}/policies/",
-		PathParams:   []string{organizationID},
-		Body:         body,
-		BodyRequired: true,
-		Scopes:       []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		Method:                "POST",
+		Path:                  "auth/organizations/{organization_id}/policies/",
+		PathParams:            []string{organizationID},
+		Body:                  body,
+		BodyRequired:          true,
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}

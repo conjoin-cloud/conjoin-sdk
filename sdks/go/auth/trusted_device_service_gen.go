@@ -37,10 +37,11 @@ func (s *TrustedDevicesService) ListCount(ctx context.Context, accountID string,
 func (s *TrustedDevicesService) RevokeAll(ctx context.Context, accountID string, opts ...conjoin.CallOption) (*RevokeAllTrustedDevicesResponse, error) {
 	var out RevokeAllTrustedDevicesResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:     "POST",
-		Path:       "auth/accounts/{account_id}/trusted-devices/revoke-all",
-		PathParams: []string{accountID},
-		Scopes:     []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		Method:                "POST",
+		Path:                  "auth/accounts/{account_id}/trusted-devices/revoke-all",
+		PathParams:            []string{accountID},
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -50,10 +51,11 @@ func (s *TrustedDevicesService) RevokeAll(ctx context.Context, accountID string,
 func (s *TrustedDevicesService) Revoke(ctx context.Context, accountID string, trustedDeviceID string, opts ...conjoin.CallOption) (*RevokeTrustedDeviceResponse, error) {
 	var out RevokeTrustedDeviceResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:     "POST",
-		Path:       "auth/accounts/{account_id}/trusted-devices/{trusted_device_id}/revoke",
-		PathParams: []string{accountID, trustedDeviceID},
-		Scopes:     []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		Method:                "POST",
+		Path:                  "auth/accounts/{account_id}/trusted-devices/{trusted_device_id}/revoke",
+		PathParams:            []string{accountID, trustedDeviceID},
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}

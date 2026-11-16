@@ -16,7 +16,7 @@ func (s *BrandingsService) ReadPublicProject(ctx context.Context, query *ReadPub
 		Method: "GET",
 		Path:   "cloud/client/branding/",
 		Query:  query,
-		Auth:   conjoin.AuthNone,
+		Auth:   conjoin.AuthPublishableKey,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
