@@ -21,10 +21,11 @@ func (s *WebhooksService) List(ctx context.Context, query *ReadWebhooksQuery, op
 func (s *WebhooksService) Register(ctx context.Context, body *RegisterWebhookRequest, opts ...conjoin.CallOption) (*RegisterWebhookResponse, error) {
 	var out RegisterWebhookResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "cloud/webhooks/",
-		Body:         body,
-		BodyRequired: true,
+		Method:                "POST",
+		Path:                  "cloud/webhooks/",
+		Body:                  body,
+		BodyRequired:          true,
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}

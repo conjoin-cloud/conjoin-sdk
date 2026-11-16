@@ -59,19 +59,19 @@ type ListMessageTemplatesRequestQuery struct {
 	ContentLimit conjoin.Nullable[ListMessageTemplatesRequestQueryContentLimit] `json:"content_limit,omitzero"`
 	IsDefault    *bool                                                          `json:"is_default,omitzero"`
 	Tags         *ListPhoneNumbersQueryQueryType                                `json:"tags,omitzero"`
-	DateCreated  *ListContactsRequestQueryDateCreated                           `json:"date_created,omitzero"`
-	DateUpdated  *ListContactsRequestQueryDateCreated                           `json:"date_updated,omitzero"`
-	DateDeleted  conjoin.Nullable[ListContactsRequestQueryDateCreated]          `json:"date_deleted,omitzero"`
-	DateArchived conjoin.Nullable[ListContactsRequestQueryDateCreated]          `json:"date_archived,omitzero"`
+	DateCreated  *ListChannelAnalyticsRequestQueryDateCreated                   `json:"date_created,omitzero"`
+	DateUpdated  *ListChannelAnalyticsRequestQueryDateCreated                   `json:"date_updated,omitzero"`
+	DateDeleted  conjoin.Nullable[ListChannelAnalyticsRequestQueryDateCreated]  `json:"date_deleted,omitzero"`
+	DateArchived conjoin.Nullable[ListChannelAnalyticsRequestQueryDateCreated]  `json:"date_archived,omitzero"`
 }
 
 type ListMessageTemplatesRequest struct {
-	Cursor *ListContactsRequestCursor        `json:"cursor,omitzero"`
-	Filter map[string]bool                   `json:"filter,omitzero"`
-	Query  *ListMessageTemplatesRequestQuery `json:"query,omitzero"`
-	Search *ListContactsRequestSearch        `json:"search,omitzero"`
-	Sort   map[string]string                 `json:"sort,omitzero"`
-	Limit  any                               `json:"limit,omitzero"`
+	Cursor *ListChannelAnalyticsRequestCursor `json:"cursor,omitzero"`
+	Filter map[string]bool                    `json:"filter,omitzero"`
+	Query  *ListMessageTemplatesRequestQuery  `json:"query,omitzero"`
+	Search *ListContactsRequestSearch         `json:"search,omitzero"`
+	Sort   map[string]string                  `json:"sort,omitzero"`
+	Limit  any                                `json:"limit,omitzero"`
 }
 
 type ListMessageTemplatesItem = CreateMessageTemplateResponse

@@ -60,7 +60,7 @@ type CreateSmsBrandResponse struct {
 	ReferenceID           conjoin.Nullable[string] `json:"reference_id,omitzero"`
 	DisplayName           string                   `json:"display_name"`
 	BrandRegistrationType string                   `json:"brand_registration_type"`
-	BrandTcrID            *string                  `json:"brand_tcr_id,omitzero"`
+	BrandTcrID            conjoin.Nullable[string] `json:"brand_tcr_id,omitzero"`
 	SoleProprietorDetails map[string]any           `json:"sole_proprietor_details,omitzero"`
 	BusinessDetails       map[string]any           `json:"business_details,omitzero"`
 	Status                *string                  `json:"status,omitzero"`
@@ -71,43 +71,8 @@ type CreateSmsBrandResponse struct {
 
 type ReadSmsBrandResponse = CreateSmsBrandResponse
 
-type UpdateSmsBrandRequestUpdatesCompanyDetails struct {
-	LegalName           *string `json:"legal_name,omitzero"`
-	BrandName           *string `json:"brand_name,omitzero"`
-	CompanyEmail        *string `json:"company_email,omitzero"`
-	SupportContactEmail *string `json:"support_contact_email,omitzero"`
-	Website             *string `json:"website,omitzero"`
-	Country             *string `json:"country,omitzero"`
-	StateOrProvince     *string `json:"state_or_province,omitzero"`
-	StreetAddress       *string `json:"street_address,omitzero"`
-	PostalCode          *string `json:"postal_code,omitzero"`
-	BusinessType        *string `json:"business_type,omitzero"`
-	BusinessVertical    *string `json:"business_vertical,omitzero"`
-}
-
-type UpdateSmsBrandRequestUpdatesFinancialDetails struct {
-	TaxID         *string `json:"tax_id,omitzero"`
-	TaxIDCountry  *string `json:"tax_id_country,omitzero"`
-	StockSymbol   *string `json:"stock_symbol,omitzero"`
-	StockExchange *string `json:"stock_exchange,omitzero"`
-}
-
-type UpdateSmsBrandRequestUpdatesPrimaryContactDetails struct {
-	FirstName   *string `json:"first_name,omitzero"`
-	LastName    *string `json:"last_name,omitzero"`
-	Email       *string `json:"email,omitzero"`
-	PhoneNumber *string `json:"phone_number,omitzero"`
-}
-
-type UpdateSmsBrandRequestUpdates struct {
-	DisplayName           *string                                            `json:"display_name,omitzero"`
-	CompanyDetails        *UpdateSmsBrandRequestUpdatesCompanyDetails        `json:"company_details,omitzero"`
-	FinancialDetails      *UpdateSmsBrandRequestUpdatesFinancialDetails      `json:"financial_details,omitzero"`
-	PrimaryContactDetails *UpdateSmsBrandRequestUpdatesPrimaryContactDetails `json:"primary_contact_details,omitzero"`
-}
-
 type UpdateSmsBrandRequest struct {
-	Updates UpdateSmsBrandRequestUpdates `json:"updates"`
+	DisplayName string `json:"display_name"`
 }
 
 type UpdateSmsBrandResponse = CreateSmsBrandResponse
@@ -115,16 +80,17 @@ type UpdateSmsBrandResponse = CreateSmsBrandResponse
 type DeleteSmsBrandResponse = CreateSmsBrandResponse
 
 type ListSmsBrandsRequestQuery struct {
-	DateCreated ListContactsRequestQueryDateCreated `json:"date_created"`
-	DateUpdated ListContactsRequestQueryDateCreated `json:"date_updated"`
-	DateDeleted ListContactsRequestQueryDateCreated `json:"date_deleted"`
+	DateCreated *ListChannelAnalyticsRequestQueryDateCreated `json:"date_created,omitzero"`
+	DateUpdated *ListChannelAnalyticsRequestQueryDateCreated `json:"date_updated,omitzero"`
+	DateDeleted *ListChannelAnalyticsRequestQueryDateCreated `json:"date_deleted,omitzero"`
 }
 
 type ListSmsBrandsRequest struct {
-	Filter map[string]bool           `json:"filter,omitzero"`
-	Query  ListSmsBrandsRequestQuery `json:"query"`
-	Sort   map[string]string         `json:"sort"`
-	Limit  any                       `json:"limit,omitzero"`
+	Filter map[string]bool                    `json:"filter,omitzero"`
+	Cursor *ListChannelAnalyticsRequestCursor `json:"cursor,omitzero"`
+	Query  *ListSmsBrandsRequestQuery         `json:"query,omitzero"`
+	Sort   map[string]string                  `json:"sort,omitzero"`
+	Limit  any                                `json:"limit,omitzero"`
 }
 
 type ListSmsBrandsItem = CreateSmsBrandResponse

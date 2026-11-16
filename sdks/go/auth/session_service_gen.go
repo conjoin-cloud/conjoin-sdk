@@ -90,12 +90,13 @@ func (s *SessionsService) Update(ctx context.Context, sessionID string, body *Up
 func (s *SessionsService) Validate(ctx context.Context, sessionID string, body *ValidateSessionRequest, opts ...conjoin.CallOption) (*ValidateSessionResponse, error) {
 	var out ValidateSessionResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "auth/sessions/{session_id}/validate",
-		PathParams:   []string{sessionID},
-		Body:         body,
-		BodyRequired: true,
-		Scopes:       []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		Method:                "POST",
+		Path:                  "auth/sessions/{session_id}/validate",
+		PathParams:            []string{sessionID},
+		Body:                  body,
+		BodyRequired:          true,
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -105,10 +106,11 @@ func (s *SessionsService) Validate(ctx context.Context, sessionID string, body *
 func (s *SessionsService) Revoke(ctx context.Context, sessionID string, opts ...conjoin.CallOption) (*RevokeSessionResponse, error) {
 	var out RevokeSessionResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:     "POST",
-		Path:       "auth/sessions/{session_id}/revoke",
-		PathParams: []string{sessionID},
-		Scopes:     []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		Method:                "POST",
+		Path:                  "auth/sessions/{session_id}/revoke",
+		PathParams:            []string{sessionID},
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -118,10 +120,11 @@ func (s *SessionsService) Revoke(ctx context.Context, sessionID string, opts ...
 func (s *SessionsService) RevokeAllForAccount(ctx context.Context, accountID string, opts ...conjoin.CallOption) (*RevokeAllSessionsForAccountResponse, error) {
 	var out RevokeAllSessionsForAccountResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:     "POST",
-		Path:       "auth/accounts/{account_id}/sessions/revoke-all",
-		PathParams: []string{accountID},
-		Scopes:     []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		Method:                "POST",
+		Path:                  "auth/accounts/{account_id}/sessions/revoke-all",
+		PathParams:            []string{accountID},
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -131,12 +134,13 @@ func (s *SessionsService) RevokeAllForAccount(ctx context.Context, accountID str
 func (s *SessionsService) BulkRevokeAccount(ctx context.Context, accountID string, body *BulkRevokeAccountSessionsRequest, opts ...conjoin.CallOption) (*BulkRevokeAccountSessionsResponse, error) {
 	var out BulkRevokeAccountSessionsResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "auth/accounts/{account_id}/sessions/revoke",
-		PathParams:   []string{accountID},
-		Body:         body,
-		BodyRequired: true,
-		Scopes:       []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		Method:                "POST",
+		Path:                  "auth/accounts/{account_id}/sessions/revoke",
+		PathParams:            []string{accountID},
+		Body:                  body,
+		BodyRequired:          true,
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -146,12 +150,13 @@ func (s *SessionsService) BulkRevokeAccount(ctx context.Context, accountID strin
 func (s *SessionsService) BulkRevokeClient(ctx context.Context, clientID string, body *BulkRevokeClientSessionsRequest, opts ...conjoin.CallOption) (*BulkRevokeClientSessionsResponse, error) {
 	var out BulkRevokeClientSessionsResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "auth/clients/{client_id}/sessions/revoke",
-		PathParams:   []string{clientID},
-		Body:         body,
-		BodyRequired: true,
-		Scopes:       []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		Method:                "POST",
+		Path:                  "auth/clients/{client_id}/sessions/revoke",
+		PathParams:            []string{clientID},
+		Body:                  body,
+		BodyRequired:          true,
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}

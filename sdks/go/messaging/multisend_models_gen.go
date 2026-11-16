@@ -13,25 +13,52 @@ type CreateMultisendRequest struct {
 	CreateConversation   *bool                                  `json:"create_conversation,omitzero"`
 }
 
-type CreateMultisendResponse struct {
-	MessageID        string                   `json:"message_id"`
-	ProfileID        string                   `json:"profile_id"`
-	ConjoinAccountID string                   `json:"conjoin_account_id"`
-	ConjoinProjectID string                   `json:"conjoin_project_id"`
-	LiveMode         bool                     `json:"live_mode"`
-	ReferenceID      conjoin.Nullable[string] `json:"reference_id,omitzero"`
-	ParentMessageID  conjoin.Nullable[string] `json:"parent_message_id,omitzero"`
-	ConversationID   conjoin.Nullable[string] `json:"conversation_id,omitzero"`
-	Type             string                   `json:"type"`
-	ChannelMessages  map[string]any           `json:"channel_messages"`
-	Priority         []string                 `json:"priority"`
-	SendAt           conjoin.Nullable[string] `json:"send_at,omitzero"`
-	SentAt           string                   `json:"sent_at"`
-	AcceptsReplies   bool                     `json:"accepts_replies"`
-	Status           *string                  `json:"status,omitzero"`
-	DateCreated      string                   `json:"date_created"`
-	DateUpdated      string                   `json:"date_updated"`
-	DateDeleted      conjoin.Nullable[string] `json:"date_deleted,omitzero"`
+type CreateMultisendResponseSMSMessagesItem struct {
+	PhoneNumber string `json:"phone_number"`
+	Status      string `json:"status"`
 }
 
-type ReadMultisendResponse = CreateMultisendResponse
+type CreateMultisendResponseSMS struct {
+	MessageBroadcastID string                                   `json:"message_broadcast_id"`
+	RequestID          string                                   `json:"request_id"`
+	Status             string                                   `json:"status"`
+	Messages           []CreateMultisendResponseSMSMessagesItem `json:"messages"`
+}
+
+type CreateMultisendResponseEmailMessagesItem struct {
+	Email  string `json:"email"`
+	Status string `json:"status"`
+}
+
+type CreateMultisendResponseEmail struct {
+	MessageBroadcastID string                                     `json:"message_broadcast_id"`
+	RequestID          string                                     `json:"request_id"`
+	Status             string                                     `json:"status"`
+	Messages           []CreateMultisendResponseEmailMessagesItem `json:"messages"`
+}
+
+type CreateMultisendResponse struct {
+	SMS   *CreateMultisendResponseSMS   `json:"sms,omitzero"`
+	Email *CreateMultisendResponseEmail `json:"email,omitzero"`
+}
+
+type ReadMultisendResponse struct {
+	BroadcastID          string                   `json:"broadcast_id"`
+	ProfileID            string                   `json:"profile_id"`
+	ConjoinAccountID     string                   `json:"conjoin_account_id"`
+	ConjoinProjectID     string                   `json:"conjoin_project_id"`
+	LiveMode             bool                     `json:"live_mode"`
+	ReferenceID          conjoin.Nullable[string] `json:"reference_id,omitzero"`
+	DateCreated          string                   `json:"date_created"`
+	DateUpdated          string                   `json:"date_updated"`
+	DateDeleted          conjoin.Nullable[string] `json:"date_deleted,omitzero"`
+	Originator           string                   `json:"originator"`
+	OriginatorPrimaryID  string                   `json:"originator_primary_id"`
+	OriginatorRequestID  string                   `json:"originator_request_id"`
+	MessagePriority      string                   `json:"message_priority"`
+	MessageChannels      []string                 `json:"message_channels"`
+	MessageRequests      map[string]string        `json:"message_requests"`
+	MessageRetryStatuses []string                 `json:"message_retry_statuses"`
+	SendAt               conjoin.Nullable[string] `json:"send_at,omitzero"`
+	SentAt               conjoin.Nullable[string] `json:"sent_at,omitzero"`
+}

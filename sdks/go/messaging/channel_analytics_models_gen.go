@@ -2,6 +2,33 @@ package messaging
 
 import conjoin "github.com/conjoin-cloud/conjoin-sdk/sdks/go"
 
+type ListChannelAnalyticsRequestCursor struct {
+	Prev *string `json:"prev,omitzero"`
+	Next *string `json:"next,omitzero"`
+}
+
+type ListChannelAnalyticsRequestQueryDateCreated struct {
+	Equals    *string `json:"equals,omitzero"`
+	NotEquals *string `json:"not_equals,omitzero"`
+	Gt        *string `json:"gt,omitzero"`
+	Lt        *string `json:"lt,omitzero"`
+	Gte       *string `json:"gte,omitzero"`
+	Lte       *string `json:"lte,omitzero"`
+}
+
+type ListChannelAnalyticsRequestQuery struct {
+	MessageRequestID any                                          `json:"message_request_id,omitzero"`
+	DateCreated      *ListChannelAnalyticsRequestQueryDateCreated `json:"date_created,omitzero"`
+}
+
+type ListChannelAnalyticsRequest struct {
+	Cursor *ListChannelAnalyticsRequestCursor `json:"cursor,omitzero"`
+	Filter map[string]bool                    `json:"filter,omitzero"`
+	Query  *ListChannelAnalyticsRequestQuery  `json:"query,omitzero"`
+	Sort   map[string]string                  `json:"sort,omitzero"`
+	Limit  any                                `json:"limit,omitzero"`
+}
+
 type ListChannelAnalyticsItemClicks struct {
 	UniqueClicks float64 `json:"unique_clicks"`
 	TotalClicks  float64 `json:"total_clicks"`
@@ -64,6 +91,103 @@ type ListChannelAnalyticsItem struct {
 	DateDeleted       conjoin.Nullable[string]             `json:"date_deleted,omitzero"`
 }
 
-type GenerateChannelAnalyticsSummariesResponse = ListChannelAnalyticsItem
+type GenerateChannelAnalyticsSummariesRequest struct {
+	Duration string `json:"duration"`
+}
 
-type CreateChannelAnalyticsReportResponse = ListChannelAnalyticsItem
+type GenerateChannelAnalyticsSummariesResponseOpens struct {
+	Total  float64 `json:"total"`
+	Unique float64 `json:"unique"`
+	Rate   float64 `json:"rate"`
+}
+
+type GenerateChannelAnalyticsSummariesResponseDeliveries struct {
+	Total float64 `json:"total"`
+	Rate  float64 `json:"rate"`
+}
+
+type GenerateChannelAnalyticsSummariesResponsePeriodsItem struct {
+	Label             string  `json:"label"`
+	PeriodStart       string  `json:"period_start"`
+	TotalMessageCount float64 `json:"total_message_count"`
+	TotalDeliveries   float64 `json:"total_deliveries"`
+	TotalFailures     float64 `json:"total_failures"`
+	TotalRejections   float64 `json:"total_rejections"`
+	TotalComplaints   float64 `json:"total_complaints"`
+	TotalBounces      float64 `json:"total_bounces"`
+	TotalOpens        float64 `json:"total_opens"`
+	TotalClicks       float64 `json:"total_clicks"`
+}
+
+type GenerateChannelAnalyticsSummariesResponse struct {
+	ChannelID         string                                                 `json:"channel_id"`
+	Duration          string                                                 `json:"duration"`
+	Label             string                                                 `json:"label"`
+	PeriodStart       string                                                 `json:"period_start"`
+	PeriodEnd         string                                                 `json:"period_end"`
+	TotalMessageCount float64                                                `json:"total_message_count"`
+	Opens             GenerateChannelAnalyticsSummariesResponseOpens         `json:"opens"`
+	Clicks            GenerateChannelAnalyticsSummariesResponseOpens         `json:"clicks"`
+	Deliveries        GenerateChannelAnalyticsSummariesResponseDeliveries    `json:"deliveries"`
+	Failures          GenerateChannelAnalyticsSummariesResponseDeliveries    `json:"failures"`
+	Rejections        GenerateChannelAnalyticsSummariesResponseDeliveries    `json:"rejections"`
+	Complaints        GenerateChannelAnalyticsSummariesResponseDeliveries    `json:"complaints"`
+	Bounces           GenerateChannelAnalyticsSummariesResponseDeliveries    `json:"bounces"`
+	Subscribes        GenerateChannelAnalyticsSummariesResponseDeliveries    `json:"subscribes"`
+	Unsubscribes      GenerateChannelAnalyticsSummariesResponseDeliveries    `json:"unsubscribes"`
+	Periods           []GenerateChannelAnalyticsSummariesResponsePeriodsItem `json:"periods"`
+}
+
+type CreateChannelAnalyticsReportRequestDocument struct {
+	SendAsLink  *bool   `json:"send_as_link,omitzero"`
+	Title       *string `json:"title,omitzero"`
+	Author      *string `json:"author,omitzero"`
+	Subject     *string `json:"subject,omitzero"`
+	Keywords    *string `json:"keywords,omitzero"`
+	Password    *string `json:"password,omitzero"`
+	Orientation *string `json:"orientation,omitzero"`
+	PageSize    *string `json:"page_size,omitzero"`
+	Margin      any     `json:"margin,omitzero"`
+	Version     *string `json:"version,omitzero"`
+}
+
+type CreateChannelAnalyticsReportRequest struct {
+	Duration string                                       `json:"duration"`
+	Document *CreateChannelAnalyticsReportRequestDocument `json:"document,omitzero"`
+}
+
+type CreateChannelAnalyticsReportResponse struct {
+	URL string `json:"url"`
+}
+
+type IncrementChannelAnalyticsOpensRequest struct {
+	TotalOpens  int64  `json:"total_opens"`
+	UniqueOpens *int64 `json:"unique_opens,omitzero"`
+}
+
+type IncrementChannelAnalyticsOpensResponse = ListChannelAnalyticsItem
+
+type IncrementChannelAnalyticsClicksRequest struct {
+	TotalClicks  int64  `json:"total_clicks"`
+	UniqueClicks *int64 `json:"unique_clicks,omitzero"`
+}
+
+type IncrementChannelAnalyticsClicksResponse = ListChannelAnalyticsItem
+
+type IncrementChannelAnalyticsDeliveriesRequest struct {
+	TotalDeliveries int64 `json:"total_deliveries"`
+}
+
+type IncrementChannelAnalyticsDeliveriesResponse = ListChannelAnalyticsItem
+
+type IncrementChannelAnalyticsSubscribesRequest struct {
+	TotalSubscribes int64 `json:"total_subscribes"`
+}
+
+type IncrementChannelAnalyticsSubscribesResponse = ListChannelAnalyticsItem
+
+type IncrementChannelAnalyticsUnsubscribesRequest struct {
+	TotalUnsubscribes int64 `json:"total_unsubscribes"`
+}
+
+type IncrementChannelAnalyticsUnsubscribesResponse = ListChannelAnalyticsItem

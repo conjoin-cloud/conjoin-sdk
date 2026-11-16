@@ -13,10 +13,11 @@ type ProfilesService struct {
 func (s *ProfilesService) Create(ctx context.Context, body *CreateProfileRequest, opts ...conjoin.CallOption) (*CreateProfileResponse, error) {
 	var out CreateProfileResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "messaging/profiles/",
-		Body:         body,
-		BodyRequired: true,
+		Method:                "POST",
+		Path:                  "messaging/profiles/",
+		Body:                  body,
+		BodyRequired:          true,
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -141,9 +142,10 @@ func (s *ProfilesService) UpdateVerificationsConfig(ctx context.Context, profile
 
 func (s *ProfilesService) List(ctx context.Context, body *ListProfilesRequest, opts ...conjoin.CallOption) (*conjoin.Page[ListProfilesItem], error) {
 	return conjoin.List[ListProfilesItem](ctx, s.client, conjoin.Operation{
-		Method:       "POST",
-		Path:         "messaging/profiles/retrieve",
-		Body:         body,
-		BodyRequired: true,
+		Method:                "POST",
+		Path:                  "messaging/profiles/retrieve",
+		Body:                  body,
+		BodyRequired:          true,
+		AcceptsIdempotencyKey: true,
 	}, opts...)
 }

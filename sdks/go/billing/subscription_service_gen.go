@@ -22,11 +22,12 @@ func (s *SubscriptionsService) List(ctx context.Context, query *ListSubscription
 func (s *SubscriptionsService) Create(ctx context.Context, body *CreateSubscriptionRequest, opts ...conjoin.CallOption) (*CreateSubscriptionResponse, error) {
 	var out CreateSubscriptionResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "billing/subscriptions/",
-		Body:         body,
-		BodyRequired: true,
-		Scopes:       []conjoin.ScopeName{conjoin.ScopeBillingEntity},
+		Method:                "POST",
+		Path:                  "billing/subscriptions/",
+		Body:                  body,
+		BodyRequired:          true,
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeBillingEntity},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -87,12 +88,13 @@ func (s *SubscriptionsService) Update(ctx context.Context, subscriptionID string
 func (s *SubscriptionsService) CreatePlanChange(ctx context.Context, subscriptionID string, body *CreateSubscriptionPlanChangeRequest, opts ...conjoin.CallOption) (*CreateSubscriptionPlanChangeResponse, error) {
 	var out CreateSubscriptionPlanChangeResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "billing/subscriptions/{subscription_id}/plan-changes",
-		PathParams:   []string{subscriptionID},
-		Body:         body,
-		BodyRequired: true,
-		Scopes:       []conjoin.ScopeName{conjoin.ScopeBillingEntity},
+		Method:                "POST",
+		Path:                  "billing/subscriptions/{subscription_id}/plan-changes",
+		PathParams:            []string{subscriptionID},
+		Body:                  body,
+		BodyRequired:          true,
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeBillingEntity},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -102,12 +104,13 @@ func (s *SubscriptionsService) CreatePlanChange(ctx context.Context, subscriptio
 func (s *SubscriptionsService) Cancel(ctx context.Context, subscriptionID string, body *CancelSubscriptionRequest, opts ...conjoin.CallOption) (*CancelSubscriptionResponse, error) {
 	var out CancelSubscriptionResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "billing/subscriptions/{subscription_id}/cancel",
-		PathParams:   []string{subscriptionID},
-		Body:         body,
-		BodyRequired: true,
-		Scopes:       []conjoin.ScopeName{conjoin.ScopeBillingEntity},
+		Method:                "POST",
+		Path:                  "billing/subscriptions/{subscription_id}/cancel",
+		PathParams:            []string{subscriptionID},
+		Body:                  body,
+		BodyRequired:          true,
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeBillingEntity},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -117,12 +120,13 @@ func (s *SubscriptionsService) Cancel(ctx context.Context, subscriptionID string
 func (s *SubscriptionsService) Pause(ctx context.Context, subscriptionID string, body *PauseSubscriptionRequest, opts ...conjoin.CallOption) (*PauseSubscriptionResponse, error) {
 	var out PauseSubscriptionResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "billing/subscriptions/{subscription_id}/pause",
-		PathParams:   []string{subscriptionID},
-		Body:         body,
-		BodyRequired: true,
-		Scopes:       []conjoin.ScopeName{conjoin.ScopeBillingEntity},
+		Method:                "POST",
+		Path:                  "billing/subscriptions/{subscription_id}/pause",
+		PathParams:            []string{subscriptionID},
+		Body:                  body,
+		BodyRequired:          true,
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeBillingEntity},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -132,10 +136,11 @@ func (s *SubscriptionsService) Pause(ctx context.Context, subscriptionID string,
 func (s *SubscriptionsService) Resume(ctx context.Context, subscriptionID string, opts ...conjoin.CallOption) (*ResumeSubscriptionResponse, error) {
 	var out ResumeSubscriptionResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:     "POST",
-		Path:       "billing/subscriptions/{subscription_id}/resume",
-		PathParams: []string{subscriptionID},
-		Scopes:     []conjoin.ScopeName{conjoin.ScopeBillingEntity},
+		Method:                "POST",
+		Path:                  "billing/subscriptions/{subscription_id}/resume",
+		PathParams:            []string{subscriptionID},
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeBillingEntity},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -145,12 +150,13 @@ func (s *SubscriptionsService) Resume(ctx context.Context, subscriptionID string
 func (s *SubscriptionsService) RecordUsage(ctx context.Context, subscriptionID string, body *RecordSubscriptionUsageRequest, opts ...conjoin.CallOption) (bool, error) {
 	var out bool
 	err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "billing/subscriptions/{subscription_id}/usage-records",
-		PathParams:   []string{subscriptionID},
-		Body:         body,
-		BodyRequired: true,
-		Scopes:       []conjoin.ScopeName{conjoin.ScopeBillingEntity},
+		Method:                "POST",
+		Path:                  "billing/subscriptions/{subscription_id}/usage-records",
+		PathParams:            []string{subscriptionID},
+		Body:                  body,
+		BodyRequired:          true,
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeBillingEntity},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...)
 	return out, err
 }

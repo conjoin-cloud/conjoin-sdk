@@ -21,10 +21,11 @@ func (s *RolesService) Read(ctx context.Context, query *ReadRolesQuery, opts ...
 func (s *RolesService) Create(ctx context.Context, body *CreateRoleRequest, opts ...conjoin.CallOption) (*CreateRoleResponse, error) {
 	var out CreateRoleResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "cloud/roles/",
-		Body:         body,
-		BodyRequired: true,
+		Method:                "POST",
+		Path:                  "cloud/roles/",
+		Body:                  body,
+		BodyRequired:          true,
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}

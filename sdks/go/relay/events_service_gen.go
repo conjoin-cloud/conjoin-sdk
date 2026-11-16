@@ -21,10 +21,11 @@ func (s *EventsService) ReadEventChannels(ctx context.Context, query *ReadEventC
 func (s *EventsService) CreateEventChannel(ctx context.Context, body *CreateEventChannelRequest, opts ...conjoin.CallOption) (*CreateEventChannelResponse, error) {
 	var out CreateEventChannelResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "relay/event-channels/",
-		Body:         body,
-		BodyRequired: true,
+		Method:                "POST",
+		Path:                  "relay/event-channels/",
+		Body:                  body,
+		BodyRequired:          true,
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -43,11 +44,12 @@ func (s *EventsService) ReadEventSubscriptions(ctx context.Context, eventChannel
 func (s *EventsService) CreateEventSubscription(ctx context.Context, eventChannelID string, body *CreateEventSubscriptionRequest, opts ...conjoin.CallOption) (*CreateEventSubscriptionResponse, error) {
 	var out CreateEventSubscriptionResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "relay/event-channels/{event_channel_id}/subscriptions",
-		PathParams:   []string{eventChannelID},
-		Body:         body,
-		BodyRequired: true,
+		Method:                "POST",
+		Path:                  "relay/event-channels/{event_channel_id}/subscriptions",
+		PathParams:            []string{eventChannelID},
+		Body:                  body,
+		BodyRequired:          true,
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -144,9 +146,10 @@ func (s *EventsService) DeleteEventSubscription(ctx context.Context, eventChanne
 func (s *EventsService) PauseEventSubscription(ctx context.Context, eventChannelID string, subscriptionID string, opts ...conjoin.CallOption) (*PauseEventSubscriptionResponse, error) {
 	var out PauseEventSubscriptionResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:     "POST",
-		Path:       "relay/event-channels/{event_channel_id}/subscriptions/{subscription_id}/pause",
-		PathParams: []string{eventChannelID, subscriptionID},
+		Method:                "POST",
+		Path:                  "relay/event-channels/{event_channel_id}/subscriptions/{subscription_id}/pause",
+		PathParams:            []string{eventChannelID, subscriptionID},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -156,9 +159,10 @@ func (s *EventsService) PauseEventSubscription(ctx context.Context, eventChannel
 func (s *EventsService) ResumeEventSubscription(ctx context.Context, eventChannelID string, subscriptionID string, opts ...conjoin.CallOption) (*ResumeEventSubscriptionResponse, error) {
 	var out ResumeEventSubscriptionResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:     "POST",
-		Path:       "relay/event-channels/{event_channel_id}/subscriptions/{subscription_id}/resume",
-		PathParams: []string{eventChannelID, subscriptionID},
+		Method:                "POST",
+		Path:                  "relay/event-channels/{event_channel_id}/subscriptions/{subscription_id}/resume",
+		PathParams:            []string{eventChannelID, subscriptionID},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -168,11 +172,12 @@ func (s *EventsService) ResumeEventSubscription(ctx context.Context, eventChanne
 func (s *EventsService) PublishEvent(ctx context.Context, eventChannelID string, body *PublishEventRequest, opts ...conjoin.CallOption) (*PublishEventResponse, error) {
 	var out PublishEventResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "relay/event-channels/{event_channel_id}/publish",
-		PathParams:   []string{eventChannelID},
-		Body:         body,
-		BodyRequired: true,
+		Method:                "POST",
+		Path:                  "relay/event-channels/{event_channel_id}/publish",
+		PathParams:            []string{eventChannelID},
+		Body:                  body,
+		BodyRequired:          true,
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -195,12 +200,13 @@ func (s *EventsService) ReadCount(ctx context.Context, eventChannelID string, qu
 func (s *EventsService) Replay(ctx context.Context, eventChannelID string, body *ReplayEventsRequest, opts ...conjoin.CallOption) (*ReplayEventsResponse, error) {
 	var out ReplayEventsResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "relay/event-channels/{event_channel_id}/replay",
-		PathParams:   []string{eventChannelID},
-		Body:         body,
-		BodyRequired: true,
-		Response:     conjoin.ResponseBody,
+		Method:                "POST",
+		Path:                  "relay/event-channels/{event_channel_id}/replay",
+		PathParams:            []string{eventChannelID},
+		Body:                  body,
+		BodyRequired:          true,
+		AcceptsIdempotencyKey: true,
+		Response:              conjoin.ResponseBody,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}

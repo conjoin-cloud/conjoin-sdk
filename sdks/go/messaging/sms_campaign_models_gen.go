@@ -45,7 +45,7 @@ type CreateSmsCampaignResponse struct {
 type ReadSmsCampaignResponse = CreateSmsCampaignResponse
 
 type UpdateSmsCampaignRequest struct {
-	Updates map[string]any `json:"updates"`
+	Title string `json:"title"`
 }
 
 type UpdateSmsCampaignResponse = CreateSmsCampaignResponse

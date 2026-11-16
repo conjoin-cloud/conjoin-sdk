@@ -21,10 +21,11 @@ func (s *OrganizationsService) List(ctx context.Context, query *ReadOrganization
 func (s *OrganizationsService) Create(ctx context.Context, body *CreateOrganizationRequest, opts ...conjoin.CallOption) (*CreateOrganizationResponse, error) {
 	var out CreateOrganizationResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "cloud/organizations/",
-		Body:         body,
-		BodyRequired: true,
+		Method:                "POST",
+		Path:                  "cloud/organizations/",
+		Body:                  body,
+		BodyRequired:          true,
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}

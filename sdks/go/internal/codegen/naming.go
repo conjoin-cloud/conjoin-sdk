@@ -24,8 +24,8 @@ var initialisms = map[string]string{
 }
 
 var reservedParameterNames = map[string]bool{
-	"ctx": true, "body": true, "query": true, "opts": true, "out": true, "err": true, "s": true,
-	"conjoin": true, "context": true,
+	"ctx": true, "body": true, "query": true, "headers": true, "sessionToken": true, "opts": true, "out": true,
+	"err": true, "s": true, "conjoin": true, "context": true,
 }
 
 func toPascalCase(value string) string {

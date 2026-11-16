@@ -23,12 +23,13 @@ func (s *SubscriptionSchedulesService) List(ctx context.Context, subscriptionID 
 func (s *SubscriptionSchedulesService) Create(ctx context.Context, subscriptionID string, body *CreateSubscriptionScheduleRequest, opts ...conjoin.CallOption) (*CreateSubscriptionScheduleResponse, error) {
 	var out CreateSubscriptionScheduleResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "billing/subscriptions/{subscription_id}/schedules",
-		PathParams:   []string{subscriptionID},
-		Body:         body,
-		BodyRequired: true,
-		Scopes:       []conjoin.ScopeName{conjoin.ScopeBillingEntity},
+		Method:                "POST",
+		Path:                  "billing/subscriptions/{subscription_id}/schedules",
+		PathParams:            []string{subscriptionID},
+		Body:                  body,
+		BodyRequired:          true,
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeBillingEntity},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -65,10 +66,11 @@ func (s *SubscriptionSchedulesService) Get(ctx context.Context, subscriptionSche
 func (s *SubscriptionSchedulesService) Cancel(ctx context.Context, subscriptionScheduleID string, opts ...conjoin.CallOption) (*CancelSubscriptionScheduleResponse, error) {
 	var out CancelSubscriptionScheduleResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:     "POST",
-		Path:       "billing/subscription-schedules/{subscription_schedule_id}/cancel",
-		PathParams: []string{subscriptionScheduleID},
-		Scopes:     []conjoin.ScopeName{conjoin.ScopeBillingEntity},
+		Method:                "POST",
+		Path:                  "billing/subscription-schedules/{subscription_schedule_id}/cancel",
+		PathParams:            []string{subscriptionScheduleID},
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeBillingEntity},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -78,10 +80,11 @@ func (s *SubscriptionSchedulesService) Cancel(ctx context.Context, subscriptionS
 func (s *SubscriptionSchedulesService) Release(ctx context.Context, subscriptionScheduleID string, opts ...conjoin.CallOption) (*ReleaseSubscriptionScheduleResponse, error) {
 	var out ReleaseSubscriptionScheduleResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:     "POST",
-		Path:       "billing/subscription-schedules/{subscription_schedule_id}/release",
-		PathParams: []string{subscriptionScheduleID},
-		Scopes:     []conjoin.ScopeName{conjoin.ScopeBillingEntity},
+		Method:                "POST",
+		Path:                  "billing/subscription-schedules/{subscription_schedule_id}/release",
+		PathParams:            []string{subscriptionScheduleID},
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeBillingEntity},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}

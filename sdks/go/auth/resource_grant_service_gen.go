@@ -23,12 +23,13 @@ func (s *ResourceGrantsService) List(ctx context.Context, organizationID string,
 func (s *ResourceGrantsService) GrantResourcePermission(ctx context.Context, organizationID string, body *GrantResourcePermissionRequest, opts ...conjoin.CallOption) (*GrantResourcePermissionResponse, error) {
 	var out GrantResourcePermissionResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "auth/organizations/{organization_id}/resource-grants/",
-		PathParams:   []string{organizationID},
-		Body:         body,
-		BodyRequired: true,
-		Scopes:       []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		Method:                "POST",
+		Path:                  "auth/organizations/{organization_id}/resource-grants/",
+		PathParams:            []string{organizationID},
+		Body:                  body,
+		BodyRequired:          true,
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -38,12 +39,13 @@ func (s *ResourceGrantsService) GrantResourcePermission(ctx context.Context, org
 func (s *ResourceGrantsService) CheckResourcePermission(ctx context.Context, organizationID string, body *CheckResourcePermissionRequest, opts ...conjoin.CallOption) (*CheckResourcePermissionResponse, error) {
 	var out CheckResourcePermissionResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "auth/organizations/{organization_id}/check-resource-permission",
-		PathParams:   []string{organizationID},
-		Body:         body,
-		BodyRequired: true,
-		Scopes:       []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		Method:                "POST",
+		Path:                  "auth/organizations/{organization_id}/check-resource-permission",
+		PathParams:            []string{organizationID},
+		Body:                  body,
+		BodyRequired:          true,
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -67,12 +69,13 @@ func (s *ResourceGrantsService) ListCount(ctx context.Context, organizationID st
 func (s *ResourceGrantsService) RevokeResourcePermission(ctx context.Context, organizationID string, resourceGrantID string, body *RevokeResourcePermissionRequest, opts ...conjoin.CallOption) (*RevokeResourcePermissionResponse, error) {
 	var out RevokeResourcePermissionResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "auth/organizations/{organization_id}/resource-grants/{resource_grant_id}/revoke",
-		PathParams:   []string{organizationID, resourceGrantID},
-		Body:         body,
-		BodyRequired: true,
-		Scopes:       []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		Method:                "POST",
+		Path:                  "auth/organizations/{organization_id}/resource-grants/{resource_grant_id}/revoke",
+		PathParams:            []string{organizationID, resourceGrantID},
+		Body:                  body,
+		BodyRequired:          true,
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}

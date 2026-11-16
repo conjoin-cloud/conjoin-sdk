@@ -13,10 +13,11 @@ type PoliciesService struct {
 func (s *PoliciesService) Check(ctx context.Context, body *CheckPolicyRequest, opts ...conjoin.CallOption) (*CheckPolicyResponse, error) {
 	var out CheckPolicyResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "ai/policy/check",
-		Body:         body,
-		BodyRequired: true,
+		Method:                "POST",
+		Path:                  "ai/policy/check",
+		Body:                  body,
+		BodyRequired:          true,
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -26,10 +27,11 @@ func (s *PoliciesService) Check(ctx context.Context, body *CheckPolicyRequest, o
 func (s *PoliciesService) CreateRule(ctx context.Context, body *CreatePolicyRuleRequest, opts ...conjoin.CallOption) (*CreatePolicyRuleResponse, error) {
 	var out CreatePolicyRuleResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "ai/policy/rules",
-		Body:         body,
-		BodyRequired: true,
+		Method:                "POST",
+		Path:                  "ai/policy/rules",
+		Body:                  body,
+		BodyRequired:          true,
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}

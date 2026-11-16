@@ -60,6 +60,11 @@ type UpdateOrganizationRequest struct {
 
 type UpdateOrganizationResponse = ListOrganizationsItem
 
+type DeleteOrganizationQuery struct {
+	Permanent any `json:"permanent,omitzero"`
+	Force     any `json:"force,omitzero"`
+}
+
 type DeleteOrganizationResponse = ListOrganizationsItem
 
 type UpdateOrganizationSettingsRequestMembership struct {

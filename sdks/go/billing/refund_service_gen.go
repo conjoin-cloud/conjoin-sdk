@@ -22,11 +22,12 @@ func (s *RefundsService) List(ctx context.Context, query *ListRefundsQuery, opts
 func (s *RefundsService) Create(ctx context.Context, body *CreateRefundRequest, opts ...conjoin.CallOption) (*CreateRefundResponse, error) {
 	var out CreateRefundResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "billing/refunds/",
-		Body:         body,
-		BodyRequired: true,
-		Scopes:       []conjoin.ScopeName{conjoin.ScopeBillingEntity},
+		Method:                "POST",
+		Path:                  "billing/refunds/",
+		Body:                  body,
+		BodyRequired:          true,
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeBillingEntity},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}

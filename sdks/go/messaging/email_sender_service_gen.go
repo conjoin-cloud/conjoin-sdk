@@ -25,11 +25,12 @@ func (s *EmailSendersService) Verify(ctx context.Context, senderID string, opts 
 
 func (s *EmailSendersService) ListMany(ctx context.Context, body *ListManyEmailSendersRequest, opts ...conjoin.CallOption) (*conjoin.Page[ListManyEmailSendersItem], error) {
 	return conjoin.List[ListManyEmailSendersItem](ctx, s.client, conjoin.Operation{
-		Method:       "POST",
-		Path:         "messaging/email/senders/retrieve",
-		Body:         body,
-		BodyRequired: true,
-		Scopes:       []conjoin.ScopeName{conjoin.ScopeMessagingProfile},
+		Method:                "POST",
+		Path:                  "messaging/email/senders/retrieve",
+		Body:                  body,
+		BodyRequired:          true,
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeMessagingProfile},
+		AcceptsIdempotencyKey: true,
 	}, opts...)
 }
 
@@ -62,41 +63,38 @@ func (s *EmailSendersService) Delete(ctx context.Context, senderID string, opts 
 func (s *EmailSendersService) Create(ctx context.Context, body *CreateEmailSenderRequest, opts ...conjoin.CallOption) (*CreateEmailSenderResponse, error) {
 	var out CreateEmailSenderResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "messaging/email/senders/",
-		Body:         body,
-		BodyRequired: true,
-		Scopes:       []conjoin.ScopeName{conjoin.ScopeMessagingProfile},
+		Method:                "POST",
+		Path:                  "messaging/email/senders/",
+		Body:                  body,
+		BodyRequired:          true,
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeMessagingProfile},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
 	return &out, nil
 }
 
-func (s *EmailSendersService) Enable(ctx context.Context, senderID string, body *EnableEmailSenderRequest, opts ...conjoin.CallOption) (*EnableEmailSenderResponse, error) {
+func (s *EmailSendersService) Enable(ctx context.Context, senderID string, opts ...conjoin.CallOption) (*EnableEmailSenderResponse, error) {
 	var out EnableEmailSenderResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "PATCH",
-		Path:         "messaging/email/senders/{sender_id}/enable",
-		PathParams:   []string{senderID},
-		Body:         body,
-		BodyRequired: true,
-		Scopes:       []conjoin.ScopeName{conjoin.ScopeMessagingProfile},
+		Method:     "PATCH",
+		Path:       "messaging/email/senders/{sender_id}/enable",
+		PathParams: []string{senderID},
+		Scopes:     []conjoin.ScopeName{conjoin.ScopeMessagingProfile},
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
 	return &out, nil
 }
 
-func (s *EmailSendersService) Disable(ctx context.Context, senderID string, body *DisableEmailSenderRequest, opts ...conjoin.CallOption) (*DisableEmailSenderResponse, error) {
+func (s *EmailSendersService) Disable(ctx context.Context, senderID string, opts ...conjoin.CallOption) (*DisableEmailSenderResponse, error) {
 	var out DisableEmailSenderResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "PATCH",
-		Path:         "messaging/email/senders/{sender_id}/disable",
-		PathParams:   []string{senderID},
-		Body:         body,
-		BodyRequired: true,
-		Scopes:       []conjoin.ScopeName{conjoin.ScopeMessagingProfile},
+		Method:     "PATCH",
+		Path:       "messaging/email/senders/{sender_id}/disable",
+		PathParams: []string{senderID},
+		Scopes:     []conjoin.ScopeName{conjoin.ScopeMessagingProfile},
 	}, &out, opts...); err != nil {
 		return nil, err
 	}

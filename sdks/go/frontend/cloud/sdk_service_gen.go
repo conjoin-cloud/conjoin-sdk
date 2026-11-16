@@ -15,7 +15,7 @@ func (s *SDKsService) ReadSdkSettings(ctx context.Context, opts ...conjoin.CallO
 	if err := s.client.Do(ctx, conjoin.Operation{
 		Method: "GET",
 		Path:   "cloud/client/settings/",
-		Auth:   conjoin.AuthNone,
+		Auth:   conjoin.AuthPublishableKey,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}

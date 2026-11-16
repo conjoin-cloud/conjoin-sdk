@@ -3,13 +3,13 @@ package messaging
 import conjoin "github.com/conjoin-cloud/conjoin-sdk/sdks/go"
 
 type CreateVerificationRequestTokenOptionsExpiresAfter struct {
-	Unit  *string  `json:"unit,omitzero"`
-	Value *float64 `json:"value,omitzero"`
+	Unit  *string `json:"unit,omitzero"`
+	Value *int64  `json:"value,omitzero"`
 }
 
 type CreateVerificationRequestTokenOptions struct {
 	TokenType         *string                                            `json:"token_type,omitzero"`
-	Length            *float64                                           `json:"length,omitzero"`
+	Length            *int64                                             `json:"length,omitzero"`
 	HasDigits         *bool                                              `json:"has_digits,omitzero"`
 	HasLowercaseChars *bool                                              `json:"has_lowercase_chars,omitzero"`
 	HasUppercaseChars *bool                                              `json:"has_uppercase_chars,omitzero"`
@@ -28,7 +28,26 @@ type CreateVerificationRequest struct {
 	TokenOptions *CreateVerificationRequestTokenOptions `json:"token_options,omitzero"`
 }
 
+type CreateVerificationResponseMessagesItem struct {
+	Status      string  `json:"status"`
+	PhoneNumber *string `json:"phone_number,omitzero"`
+	Email       *string `json:"email,omitzero"`
+}
+
 type CreateVerificationResponse struct {
+	VerificationID string                                   `json:"verification_id"`
+	MessageID      string                                   `json:"message_id"`
+	Channel        string                                   `json:"channel"`
+	Status         string                                   `json:"status"`
+	ExpiresAt      string                                   `json:"expires_at"`
+	Messages       []CreateVerificationResponseMessagesItem `json:"messages"`
+}
+
+type CheckVerificationRequest struct {
+	Token string `json:"token"`
+}
+
+type CheckVerificationResponse struct {
 	VerificationID              string                   `json:"verification_id"`
 	ProfileID                   string                   `json:"profile_id"`
 	ConjoinAccountID            string                   `json:"conjoin_account_id"`
@@ -51,37 +70,20 @@ type CreateVerificationResponse struct {
 	DateDeleted                 conjoin.Nullable[string] `json:"date_deleted,omitzero"`
 }
 
-type CheckVerificationRequest struct {
-	Token string `json:"token"`
-}
-
-type CheckVerificationResponse = CreateVerificationResponse
-
-type ResendVerificationRequestParams struct {
-	VerificationID string `json:"verification_id"`
-}
-
-type ResendVerificationRequest struct {
-	Params ResendVerificationRequestParams `json:"params"`
-}
-
 type ResendVerificationResponse = CreateVerificationResponse
 
 type ListVerificationMessagesRequestQuery struct {
-	Channel        string                               `json:"channel"`
-	SenderID       any                                  `json:"sender_id,omitzero"`
-	MessageID      any                                  `json:"message_id,omitzero"`
-	VerificationID any                                  `json:"verification_id,omitzero"`
-	ReferenceID    any                                  `json:"reference_id,omitzero"`
-	DateCreated    *ListContactsRequestQueryDateCreated `json:"date_created,omitzero"`
+	Channel        string                                       `json:"channel"`
+	VerificationID any                                          `json:"verification_id,omitzero"`
+	ReferenceID    any                                          `json:"reference_id,omitzero"`
+	DateCreated    *ListChannelAnalyticsRequestQueryDateCreated `json:"date_created,omitzero"`
 }
 
 type ListVerificationMessagesRequest struct {
-	Cursor *ListContactsRequestCursor           `json:"cursor,omitzero"`
-	Filter map[string]bool                      `json:"filter,omitzero"`
+	Cursor *ListChannelAnalyticsRequestCursor   `json:"cursor,omitzero"`
 	Query  ListVerificationMessagesRequestQuery `json:"query"`
 	Sort   map[string]string                    `json:"sort,omitzero"`
 	Limit  any                                  `json:"limit,omitzero"`
 }
 
-type ListVerificationMessagesItem = CreateVerificationResponse
+type ListVerificationMessagesItem = CheckVerificationResponse

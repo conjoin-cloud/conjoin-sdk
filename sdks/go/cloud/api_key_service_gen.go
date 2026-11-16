@@ -21,10 +21,11 @@ func (s *APIKeysService) ReadApiKeys(ctx context.Context, query *ReadApiKeysQuer
 func (s *APIKeysService) CreateApiKey(ctx context.Context, body *CreateApiKeyRequest, opts ...conjoin.CallOption) (string, error) {
 	var out string
 	err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "cloud/api-keys/",
-		Body:         body,
-		BodyRequired: true,
+		Method:                "POST",
+		Path:                  "cloud/api-keys/",
+		Body:                  body,
+		BodyRequired:          true,
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...)
 	return out, err
 }
@@ -44,11 +45,12 @@ func (s *APIKeysService) ReadApiKeysCount(ctx context.Context, query *ReadApiKey
 func (s *APIKeysService) RegenerateApiKey(ctx context.Context, apiKeyID string, body *RegenerateApiKeyRequest, opts ...conjoin.CallOption) (string, error) {
 	var out string
 	err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "cloud/api-keys/{api_key_id}/regenerate",
-		PathParams:   []string{apiKeyID},
-		Body:         body,
-		BodyRequired: true,
+		Method:                "POST",
+		Path:                  "cloud/api-keys/{api_key_id}/regenerate",
+		PathParams:            []string{apiKeyID},
+		Body:                  body,
+		BodyRequired:          true,
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...)
 	return out, err
 }

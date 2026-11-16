@@ -165,6 +165,10 @@ type UpdateAccountRequest struct {
 
 type UpdateAccountResponse = ListAccountsItem
 
+type DeleteAccountQuery struct {
+	Permanent any `json:"permanent,omitzero"`
+}
+
 type DeleteAccountResponse = ListAccountsItem
 
 type AddAccountEmailRequest struct {

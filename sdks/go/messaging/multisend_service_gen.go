@@ -13,11 +13,12 @@ type MultisendsService struct {
 func (s *MultisendsService) Create(ctx context.Context, body *CreateMultisendRequest, opts ...conjoin.CallOption) (*CreateMultisendResponse, error) {
 	var out CreateMultisendResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "messaging/multisend/send",
-		Body:         body,
-		BodyRequired: true,
-		Scopes:       []conjoin.ScopeName{conjoin.ScopeMessagingProfile},
+		Method:                "POST",
+		Path:                  "messaging/multisend/send",
+		Body:                  body,
+		BodyRequired:          true,
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeMessagingProfile},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}

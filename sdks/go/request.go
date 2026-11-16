@@ -86,13 +86,33 @@ func buildPath(template string, params []string) (string, error) {
 }
 
 func (c *Client) resolveAuthorization(op Operation, settings callSettings) (string, error) {
-	if settings.hasBearerToken {
-		return "Bearer " + settings.bearerToken, nil
+	switch op.Auth {
+	case AuthNone, AuthPublishableKey, AuthSession:
+		if settings.hasBearerToken {
+			return "", configurationError("this call sends only the credential that its operation declares, so it does not take WithBearerToken")
+		}
 	}
 	switch op.Auth {
 	case AuthNone:
 		return "", nil
-	case AuthBearerToken:
+	case AuthPublishableKey:
+		if c.publishableAuthorization == "" {
+			return "", configurationError("this call needs a publishable key in the client settings; pass WithPublishableKey")
+		}
+		return c.publishableAuthorization, nil
+	case AuthSession:
+		if op.SessionToken == "" {
+			return "", configurationError("this call needs a session token")
+		}
+		if !isHeaderToken(string(op.SessionToken)) {
+			return "", configurationError("the session token must be a value without spaces or control characters")
+		}
+		return "Bearer " + string(op.SessionToken), nil
+	}
+	if settings.hasBearerToken {
+		return "Bearer " + settings.bearerToken, nil
+	}
+	if op.Auth == AuthBearerToken {
 		return "", configurationError("this call needs a bearer token; pass WithBearerToken")
 	}
 	return c.authorization, nil
@@ -169,6 +189,9 @@ func (c *Client) prepare(ctx context.Context, op Operation, query url.Values, op
 	header := settings.headers.Clone()
 	if header == nil {
 		header = http.Header{}
+	}
+	if err := applyDeclaredHeaders(header, op.Headers); err != nil {
+		return nil, err
 	}
 	if authorization != "" {
 		header.Set(authorizationHeader, authorization)

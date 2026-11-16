@@ -41,6 +41,17 @@ type ListSmsSenderResponse = CreateSmsSenderResponse
 
 type DeleteSmsSenderResponse = CreateSmsSenderResponse
 
+type UpdateOneSmsSenderRequestProperties struct {
+	IndiaTemplateID *string `json:"india_template_id,omitzero"`
+	IndiaSenderID   *string `json:"india_sender_id,omitzero"`
+}
+
+type UpdateOneSmsSenderRequest struct {
+	IsDefaultSender *bool                                `json:"is_default_sender,omitzero"`
+	IsTestSender    *bool                                `json:"is_test_sender,omitzero"`
+	Properties      *UpdateOneSmsSenderRequestProperties `json:"properties,omitzero"`
+}
+
 type UpdateOneSmsSenderResponse = CreateSmsSenderResponse
 
 type TransferSmsSenderResponse = CreateSmsSenderResponse

@@ -23,12 +23,13 @@ func (s *ConnectionEnterprisesService) ListEnterpriseConnections(ctx context.Con
 func (s *ConnectionEnterprisesService) CreateEnterpriseConnection(ctx context.Context, organizationID string, body *CreateEnterpriseConnectionRequest, opts ...conjoin.CallOption) (*CreateEnterpriseConnectionResponse, error) {
 	var out CreateEnterpriseConnectionResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "auth/organizations/{organization_id}/connections/",
-		PathParams:   []string{organizationID},
-		Body:         body,
-		BodyRequired: true,
-		Scopes:       []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		Method:                "POST",
+		Path:                  "auth/organizations/{organization_id}/connections/",
+		PathParams:            []string{organizationID},
+		Body:                  body,
+		BodyRequired:          true,
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -93,10 +94,11 @@ func (s *ConnectionEnterprisesService) DeleteEnterpriseConnection(ctx context.Co
 func (s *ConnectionEnterprisesService) EnableEnterpriseConnection(ctx context.Context, organizationID string, connectionID string, opts ...conjoin.CallOption) (*EnableEnterpriseConnectionResponse, error) {
 	var out EnableEnterpriseConnectionResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:     "POST",
-		Path:       "auth/organizations/{organization_id}/connections/{connection_id}/enable",
-		PathParams: []string{organizationID, connectionID},
-		Scopes:     []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		Method:                "POST",
+		Path:                  "auth/organizations/{organization_id}/connections/{connection_id}/enable",
+		PathParams:            []string{organizationID, connectionID},
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -106,10 +108,11 @@ func (s *ConnectionEnterprisesService) EnableEnterpriseConnection(ctx context.Co
 func (s *ConnectionEnterprisesService) DisableEnterpriseConnection(ctx context.Context, organizationID string, connectionID string, opts ...conjoin.CallOption) (*DisableEnterpriseConnectionResponse, error) {
 	var out DisableEnterpriseConnectionResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:     "POST",
-		Path:       "auth/organizations/{organization_id}/connections/{connection_id}/disable",
-		PathParams: []string{organizationID, connectionID},
-		Scopes:     []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		Method:                "POST",
+		Path:                  "auth/organizations/{organization_id}/connections/{connection_id}/disable",
+		PathParams:            []string{organizationID, connectionID},
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -119,10 +122,11 @@ func (s *ConnectionEnterprisesService) DisableEnterpriseConnection(ctx context.C
 func (s *ConnectionEnterprisesService) RotateEnterpriseConnectionSigningKey(ctx context.Context, organizationID string, connectionID string, opts ...conjoin.CallOption) (*RotateEnterpriseConnectionSigningKeyResponse, error) {
 	var out RotateEnterpriseConnectionSigningKeyResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:     "POST",
-		Path:       "auth/organizations/{organization_id}/connections/{connection_id}/signing-keys/rotate",
-		PathParams: []string{organizationID, connectionID},
-		Scopes:     []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		Method:                "POST",
+		Path:                  "auth/organizations/{organization_id}/connections/{connection_id}/signing-keys/rotate",
+		PathParams:            []string{organizationID, connectionID},
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -132,10 +136,11 @@ func (s *ConnectionEnterprisesService) RotateEnterpriseConnectionSigningKey(ctx 
 func (s *ConnectionEnterprisesService) ActivateEnterpriseConnectionSigningKey(ctx context.Context, organizationID string, connectionID string, opts ...conjoin.CallOption) (*ActivateEnterpriseConnectionSigningKeyResponse, error) {
 	var out ActivateEnterpriseConnectionSigningKeyResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:     "POST",
-		Path:       "auth/organizations/{organization_id}/connections/{connection_id}/signing-keys/activate",
-		PathParams: []string{organizationID, connectionID},
-		Scopes:     []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		Method:                "POST",
+		Path:                  "auth/organizations/{organization_id}/connections/{connection_id}/signing-keys/activate",
+		PathParams:            []string{organizationID, connectionID},
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -145,10 +150,11 @@ func (s *ConnectionEnterprisesService) ActivateEnterpriseConnectionSigningKey(ct
 func (s *ConnectionEnterprisesService) CancelEnterpriseConnectionSigningKey(ctx context.Context, organizationID string, connectionID string, opts ...conjoin.CallOption) (*CancelEnterpriseConnectionSigningKeyResponse, error) {
 	var out CancelEnterpriseConnectionSigningKeyResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:     "POST",
-		Path:       "auth/organizations/{organization_id}/connections/{connection_id}/signing-keys/cancel",
-		PathParams: []string{organizationID, connectionID},
-		Scopes:     []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		Method:                "POST",
+		Path:                  "auth/organizations/{organization_id}/connections/{connection_id}/signing-keys/cancel",
+		PathParams:            []string{organizationID, connectionID},
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -158,10 +164,11 @@ func (s *ConnectionEnterprisesService) CancelEnterpriseConnectionSigningKey(ctx 
 func (s *ConnectionEnterprisesService) RevokeEnterpriseConnectionSigningKey(ctx context.Context, organizationID string, connectionID string, opts ...conjoin.CallOption) (*RevokeEnterpriseConnectionSigningKeyResponse, error) {
 	var out RevokeEnterpriseConnectionSigningKeyResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:     "POST",
-		Path:       "auth/organizations/{organization_id}/connections/{connection_id}/signing-keys/revoke",
-		PathParams: []string{organizationID, connectionID},
-		Scopes:     []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		Method:                "POST",
+		Path:                  "auth/organizations/{organization_id}/connections/{connection_id}/signing-keys/revoke",
+		PathParams:            []string{organizationID, connectionID},
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -184,13 +191,14 @@ func (s *ConnectionEnterprisesService) ReadEnterpriseProviderSettings(ctx contex
 func (s *ConnectionEnterprisesService) ImportEnterpriseSamlMetadata(ctx context.Context, organizationID string, connectionID string, body *ImportEnterpriseSamlMetadataRequest, opts ...conjoin.CallOption) (*ImportEnterpriseSamlMetadataResponse, error) {
 	var out ImportEnterpriseSamlMetadataResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "auth/organizations/{organization_id}/connections/{connection_id}/import-metadata",
-		PathParams:   []string{organizationID, connectionID},
-		Body:         body,
-		BodyRequired: true,
-		Multipart:    true,
-		Scopes:       []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		Method:                "POST",
+		Path:                  "auth/organizations/{organization_id}/connections/{connection_id}/import-metadata",
+		PathParams:            []string{organizationID, connectionID},
+		Body:                  body,
+		BodyRequired:          true,
+		Multipart:             true,
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -200,12 +208,13 @@ func (s *ConnectionEnterprisesService) ImportEnterpriseSamlMetadata(ctx context.
 func (s *ConnectionEnterprisesService) SyncEnterpriseSamlMetadata(ctx context.Context, organizationID string, connectionID string, body *SyncEnterpriseSamlMetadataRequest, opts ...conjoin.CallOption) (*SyncEnterpriseSamlMetadataResponse, error) {
 	var out SyncEnterpriseSamlMetadataResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "auth/organizations/{organization_id}/connections/{connection_id}/sync-metadata",
-		PathParams:   []string{organizationID, connectionID},
-		Body:         body,
-		BodyRequired: true,
-		Scopes:       []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		Method:                "POST",
+		Path:                  "auth/organizations/{organization_id}/connections/{connection_id}/sync-metadata",
+		PathParams:            []string{organizationID, connectionID},
+		Body:                  body,
+		BodyRequired:          true,
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}

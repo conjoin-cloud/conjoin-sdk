@@ -23,12 +23,13 @@ func (s *AccountsService) ListCredentials(ctx context.Context, accountID string,
 func (s *AccountsService) VerifyCredential(ctx context.Context, accountID string, body *VerifyCredentialRequest, opts ...conjoin.CallOption) (*VerifyCredentialResponse, error) {
 	var out VerifyCredentialResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "auth/accounts/{account_id}/credentials/verify",
-		PathParams:   []string{accountID},
-		Body:         body,
-		BodyRequired: true,
-		Scopes:       []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		Method:                "POST",
+		Path:                  "auth/accounts/{account_id}/credentials/verify",
+		PathParams:            []string{accountID},
+		Body:                  body,
+		BodyRequired:          true,
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -38,12 +39,13 @@ func (s *AccountsService) VerifyCredential(ctx context.Context, accountID string
 func (s *AccountsService) VerifyCredentialMfaTotp(ctx context.Context, accountID string, body *VerifyCredentialMfaTotpRequest, opts ...conjoin.CallOption) (*VerifyCredentialMfaTotpResponse, error) {
 	var out VerifyCredentialMfaTotpResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "auth/accounts/{account_id}/totp-credentials/verify",
-		PathParams:   []string{accountID},
-		Body:         body,
-		BodyRequired: true,
-		Scopes:       []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		Method:                "POST",
+		Path:                  "auth/accounts/{account_id}/totp-credentials/verify",
+		PathParams:            []string{accountID},
+		Body:                  body,
+		BodyRequired:          true,
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -80,10 +82,11 @@ func (s *AccountsService) ReadCredential(ctx context.Context, accountID string, 
 func (s *AccountsService) RemoveCredential(ctx context.Context, accountID string, credentialID string, opts ...conjoin.CallOption) (*RemoveCredentialResponse, error) {
 	var out RemoveCredentialResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:     "POST",
-		Path:       "auth/accounts/{account_id}/credentials/{credential_id}/remove",
-		PathParams: []string{accountID, credentialID},
-		Scopes:     []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		Method:                "POST",
+		Path:                  "auth/accounts/{account_id}/credentials/{credential_id}/remove",
+		PathParams:            []string{accountID, credentialID},
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -102,11 +105,12 @@ func (s *AccountsService) List(ctx context.Context, query *ListAccountsQuery, op
 func (s *AccountsService) Create(ctx context.Context, body *CreateAccountRequest, opts ...conjoin.CallOption) (*CreateAccountResponse, error) {
 	var out CreateAccountResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "auth/accounts/",
-		Body:         body,
-		BodyRequired: true,
-		Scopes:       []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		Method:                "POST",
+		Path:                  "auth/accounts/",
+		Body:                  body,
+		BodyRequired:          true,
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -139,11 +143,12 @@ func (s *AccountsService) ListCount(ctx context.Context, query *ListAccountsCoun
 func (s *AccountsService) Merge(ctx context.Context, body *MergeAccountsRequest, opts ...conjoin.CallOption) (*MergeAccountsResponse, error) {
 	var out MergeAccountsResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "auth/accounts/merge",
-		Body:         body,
-		BodyRequired: true,
-		Scopes:       []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		Method:                "POST",
+		Path:                  "auth/accounts/merge",
+		Body:                  body,
+		BodyRequired:          true,
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -178,12 +183,19 @@ func (s *AccountsService) Update(ctx context.Context, accountID string, body *Up
 	return &out, nil
 }
 
-func (s *AccountsService) Delete(ctx context.Context, accountID string, opts ...conjoin.CallOption) (*DeleteAccountResponse, error) {
+type DeleteAccountHeaders struct {
+	StepUpSessionID string             `header:"Step-Up-Session-ID"`
+	StepUpToken     conjoin.Credential `header:"Step-Up-Token"`
+}
+
+func (s *AccountsService) Delete(ctx context.Context, accountID string, query *DeleteAccountQuery, headers DeleteAccountHeaders, opts ...conjoin.CallOption) (*DeleteAccountResponse, error) {
 	var out DeleteAccountResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
 		Method:     "DELETE",
 		Path:       "auth/accounts/{account_id}",
 		PathParams: []string{accountID},
+		Query:      query,
+		Headers:    []conjoin.DeclaredHeader{{Name: "Step-Up-Session-ID", Argument: "StepUpSessionID", Value: conjoin.Credential(headers.StepUpSessionID), MinLength: 1, MaxLength: 48}, {Name: "Step-Up-Token", Argument: "StepUpToken", Value: headers.StepUpToken, MinLength: 1, MaxLength: 256, Pattern: "^[0-9a-f]+$"}},
 		Scopes:     []conjoin.ScopeName{conjoin.ScopeAuthApp},
 	}, &out, opts...); err != nil {
 		return nil, err
@@ -194,12 +206,13 @@ func (s *AccountsService) Delete(ctx context.Context, accountID string, opts ...
 func (s *AccountsService) AddEmail(ctx context.Context, accountID string, body *AddAccountEmailRequest, opts ...conjoin.CallOption) (*AddAccountEmailResponse, error) {
 	var out AddAccountEmailResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "auth/accounts/{account_id}/emails/add",
-		PathParams:   []string{accountID},
-		Body:         body,
-		BodyRequired: true,
-		Scopes:       []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		Method:                "POST",
+		Path:                  "auth/accounts/{account_id}/emails/add",
+		PathParams:            []string{accountID},
+		Body:                  body,
+		BodyRequired:          true,
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -209,12 +222,13 @@ func (s *AccountsService) AddEmail(ctx context.Context, accountID string, body *
 func (s *AccountsService) RemoveEmail(ctx context.Context, accountID string, body *RemoveAccountEmailRequest, opts ...conjoin.CallOption) (*RemoveAccountEmailResponse, error) {
 	var out RemoveAccountEmailResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "auth/accounts/{account_id}/emails/remove",
-		PathParams:   []string{accountID},
-		Body:         body,
-		BodyRequired: true,
-		Scopes:       []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		Method:                "POST",
+		Path:                  "auth/accounts/{account_id}/emails/remove",
+		PathParams:            []string{accountID},
+		Body:                  body,
+		BodyRequired:          true,
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -224,12 +238,13 @@ func (s *AccountsService) RemoveEmail(ctx context.Context, accountID string, bod
 func (s *AccountsService) AddPhone(ctx context.Context, accountID string, body *AddAccountPhoneRequest, opts ...conjoin.CallOption) (*AddAccountPhoneResponse, error) {
 	var out AddAccountPhoneResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "auth/accounts/{account_id}/phones/add",
-		PathParams:   []string{accountID},
-		Body:         body,
-		BodyRequired: true,
-		Scopes:       []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		Method:                "POST",
+		Path:                  "auth/accounts/{account_id}/phones/add",
+		PathParams:            []string{accountID},
+		Body:                  body,
+		BodyRequired:          true,
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -239,12 +254,13 @@ func (s *AccountsService) AddPhone(ctx context.Context, accountID string, body *
 func (s *AccountsService) RemovePhone(ctx context.Context, accountID string, body *RemoveAccountPhoneRequest, opts ...conjoin.CallOption) (*RemoveAccountPhoneResponse, error) {
 	var out RemoveAccountPhoneResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "auth/accounts/{account_id}/phones/remove",
-		PathParams:   []string{accountID},
-		Body:         body,
-		BodyRequired: true,
-		Scopes:       []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		Method:                "POST",
+		Path:                  "auth/accounts/{account_id}/phones/remove",
+		PathParams:            []string{accountID},
+		Body:                  body,
+		BodyRequired:          true,
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -254,12 +270,13 @@ func (s *AccountsService) RemovePhone(ctx context.Context, accountID string, bod
 func (s *AccountsService) GrantGlobalRole(ctx context.Context, accountID string, body *GrantGlobalRoleRequest, opts ...conjoin.CallOption) (*GrantGlobalRoleResponse, error) {
 	var out GrantGlobalRoleResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "auth/accounts/{account_id}/global-roles/grant",
-		PathParams:   []string{accountID},
-		Body:         body,
-		BodyRequired: true,
-		Scopes:       []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		Method:                "POST",
+		Path:                  "auth/accounts/{account_id}/global-roles/grant",
+		PathParams:            []string{accountID},
+		Body:                  body,
+		BodyRequired:          true,
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -269,12 +286,13 @@ func (s *AccountsService) GrantGlobalRole(ctx context.Context, accountID string,
 func (s *AccountsService) RevokeGlobalRole(ctx context.Context, accountID string, body *RevokeGlobalRoleRequest, opts ...conjoin.CallOption) (*RevokeGlobalRoleResponse, error) {
 	var out RevokeGlobalRoleResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "auth/accounts/{account_id}/global-roles/revoke",
-		PathParams:   []string{accountID},
-		Body:         body,
-		BodyRequired: true,
-		Scopes:       []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		Method:                "POST",
+		Path:                  "auth/accounts/{account_id}/global-roles/revoke",
+		PathParams:            []string{accountID},
+		Body:                  body,
+		BodyRequired:          true,
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -298,10 +316,11 @@ func (s *AccountsService) ListOrganizationMembershipsCount(ctx context.Context, 
 func (s *AccountsService) Export(ctx context.Context, accountID string, opts ...conjoin.CallOption) (*ExportAccountResponse, error) {
 	var out ExportAccountResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:     "POST",
-		Path:       "auth/accounts/{account_id}/export",
-		PathParams: []string{accountID},
-		Scopes:     []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		Method:                "POST",
+		Path:                  "auth/accounts/{account_id}/export",
+		PathParams:            []string{accountID},
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -311,11 +330,12 @@ func (s *AccountsService) Export(ctx context.Context, accountID string, opts ...
 func (s *AccountsService) ImportPasswordHashes(ctx context.Context, body *ImportPasswordHashesRequest, opts ...conjoin.CallOption) (*ImportPasswordHashesResponse, error) {
 	var out ImportPasswordHashesResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "auth/accounts/import-password-hashes",
-		Body:         body,
-		BodyRequired: true,
-		Scopes:       []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		Method:                "POST",
+		Path:                  "auth/accounts/import-password-hashes",
+		Body:                  body,
+		BodyRequired:          true,
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}

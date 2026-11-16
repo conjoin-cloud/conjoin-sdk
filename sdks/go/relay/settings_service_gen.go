@@ -37,8 +37,9 @@ func (s *SettingsService) Update(ctx context.Context, body *UpdateSettingsReques
 func (s *SettingsService) RotateSigningSecret(ctx context.Context, opts ...conjoin.CallOption) (*RotateSigningSecretResponse, error) {
 	var out RotateSigningSecretResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method: "POST",
-		Path:   "relay/settings/signing-secret/rotate",
+		Method:                "POST",
+		Path:                  "relay/settings/signing-secret/rotate",
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}

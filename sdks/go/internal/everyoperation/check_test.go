@@ -41,15 +41,28 @@ func checkOperation(t *testing.T, server *contractServer, sampler *sampler, meth
 	if len(operation.queryParams) > 0 {
 		structArgs = append(structArgs, requiredQuery(sampler, operation))
 	}
-	if want := method.value.Type().NumIn() - 2 - len(pathValues); want != len(structArgs) {
-		t.Fatalf("the method takes %d body and query arguments and %s declares %d", want, operation.key, len(structArgs))
+	if got := countArguments(method, isSampledArgument); got != len(structArgs) {
+		t.Fatalf("the method takes %d body and query arguments and %s declares %d", got, operation.key, len(structArgs))
+	}
+
+	headerValues := declaredHeaderSamples(sampler, operation)
+	if got, want := countArguments(method, isHeadersArgument), min(len(headerValues), 1); got != want {
+		t.Fatalf("the method takes %d header arguments and %s declares %d headers", got, operation.key, len(headerValues))
+	}
+	wantSessionArguments := 0
+	if operation.security == "conjoinSessionBearer" {
+		wantSessionArguments = 1
+	}
+	if got := countArguments(method, isSessionArgument); got != wantSessionArguments {
+		t.Fatalf("the method takes %d session tokens and %s uses the scheme %q", got, operation.key, operation.security)
 	}
 
 	var opts []conjoin.CallOption
 	if operation.security == "scimBearer" {
 		opts = append(opts, conjoin.WithBearerToken(contractSCIM))
 	}
-	results := callMethod(method, pathValues, structArgs, opts)
+	call := callArguments{pathValues: pathValues, structArgs: structArgs, headerValues: headerValues, sessionToken: contractSessionToken}
+	results := callMethod(method, call, opts)
 	if err, _ := results[len(results)-1].Interface().(error); err != nil {
 		t.Fatalf("the call failed: %v", err)
 	}
@@ -65,6 +78,7 @@ func checkOperation(t *testing.T, server *contractServer, sampler *sampler, meth
 		}
 	}
 	checkHeaders(t, request, operation)
+	checkDeclaredHeaders(t, request, headerValues)
 	checkRequestBody(t, request, operation, body)
 	if query, _ := requiredQuery(sampler, operation).(jsonObject); query != nil {
 		for name := range query {
@@ -104,9 +118,34 @@ func checkHeaders(t *testing.T, request recordedRequest, operation *documentOper
 	if key := request.header.Get("Idempotency-Key"); (key != "") != (operation.method == "POST" && operation.headers["idempotency-key"]) {
 		t.Fatalf("the Idempotency-Key header arrived as %q", key)
 	}
-	wantAuthorization := map[string]string{"conjoinApiKey": "Bearer " + contractAPIKey, "scimBearer": "Bearer " + contractSCIM}[operation.security]
+	wantAuthorization := expectedAuthorizationByScheme[operation.security]
 	if got := request.header.Get("Authorization"); got != wantAuthorization {
 		t.Fatalf("the Authorization header arrived as %q, want %q", got, wantAuthorization)
+	}
+}
+
+func declaredHeaderSamples(sampler *sampler, operation *documentOperation) map[string]string {
+	values := map[string]string{}
+	for _, parameter := range operation.headerParams {
+		name, _ := parameter["name"].(string)
+		value, _ := sampler.sample(parameter["schema"]).(string)
+		values[strings.ToLower(name)] = value
+	}
+	if operation.security == "conjoinPortalTicketHeader" {
+		values[portalTicketHeader] = contractPortalTicket
+	}
+	return values
+}
+
+func checkDeclaredHeaders(t *testing.T, request recordedRequest, headerValues map[string]string) {
+	t.Helper()
+	for name, want := range headerValues {
+		if got := request.header.Get(name); got != want {
+			t.Fatalf("the declared header %s arrived as %q, want %q", name, got, want)
+		}
+	}
+	if request.query.Has(portalTicketQueryKey) || strings.Contains(request.query.Encode(), contractPortalTicket) {
+		t.Fatalf("the query string carried the portal ticket: %s", request.query.Encode())
 	}
 }
 

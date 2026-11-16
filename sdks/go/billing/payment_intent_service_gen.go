@@ -22,11 +22,12 @@ func (s *PaymentIntentsService) List(ctx context.Context, query *ListPaymentInte
 func (s *PaymentIntentsService) Create(ctx context.Context, body *CreatePaymentIntentRequest, opts ...conjoin.CallOption) (string, error) {
 	var out string
 	err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "billing/payment-intents/",
-		Body:         body,
-		BodyRequired: true,
-		Scopes:       []conjoin.ScopeName{conjoin.ScopeBillingEntity},
+		Method:                "POST",
+		Path:                  "billing/payment-intents/",
+		Body:                  body,
+		BodyRequired:          true,
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeBillingEntity},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...)
 	return out, err
 }
@@ -47,10 +48,11 @@ func (s *PaymentIntentsService) ListCount(ctx context.Context, query *ListPaymen
 func (s *PaymentIntentsService) Verify(ctx context.Context, paymentIntentID string, opts ...conjoin.CallOption) (*VerifyPaymentIntentResponse, error) {
 	var out VerifyPaymentIntentResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:     "POST",
-		Path:       "billing/payment-intents/{payment_intent_id}/verify",
-		PathParams: []string{paymentIntentID},
-		Scopes:     []conjoin.ScopeName{conjoin.ScopeBillingEntity},
+		Method:                "POST",
+		Path:                  "billing/payment-intents/{payment_intent_id}/verify",
+		PathParams:            []string{paymentIntentID},
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeBillingEntity},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}

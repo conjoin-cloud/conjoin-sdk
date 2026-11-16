@@ -22,11 +22,12 @@ func (s *InvoicesService) List(ctx context.Context, query *ListInvoicesQuery, op
 func (s *InvoicesService) Create(ctx context.Context, body *CreateInvoiceRequest, opts ...conjoin.CallOption) (*CreateInvoiceResponse, error) {
 	var out CreateInvoiceResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "billing/invoices/",
-		Body:         body,
-		BodyRequired: true,
-		Scopes:       []conjoin.ScopeName{conjoin.ScopeBillingEntity},
+		Method:                "POST",
+		Path:                  "billing/invoices/",
+		Body:                  body,
+		BodyRequired:          true,
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeBillingEntity},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -64,10 +65,11 @@ func (s *InvoicesService) Update(ctx context.Context, invoiceID string, body *Up
 func (s *InvoicesService) Finalize(ctx context.Context, invoiceID string, opts ...conjoin.CallOption) (*FinalizeInvoiceResponse, error) {
 	var out FinalizeInvoiceResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:     "POST",
-		Path:       "billing/invoices/{invoice_id}/finalize",
-		PathParams: []string{invoiceID},
-		Scopes:     []conjoin.ScopeName{conjoin.ScopeBillingEntity},
+		Method:                "POST",
+		Path:                  "billing/invoices/{invoice_id}/finalize",
+		PathParams:            []string{invoiceID},
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeBillingEntity},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -77,12 +79,13 @@ func (s *InvoicesService) Finalize(ctx context.Context, invoiceID string, opts .
 func (s *InvoicesService) Pay(ctx context.Context, invoiceID string, body *PayInvoiceRequest, opts ...conjoin.CallOption) (*PayInvoiceResponse, error) {
 	var out PayInvoiceResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "billing/invoices/{invoice_id}/pay",
-		PathParams:   []string{invoiceID},
-		Body:         body,
-		BodyRequired: true,
-		Scopes:       []conjoin.ScopeName{conjoin.ScopeBillingEntity},
+		Method:                "POST",
+		Path:                  "billing/invoices/{invoice_id}/pay",
+		PathParams:            []string{invoiceID},
+		Body:                  body,
+		BodyRequired:          true,
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeBillingEntity},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -92,10 +95,11 @@ func (s *InvoicesService) Pay(ctx context.Context, invoiceID string, body *PayIn
 func (s *InvoicesService) Void(ctx context.Context, invoiceID string, opts ...conjoin.CallOption) (*VoidInvoiceResponse, error) {
 	var out VoidInvoiceResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:     "POST",
-		Path:       "billing/invoices/{invoice_id}/void",
-		PathParams: []string{invoiceID},
-		Scopes:     []conjoin.ScopeName{conjoin.ScopeBillingEntity},
+		Method:                "POST",
+		Path:                  "billing/invoices/{invoice_id}/void",
+		PathParams:            []string{invoiceID},
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeBillingEntity},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -105,12 +109,13 @@ func (s *InvoicesService) Void(ctx context.Context, invoiceID string, opts ...co
 func (s *InvoicesService) PayOutOfBand(ctx context.Context, invoiceID string, body *PayInvoiceOutOfBandRequest, opts ...conjoin.CallOption) (*PayInvoiceOutOfBandResponse, error) {
 	var out PayInvoiceOutOfBandResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "billing/invoices/{invoice_id}/pay-out-of-band",
-		PathParams:   []string{invoiceID},
-		Body:         body,
-		BodyRequired: true,
-		Scopes:       []conjoin.ScopeName{conjoin.ScopeBillingEntity},
+		Method:                "POST",
+		Path:                  "billing/invoices/{invoice_id}/pay-out-of-band",
+		PathParams:            []string{invoiceID},
+		Body:                  body,
+		BodyRequired:          true,
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeBillingEntity},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -120,10 +125,11 @@ func (s *InvoicesService) PayOutOfBand(ctx context.Context, invoiceID string, bo
 func (s *InvoicesService) Send(ctx context.Context, invoiceID string, opts ...conjoin.CallOption) (*SendInvoiceResponse, error) {
 	var out SendInvoiceResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:     "POST",
-		Path:       "billing/invoices/{invoice_id}/send",
-		PathParams: []string{invoiceID},
-		Scopes:     []conjoin.ScopeName{conjoin.ScopeBillingEntity},
+		Method:                "POST",
+		Path:                  "billing/invoices/{invoice_id}/send",
+		PathParams:            []string{invoiceID},
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeBillingEntity},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -133,10 +139,11 @@ func (s *InvoicesService) Send(ctx context.Context, invoiceID string, opts ...co
 func (s *InvoicesService) ExportPdf(ctx context.Context, invoiceID string, opts ...conjoin.CallOption) (*ExportInvoicePdfResponse, error) {
 	var out ExportInvoicePdfResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:     "POST",
-		Path:       "billing/invoices/{invoice_id}/export",
-		PathParams: []string{invoiceID},
-		Scopes:     []conjoin.ScopeName{conjoin.ScopeBillingEntity},
+		Method:                "POST",
+		Path:                  "billing/invoices/{invoice_id}/export",
+		PathParams:            []string{invoiceID},
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeBillingEntity},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}

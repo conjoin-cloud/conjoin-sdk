@@ -23,12 +23,13 @@ func (s *OrganizationMembershipsService) ListMemberships(ctx context.Context, or
 func (s *OrganizationMembershipsService) CreateMembership(ctx context.Context, organizationID string, body *CreateMembershipRequest, opts ...conjoin.CallOption) (*CreateMembershipResponse, error) {
 	var out CreateMembershipResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "auth/organizations/{organization_id}/memberships/",
-		PathParams:   []string{organizationID},
-		Body:         body,
-		BodyRequired: true,
-		Scopes:       []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		Method:                "POST",
+		Path:                  "auth/organizations/{organization_id}/memberships/",
+		PathParams:            []string{organizationID},
+		Body:                  body,
+		BodyRequired:          true,
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -80,12 +81,13 @@ func (s *OrganizationMembershipsService) DeleteMembership(ctx context.Context, o
 func (s *OrganizationMembershipsService) GrantOrgAccountRole(ctx context.Context, organizationID string, membershipID string, body *GrantOrgAccountRoleRequest, opts ...conjoin.CallOption) (*GrantOrgAccountRoleResponse, error) {
 	var out GrantOrgAccountRoleResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "auth/organizations/{organization_id}/memberships/{membership_id}/grant-role",
-		PathParams:   []string{organizationID, membershipID},
-		Body:         body,
-		BodyRequired: true,
-		Scopes:       []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		Method:                "POST",
+		Path:                  "auth/organizations/{organization_id}/memberships/{membership_id}/grant-role",
+		PathParams:            []string{organizationID, membershipID},
+		Body:                  body,
+		BodyRequired:          true,
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -95,12 +97,13 @@ func (s *OrganizationMembershipsService) GrantOrgAccountRole(ctx context.Context
 func (s *OrganizationMembershipsService) RevokeOrgAccountRole(ctx context.Context, organizationID string, membershipID string, body *RevokeOrgAccountRoleRequest, opts ...conjoin.CallOption) (*RevokeOrgAccountRoleResponse, error) {
 	var out RevokeOrgAccountRoleResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "auth/organizations/{organization_id}/memberships/{membership_id}/revoke-role",
-		PathParams:   []string{organizationID, membershipID},
-		Body:         body,
-		BodyRequired: true,
-		Scopes:       []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		Method:                "POST",
+		Path:                  "auth/organizations/{organization_id}/memberships/{membership_id}/revoke-role",
+		PathParams:            []string{organizationID, membershipID},
+		Body:                  body,
+		BodyRequired:          true,
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}

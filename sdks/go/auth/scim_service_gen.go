@@ -13,13 +13,14 @@ type SCIMsService struct {
 func (s *SCIMsService) ScimBulkOperations(ctx context.Context, projectID string, appID string, body *ScimBulkOperationsRequest, opts ...conjoin.CallOption) (*ScimBulkOperationsResponse, error) {
 	var out ScimBulkOperationsResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "auth/scim/v2/{project_id}/{app_id}/Bulk",
-		PathParams:   []string{projectID, appID},
-		Body:         body,
-		BodyRequired: true,
-		Auth:         conjoin.AuthBearerToken,
-		Response:     conjoin.ResponseBody,
+		Method:                "POST",
+		Path:                  "auth/scim/v2/{project_id}/{app_id}/Bulk",
+		PathParams:            []string{projectID, appID},
+		Body:                  body,
+		BodyRequired:          true,
+		AcceptsIdempotencyKey: true,
+		Auth:                  conjoin.AuthBearerToken,
+		Response:              conjoin.ResponseBody,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -43,13 +44,14 @@ func (s *SCIMsService) ScimListGroups(ctx context.Context, projectID string, app
 func (s *SCIMsService) ScimCreateGroup(ctx context.Context, projectID string, appID string, body *ScimCreateGroupRequest, opts ...conjoin.CallOption) (*ScimCreateGroupResponse, error) {
 	var out ScimCreateGroupResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "auth/scim/v2/{project_id}/{app_id}/Groups",
-		PathParams:   []string{projectID, appID},
-		Body:         body,
-		BodyRequired: true,
-		Auth:         conjoin.AuthBearerToken,
-		Response:     conjoin.ResponseBody,
+		Method:                "POST",
+		Path:                  "auth/scim/v2/{project_id}/{app_id}/Groups",
+		PathParams:            []string{projectID, appID},
+		Body:                  body,
+		BodyRequired:          true,
+		AcceptsIdempotencyKey: true,
+		Auth:                  conjoin.AuthBearerToken,
+		Response:              conjoin.ResponseBody,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -168,13 +170,14 @@ func (s *SCIMsService) ScimListUsers(ctx context.Context, projectID string, appI
 func (s *SCIMsService) ScimCreateUser(ctx context.Context, projectID string, appID string, body *ScimCreateUserRequest, opts ...conjoin.CallOption) (*ScimCreateUserResponse, error) {
 	var out ScimCreateUserResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "auth/scim/v2/{project_id}/{app_id}/Users",
-		PathParams:   []string{projectID, appID},
-		Body:         body,
-		BodyRequired: true,
-		Auth:         conjoin.AuthBearerToken,
-		Response:     conjoin.ResponseBody,
+		Method:                "POST",
+		Path:                  "auth/scim/v2/{project_id}/{app_id}/Users",
+		PathParams:            []string{projectID, appID},
+		Body:                  body,
+		BodyRequired:          true,
+		AcceptsIdempotencyKey: true,
+		Auth:                  conjoin.AuthBearerToken,
+		Response:              conjoin.ResponseBody,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}

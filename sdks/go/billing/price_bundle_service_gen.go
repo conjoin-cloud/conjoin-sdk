@@ -23,11 +23,12 @@ func (s *PriceBundlesService) ListActivations(ctx context.Context, query *ListPr
 func (s *PriceBundlesService) Activate(ctx context.Context, body *ActivatePriceBundleRequest, opts ...conjoin.CallOption) (*ActivatePriceBundleResponse, error) {
 	var out ActivatePriceBundleResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "billing/price-bundle-activations/",
-		Body:         body,
-		BodyRequired: true,
-		Scopes:       []conjoin.ScopeName{conjoin.ScopeBillingEntity},
+		Method:                "POST",
+		Path:                  "billing/price-bundle-activations/",
+		Body:                  body,
+		BodyRequired:          true,
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeBillingEntity},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -51,12 +52,13 @@ func (s *PriceBundlesService) ListActivationsCount(ctx context.Context, query *L
 func (s *PriceBundlesService) Deactivate(ctx context.Context, priceBundleActivationID string, body *DeactivatePriceBundleRequest, opts ...conjoin.CallOption) (*DeactivatePriceBundleResponse, error) {
 	var out DeactivatePriceBundleResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "billing/price-bundle-activations/{price_bundle_activation_id}/deactivate",
-		PathParams:   []string{priceBundleActivationID},
-		Body:         body,
-		BodyRequired: true,
-		Scopes:       []conjoin.ScopeName{conjoin.ScopeBillingEntity},
+		Method:                "POST",
+		Path:                  "billing/price-bundle-activations/{price_bundle_activation_id}/deactivate",
+		PathParams:            []string{priceBundleActivationID},
+		Body:                  body,
+		BodyRequired:          true,
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeBillingEntity},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -89,11 +91,12 @@ func (s *PriceBundlesService) List(ctx context.Context, query *ListPriceBundlesQ
 func (s *PriceBundlesService) Create(ctx context.Context, body *CreatePriceBundleRequest, opts ...conjoin.CallOption) (*CreatePriceBundleResponse, error) {
 	var out CreatePriceBundleResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "billing/price-bundles/",
-		Body:         body,
-		BodyRequired: true,
-		Scopes:       []conjoin.ScopeName{conjoin.ScopeBillingEntity},
+		Method:                "POST",
+		Path:                  "billing/price-bundles/",
+		Body:                  body,
+		BodyRequired:          true,
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeBillingEntity},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -144,10 +147,11 @@ func (s *PriceBundlesService) Update(ctx context.Context, priceBundleID string, 
 func (s *PriceBundlesService) Archive(ctx context.Context, priceBundleID string, opts ...conjoin.CallOption) (*ArchivePriceBundleResponse, error) {
 	var out ArchivePriceBundleResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:     "POST",
-		Path:       "billing/price-bundles/{price_bundle_id}/archive",
-		PathParams: []string{priceBundleID},
-		Scopes:     []conjoin.ScopeName{conjoin.ScopeBillingEntity},
+		Method:                "POST",
+		Path:                  "billing/price-bundles/{price_bundle_id}/archive",
+		PathParams:            []string{priceBundleID},
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeBillingEntity},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -157,10 +161,11 @@ func (s *PriceBundlesService) Archive(ctx context.Context, priceBundleID string,
 func (s *PriceBundlesService) Restore(ctx context.Context, priceBundleID string, opts ...conjoin.CallOption) (*RestorePriceBundleResponse, error) {
 	var out RestorePriceBundleResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:     "POST",
-		Path:       "billing/price-bundles/{price_bundle_id}/restore",
-		PathParams: []string{priceBundleID},
-		Scopes:     []conjoin.ScopeName{conjoin.ScopeBillingEntity},
+		Method:                "POST",
+		Path:                  "billing/price-bundles/{price_bundle_id}/restore",
+		PathParams:            []string{priceBundleID},
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeBillingEntity},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -170,10 +175,11 @@ func (s *PriceBundlesService) Restore(ctx context.Context, priceBundleID string,
 func (s *PriceBundlesService) Publish(ctx context.Context, priceBundleID string, opts ...conjoin.CallOption) (*PublishPriceBundleResponse, error) {
 	var out PublishPriceBundleResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:     "POST",
-		Path:       "billing/price-bundles/{price_bundle_id}/publish",
-		PathParams: []string{priceBundleID},
-		Scopes:     []conjoin.ScopeName{conjoin.ScopeBillingEntity},
+		Method:                "POST",
+		Path:                  "billing/price-bundles/{price_bundle_id}/publish",
+		PathParams:            []string{priceBundleID},
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeBillingEntity},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}

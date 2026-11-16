@@ -134,6 +134,10 @@ type ListContainersItem = CreateContainerResponse
 
 type ReadContainerResponse = CreateContainerResponse
 
+type RequestContainerDeletionQuery struct {
+	GracePeriodDays any `json:"grace_period_days,omitzero"`
+}
+
 type RequestContainerDeletionResponse = CreateContainerResponse
 
 type ArchiveContainerResponse = CreateContainerResponse

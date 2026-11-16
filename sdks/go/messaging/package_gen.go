@@ -18,7 +18,6 @@ type Client struct {
 	SMSSenderPools    *SMSSenderPoolsService
 	SMSSenders        *SMSSendersService
 	SMs               *SMsService
-	Segments          *SegmentsService
 	Templates         *TemplatesService
 	Verifications     *VerificationsService
 }
@@ -40,7 +39,6 @@ func New(client *conjoin.Client) *Client {
 		SMSSenderPools:    &SMSSenderPoolsService{client: client},
 		SMSSenders:        &SMSSendersService{client: client},
 		SMs:               &SMsService{client: client},
-		Segments:          &SegmentsService{client: client},
 		Templates:         &TemplatesService{client: client},
 		Verifications:     &VerificationsService{client: client},
 	}

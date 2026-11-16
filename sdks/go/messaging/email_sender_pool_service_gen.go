@@ -13,11 +13,12 @@ type EmailSenderPoolsService struct {
 func (s *EmailSenderPoolsService) Create(ctx context.Context, body *CreateEmailSenderPoolRequest, opts ...conjoin.CallOption) (*CreateEmailSenderPoolResponse, error) {
 	var out CreateEmailSenderPoolResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "messaging/email/sender-pools/",
-		Body:         body,
-		BodyRequired: true,
-		Scopes:       []conjoin.ScopeName{conjoin.ScopeMessagingProfile},
+		Method:                "POST",
+		Path:                  "messaging/email/sender-pools/",
+		Body:                  body,
+		BodyRequired:          true,
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeMessagingProfile},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -27,12 +28,13 @@ func (s *EmailSenderPoolsService) Create(ctx context.Context, body *CreateEmailS
 func (s *EmailSenderPoolsService) AddEmailSendersToPool(ctx context.Context, poolID string, body *AddEmailSendersToPoolRequest, opts ...conjoin.CallOption) (*AddEmailSendersToPoolResponse, error) {
 	var out AddEmailSendersToPoolResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "messaging/email/sender-pools/{pool_id}/senders",
-		PathParams:   []string{poolID},
-		Body:         body,
-		BodyRequired: true,
-		Scopes:       []conjoin.ScopeName{conjoin.ScopeMessagingProfile},
+		Method:                "POST",
+		Path:                  "messaging/email/sender-pools/{pool_id}/senders",
+		PathParams:            []string{poolID},
+		Body:                  body,
+		BodyRequired:          true,
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeMessagingProfile},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}

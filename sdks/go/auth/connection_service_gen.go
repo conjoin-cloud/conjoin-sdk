@@ -26,11 +26,12 @@ func (s *ConnectionsService) ListFirstParty(ctx context.Context, query *ListFirs
 func (s *ConnectionsService) UpsertFirstParty(ctx context.Context, body *UpsertFirstPartyConnectionRequest, opts ...conjoin.CallOption) (*UpsertFirstPartyConnectionResponse, error) {
 	var out UpsertFirstPartyConnectionResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "auth/connection-configs/",
-		Body:         body,
-		BodyRequired: true,
-		Scopes:       []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		Method:                "POST",
+		Path:                  "auth/connection-configs/",
+		Body:                  body,
+		BodyRequired:          true,
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}

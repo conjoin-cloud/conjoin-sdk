@@ -22,11 +22,12 @@ func (s *EntitlementOverridesService) List(ctx context.Context, query *ListEntit
 func (s *EntitlementOverridesService) Create(ctx context.Context, body *CreateEntitlementOverrideRequest, opts ...conjoin.CallOption) (*CreateEntitlementOverrideResponse, error) {
 	var out CreateEntitlementOverrideResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "billing/entitlement-overrides/",
-		Body:         body,
-		BodyRequired: true,
-		Scopes:       []conjoin.ScopeName{conjoin.ScopeBillingEntity},
+		Method:                "POST",
+		Path:                  "billing/entitlement-overrides/",
+		Body:                  body,
+		BodyRequired:          true,
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeBillingEntity},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}

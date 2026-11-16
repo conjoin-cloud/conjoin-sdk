@@ -29,7 +29,16 @@ type documentOperation struct {
 	bodyType     string
 	bodySchema   any
 	queryParams  []jsonObject
+	headerParams []jsonObject
 	requestIDRef *regexp.Regexp
+}
+
+var sdkManagedHeaderNames = map[string]bool{
+	"billing-entity-id":    true,
+	"messaging-profile-id": true,
+	"auth-app-id":          true,
+	"idempotency-key":      true,
+	"conjoin-request-id":   true,
 }
 
 type openAPIDocument struct {
@@ -103,6 +112,9 @@ func (d *openAPIDocument) describe(t *testing.T, method, template string, operat
 		switch parameter["in"] {
 		case "header":
 			described.headers[strings.ToLower(name)] = true
+			if !sdkManagedHeaderNames[strings.ToLower(name)] {
+				described.headerParams = append(described.headerParams, parameter)
+			}
 			if strings.EqualFold(name, "Conjoin-Request-Id") {
 				schema := d.resolve(parameter["schema"])
 				expression, _ := schema["pattern"].(string)

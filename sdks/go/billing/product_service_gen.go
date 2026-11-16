@@ -22,11 +22,12 @@ func (s *ProductsService) List(ctx context.Context, query *ListProductsQuery, op
 func (s *ProductsService) Create(ctx context.Context, body *CreateProductRequest, opts ...conjoin.CallOption) (*CreateProductResponse, error) {
 	var out CreateProductResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "billing/products/",
-		Body:         body,
-		BodyRequired: true,
-		Scopes:       []conjoin.ScopeName{conjoin.ScopeBillingEntity},
+		Method:                "POST",
+		Path:                  "billing/products/",
+		Body:                  body,
+		BodyRequired:          true,
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeBillingEntity},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -91,10 +92,11 @@ func (s *ProductsService) Delete(ctx context.Context, productID string, opts ...
 func (s *ProductsService) Archive(ctx context.Context, productID string, opts ...conjoin.CallOption) (*ArchiveProductResponse, error) {
 	var out ArchiveProductResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:     "POST",
-		Path:       "billing/products/{product_id}/archive",
-		PathParams: []string{productID},
-		Scopes:     []conjoin.ScopeName{conjoin.ScopeBillingEntity},
+		Method:                "POST",
+		Path:                  "billing/products/{product_id}/archive",
+		PathParams:            []string{productID},
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeBillingEntity},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -104,10 +106,11 @@ func (s *ProductsService) Archive(ctx context.Context, productID string, opts ..
 func (s *ProductsService) Restore(ctx context.Context, productID string, opts ...conjoin.CallOption) (*RestoreProductResponse, error) {
 	var out RestoreProductResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:     "POST",
-		Path:       "billing/products/{product_id}/restore",
-		PathParams: []string{productID},
-		Scopes:     []conjoin.ScopeName{conjoin.ScopeBillingEntity},
+		Method:                "POST",
+		Path:                  "billing/products/{product_id}/restore",
+		PathParams:            []string{productID},
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeBillingEntity},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}

@@ -49,6 +49,12 @@ func operationLiteral(op *operation, pathArgs []string, types operationTypes) []
 			fields = append(fields, "Multipart: true,")
 		}
 	}
+	if types.headersParam != "" {
+		fields = append(fields, declaredHeadersLiteral(op.headers))
+	}
+	if op.auth == authSession {
+		fields = append(fields, "SessionToken: sessionToken,")
+	}
 	if len(op.scopes) > 0 {
 		fields = append(fields, "Scopes: []conjoin.ScopeName{"+strings.Join(op.scopes, ", ")+"},")
 	}
@@ -93,12 +99,22 @@ func renderMethod(serviceType string, op *operation, types operationTypes) strin
 	if types.queryParam != "" {
 		params = append(params, "query "+types.queryParam)
 	}
+	if types.headersParam != "" {
+		params = append(params, "headers "+types.headersParam)
+	}
+	if op.auth == authSession {
+		params = append(params, "sessionToken conjoin.Credential")
+	}
 	params = append(params, "opts ...conjoin.CallOption")
 
 	literal := "conjoin.Operation{\n\t\t" + strings.Join(operationLiteral(op, pathArgs, types), "\n\t\t") + "\n\t}"
 	signature := fmt.Sprintf("func (s *%s) %s(%s)", serviceType, op.methodName, strings.Join(params, ", "))
 
 	var builder strings.Builder
+	if types.headersParam != "" {
+		builder.WriteString(renderHeadersType(types.headersParam, op.headers))
+		builder.WriteString("\n")
+	}
 	switch {
 	case op.kind == responseList:
 		fmt.Fprintf(&builder, "%s (*conjoin.Page[%s], error) {\n", signature, types.listItem)

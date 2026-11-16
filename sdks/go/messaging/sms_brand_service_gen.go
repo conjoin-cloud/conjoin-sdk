@@ -13,11 +13,12 @@ type SMSBrandsService struct {
 func (s *SMSBrandsService) CreateSmsBrand(ctx context.Context, body *CreateSmsBrandRequest, opts ...conjoin.CallOption) (*CreateSmsBrandResponse, error) {
 	var out CreateSmsBrandResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "messaging/sms/brands/",
-		Body:         body,
-		BodyRequired: true,
-		Scopes:       []conjoin.ScopeName{conjoin.ScopeMessagingProfile},
+		Method:                "POST",
+		Path:                  "messaging/sms/brands/",
+		Body:                  body,
+		BodyRequired:          true,
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeMessagingProfile},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -67,10 +68,11 @@ func (s *SMSBrandsService) DeleteSmsBrand(ctx context.Context, brandID string, o
 
 func (s *SMSBrandsService) ListSmsBrands(ctx context.Context, body *ListSmsBrandsRequest, opts ...conjoin.CallOption) (*conjoin.Page[ListSmsBrandsItem], error) {
 	return conjoin.List[ListSmsBrandsItem](ctx, s.client, conjoin.Operation{
-		Method:       "POST",
-		Path:         "messaging/sms/brands/retrieve",
-		Body:         body,
-		BodyRequired: true,
-		Scopes:       []conjoin.ScopeName{conjoin.ScopeMessagingProfile},
+		Method:                "POST",
+		Path:                  "messaging/sms/brands/retrieve",
+		Body:                  body,
+		BodyRequired:          true,
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeMessagingProfile},
+		AcceptsIdempotencyKey: true,
 	}, opts...)
 }

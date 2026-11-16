@@ -21,10 +21,11 @@ func (s *SchedulersService) ReadDefinitions(ctx context.Context, query *ReadSche
 func (s *SchedulersService) CreateDefinition(ctx context.Context, body *CreateSchedulerDefinitionRequest, opts ...conjoin.CallOption) (*CreateSchedulerDefinitionResponse, error) {
 	var out CreateSchedulerDefinitionResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "relay/schedules/",
-		Body:         body,
-		BodyRequired: true,
+		Method:                "POST",
+		Path:                  "relay/schedules/",
+		Body:                  body,
+		BodyRequired:          true,
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -78,9 +79,10 @@ func (s *SchedulersService) UpdateDefinition(ctx context.Context, scheduleID str
 func (s *SchedulersService) Pause(ctx context.Context, scheduleID string, opts ...conjoin.CallOption) (*PauseSchedulerResponse, error) {
 	var out PauseSchedulerResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:     "POST",
-		Path:       "relay/schedules/{schedule_id}/pause",
-		PathParams: []string{scheduleID},
+		Method:                "POST",
+		Path:                  "relay/schedules/{schedule_id}/pause",
+		PathParams:            []string{scheduleID},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -90,9 +92,10 @@ func (s *SchedulersService) Pause(ctx context.Context, scheduleID string, opts .
 func (s *SchedulersService) Resume(ctx context.Context, scheduleID string, opts ...conjoin.CallOption) (*ResumeSchedulerResponse, error) {
 	var out ResumeSchedulerResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:     "POST",
-		Path:       "relay/schedules/{schedule_id}/resume",
-		PathParams: []string{scheduleID},
+		Method:                "POST",
+		Path:                  "relay/schedules/{schedule_id}/resume",
+		PathParams:            []string{scheduleID},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -102,9 +105,10 @@ func (s *SchedulersService) Resume(ctx context.Context, scheduleID string, opts 
 func (s *SchedulersService) Cancel(ctx context.Context, scheduleID string, opts ...conjoin.CallOption) (*CancelSchedulerResponse, error) {
 	var out CancelSchedulerResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:     "POST",
-		Path:       "relay/schedules/{schedule_id}/cancel",
-		PathParams: []string{scheduleID},
+		Method:                "POST",
+		Path:                  "relay/schedules/{schedule_id}/cancel",
+		PathParams:            []string{scheduleID},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -114,9 +118,10 @@ func (s *SchedulersService) Cancel(ctx context.Context, scheduleID string, opts 
 func (s *SchedulersService) TriggerExecution(ctx context.Context, scheduleID string, opts ...conjoin.CallOption) (*TriggerSchedulerExecutionResponse, error) {
 	var out TriggerSchedulerExecutionResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:     "POST",
-		Path:       "relay/schedules/{schedule_id}/trigger",
-		PathParams: []string{scheduleID},
+		Method:                "POST",
+		Path:                  "relay/schedules/{schedule_id}/trigger",
+		PathParams:            []string{scheduleID},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -152,9 +157,10 @@ func (s *SchedulersService) ReadDeadLetterEntriesCount(ctx context.Context, sche
 func (s *SchedulersService) ReplayDeadLetterEntry(ctx context.Context, scheduleID string, deadLetterID string, opts ...conjoin.CallOption) (*ReplaySchedulerDeadLetterEntryResponse, error) {
 	var out ReplaySchedulerDeadLetterEntryResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:     "POST",
-		Path:       "relay/schedules/{schedule_id}/dead-letters/{dead_letter_id}/replay",
-		PathParams: []string{scheduleID, deadLetterID},
+		Method:                "POST",
+		Path:                  "relay/schedules/{schedule_id}/dead-letters/{dead_letter_id}/replay",
+		PathParams:            []string{scheduleID, deadLetterID},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}

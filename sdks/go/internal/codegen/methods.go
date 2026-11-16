@@ -66,15 +66,19 @@ func serviceFieldName(group *resourceGroup) string {
 }
 
 type operationTypes struct {
-	bodyParam  string
-	queryParam string
-	result     string
-	resultKind typeKind
-	listItem   string
+	bodyParam    string
+	queryParam   string
+	headersParam string
+	result       string
+	resultKind   typeKind
+	listItem     string
 }
 
 func (b *typeBuilder) operationTypes(op *operation, base string) (operationTypes, error) {
 	var types operationTypes
+	if len(op.headers) > 0 {
+		types.headersParam = b.claimName(base + "Headers")
+	}
 	if op.body != nil {
 		typ, _, err := b.named(op.body, base+"Request")
 		if err != nil {

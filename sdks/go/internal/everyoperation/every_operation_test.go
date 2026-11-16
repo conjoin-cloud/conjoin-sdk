@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"reflect"
+	"strings"
 	"testing"
 
 	conjoin "github.com/conjoin-cloud/conjoin-sdk/sdks/go"
@@ -20,12 +21,33 @@ import (
 )
 
 const (
-	contractAPIKey   = "cak_test_harbourledgerintegration"
-	contractSCIM     = "scim_harbourledger_directory"
-	billingEntity    = "ent_harbourledger"
-	messagingProfile = "mpr_harbourledger"
-	authApp          = "app_harbourledger"
+	contractAPIKey         = "cak_test_harbourledgerintegration"
+	contractPublishableKey = "cpk_test_harbourledgerbrowser"
+	contractSCIM           = "scim_harbourledger_directory"
+	contractSessionToken   = "sess_harbourledger_signedin_owner"
+	contractPortalTicket   = "ptk_harbourledger_portal_ticket"
+	portalTicketHeader     = "x-portal-ticket"
+	portalTicketQueryKey   = "ticket"
+	billingEntity          = "ent_harbourledger"
+	messagingProfile       = "mpr_harbourledger"
+	authApp                = "app_harbourledger"
 )
+
+var expectedAuthorizationByScheme = map[string]string{
+	"conjoinApiKey":         "Bearer " + contractAPIKey,
+	"scimBearer":            "Bearer " + contractSCIM,
+	"conjoinPublishableKey": "Bearer " + contractPublishableKey,
+	"conjoinSessionBearer":  "Bearer " + contractSessionToken,
+}
+
+var credentialType = reflect.TypeFor[conjoin.Credential]()
+
+type callArguments struct {
+	pathValues   []string
+	structArgs   []any
+	headerValues map[string]string
+	sessionToken conjoin.Credential
+}
 
 var scopeHeaders = map[string]string{
 	"billing-entity-id":    billingEntity,
@@ -93,20 +115,68 @@ func pathValue(name string) string {
 	return "ledger/" + name + " 7?#%ä"
 }
 
-func callMethod(method generatedMethod, pathValues []string, structArgs []any, opts []conjoin.CallOption) []reflect.Value {
+func isPathArgument(argumentType reflect.Type) bool {
+	return argumentType.Kind() == reflect.String && argumentType != credentialType
+}
+
+func isHeadersArgument(argumentType reflect.Type) bool {
+	if argumentType.Kind() != reflect.Struct || argumentType.NumField() == 0 {
+		return false
+	}
+	_, isTagged := argumentType.Field(0).Tag.Lookup("header")
+	return isTagged
+}
+
+func headersArgument(argumentType reflect.Type, values map[string]string) reflect.Value {
+	target := reflect.New(argumentType).Elem()
+	for index := range argumentType.NumField() {
+		field := argumentType.Field(index)
+		if value, found := values[strings.ToLower(field.Tag.Get("header"))]; found {
+			target.Field(index).SetString(value)
+		}
+	}
+	return target
+}
+
+func countArguments(method generatedMethod, matches func(reflect.Type) bool) int {
+	count := 0
+	for index := 1; index < method.value.Type().NumIn()-1; index++ {
+		if matches(method.value.Type().In(index)) {
+			count++
+		}
+	}
+	return count
+}
+
+func isSampledArgument(argumentType reflect.Type) bool {
+	return argumentType.Kind() != reflect.String && !isHeadersArgument(argumentType)
+}
+
+func isSessionArgument(argumentType reflect.Type) bool {
+	return argumentType == credentialType
+}
+
+func callMethod(method generatedMethod, call callArguments, opts []conjoin.CallOption) []reflect.Value {
 	methodType := method.value.Type()
 	args := []reflect.Value{reflect.ValueOf(context.Background())}
 	stringIndex, structIndex := 0, 0
 	for index := 1; index < methodType.NumIn()-1; index++ {
 		argumentType := methodType.In(index)
-		if argumentType.Kind() == reflect.String {
-			args = append(args, reflect.ValueOf(pathValues[stringIndex]))
+		switch {
+		case isSessionArgument(argumentType):
+			args = append(args, reflect.ValueOf(call.sessionToken))
+			continue
+		case isPathArgument(argumentType):
+			args = append(args, reflect.ValueOf(call.pathValues[stringIndex]))
 			stringIndex++
+			continue
+		case isHeadersArgument(argumentType):
+			args = append(args, headersArgument(argumentType, call.headerValues))
 			continue
 		}
 		var sample any
-		if structIndex < len(structArgs) {
-			sample = structArgs[structIndex]
+		if structIndex < len(call.structArgs) {
+			sample = call.structArgs[structIndex]
 		}
 		structIndex++
 		value, err := sampleArgument(argumentType, sample)
@@ -122,13 +192,7 @@ func callMethod(method generatedMethod, pathValues []string, structArgs []any, o
 }
 
 func pathArgumentCount(method generatedMethod) int {
-	count := 0
-	for index := 1; index < method.value.Type().NumIn()-1; index++ {
-		if method.value.Type().In(index).Kind() == reflect.String {
-			count++
-		}
-	}
-	return count
+	return countArguments(method, isPathArgument)
 }
 
 func jsonEqual(t *testing.T, got, want any) bool {
@@ -152,8 +216,12 @@ func TestEveryOperationInBothDocuments(t *testing.T) {
 		t.Run(file, func(t *testing.T) {
 			doc := loadDocument(t, file)
 			server := startContractServer(t, doc)
+			key := conjoin.WithAPIKey(contractAPIKey)
+			if file == "openapi-frontend.json" {
+				key = conjoin.WithPublishableKey(contractPublishableKey)
+			}
 			client, err := conjoin.NewClient(
-				conjoin.WithAPIKey(contractAPIKey),
+				key,
 				conjoin.WithBaseURL(server.server.URL),
 				conjoin.WithHTTPClient(&http.Client{Transport: server.transport}),
 				conjoin.WithBillingEntityID(billingEntity),
@@ -192,8 +260,17 @@ func probe(t *testing.T, server *contractServer, method generatedMethod) *docume
 	for index := range pathValues {
 		pathValues[index] = "probe"
 	}
-	results := callMethod(method, pathValues, nil, []conjoin.CallOption{conjoin.WithBearerToken(contractSCIM)})
+	call := callArguments{
+		pathValues:   pathValues,
+		headerValues: map[string]string{portalTicketHeader: contractPortalTicket},
+		sessionToken: contractSessionToken,
+	}
+	results := callMethod(method, call, nil)
 	requests, unmatched := server.take()
+	if len(requests) == 0 && len(unmatched) == 0 {
+		results = callMethod(method, call, []conjoin.CallOption{conjoin.WithBearerToken(contractSCIM)})
+		requests, unmatched = server.take()
+	}
 	if len(requests) != 1 || len(unmatched) != 0 {
 		t.Fatalf("%s reached %d documented routes and %v undocumented ones, and returned %v", method.name, len(requests), unmatched, results[len(results)-1].Interface())
 	}

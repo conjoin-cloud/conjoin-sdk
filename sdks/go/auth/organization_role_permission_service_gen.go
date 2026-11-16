@@ -37,12 +37,13 @@ func (s *OrganizationRolePermissionsService) ListOrgRolePermissionsCount(ctx con
 func (s *OrganizationRolePermissionsService) AssignOrgRolePermission(ctx context.Context, organizationID string, roleID string, body *AssignOrgRolePermissionRequest, opts ...conjoin.CallOption) ([]AssignOrgRolePermissionResponseItem, error) {
 	var out []AssignOrgRolePermissionResponseItem
 	err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "auth/organizations/{organization_id}/roles/{role_id}/assign-permissions",
-		PathParams:   []string{organizationID, roleID},
-		Body:         body,
-		BodyRequired: true,
-		Scopes:       []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		Method:                "POST",
+		Path:                  "auth/organizations/{organization_id}/roles/{role_id}/assign-permissions",
+		PathParams:            []string{organizationID, roleID},
+		Body:                  body,
+		BodyRequired:          true,
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...)
 	return out, err
 }
@@ -50,12 +51,13 @@ func (s *OrganizationRolePermissionsService) AssignOrgRolePermission(ctx context
 func (s *OrganizationRolePermissionsService) RemoveRolePermission(ctx context.Context, organizationID string, roleID string, body *RemoveRolePermissionRequest, opts ...conjoin.CallOption) (*RemoveRolePermissionResponse, error) {
 	var out RemoveRolePermissionResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "auth/organizations/{organization_id}/roles/{role_id}/remove-permissions",
-		PathParams:   []string{organizationID, roleID},
-		Body:         body,
-		BodyRequired: true,
-		Scopes:       []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		Method:                "POST",
+		Path:                  "auth/organizations/{organization_id}/roles/{role_id}/remove-permissions",
+		PathParams:            []string{organizationID, roleID},
+		Body:                  body,
+		BodyRequired:          true,
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}

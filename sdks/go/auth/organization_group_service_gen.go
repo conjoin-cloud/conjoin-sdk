@@ -23,12 +23,13 @@ func (s *OrganizationGroupsService) ListGroups(ctx context.Context, organization
 func (s *OrganizationGroupsService) CreateGroup(ctx context.Context, organizationID string, body *CreateGroupRequest, opts ...conjoin.CallOption) (*CreateGroupResponse, error) {
 	var out CreateGroupResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "auth/organizations/{organization_id}/groups/",
-		PathParams:   []string{organizationID},
-		Body:         body,
-		BodyRequired: true,
-		Scopes:       []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		Method:                "POST",
+		Path:                  "auth/organizations/{organization_id}/groups/",
+		PathParams:            []string{organizationID},
+		Body:                  body,
+		BodyRequired:          true,
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -104,12 +105,13 @@ func (s *OrganizationGroupsService) DeleteGroup(ctx context.Context, organizatio
 func (s *OrganizationGroupsService) AddGroupMember(ctx context.Context, organizationID string, groupID string, body *AddGroupMemberRequest, opts ...conjoin.CallOption) (*AddGroupMemberResponse, error) {
 	var out AddGroupMemberResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "auth/organizations/{organization_id}/groups/{group_id}/add-members",
-		PathParams:   []string{organizationID, groupID},
-		Body:         body,
-		BodyRequired: true,
-		Scopes:       []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		Method:                "POST",
+		Path:                  "auth/organizations/{organization_id}/groups/{group_id}/add-members",
+		PathParams:            []string{organizationID, groupID},
+		Body:                  body,
+		BodyRequired:          true,
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -119,12 +121,13 @@ func (s *OrganizationGroupsService) AddGroupMember(ctx context.Context, organiza
 func (s *OrganizationGroupsService) RemoveGroupMember(ctx context.Context, organizationID string, groupID string, body *RemoveGroupMemberRequest, opts ...conjoin.CallOption) (*RemoveGroupMemberResponse, error) {
 	var out RemoveGroupMemberResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "auth/organizations/{organization_id}/groups/{group_id}/remove-members",
-		PathParams:   []string{organizationID, groupID},
-		Body:         body,
-		BodyRequired: true,
-		Scopes:       []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		Method:                "POST",
+		Path:                  "auth/organizations/{organization_id}/groups/{group_id}/remove-members",
+		PathParams:            []string{organizationID, groupID},
+		Body:                  body,
+		BodyRequired:          true,
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -134,12 +137,13 @@ func (s *OrganizationGroupsService) RemoveGroupMember(ctx context.Context, organ
 func (s *OrganizationGroupsService) BulkSyncGroupMembers(ctx context.Context, organizationID string, groupID string, body *BulkSyncGroupMembersRequest, opts ...conjoin.CallOption) (*BulkSyncGroupMembersResponse, error) {
 	var out BulkSyncGroupMembersResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "auth/organizations/{organization_id}/groups/{group_id}/sync-members",
-		PathParams:   []string{organizationID, groupID},
-		Body:         body,
-		BodyRequired: true,
-		Scopes:       []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		Method:                "POST",
+		Path:                  "auth/organizations/{organization_id}/groups/{group_id}/sync-members",
+		PathParams:            []string{organizationID, groupID},
+		Body:                  body,
+		BodyRequired:          true,
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}

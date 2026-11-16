@@ -22,11 +22,12 @@ func (s *ClientsService) List(ctx context.Context, query *ListClientsQuery, opts
 func (s *ClientsService) Create(ctx context.Context, body *CreateClientRequest, opts ...conjoin.CallOption) (*CreateClientResponse, error) {
 	var out CreateClientResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "auth/clients/",
-		Body:         body,
-		BodyRequired: true,
-		Scopes:       []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		Method:                "POST",
+		Path:                  "auth/clients/",
+		Body:                  body,
+		BodyRequired:          true,
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeAuthApp},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}

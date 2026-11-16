@@ -13,11 +13,12 @@ type SMSSendersService struct {
 func (s *SMSSendersService) CreateSmsSender(ctx context.Context, body *CreateSmsSenderRequest, opts ...conjoin.CallOption) (*CreateSmsSenderResponse, error) {
 	var out CreateSmsSenderResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "messaging/sms/senders/",
-		Body:         body,
-		BodyRequired: true,
-		Scopes:       []conjoin.ScopeName{conjoin.ScopeMessagingProfile},
+		Method:                "POST",
+		Path:                  "messaging/sms/senders/",
+		Body:                  body,
+		BodyRequired:          true,
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeMessagingProfile},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -76,13 +77,15 @@ func (s *SMSSendersService) DeleteSmsSender(ctx context.Context, senderID string
 	return &out, nil
 }
 
-func (s *SMSSendersService) UpdateOneSmsSender(ctx context.Context, senderID string, opts ...conjoin.CallOption) (*UpdateOneSmsSenderResponse, error) {
+func (s *SMSSendersService) UpdateOneSmsSender(ctx context.Context, senderID string, body *UpdateOneSmsSenderRequest, opts ...conjoin.CallOption) (*UpdateOneSmsSenderResponse, error) {
 	var out UpdateOneSmsSenderResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:     "PATCH",
-		Path:       "messaging/sms/senders/{sender_id}",
-		PathParams: []string{senderID},
-		Scopes:     []conjoin.ScopeName{conjoin.ScopeMessagingProfile},
+		Method:       "PATCH",
+		Path:         "messaging/sms/senders/{sender_id}",
+		PathParams:   []string{senderID},
+		Body:         body,
+		BodyRequired: true,
+		Scopes:       []conjoin.ScopeName{conjoin.ScopeMessagingProfile},
 	}, &out, opts...); err != nil {
 		return nil, err
 	}

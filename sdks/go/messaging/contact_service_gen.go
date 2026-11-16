@@ -13,11 +13,12 @@ type ContactsService struct {
 func (s *ContactsService) Create(ctx context.Context, body *CreateContactRequest, opts ...conjoin.CallOption) (*CreateContactResponse, error) {
 	var out CreateContactResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "messaging/contacts/",
-		Body:         body,
-		BodyRequired: true,
-		Scopes:       []conjoin.ScopeName{conjoin.ScopeMessagingProfile},
+		Method:                "POST",
+		Path:                  "messaging/contacts/",
+		Body:                  body,
+		BodyRequired:          true,
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeMessagingProfile},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -69,47 +70,55 @@ func (s *ContactsService) Delete(ctx context.Context, contactID string, opts ...
 
 func (s *ContactsService) List(ctx context.Context, body *ListContactsRequest, opts ...conjoin.CallOption) (*conjoin.Page[ListContactsItem], error) {
 	return conjoin.List[ListContactsItem](ctx, s.client, conjoin.Operation{
-		Method:       "POST",
-		Path:         "messaging/contacts/retrieve",
-		Body:         body,
-		BodyRequired: true,
-		Scopes:       []conjoin.ScopeName{conjoin.ScopeMessagingProfile},
+		Method:                "POST",
+		Path:                  "messaging/contacts/retrieve",
+		Body:                  body,
+		BodyRequired:          true,
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeMessagingProfile},
+		AcceptsIdempotencyKey: true,
 	}, opts...)
 }
 
-func (s *ContactsService) AddProperties(ctx context.Context, contactID string, opts ...conjoin.CallOption) (*AddContactPropertiesResponse, error) {
+func (s *ContactsService) AddProperties(ctx context.Context, contactID string, body *AddContactPropertiesRequest, opts ...conjoin.CallOption) (*AddContactPropertiesResponse, error) {
 	var out AddContactPropertiesResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:     "PUT",
-		Path:       "messaging/contacts/{contact_id}/properties",
-		PathParams: []string{contactID},
-		Scopes:     []conjoin.ScopeName{conjoin.ScopeMessagingProfile},
+		Method:       "PUT",
+		Path:         "messaging/contacts/{contact_id}/properties",
+		PathParams:   []string{contactID},
+		Body:         body,
+		BodyRequired: true,
+		Scopes:       []conjoin.ScopeName{conjoin.ScopeMessagingProfile},
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
 	return &out, nil
 }
 
-func (s *ContactsService) UpdateProperty(ctx context.Context, contactID string, opts ...conjoin.CallOption) (*UpdateContactPropertyResponse, error) {
+func (s *ContactsService) UpdateProperty(ctx context.Context, contactID string, body *UpdateContactPropertyRequest, opts ...conjoin.CallOption) (*UpdateContactPropertyResponse, error) {
 	var out UpdateContactPropertyResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:     "PATCH",
-		Path:       "messaging/contacts/{contact_id}/properties",
-		PathParams: []string{contactID},
-		Scopes:     []conjoin.ScopeName{conjoin.ScopeMessagingProfile},
+		Method:       "PATCH",
+		Path:         "messaging/contacts/{contact_id}/properties",
+		PathParams:   []string{contactID},
+		Body:         body,
+		BodyRequired: true,
+		Scopes:       []conjoin.ScopeName{conjoin.ScopeMessagingProfile},
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
 	return &out, nil
 }
 
-func (s *ContactsService) DeleteProperties(ctx context.Context, contactID string, opts ...conjoin.CallOption) (*DeleteContactPropertiesResponse, error) {
+func (s *ContactsService) DeleteProperties(ctx context.Context, contactID string, body *DeleteContactPropertiesRequest, opts ...conjoin.CallOption) (*DeleteContactPropertiesResponse, error) {
 	var out DeleteContactPropertiesResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:     "DELETE",
-		Path:       "messaging/contacts/{contact_id}/properties",
-		PathParams: []string{contactID},
-		Scopes:     []conjoin.ScopeName{conjoin.ScopeMessagingProfile},
+		Method:                "POST",
+		Path:                  "messaging/contacts/{contact_id}/properties/remove",
+		PathParams:            []string{contactID},
+		Body:                  body,
+		BodyRequired:          true,
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeMessagingProfile},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}

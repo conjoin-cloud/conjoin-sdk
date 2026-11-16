@@ -13,10 +13,11 @@ type InferencesService struct {
 func (s *InferencesService) CreateChatCompletion(ctx context.Context, body *CreateChatCompletionRequest, opts ...conjoin.CallOption) (*CreateChatCompletionResponse, error) {
 	var out CreateChatCompletionResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "ai/inference/chat/completions",
-		Body:         body,
-		BodyRequired: true,
+		Method:                "POST",
+		Path:                  "ai/inference/chat/completions",
+		Body:                  body,
+		BodyRequired:          true,
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -26,10 +27,11 @@ func (s *InferencesService) CreateChatCompletion(ctx context.Context, body *Crea
 func (s *InferencesService) CreateAiMultiModel(ctx context.Context, body *CreateMultiModelInferenceRequest, opts ...conjoin.CallOption) (*CreateMultiModelInferenceResponse, error) {
 	var out CreateMultiModelInferenceResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "ai/inference/multi-model",
-		Body:         body,
-		BodyRequired: true,
+		Method:                "POST",
+		Path:                  "ai/inference/multi-model",
+		Body:                  body,
+		BodyRequired:          true,
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -39,10 +41,11 @@ func (s *InferencesService) CreateAiMultiModel(ctx context.Context, body *Create
 func (s *InferencesService) CreateAiBestOfN(ctx context.Context, body *CreateBestOfNInferenceRequest, opts ...conjoin.CallOption) (*CreateBestOfNInferenceResponse, error) {
 	var out CreateBestOfNInferenceResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "POST",
-		Path:         "ai/inference/best-of-n",
-		Body:         body,
-		BodyRequired: true,
+		Method:                "POST",
+		Path:                  "ai/inference/best-of-n",
+		Body:                  body,
+		BodyRequired:          true,
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}

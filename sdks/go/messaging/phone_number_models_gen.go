@@ -22,14 +22,13 @@ type PurchasePhoneNumberRequest struct {
 	MessageType    *string                             `json:"message_type,omitzero"`
 	CountryIsoCode string                              `json:"country_iso_code"`
 	Features       *PurchasePhoneNumberRequestFeatures `json:"features,omitzero"`
-	PhoneNumber    string                              `json:"phone_number"`
-	Config         PurchasePhoneNumberRequestConfig    `json:"config"`
-	CallbackURL    string                              `json:"callback_url"`
+	Config         *PurchasePhoneNumberRequestConfig   `json:"config,omitzero"`
+	CallbackURL    *string                             `json:"callback_url,omitzero"`
 }
 
 type PurchasePhoneNumberResponsePrice struct {
-	Amount       float64 `json:"amount"`
-	CurrencyCode string  `json:"currency_code"`
+	Amount       string `json:"amount"`
+	CurrencyCode string `json:"currency_code"`
 }
 
 type PurchasePhoneNumberResponse struct {
@@ -60,7 +59,7 @@ type UpdatePhoneNumberResponse = PurchasePhoneNumberResponse
 
 type ListAvailablePhoneNumbersQueryQuery struct {
 	Type       *string `json:"type,omitzero"`
-	RegionCode string  `json:"region_code"`
+	RegionCode *string `json:"region_code,omitzero"`
 }
 
 type ListAvailablePhoneNumbersQuery struct {
@@ -68,7 +67,28 @@ type ListAvailablePhoneNumbersQuery struct {
 	Limit any                                  `json:"limit,omitzero"`
 }
 
-type ListAvailablePhoneNumbersItem = PurchasePhoneNumberResponse
+type ListAvailablePhoneNumbersItemCapabilities struct {
+	SMS   *bool `json:"sms,omitzero"`
+	Mms   *bool `json:"mms,omitzero"`
+	Voice *bool `json:"voice,omitzero"`
+}
+
+type ListAvailablePhoneNumbersItemRecurringCharge struct {
+	Amount           string  `json:"amount"`
+	CurrencyCode     string  `json:"currency_code"`
+	DurationType     string  `json:"duration_type"`
+	DurationQuantity float64 `json:"duration_quantity"`
+}
+
+type ListAvailablePhoneNumbersItem struct {
+	Type                        string                                       `json:"type"`
+	PhoneNumber                 string                                       `json:"phone_number"`
+	CountryIsoCode              string                                       `json:"country_iso_code"`
+	Capabilities                ListAvailablePhoneNumbersItemCapabilities    `json:"capabilities"`
+	Price                       PurchasePhoneNumberResponsePrice             `json:"price"`
+	RecurringCharge             ListAvailablePhoneNumbersItemRecurringCharge `json:"recurring_charge"`
+	RequiresSupportingDocuments bool                                         `json:"requires_supporting_documents"`
+}
 
 type ListPhoneNumbersQueryQueryType struct {
 	IsEmpty                   *bool    `json:"is_empty,omitzero"`
@@ -87,12 +107,12 @@ type ListPhoneNumbersQueryQuery struct {
 }
 
 type ListPhoneNumbersQuery struct {
-	Filter map[string]bool             `json:"filter,omitzero"`
-	Cursor *ListContactsRequestCursor  `json:"cursor,omitzero"`
-	Query  *ListPhoneNumbersQueryQuery `json:"query,omitzero"`
-	Search *ListContactsRequestSearch  `json:"search,omitzero"`
-	Sort   map[string]string           `json:"sort,omitzero"`
-	Limit  any                         `json:"limit,omitzero"`
+	Filter map[string]bool                    `json:"filter,omitzero"`
+	Cursor *ListChannelAnalyticsRequestCursor `json:"cursor,omitzero"`
+	Query  *ListPhoneNumbersQueryQuery        `json:"query,omitzero"`
+	Search *ListContactsRequestSearch         `json:"search,omitzero"`
+	Sort   map[string]string                  `json:"sort,omitzero"`
+	Limit  any                                `json:"limit,omitzero"`
 }
 
 type ListPhoneNumbersItem = PurchasePhoneNumberResponse
