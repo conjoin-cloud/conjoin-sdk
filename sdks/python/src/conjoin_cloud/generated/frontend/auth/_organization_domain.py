@@ -3,6 +3,8 @@ from __future__ import annotations
 from collections.abc import Mapping
 from typing import TYPE_CHECKING, Any
 
+from conjoin_cloud._credential import Credential
+from conjoin_cloud._declared_headers import DeclaredHeader
 from conjoin_cloud._request_options import AUTH_NONE, RequestOptions
 from conjoin_cloud.generated.frontend._models import (
     AuthOrganizationDomainVerifySsoPortalDomainRequest,
@@ -21,6 +23,7 @@ class AuthOrganizationDomainsResource:
         self,
         data: AuthOrganizationDomainVerifySsoPortalDomainRequest,
         *,
+        portal_ticket: Credential,
         request_options: RequestOptions | Mapping[str, Any] | None = None,
     ) -> AuthOrganizationDomainVerifySsoPortalDomainResponse:
         return self._client.request(
@@ -30,6 +33,15 @@ class AuthOrganizationDomainsResource:
             cast_to=AuthOrganizationDomainVerifySsoPortalDomainResponse,
             request_options=request_options,
             default_auth=AUTH_NONE,
+            declared_headers=(
+                DeclaredHeader(
+                    name='x-portal-ticket',
+                    argument='portal_ticket',
+                    value=portal_ticket,
+                    required=True,
+                    credential=True,
+                ),
+            ),
         )
 
 
@@ -41,6 +53,7 @@ class AsyncAuthOrganizationDomainsResource:
         self,
         data: AuthOrganizationDomainVerifySsoPortalDomainRequest,
         *,
+        portal_ticket: Credential,
         request_options: RequestOptions | Mapping[str, Any] | None = None,
     ) -> AuthOrganizationDomainVerifySsoPortalDomainResponse:
         return await self._client.request(
@@ -50,4 +63,13 @@ class AsyncAuthOrganizationDomainsResource:
             cast_to=AuthOrganizationDomainVerifySsoPortalDomainResponse,
             request_options=request_options,
             default_auth=AUTH_NONE,
+            declared_headers=(
+                DeclaredHeader(
+                    name='x-portal-ticket',
+                    argument='portal_ticket',
+                    value=portal_ticket,
+                    required=True,
+                    credential=True,
+                ),
+            ),
         )

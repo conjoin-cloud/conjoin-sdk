@@ -8,7 +8,8 @@ from conjoin_cloud._request_options import RequestOptions
 from conjoin_cloud._url import encode_path_param
 from conjoin_cloud._wire import wire_names
 from conjoin_cloud.generated._models import (
-    MessagingSMSGetSmsSummaryResponse,
+    MessagingSMSGenerateSmsSummaryRequest,
+    MessagingSMSGenerateSmsSummaryResponse,
     MessagingSMSReadSmsMessagesItem,
     MessagingSMSReadSmsMessagesRequest,
     MessagingSMSSendSmsRequest,
@@ -41,6 +42,7 @@ class MessagingSMsResource:
             cast_to=MessagingSMSSendSmsResponse,
             request_options=request_options,
             scopes=('messaging_profile_id',),
+            accepts_idempotency_key=True,
         )
 
     def read_sms_messages(
@@ -57,19 +59,23 @@ class MessagingSMsResource:
             cast_to=Page[MessagingSMSReadSmsMessagesItem],
             request_options=request_options,
             scopes=('messaging_profile_id',),
+            accepts_idempotency_key=True,
         )
 
-    def get_sms_summary(
+    def generate_sms_summary(
         self,
+        data: MessagingSMSGenerateSmsSummaryRequest,
         *,
         request_options: RequestOptions | Mapping[str, Any] | None = None,
-    ) -> MessagingSMSGetSmsSummaryResponse:
+    ) -> MessagingSMSGenerateSmsSummaryResponse:
         return self._client.request(
-            'GET',
+            'POST',
             'messaging/sms/summary',
-            cast_to=MessagingSMSGetSmsSummaryResponse,
+            body=data,
+            cast_to=MessagingSMSGenerateSmsSummaryResponse,
             request_options=request_options,
             scopes=('messaging_profile_id',),
+            accepts_idempotency_key=True,
         )
 
 
@@ -90,6 +96,7 @@ class AsyncMessagingSMsResource:
             cast_to=MessagingSMSSendSmsResponse,
             request_options=request_options,
             scopes=('messaging_profile_id',),
+            accepts_idempotency_key=True,
         )
 
     async def read_sms_messages(
@@ -106,17 +113,21 @@ class AsyncMessagingSMsResource:
             cast_to=AsyncPage[MessagingSMSReadSmsMessagesItem],
             request_options=request_options,
             scopes=('messaging_profile_id',),
+            accepts_idempotency_key=True,
         )
 
-    async def get_sms_summary(
+    async def generate_sms_summary(
         self,
+        data: MessagingSMSGenerateSmsSummaryRequest,
         *,
         request_options: RequestOptions | Mapping[str, Any] | None = None,
-    ) -> MessagingSMSGetSmsSummaryResponse:
+    ) -> MessagingSMSGenerateSmsSummaryResponse:
         return await self._client.request(
-            'GET',
+            'POST',
             'messaging/sms/summary',
-            cast_to=MessagingSMSGetSmsSummaryResponse,
+            body=data,
+            cast_to=MessagingSMSGenerateSmsSummaryResponse,
             request_options=request_options,
             scopes=('messaging_profile_id',),
+            accepts_idempotency_key=True,
         )

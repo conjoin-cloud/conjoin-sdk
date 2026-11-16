@@ -57,6 +57,7 @@ class BillingPricesResource:
             cast_to=BillingPriceCreateResponse,
             request_options=request_options,
             scopes=('billing_entity_id',),
+            accepts_idempotency_key=True,
         )
 
     def list_count(
@@ -131,6 +132,7 @@ class BillingPricesResource:
             cast_to=BillingPriceArchiveResponse,
             request_options=request_options,
             scopes=('billing_entity_id',),
+            accepts_idempotency_key=True,
         )
 
     def restore(
@@ -145,6 +147,7 @@ class BillingPricesResource:
             cast_to=BillingPriceRestoreResponse,
             request_options=request_options,
             scopes=('billing_entity_id',),
+            accepts_idempotency_key=True,
         )
 
 
@@ -180,6 +183,7 @@ class AsyncBillingPricesResource:
             cast_to=BillingPriceCreateResponse,
             request_options=request_options,
             scopes=('billing_entity_id',),
+            accepts_idempotency_key=True,
         )
 
     async def list_count(
@@ -254,6 +258,7 @@ class AsyncBillingPricesResource:
             cast_to=BillingPriceArchiveResponse,
             request_options=request_options,
             scopes=('billing_entity_id',),
+            accepts_idempotency_key=True,
         )
 
     async def restore(
@@ -268,4 +273,5 @@ class AsyncBillingPricesResource:
             cast_to=BillingPriceRestoreResponse,
             request_options=request_options,
             scopes=('billing_entity_id',),
+            accepts_idempotency_key=True,
         )

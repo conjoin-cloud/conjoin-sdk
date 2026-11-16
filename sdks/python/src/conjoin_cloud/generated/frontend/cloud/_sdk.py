@@ -3,7 +3,7 @@ from __future__ import annotations
 from collections.abc import Mapping
 from typing import TYPE_CHECKING, Any
 
-from conjoin_cloud._request_options import AUTH_NONE, RequestOptions
+from conjoin_cloud._request_options import AUTH_PUBLISHABLE_KEY, RequestOptions
 from conjoin_cloud.generated.frontend._models import (
     CloudSDKReadSdkSettingsResponse,
 )
@@ -26,7 +26,7 @@ class CloudSDKsResource:
             'cloud/client/settings/',
             cast_to=CloudSDKReadSdkSettingsResponse,
             request_options=request_options,
-            default_auth=AUTH_NONE,
+            default_auth=AUTH_PUBLISHABLE_KEY,
         )
 
 
@@ -44,5 +44,5 @@ class AsyncCloudSDKsResource:
             'cloud/client/settings/',
             cast_to=CloudSDKReadSdkSettingsResponse,
             request_options=request_options,
-            default_auth=AUTH_NONE,
+            default_auth=AUTH_PUBLISHABLE_KEY,
         )

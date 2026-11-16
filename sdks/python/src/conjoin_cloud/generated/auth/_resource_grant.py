@@ -57,6 +57,7 @@ class AuthResourceGrantsResource:
             cast_to=AuthResourceGrantGrantResourcePermissionResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     def check_resource_permission(
@@ -73,6 +74,7 @@ class AuthResourceGrantsResource:
             cast_to=AuthResourceGrantCheckResourcePermissionResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     def list_count(
@@ -109,6 +111,7 @@ class AuthResourceGrantsResource:
             cast_to=AuthResourceGrantRevokeResourcePermissionResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
 
@@ -146,6 +149,7 @@ class AsyncAuthResourceGrantsResource:
             cast_to=AuthResourceGrantGrantResourcePermissionResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     async def check_resource_permission(
@@ -162,6 +166,7 @@ class AsyncAuthResourceGrantsResource:
             cast_to=AuthResourceGrantCheckResourcePermissionResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     async def list_count(
@@ -198,4 +203,5 @@ class AsyncAuthResourceGrantsResource:
             cast_to=AuthResourceGrantRevokeResourcePermissionResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )

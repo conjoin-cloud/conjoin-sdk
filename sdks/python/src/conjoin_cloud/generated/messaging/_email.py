@@ -9,7 +9,8 @@ from conjoin_cloud._request_options import RequestOptions
 from conjoin_cloud._url import encode_path_param
 from conjoin_cloud._wire import wire_names
 from conjoin_cloud.generated._models import (
-    MessagingEmailGetSummaryResponse,
+    MessagingEmailGenerateSummaryRequest,
+    MessagingEmailGenerateSummaryResponse,
     MessagingEmailReadMessagesItem,
     MessagingEmailReadMessagesRequest,
     MessagingEmailSendRequest,
@@ -42,6 +43,7 @@ class MessagingEmailsResource:
             cast_to=MessagingEmailSendResponse,
             request_options=request_options,
             scopes=('messaging_profile_id',),
+            accepts_idempotency_key=True,
         )
 
     def read_messages(
@@ -58,19 +60,23 @@ class MessagingEmailsResource:
             cast_to=Page[MessagingEmailReadMessagesItem],
             request_options=request_options,
             scopes=('messaging_profile_id',),
+            accepts_idempotency_key=True,
         )
 
-    def get_summary(
+    def generate_summary(
         self,
+        data: MessagingEmailGenerateSummaryRequest,
         *,
         request_options: RequestOptions | Mapping[str, Any] | None = None,
-    ) -> MessagingEmailGetSummaryResponse:
+    ) -> MessagingEmailGenerateSummaryResponse:
         return self._client.request(
-            'GET',
+            'POST',
             'messaging/email/summary',
-            cast_to=MessagingEmailGetSummaryResponse,
+            body=data,
+            cast_to=MessagingEmailGenerateSummaryResponse,
             request_options=request_options,
             scopes=('messaging_profile_id',),
+            accepts_idempotency_key=True,
         )
 
 
@@ -91,6 +97,7 @@ class AsyncMessagingEmailsResource:
             cast_to=MessagingEmailSendResponse,
             request_options=request_options,
             scopes=('messaging_profile_id',),
+            accepts_idempotency_key=True,
         )
 
     async def read_messages(
@@ -107,17 +114,21 @@ class AsyncMessagingEmailsResource:
             cast_to=AsyncPage[MessagingEmailReadMessagesItem],
             request_options=request_options,
             scopes=('messaging_profile_id',),
+            accepts_idempotency_key=True,
         )
 
-    async def get_summary(
+    async def generate_summary(
         self,
+        data: MessagingEmailGenerateSummaryRequest,
         *,
         request_options: RequestOptions | Mapping[str, Any] | None = None,
-    ) -> MessagingEmailGetSummaryResponse:
+    ) -> MessagingEmailGenerateSummaryResponse:
         return await self._client.request(
-            'GET',
+            'POST',
             'messaging/email/summary',
-            cast_to=MessagingEmailGetSummaryResponse,
+            body=data,
+            cast_to=MessagingEmailGenerateSummaryResponse,
             request_options=request_options,
             scopes=('messaging_profile_id',),
+            accepts_idempotency_key=True,
         )

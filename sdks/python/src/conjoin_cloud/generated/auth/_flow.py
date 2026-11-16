@@ -44,6 +44,7 @@ class AuthFlowsResource:
             cast_to=AuthFlowStartSignupResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     def complete_signup(
@@ -60,6 +61,7 @@ class AuthFlowsResource:
             cast_to=AuthFlowCompleteSignupResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     def confirm_link_signup(
@@ -76,6 +78,7 @@ class AuthFlowsResource:
             cast_to=AuthFlowConfirmLinkSignupResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     def start_signin(
@@ -92,6 +95,7 @@ class AuthFlowsResource:
             cast_to=AuthFlowStartSigninResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     def complete_signin(
@@ -108,6 +112,7 @@ class AuthFlowsResource:
             cast_to=AuthFlowCompleteSigninResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     def start_password_reset(
@@ -124,6 +129,7 @@ class AuthFlowsResource:
             cast_to=AuthFlowStartPasswordResetResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     def complete_password_reset(
@@ -140,6 +146,7 @@ class AuthFlowsResource:
             cast_to=AuthFlowCompletePasswordResetResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
 
@@ -161,6 +168,7 @@ class AsyncAuthFlowsResource:
             cast_to=AuthFlowStartSignupResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     async def complete_signup(
@@ -177,6 +185,7 @@ class AsyncAuthFlowsResource:
             cast_to=AuthFlowCompleteSignupResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     async def confirm_link_signup(
@@ -193,6 +202,7 @@ class AsyncAuthFlowsResource:
             cast_to=AuthFlowConfirmLinkSignupResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     async def start_signin(
@@ -209,6 +219,7 @@ class AsyncAuthFlowsResource:
             cast_to=AuthFlowStartSigninResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     async def complete_signin(
@@ -225,6 +236,7 @@ class AsyncAuthFlowsResource:
             cast_to=AuthFlowCompleteSigninResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     async def start_password_reset(
@@ -241,6 +253,7 @@ class AsyncAuthFlowsResource:
             cast_to=AuthFlowStartPasswordResetResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     async def complete_password_reset(
@@ -257,4 +270,5 @@ class AsyncAuthFlowsResource:
             cast_to=AuthFlowCompletePasswordResetResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )

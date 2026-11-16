@@ -38,6 +38,7 @@ class AiInferencesResource:
             body=data,
             cast_to=AiInferenceCreateChatCompletionResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     def create_ai_multi_model(
@@ -52,6 +53,7 @@ class AiInferencesResource:
             body=data,
             cast_to=AiInferenceCreateAiMultiModelResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     def create_ai_best_of_n(
@@ -66,6 +68,7 @@ class AiInferencesResource:
             body=data,
             cast_to=AiInferenceCreateAiBestOfNResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     def list_requests(
@@ -112,6 +115,7 @@ class AsyncAiInferencesResource:
             body=data,
             cast_to=AiInferenceCreateChatCompletionResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     async def create_ai_multi_model(
@@ -126,6 +130,7 @@ class AsyncAiInferencesResource:
             body=data,
             cast_to=AiInferenceCreateAiMultiModelResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     async def create_ai_best_of_n(
@@ -140,6 +145,7 @@ class AsyncAiInferencesResource:
             body=data,
             cast_to=AiInferenceCreateAiBestOfNResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     async def list_requests(

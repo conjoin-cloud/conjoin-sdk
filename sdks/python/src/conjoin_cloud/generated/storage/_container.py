@@ -16,6 +16,7 @@ from conjoin_cloud.generated._models import (
     StorageContainerListItem,
     StorageContainerListQuery,
     StorageContainerReadResponse,
+    StorageContainerRequestDeletionQuery,
     StorageContainerRequestDeletionResponse,
     StorageContainerRestoreResponse,
     StorageContainerUpdateLifecyclePolicyRequest,
@@ -60,6 +61,7 @@ class StorageContainersResource:
             body=data,
             cast_to=StorageContainerCreateResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     def read(
@@ -78,12 +80,14 @@ class StorageContainersResource:
     def request_deletion(
         self,
         container_name_or_id: str,
+        query: StorageContainerRequestDeletionQuery | None = None,
         *,
         request_options: RequestOptions | Mapping[str, Any] | None = None,
     ) -> StorageContainerRequestDeletionResponse:
         return self._client.request(
             'DELETE',
             f'storage/storage-container/{encode_path_param(container_name_or_id)}',
+            query=query,
             cast_to=StorageContainerRequestDeletionResponse,
             request_options=request_options,
         )
@@ -221,6 +225,7 @@ class AsyncStorageContainersResource:
             body=data,
             cast_to=StorageContainerCreateResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     async def read(
@@ -239,12 +244,14 @@ class AsyncStorageContainersResource:
     async def request_deletion(
         self,
         container_name_or_id: str,
+        query: StorageContainerRequestDeletionQuery | None = None,
         *,
         request_options: RequestOptions | Mapping[str, Any] | None = None,
     ) -> StorageContainerRequestDeletionResponse:
         return await self._client.request(
             'DELETE',
             f'storage/storage-container/{encode_path_param(container_name_or_id)}',
+            query=query,
             cast_to=StorageContainerRequestDeletionResponse,
             request_options=request_options,
         )

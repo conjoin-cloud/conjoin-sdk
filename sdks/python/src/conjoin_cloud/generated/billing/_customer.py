@@ -56,6 +56,7 @@ class BillingCustomersResource:
             cast_to=BillingCustomerCreateResponse,
             request_options=request_options,
             scopes=('billing_entity_id',),
+            accepts_idempotency_key=True,
         )
 
     def list_count(
@@ -115,6 +116,7 @@ class BillingCustomersResource:
             cast_to=BillingCustomerArchiveResponse,
             request_options=request_options,
             scopes=('billing_entity_id',),
+            accepts_idempotency_key=True,
         )
 
     def restore(
@@ -129,6 +131,7 @@ class BillingCustomersResource:
             cast_to=BillingCustomerRestoreResponse,
             request_options=request_options,
             scopes=('billing_entity_id',),
+            accepts_idempotency_key=True,
         )
 
 
@@ -164,6 +167,7 @@ class AsyncBillingCustomersResource:
             cast_to=BillingCustomerCreateResponse,
             request_options=request_options,
             scopes=('billing_entity_id',),
+            accepts_idempotency_key=True,
         )
 
     async def list_count(
@@ -223,6 +227,7 @@ class AsyncBillingCustomersResource:
             cast_to=BillingCustomerArchiveResponse,
             request_options=request_options,
             scopes=('billing_entity_id',),
+            accepts_idempotency_key=True,
         )
 
     async def restore(
@@ -237,4 +242,5 @@ class AsyncBillingCustomersResource:
             cast_to=BillingCustomerRestoreResponse,
             request_options=request_options,
             scopes=('billing_entity_id',),
+            accepts_idempotency_key=True,
         )

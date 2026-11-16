@@ -65,6 +65,7 @@ class AuthConnectionEnterprisesResource:
             cast_to=AuthConnectionEnterpriseCreateEnterpriseConnectionResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     def list_enterprise_connections_count(
@@ -155,6 +156,7 @@ class AuthConnectionEnterprisesResource:
             cast_to=AuthConnectionEnterpriseEnableEnterpriseConnectionResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     def disable_enterprise_connection(
@@ -173,6 +175,7 @@ class AuthConnectionEnterprisesResource:
             cast_to=AuthConnectionEnterpriseDisableEnterpriseConnectionResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     def rotate_enterprise_connection_signing_key(
@@ -191,6 +194,7 @@ class AuthConnectionEnterprisesResource:
             cast_to=AuthConnectionEnterpriseRotateEnterpriseConnectionSigningKeyResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     def activate_enterprise_connection_signing_key(
@@ -209,6 +213,7 @@ class AuthConnectionEnterprisesResource:
             cast_to=AuthConnectionEnterpriseActivateEnterpriseConnectionSigningKeyResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     def cancel_enterprise_connection_signing_key(
@@ -227,6 +232,7 @@ class AuthConnectionEnterprisesResource:
             cast_to=AuthConnectionEnterpriseCancelEnterpriseConnectionSigningKeyResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     def revoke_enterprise_connection_signing_key(
@@ -245,6 +251,7 @@ class AuthConnectionEnterprisesResource:
             cast_to=AuthConnectionEnterpriseRevokeEnterpriseConnectionSigningKeyResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     def read_enterprise_provider_settings(
@@ -282,6 +289,7 @@ class AuthConnectionEnterprisesResource:
             cast_to=AuthConnectionEnterpriseImportEnterpriseSamlMetadataResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     def sync_enterprise_saml_metadata(
@@ -302,6 +310,7 @@ class AuthConnectionEnterprisesResource:
             cast_to=AuthConnectionEnterpriseSyncEnterpriseSamlMetadataResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
 
@@ -339,6 +348,7 @@ class AsyncAuthConnectionEnterprisesResource:
             cast_to=AuthConnectionEnterpriseCreateEnterpriseConnectionResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     async def list_enterprise_connections_count(
@@ -429,6 +439,7 @@ class AsyncAuthConnectionEnterprisesResource:
             cast_to=AuthConnectionEnterpriseEnableEnterpriseConnectionResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     async def disable_enterprise_connection(
@@ -447,6 +458,7 @@ class AsyncAuthConnectionEnterprisesResource:
             cast_to=AuthConnectionEnterpriseDisableEnterpriseConnectionResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     async def rotate_enterprise_connection_signing_key(
@@ -465,6 +477,7 @@ class AsyncAuthConnectionEnterprisesResource:
             cast_to=AuthConnectionEnterpriseRotateEnterpriseConnectionSigningKeyResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     async def activate_enterprise_connection_signing_key(
@@ -483,6 +496,7 @@ class AsyncAuthConnectionEnterprisesResource:
             cast_to=AuthConnectionEnterpriseActivateEnterpriseConnectionSigningKeyResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     async def cancel_enterprise_connection_signing_key(
@@ -501,6 +515,7 @@ class AsyncAuthConnectionEnterprisesResource:
             cast_to=AuthConnectionEnterpriseCancelEnterpriseConnectionSigningKeyResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     async def revoke_enterprise_connection_signing_key(
@@ -519,6 +534,7 @@ class AsyncAuthConnectionEnterprisesResource:
             cast_to=AuthConnectionEnterpriseRevokeEnterpriseConnectionSigningKeyResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     async def read_enterprise_provider_settings(
@@ -556,6 +572,7 @@ class AsyncAuthConnectionEnterprisesResource:
             cast_to=AuthConnectionEnterpriseImportEnterpriseSamlMetadataResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     async def sync_enterprise_saml_metadata(
@@ -576,4 +593,5 @@ class AsyncAuthConnectionEnterprisesResource:
             cast_to=AuthConnectionEnterpriseSyncEnterpriseSamlMetadataResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )

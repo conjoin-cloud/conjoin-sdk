@@ -52,6 +52,7 @@ class AuthClientsResource:
             cast_to=AuthClientCreateResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     def list_count(
@@ -116,6 +117,7 @@ class AsyncAuthClientsResource:
             cast_to=AuthClientCreateResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     async def list_count(

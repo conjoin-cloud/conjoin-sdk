@@ -9,6 +9,7 @@ from conjoin_cloud._url import encode_path_param
 from conjoin_cloud.generated._models import (
     AuthOrganizationCreateRequest,
     AuthOrganizationCreateResponse,
+    AuthOrganizationDeleteQuery,
     AuthOrganizationDeleteResponse,
     AuthOrganizationListCountQuery,
     AuthOrganizationListCountResponse,
@@ -57,6 +58,7 @@ class AuthOrganizationsResource:
             cast_to=AuthOrganizationCreateResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     def list_count(
@@ -107,12 +109,14 @@ class AuthOrganizationsResource:
     def delete(
         self,
         organization_id: str,
+        query: AuthOrganizationDeleteQuery | None = None,
         *,
         request_options: RequestOptions | Mapping[str, Any] | None = None,
     ) -> AuthOrganizationDeleteResponse:
         return self._client.request(
             'DELETE',
             f'auth/organizations/{encode_path_param(organization_id)}',
+            query=query,
             cast_to=AuthOrganizationDeleteResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
@@ -167,6 +171,7 @@ class AsyncAuthOrganizationsResource:
             cast_to=AuthOrganizationCreateResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     async def list_count(
@@ -217,12 +222,14 @@ class AsyncAuthOrganizationsResource:
     async def delete(
         self,
         organization_id: str,
+        query: AuthOrganizationDeleteQuery | None = None,
         *,
         request_options: RequestOptions | Mapping[str, Any] | None = None,
     ) -> AuthOrganizationDeleteResponse:
         return await self._client.request(
             'DELETE',
             f'auth/organizations/{encode_path_param(organization_id)}',
+            query=query,
             cast_to=AuthOrganizationDeleteResponse,
             request_options=request_options,
             scopes=('auth_app_id',),

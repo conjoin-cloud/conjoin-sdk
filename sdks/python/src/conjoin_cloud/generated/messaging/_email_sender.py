@@ -9,9 +9,7 @@ from conjoin_cloud._url import encode_path_param
 from conjoin_cloud.generated._models import (
     MessagingEmailSenderCreateResponse,
     MessagingEmailSenderDeleteResponse,
-    MessagingEmailSenderDisableRequest,
     MessagingEmailSenderDisableResponse,
-    MessagingEmailSenderEnableRequest,
     MessagingEmailSenderEnableResponse,
     MessagingEmailSenderListManyItem,
     MessagingEmailSenderListManyRequest,
@@ -55,6 +53,7 @@ class MessagingEmailSendersResource:
             cast_to=Page[MessagingEmailSenderListManyItem],
             request_options=request_options,
             scopes=('messaging_profile_id',),
+            accepts_idempotency_key=True,
         )
 
     def list_one(
@@ -98,19 +97,18 @@ class MessagingEmailSendersResource:
             cast_to=MessagingEmailSenderCreateResponse,
             request_options=request_options,
             scopes=('messaging_profile_id',),
+            accepts_idempotency_key=True,
         )
 
     def enable(
         self,
         sender_id: str,
-        data: MessagingEmailSenderEnableRequest,
         *,
         request_options: RequestOptions | Mapping[str, Any] | None = None,
     ) -> MessagingEmailSenderEnableResponse:
         return self._client.request(
             'PATCH',
             f'messaging/email/senders/{encode_path_param(sender_id)}/enable',
-            body=data,
             cast_to=MessagingEmailSenderEnableResponse,
             request_options=request_options,
             scopes=('messaging_profile_id',),
@@ -119,14 +117,12 @@ class MessagingEmailSendersResource:
     def disable(
         self,
         sender_id: str,
-        data: MessagingEmailSenderDisableRequest,
         *,
         request_options: RequestOptions | Mapping[str, Any] | None = None,
     ) -> MessagingEmailSenderDisableResponse:
         return self._client.request(
             'PATCH',
             f'messaging/email/senders/{encode_path_param(sender_id)}/disable',
-            body=data,
             cast_to=MessagingEmailSenderDisableResponse,
             request_options=request_options,
             scopes=('messaging_profile_id',),
@@ -182,6 +178,7 @@ class AsyncMessagingEmailSendersResource:
             cast_to=AsyncPage[MessagingEmailSenderListManyItem],
             request_options=request_options,
             scopes=('messaging_profile_id',),
+            accepts_idempotency_key=True,
         )
 
     async def list_one(
@@ -225,19 +222,18 @@ class AsyncMessagingEmailSendersResource:
             cast_to=MessagingEmailSenderCreateResponse,
             request_options=request_options,
             scopes=('messaging_profile_id',),
+            accepts_idempotency_key=True,
         )
 
     async def enable(
         self,
         sender_id: str,
-        data: MessagingEmailSenderEnableRequest,
         *,
         request_options: RequestOptions | Mapping[str, Any] | None = None,
     ) -> MessagingEmailSenderEnableResponse:
         return await self._client.request(
             'PATCH',
             f'messaging/email/senders/{encode_path_param(sender_id)}/enable',
-            body=data,
             cast_to=MessagingEmailSenderEnableResponse,
             request_options=request_options,
             scopes=('messaging_profile_id',),
@@ -246,14 +242,12 @@ class AsyncMessagingEmailSendersResource:
     async def disable(
         self,
         sender_id: str,
-        data: MessagingEmailSenderDisableRequest,
         *,
         request_options: RequestOptions | Mapping[str, Any] | None = None,
     ) -> MessagingEmailSenderDisableResponse:
         return await self._client.request(
             'PATCH',
             f'messaging/email/senders/{encode_path_param(sender_id)}/disable',
-            body=data,
             cast_to=MessagingEmailSenderDisableResponse,
             request_options=request_options,
             scopes=('messaging_profile_id',),

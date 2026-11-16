@@ -36,6 +36,7 @@ class AuthAuthorizationsResource:
             cast_to=AuthAuthorizationAuthorizeActionResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     def check_role(
@@ -52,6 +53,7 @@ class AuthAuthorizationsResource:
             cast_to=AuthAuthorizationCheckRoleResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     def read_effective_permissions(
@@ -89,6 +91,7 @@ class AsyncAuthAuthorizationsResource:
             cast_to=AuthAuthorizationAuthorizeActionResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     async def check_role(
@@ -105,6 +108,7 @@ class AsyncAuthAuthorizationsResource:
             cast_to=AuthAuthorizationCheckRoleResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     async def read_effective_permissions(

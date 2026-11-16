@@ -4,9 +4,14 @@ import re
 from collections.abc import Mapping, Sequence
 
 from conjoin_cloud._config import HEADER_VALUE_PATTERN, ResolvedConfig, ScopeName
+from conjoin_cloud._declared_headers import (
+    DeclaredHeader,
+    declared_header_names,
+    resolve_declared_headers,
+)
 from conjoin_cloud._errors import ConjoinConfigurationError
 from conjoin_cloud._idempotency import IDEMPOTENCY_KEY_HEADER
-from conjoin_cloud._request_options import AuthOverride
+from conjoin_cloud._request_options import AuthOverride, DeclaredAuth
 from conjoin_cloud._request_tracing import CONJOIN_REQUEST_ID_HEADER
 from conjoin_cloud._version import __version__
 
@@ -51,13 +56,15 @@ def build_request_headers(
     config: ResolvedConfig,
     *,
     caller_headers: Mapping[str, str] | None,
-    auth: AuthOverride,
+    auth: AuthOverride | DeclaredAuth,
     scopes: Sequence[ScopeName],
     request_id: str,
     idempotency_key: str | None,
     json_body: bool,
+    declared_headers: Sequence[DeclaredHeader] = (),
 ) -> dict[str, str]:
-    headers = _caller_headers(caller_headers)
+    headers = _caller_headers(caller_headers, declared_header_names(declared_headers))
+    headers.update(resolve_declared_headers(declared_headers))
 
     authorization = _resolve_authorization(config, auth)
     if authorization is not None:
@@ -76,7 +83,9 @@ def build_request_headers(
     return headers
 
 
-def _caller_headers(headers: Mapping[str, str] | None) -> dict[str, str]:
+def _caller_headers(
+    headers: Mapping[str, str] | None, declared_names: frozenset[str]
+) -> dict[str, str]:
     if headers is None:
         return {}
 
@@ -91,13 +100,32 @@ def _caller_headers(headers: Mapping[str, str] | None) -> dict[str, str]:
             raise ConjoinConfigurationError(
                 f"The request header {name} has a value that HTTP does not allow"
             )
-        if name.lower() in _MANAGED_HEADER_NAMES:
+        if name.lower() in _MANAGED_HEADER_NAMES or name.lower() in declared_names:
             continue
         sendable[name] = value
     return sendable
 
 
-def _resolve_authorization(config: ResolvedConfig, auth: AuthOverride) -> str | None:
+def _resolve_declared_authorization(config: ResolvedConfig, auth: DeclaredAuth) -> str:
+    if auth.type == "publishable_key":
+        if config.publishable_key is None:
+            raise ConjoinConfigurationError(
+                "This call needs publishable_key in the client settings"
+            )
+        return f"Bearer {config.publishable_key}"
+
+    token = auth.session_token.reveal() if auth.session_token is not None else ""
+    if HEADER_VALUE_PATTERN.fullmatch(token) is None:
+        raise ConjoinConfigurationError(
+            "session_token must be a non-empty value without spaces or control characters"
+        )
+    return f"Bearer {token}"
+
+
+def _resolve_authorization(config: ResolvedConfig, auth: AuthOverride | DeclaredAuth) -> str | None:
+    if isinstance(auth, DeclaredAuth):
+        return _resolve_declared_authorization(config, auth)
+
     if auth.type == "none":
         return None
 

@@ -36,6 +36,7 @@ class AuthSLOsResource:
             cast_to=AuthSLOOidcLogoutResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     def saml_sp_logout(
@@ -52,6 +53,7 @@ class AuthSLOsResource:
             cast_to=AuthSLOSamlSpLogoutResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     def saml_idp_logout(
@@ -67,6 +69,7 @@ class AuthSLOsResource:
             cast_to=AuthSLOSamlIdpLogoutResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
 
@@ -88,6 +91,7 @@ class AsyncAuthSLOsResource:
             cast_to=AuthSLOOidcLogoutResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     async def saml_sp_logout(
@@ -104,6 +108,7 @@ class AsyncAuthSLOsResource:
             cast_to=AuthSLOSamlSpLogoutResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     async def saml_idp_logout(
@@ -119,4 +124,5 @@ class AsyncAuthSLOsResource:
             cast_to=AuthSLOSamlIdpLogoutResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )

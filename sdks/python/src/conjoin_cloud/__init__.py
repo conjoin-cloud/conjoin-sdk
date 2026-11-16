@@ -8,6 +8,7 @@ from conjoin_cloud._async_client import AsyncConjoin
 from conjoin_cloud._client import Conjoin
 from conjoin_cloud._config import ConjoinScope
 from conjoin_cloud._constants import DEFAULT_API_VERSION
+from conjoin_cloud._credential import Credential
 from conjoin_cloud._errors import (
     ConjoinApiError,
     ConjoinAuthenticationError,
@@ -59,6 +60,7 @@ __all__ = (
     "ConjoinStorageError",
     "ConjoinTimeoutError",
     "ConjoinValidationError",
+    "Credential",
     "Cursor",
     "Page",
     "RequestOptions",

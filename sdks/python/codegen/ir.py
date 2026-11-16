@@ -11,6 +11,13 @@ from codegen.naming import (
     to_pascal,
     to_snake,
 )
+from codegen.security import (
+    AuthMode,
+    DeclaredHeader,
+    read_declared_header,
+    read_portal_ticket_header,
+    resolve_auth_mode,
+)
 from codegen.spec import maybe_resolve_ref
 
 HTTP_METHODS = ("get", "post", "put", "patch", "delete")
@@ -23,9 +30,8 @@ SCOPE_HEADER_NAMES = {
     "messaging-profile-id": "messaging_profile_id",
     "auth-app-id": "auth_app_id",
 }
-RESERVED_PARAMETER_NAMES = frozenset({"self", "data", "query", "request_options"})
+RESERVED_PARAMETER_NAMES = frozenset({"self", "data", "query", "request_options", "session_token"})
 
-AuthMode = Literal["default", "none", "scim_bearer"]
 ResponseKind = Literal["envelope", "list", "body", "empty"]
 
 
@@ -56,6 +62,7 @@ class Operation:
     response_item_schema: dict[str, Any] | None
     scopes: tuple[str, ...]
     accepts_idempotency_key: bool
+    declared_headers: tuple[DeclaredHeader, ...]
 
 
 @dataclass(frozen=True)
@@ -130,7 +137,14 @@ def _build_operation(
 ) -> Operation:
     operation_id = str(raw_operation["operationId"])
     parameters = _resolved_parameters(spec, raw_operation, operation_id)
-    scopes, declares_idempotency_key = _header_semantics(parameters, operation_id)
+    scopes, declares_idempotency_key, declared_headers = _header_semantics(
+        spec, parameters, operation_id
+    )
+    auth_mode = resolve_auth_mode(raw_operation, operation_id)
+    if auth_mode == "portal_ticket":
+        declared_headers.append(read_portal_ticket_header(spec, operation_id))
+    path_parameters = _path_parameters(path, operation_id)
+    _check_argument_names(path_parameters, declared_headers, operation_id)
     request_content_type, request_schema, has_request_body = _request_schema(spec, raw_operation)
     if has_request_body and method in METHODS_WITHOUT_BODY:
         raise ValueError(f"{operation_id} is a {method.upper()} that declares a request body")
@@ -145,14 +159,14 @@ def _build_operation(
         ),
         http_method=method.upper(),
         path=path,
-        auth_mode=_auth_mode(raw_operation),
+        auth_mode=auth_mode,
         request_content_type=request_content_type,
         has_request_body=has_request_body,
         request_body_required=(
             isinstance(request_body, dict) and request_body.get("required") is True
         ),
         response_kind=response_kind,
-        path_parameters=_path_parameters(path, operation_id),
+        path_parameters=path_parameters,
         query_parameters=_query_parameters(spec, parameters),
         request_schema=request_schema,
         response_schema=response_schema,
@@ -160,7 +174,20 @@ def _build_operation(
         response_item_schema=_item_schema(spec, response_data_schema),
         scopes=scopes,
         accepts_idempotency_key=method == "post" and declares_idempotency_key,
+        declared_headers=tuple(declared_headers),
     )
+
+
+def _check_argument_names(
+    path_parameters: tuple[Parameter, ...],
+    declared_headers: list[DeclaredHeader],
+    operation_id: str,
+) -> None:
+    names = [parameter.python_name for parameter in path_parameters]
+    for header in declared_headers:
+        if header.python_name in RESERVED_PARAMETER_NAMES or header.python_name in names:
+            raise ValueError(f"{operation_id} declares the header argument {header.python_name}")
+        names.append(header.python_name)
 
 
 def _resolved_parameters(
@@ -181,10 +208,12 @@ def _resolved_parameters(
 
 
 def _header_semantics(
+    spec: dict[str, Any],
     parameters: list[dict[str, Any]],
     operation_id: str,
-) -> tuple[tuple[str, ...], bool]:
+) -> tuple[tuple[str, ...], bool, list[DeclaredHeader]]:
     scopes: list[str] = []
+    declared_headers: list[DeclaredHeader] = []
     declares_idempotency_key = False
     for parameter in parameters:
         if parameter.get("in") != "header":
@@ -196,8 +225,8 @@ def _header_semantics(
         elif header_name == IDEMPOTENCY_KEY_HEADER:
             declares_idempotency_key = True
         elif header_name != REQUEST_ID_HEADER:
-            raise ValueError(f"{operation_id} declares the unknown header {parameter['name']}")
-    return tuple(scopes), declares_idempotency_key
+            declared_headers.append(read_declared_header(spec, parameter, operation_id))
+    return tuple(scopes), declares_idempotency_key, declared_headers
 
 
 def _path_parameters(path: str, operation_id: str) -> tuple[Parameter, ...]:
@@ -295,18 +324,3 @@ def _item_schema(spec: dict[str, Any], data_schema: dict[str, Any]) -> dict[str,
         return None
     items = maybe_resolve_ref(spec, data_schema.get("items"))
     return items if isinstance(items, dict) else {}
-
-
-def _auth_mode(operation: dict[str, Any]) -> AuthMode:
-    security = operation.get("security")
-    if not isinstance(security, list):
-        return "default"
-    if not security or all(
-        isinstance(requirement, dict) and not requirement for requirement in security
-    ):
-        return "none"
-    if any(
-        isinstance(requirement, dict) and "scimBearer" in requirement for requirement in security
-    ):
-        return "scim_bearer"
-    return "default"

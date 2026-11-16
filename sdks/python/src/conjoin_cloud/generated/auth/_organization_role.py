@@ -59,6 +59,7 @@ class AuthOrganizationRolesResource:
             cast_to=AuthOrganizationRoleCreateOrgRoleResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     def list_org_roles_count(
@@ -149,6 +150,7 @@ class AuthOrganizationRolesResource:
             cast_to=AuthOrganizationRoleArchiveOrgRoleResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     def restore_org_role(
@@ -167,6 +169,7 @@ class AuthOrganizationRolesResource:
             cast_to=AuthOrganizationRoleRestoreOrgRoleResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
 
@@ -204,6 +207,7 @@ class AsyncAuthOrganizationRolesResource:
             cast_to=AuthOrganizationRoleCreateOrgRoleResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     async def list_org_roles_count(
@@ -294,6 +298,7 @@ class AsyncAuthOrganizationRolesResource:
             cast_to=AuthOrganizationRoleArchiveOrgRoleResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     async def restore_org_role(
@@ -312,4 +317,5 @@ class AsyncAuthOrganizationRolesResource:
             cast_to=AuthOrganizationRoleRestoreOrgRoleResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )

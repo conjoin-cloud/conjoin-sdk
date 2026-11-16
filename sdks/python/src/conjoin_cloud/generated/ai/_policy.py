@@ -41,6 +41,7 @@ class AiPoliciesResource:
             body=data,
             cast_to=AiPolicyCheckResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     def list_rules(
@@ -69,6 +70,7 @@ class AiPoliciesResource:
             body=data,
             cast_to=AiPolicyCreateRuleResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     def read_rule(
@@ -143,6 +145,7 @@ class AsyncAiPoliciesResource:
             body=data,
             cast_to=AiPolicyCheckResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     async def list_rules(
@@ -171,6 +174,7 @@ class AsyncAiPoliciesResource:
             body=data,
             cast_to=AiPolicyCreateRuleResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     async def read_rule(

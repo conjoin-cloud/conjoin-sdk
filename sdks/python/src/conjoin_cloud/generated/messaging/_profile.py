@@ -46,6 +46,7 @@ class MessagingProfilesResource:
             body=data,
             cast_to=MessagingProfileCreateResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     def enable(
@@ -185,6 +186,7 @@ class MessagingProfilesResource:
             body=data,
             cast_to=Page[MessagingProfileListItem],
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
 
@@ -204,6 +206,7 @@ class AsyncMessagingProfilesResource:
             body=data,
             cast_to=MessagingProfileCreateResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     async def enable(
@@ -343,4 +346,5 @@ class AsyncMessagingProfilesResource:
             body=data,
             cast_to=AsyncPage[MessagingProfileListItem],
             request_options=request_options,
+            accepts_idempotency_key=True,
         )

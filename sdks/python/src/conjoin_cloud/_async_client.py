@@ -16,9 +16,10 @@ from conjoin_cloud._config import (
     resolve_config,
     resolve_scope,
 )
+from conjoin_cloud._declared_headers import DeclaredHeader
 from conjoin_cloud._errors import ConjoinConfigurationError
 from conjoin_cloud._models import AsyncPage
-from conjoin_cloud._request_options import AuthOverride, RequestOptions
+from conjoin_cloud._request_options import AuthOverride, DeclaredAuth, RequestOptions
 from conjoin_cloud._request_tracing import resolve_conjoin_request_id
 from conjoin_cloud._response import WithResponse
 from conjoin_cloud._response_parsing import with_response as build_with_response
@@ -100,7 +101,8 @@ class AsyncConjoin(AsyncGeneratedResourcesMixin):
         with_response: bool = False,
         scopes: Sequence[ScopeName] = (),
         accepts_idempotency_key: bool = False,
-        default_auth: AuthOverride | None = None,
+        default_auth: AuthOverride | DeclaredAuth | None = None,
+        declared_headers: Sequence[DeclaredHeader] = (),
         unwrap_data: bool = True,
     ) -> T: ...
 
@@ -117,7 +119,8 @@ class AsyncConjoin(AsyncGeneratedResourcesMixin):
         with_response: bool = False,
         scopes: Sequence[ScopeName] = (),
         accepts_idempotency_key: bool = False,
-        default_auth: AuthOverride | None = None,
+        default_auth: AuthOverride | DeclaredAuth | None = None,
+        declared_headers: Sequence[DeclaredHeader] = (),
         unwrap_data: bool = True,
     ) -> Any: ...
 
@@ -133,7 +136,8 @@ class AsyncConjoin(AsyncGeneratedResourcesMixin):
         with_response: bool = False,
         scopes: Sequence[ScopeName] = (),
         accepts_idempotency_key: bool = False,
-        default_auth: AuthOverride | None = None,
+        default_auth: AuthOverride | DeclaredAuth | None = None,
+        declared_headers: Sequence[DeclaredHeader] = (),
         unwrap_data: bool = True,
     ) -> Any:
         call = prepare_call(
@@ -146,6 +150,7 @@ class AsyncConjoin(AsyncGeneratedResourcesMixin):
             scopes=scopes,
             accepts_idempotency_key=accepts_idempotency_key,
             default_auth=default_auth,
+            declared_headers=declared_headers,
         )
         response = await send_call(self._client, self.config, call, buffer_response=True)
         data, request_id = await read_response(
@@ -167,6 +172,7 @@ class AsyncConjoin(AsyncGeneratedResourcesMixin):
                 scopes=scopes,
                 accepts_idempotency_key=accepts_idempotency_key,
                 default_auth=default_auth,
+                declared_headers=declared_headers,
             )
 
         if with_response:
@@ -184,7 +190,8 @@ class AsyncConjoin(AsyncGeneratedResourcesMixin):
         request_options: RequestOptions | Mapping[str, Any] | None,
         scopes: Sequence[ScopeName],
         accepts_idempotency_key: bool,
-        default_auth: AuthOverride | None,
+        default_auth: AuthOverride | DeclaredAuth | None,
+        declared_headers: Sequence[DeclaredHeader],
     ) -> Callable[[str], Awaitable[Any]]:
         async def fetch_next(next_cursor: str) -> Any:
             return await self.request(
@@ -197,6 +204,7 @@ class AsyncConjoin(AsyncGeneratedResourcesMixin):
                 scopes=scopes,
                 accepts_idempotency_key=accepts_idempotency_key,
                 default_auth=default_auth,
+                declared_headers=declared_headers,
             )
 
         return fetch_next

@@ -73,6 +73,7 @@ class AuthSCIMManagementsResource:
             cast_to=AuthSCIMManagementSyncScimRolesForMemberResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     def sync_scim_roles_for_group(
@@ -91,6 +92,7 @@ class AuthSCIMManagementsResource:
             cast_to=AuthSCIMManagementSyncScimRolesForGroupResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     def reconcile_scim_users(
@@ -107,6 +109,7 @@ class AuthSCIMManagementsResource:
             cast_to=AuthSCIMManagementReconcileScimUsersResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     def reconcile_scim_groups(
@@ -123,6 +126,7 @@ class AuthSCIMManagementsResource:
             cast_to=AuthSCIMManagementReconcileScimGroupsResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     def reconcile_scim_group_members(
@@ -139,6 +143,7 @@ class AuthSCIMManagementsResource:
             cast_to=AuthSCIMManagementReconcileScimGroupMembersResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
 
@@ -192,6 +197,7 @@ class AsyncAuthSCIMManagementsResource:
             cast_to=AuthSCIMManagementSyncScimRolesForMemberResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     async def sync_scim_roles_for_group(
@@ -210,6 +216,7 @@ class AsyncAuthSCIMManagementsResource:
             cast_to=AuthSCIMManagementSyncScimRolesForGroupResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     async def reconcile_scim_users(
@@ -226,6 +233,7 @@ class AsyncAuthSCIMManagementsResource:
             cast_to=AuthSCIMManagementReconcileScimUsersResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     async def reconcile_scim_groups(
@@ -242,6 +250,7 @@ class AsyncAuthSCIMManagementsResource:
             cast_to=AuthSCIMManagementReconcileScimGroupsResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     async def reconcile_scim_group_members(
@@ -258,4 +267,5 @@ class AsyncAuthSCIMManagementsResource:
             cast_to=AuthSCIMManagementReconcileScimGroupMembersResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )

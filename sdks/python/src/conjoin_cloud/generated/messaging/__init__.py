@@ -62,10 +62,6 @@ from conjoin_cloud.generated.messaging._sms_sender_pool import (
     AsyncMessagingSMSSenderPoolsResource,
     MessagingSMSSenderPoolsResource,
 )
-from conjoin_cloud.generated.messaging._segment import (
-    AsyncMessagingSegmentsResource,
-    MessagingSegmentsResource,
-)
 from conjoin_cloud.generated.messaging._template import (
     AsyncMessagingTemplatesResource,
     MessagingTemplatesResource,
@@ -97,7 +93,6 @@ class MessagingResource:
         self.sms_campaigns = MessagingSMSCampaignsResource(client)
         self.sms_senders = MessagingSMSSendersResource(client)
         self.sms_sender_pools = MessagingSMSSenderPoolsResource(client)
-        self.segments = MessagingSegmentsResource(client)
         self.templates = MessagingTemplatesResource(client)
         self.verifications = MessagingVerificationsResource(client)
 
@@ -120,6 +115,5 @@ class AsyncMessagingResource:
         self.sms_campaigns = AsyncMessagingSMSCampaignsResource(client)
         self.sms_senders = AsyncMessagingSMSSendersResource(client)
         self.sms_sender_pools = AsyncMessagingSMSSenderPoolsResource(client)
-        self.segments = AsyncMessagingSegmentsResource(client)
         self.templates = AsyncMessagingTemplatesResource(client)
         self.verifications = AsyncMessagingVerificationsResource(client)

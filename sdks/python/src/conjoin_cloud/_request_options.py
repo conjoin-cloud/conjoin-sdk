@@ -1,18 +1,26 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Any, Literal, TypedDict, cast
 
+from conjoin_cloud._credential import Credential
 from conjoin_cloud._errors import ConjoinConfigurationError
 
 AuthType = Literal["default", "none", "bearer"]
+DeclaredAuthType = Literal["publishable_key", "session"]
 
 
 @dataclass(frozen=True)
 class AuthOverride:
     type: AuthType = "default"
-    token: str | None = None
+    token: str | None = field(default=None, repr=False)
+
+
+@dataclass(frozen=True)
+class DeclaredAuth:
+    type: DeclaredAuthType
+    session_token: Credential | None = None
 
 
 class AuthOverrideDict(TypedDict, total=False):
@@ -31,6 +39,13 @@ class RequestOptions:
 
 
 AUTH_NONE = AuthOverride(type="none")
+AUTH_PUBLISHABLE_KEY = DeclaredAuth(type="publishable_key")
+
+
+def session_auth(session_token: Credential) -> DeclaredAuth:
+    if not isinstance(session_token, Credential):
+        raise ConjoinConfigurationError("session_token must be a Credential")
+    return DeclaredAuth(type="session", session_token=session_token)
 
 
 def coerce_request_options(options: RequestOptions | Mapping[str, Any] | None) -> RequestOptions:

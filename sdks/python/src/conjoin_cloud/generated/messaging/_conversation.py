@@ -8,8 +8,9 @@ from conjoin_cloud._request_options import RequestOptions
 from conjoin_cloud._url import encode_path_param
 from conjoin_cloud.generated._models import (
     MessagingConversationAddManyRecipientsItem,
+    MessagingConversationAddManyRecipientsRequest,
+    MessagingConversationAddOneRecipientRequest,
     MessagingConversationAddOneRecipientResponse,
-    MessagingConversationArchiveRequest,
     MessagingConversationArchiveResponse,
     MessagingConversationCloneRequest,
     MessagingConversationCloneResponse,
@@ -20,7 +21,8 @@ from conjoin_cloud.generated._models import (
     MessagingConversationListItem,
     MessagingConversationListRequest,
     MessagingConversationReadManyRecipientsItem,
-    MessagingConversationReadMessagesItem,
+    MessagingConversationReadManyRecipientsRequest,
+    MessagingConversationReadMessagesRequest,
     MessagingConversationReadOneRecipientResponse,
     MessagingConversationSendMessageRequest,
     MessagingConversationUpdateRequest,
@@ -48,6 +50,7 @@ class MessagingConversationsResource:
             cast_to=MessagingConversationCreateResponse,
             request_options=request_options,
             scopes=('messaging_profile_id',),
+            accepts_idempotency_key=True,
         )
 
     def clone(
@@ -64,6 +67,7 @@ class MessagingConversationsResource:
             cast_to=MessagingConversationCloneResponse,
             request_options=request_options,
             scopes=('messaging_profile_id',),
+            accepts_idempotency_key=True,
         )
 
     def send_message(
@@ -79,6 +83,7 @@ class MessagingConversationsResource:
             body=data,
             request_options=request_options,
             scopes=('messaging_profile_id',),
+            accepts_idempotency_key=True,
         )
 
     def update(
@@ -114,14 +119,12 @@ class MessagingConversationsResource:
     def archive(
         self,
         conversation_id: str,
-        data: MessagingConversationArchiveRequest,
         *,
         request_options: RequestOptions | Mapping[str, Any] | None = None,
     ) -> MessagingConversationArchiveResponse:
         return self._client.request(
             'PATCH',
             f'messaging/conversations/{encode_path_param(conversation_id)}/archive',
-            body=data,
             cast_to=MessagingConversationArchiveResponse,
             request_options=request_options,
             scopes=('messaging_profile_id',),
@@ -140,24 +143,28 @@ class MessagingConversationsResource:
             cast_to=Page[MessagingConversationListItem],
             request_options=request_options,
             scopes=('messaging_profile_id',),
+            accepts_idempotency_key=True,
         )
 
     def read_messages(
         self,
         conversation_id: str,
         parent_message_id: str,
+        data: MessagingConversationReadMessagesRequest,
         *,
         request_options: RequestOptions | Mapping[str, Any] | None = None,
-    ) -> Page[MessagingConversationReadMessagesItem]:
+    ) -> Page[Any]:
         return self._client.request(
             'POST',
             (
                 f'messaging/conversations/{encode_path_param(conversation_id)}/messages'
                 f'/{encode_path_param(parent_message_id)}'
             ),
-            cast_to=Page[MessagingConversationReadMessagesItem],
+            body=data,
+            cast_to=Page[Any],
             request_options=request_options,
             scopes=('messaging_profile_id',),
+            accepts_idempotency_key=True,
         )
 
     def read_one_recipient(
@@ -199,43 +206,52 @@ class MessagingConversationsResource:
     def read_many_recipients(
         self,
         conversation_id: str,
+        data: MessagingConversationReadManyRecipientsRequest,
         *,
         request_options: RequestOptions | Mapping[str, Any] | None = None,
     ) -> Page[MessagingConversationReadManyRecipientsItem]:
         return self._client.request(
             'POST',
             f'messaging/conversations/{encode_path_param(conversation_id)}/recipients/retrieve',
+            body=data,
             cast_to=Page[MessagingConversationReadManyRecipientsItem],
             request_options=request_options,
             scopes=('messaging_profile_id',),
+            accepts_idempotency_key=True,
         )
 
     def add_one_recipient(
         self,
         conversation_id: str,
+        data: MessagingConversationAddOneRecipientRequest,
         *,
         request_options: RequestOptions | Mapping[str, Any] | None = None,
     ) -> MessagingConversationAddOneRecipientResponse:
         return self._client.request(
             'POST',
             f'messaging/conversations/{encode_path_param(conversation_id)}/recipients',
+            body=data,
             cast_to=MessagingConversationAddOneRecipientResponse,
             request_options=request_options,
             scopes=('messaging_profile_id',),
+            accepts_idempotency_key=True,
         )
 
     def add_many_recipients(
         self,
         conversation_id: str,
+        data: MessagingConversationAddManyRecipientsRequest,
         *,
         request_options: RequestOptions | Mapping[str, Any] | None = None,
     ) -> Page[MessagingConversationAddManyRecipientsItem]:
         return self._client.request(
             'POST',
             f'messaging/conversations/{encode_path_param(conversation_id)}/recipients/batch',
+            body=data,
             cast_to=Page[MessagingConversationAddManyRecipientsItem],
             request_options=request_options,
             scopes=('messaging_profile_id',),
+            accepts_idempotency_key=True,
         )
 
 
@@ -256,6 +272,7 @@ class AsyncMessagingConversationsResource:
             cast_to=MessagingConversationCreateResponse,
             request_options=request_options,
             scopes=('messaging_profile_id',),
+            accepts_idempotency_key=True,
         )
 
     async def clone(
@@ -272,6 +289,7 @@ class AsyncMessagingConversationsResource:
             cast_to=MessagingConversationCloneResponse,
             request_options=request_options,
             scopes=('messaging_profile_id',),
+            accepts_idempotency_key=True,
         )
 
     async def send_message(
@@ -287,6 +305,7 @@ class AsyncMessagingConversationsResource:
             body=data,
             request_options=request_options,
             scopes=('messaging_profile_id',),
+            accepts_idempotency_key=True,
         )
 
     async def update(
@@ -322,14 +341,12 @@ class AsyncMessagingConversationsResource:
     async def archive(
         self,
         conversation_id: str,
-        data: MessagingConversationArchiveRequest,
         *,
         request_options: RequestOptions | Mapping[str, Any] | None = None,
     ) -> MessagingConversationArchiveResponse:
         return await self._client.request(
             'PATCH',
             f'messaging/conversations/{encode_path_param(conversation_id)}/archive',
-            body=data,
             cast_to=MessagingConversationArchiveResponse,
             request_options=request_options,
             scopes=('messaging_profile_id',),
@@ -348,24 +365,28 @@ class AsyncMessagingConversationsResource:
             cast_to=AsyncPage[MessagingConversationListItem],
             request_options=request_options,
             scopes=('messaging_profile_id',),
+            accepts_idempotency_key=True,
         )
 
     async def read_messages(
         self,
         conversation_id: str,
         parent_message_id: str,
+        data: MessagingConversationReadMessagesRequest,
         *,
         request_options: RequestOptions | Mapping[str, Any] | None = None,
-    ) -> AsyncPage[MessagingConversationReadMessagesItem]:
+    ) -> AsyncPage[Any]:
         return await self._client.request(
             'POST',
             (
                 f'messaging/conversations/{encode_path_param(conversation_id)}/messages'
                 f'/{encode_path_param(parent_message_id)}'
             ),
-            cast_to=AsyncPage[MessagingConversationReadMessagesItem],
+            body=data,
+            cast_to=AsyncPage[Any],
             request_options=request_options,
             scopes=('messaging_profile_id',),
+            accepts_idempotency_key=True,
         )
 
     async def read_one_recipient(
@@ -407,41 +428,50 @@ class AsyncMessagingConversationsResource:
     async def read_many_recipients(
         self,
         conversation_id: str,
+        data: MessagingConversationReadManyRecipientsRequest,
         *,
         request_options: RequestOptions | Mapping[str, Any] | None = None,
     ) -> AsyncPage[MessagingConversationReadManyRecipientsItem]:
         return await self._client.request(
             'POST',
             f'messaging/conversations/{encode_path_param(conversation_id)}/recipients/retrieve',
+            body=data,
             cast_to=AsyncPage[MessagingConversationReadManyRecipientsItem],
             request_options=request_options,
             scopes=('messaging_profile_id',),
+            accepts_idempotency_key=True,
         )
 
     async def add_one_recipient(
         self,
         conversation_id: str,
+        data: MessagingConversationAddOneRecipientRequest,
         *,
         request_options: RequestOptions | Mapping[str, Any] | None = None,
     ) -> MessagingConversationAddOneRecipientResponse:
         return await self._client.request(
             'POST',
             f'messaging/conversations/{encode_path_param(conversation_id)}/recipients',
+            body=data,
             cast_to=MessagingConversationAddOneRecipientResponse,
             request_options=request_options,
             scopes=('messaging_profile_id',),
+            accepts_idempotency_key=True,
         )
 
     async def add_many_recipients(
         self,
         conversation_id: str,
+        data: MessagingConversationAddManyRecipientsRequest,
         *,
         request_options: RequestOptions | Mapping[str, Any] | None = None,
     ) -> AsyncPage[MessagingConversationAddManyRecipientsItem]:
         return await self._client.request(
             'POST',
             f'messaging/conversations/{encode_path_param(conversation_id)}/recipients/batch',
+            body=data,
             cast_to=AsyncPage[MessagingConversationAddManyRecipientsItem],
             request_options=request_options,
             scopes=('messaging_profile_id',),
+            accepts_idempotency_key=True,
         )

@@ -62,6 +62,7 @@ class BillingEntitiesResource:
             body=data,
             cast_to=BillingEntityCreateResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     def list_count(
@@ -90,6 +91,7 @@ class BillingEntitiesResource:
             body=data,
             cast_to=BillingEntityOnboardResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
             unwrap_data=False,
         )
 
@@ -136,6 +138,7 @@ class BillingEntitiesResource:
             body=data,
             cast_to=BillingEntityCreatePayoutBankAccountResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     def create_account_link(
@@ -151,6 +154,7 @@ class BillingEntitiesResource:
             body=data,
             cast_to=BillingEntityCreateAccountLinkResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
             unwrap_data=False,
         )
 
@@ -165,6 +169,7 @@ class BillingEntitiesResource:
             f'billing/entities/{encode_path_param(entity_id)}/sync',
             cast_to=BillingEntitySyncOnboardingResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
             unwrap_data=False,
         )
 
@@ -181,6 +186,7 @@ class BillingEntitiesResource:
             body=data,
             cast_to=BillingEntityCreatePaystackCredentialsResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
             unwrap_data=False,
         )
 
@@ -215,6 +221,7 @@ class AsyncBillingEntitiesResource:
             body=data,
             cast_to=BillingEntityCreateResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     async def list_count(
@@ -243,6 +250,7 @@ class AsyncBillingEntitiesResource:
             body=data,
             cast_to=BillingEntityOnboardResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
             unwrap_data=False,
         )
 
@@ -289,6 +297,7 @@ class AsyncBillingEntitiesResource:
             body=data,
             cast_to=BillingEntityCreatePayoutBankAccountResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     async def create_account_link(
@@ -304,6 +313,7 @@ class AsyncBillingEntitiesResource:
             body=data,
             cast_to=BillingEntityCreateAccountLinkResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
             unwrap_data=False,
         )
 
@@ -318,6 +328,7 @@ class AsyncBillingEntitiesResource:
             f'billing/entities/{encode_path_param(entity_id)}/sync',
             cast_to=BillingEntitySyncOnboardingResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
             unwrap_data=False,
         )
 
@@ -334,5 +345,6 @@ class AsyncBillingEntitiesResource:
             body=data,
             cast_to=BillingEntityCreatePaystackCredentialsResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
             unwrap_data=False,
         )

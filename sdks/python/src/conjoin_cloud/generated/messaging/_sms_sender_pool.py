@@ -35,6 +35,7 @@ class MessagingSMSSenderPoolsResource:
             cast_to=MessagingSMSSenderPoolCreateSmsSenderPoolResponse,
             request_options=request_options,
             scopes=('messaging_profile_id',),
+            accepts_idempotency_key=True,
         )
 
     def add_sms_senders_to_pool(
@@ -51,6 +52,7 @@ class MessagingSMSSenderPoolsResource:
             cast_to=MessagingSMSSenderPoolAddSmsSendersToPoolResponse,
             request_options=request_options,
             scopes=('messaging_profile_id',),
+            accepts_idempotency_key=True,
         )
 
     def get_sms_sender_pool(
@@ -99,6 +101,7 @@ class AsyncMessagingSMSSenderPoolsResource:
             cast_to=MessagingSMSSenderPoolCreateSmsSenderPoolResponse,
             request_options=request_options,
             scopes=('messaging_profile_id',),
+            accepts_idempotency_key=True,
         )
 
     async def add_sms_senders_to_pool(
@@ -115,6 +118,7 @@ class AsyncMessagingSMSSenderPoolsResource:
             cast_to=MessagingSMSSenderPoolAddSmsSendersToPoolResponse,
             request_options=request_options,
             scopes=('messaging_profile_id',),
+            accepts_idempotency_key=True,
         )
 
     async def get_sms_sender_pool(

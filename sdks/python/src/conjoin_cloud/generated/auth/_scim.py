@@ -82,6 +82,7 @@ class AuthSCIMsResource:
             body=wire_names(data, _SCIM_BULK_OPERATIONS_BODY_ALIASES),
             cast_to=AuthSCIMScimBulkOperationsResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
             default_auth=scim_bearer_auth(self._scim_token),
             unwrap_data=False,
         )
@@ -116,6 +117,7 @@ class AuthSCIMsResource:
             body=wire_names(data, _SCIM_CREATE_GROUP_BODY_ALIASES),
             cast_to=AuthSCIMScimCreateGroupResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
             default_auth=scim_bearer_auth(self._scim_token),
             unwrap_data=False,
         )
@@ -274,6 +276,7 @@ class AuthSCIMsResource:
             body=wire_names(data, _SCIM_CREATE_USER_BODY_ALIASES),
             cast_to=AuthSCIMScimCreateUserResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
             default_auth=scim_bearer_auth(self._scim_token),
             unwrap_data=False,
         )
@@ -381,6 +384,7 @@ class AsyncAuthSCIMsResource:
             body=wire_names(data, _SCIM_BULK_OPERATIONS_BODY_ALIASES),
             cast_to=AuthSCIMScimBulkOperationsResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
             default_auth=scim_bearer_auth(self._scim_token),
             unwrap_data=False,
         )
@@ -415,6 +419,7 @@ class AsyncAuthSCIMsResource:
             body=wire_names(data, _SCIM_CREATE_GROUP_BODY_ALIASES),
             cast_to=AuthSCIMScimCreateGroupResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
             default_auth=scim_bearer_auth(self._scim_token),
             unwrap_data=False,
         )
@@ -573,6 +578,7 @@ class AsyncAuthSCIMsResource:
             body=wire_names(data, _SCIM_CREATE_USER_BODY_ALIASES),
             cast_to=AuthSCIMScimCreateUserResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
             default_auth=scim_bearer_auth(self._scim_token),
             unwrap_data=False,
         )

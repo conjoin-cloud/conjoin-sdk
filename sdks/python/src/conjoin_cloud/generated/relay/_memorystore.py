@@ -56,6 +56,7 @@ class RelayMemorystoresResource:
             body=data,
             cast_to=RelayMemorystoreCreateClusterResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     def read_clusters_count(
@@ -124,6 +125,7 @@ class RelayMemorystoresResource:
             f'relay/memorystore-clusters/{encode_path_param(memorystore_cluster_id)}/suspend',
             cast_to=RelayMemorystoreSuspendClusterResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     def execute_command(
@@ -139,6 +141,7 @@ class RelayMemorystoresResource:
             body=data,
             cast_to=RelayMemorystoreExecuteCommandResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
 
@@ -172,6 +175,7 @@ class AsyncRelayMemorystoresResource:
             body=data,
             cast_to=RelayMemorystoreCreateClusterResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     async def read_clusters_count(
@@ -240,6 +244,7 @@ class AsyncRelayMemorystoresResource:
             f'relay/memorystore-clusters/{encode_path_param(memorystore_cluster_id)}/suspend',
             cast_to=RelayMemorystoreSuspendClusterResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     async def execute_command(
@@ -255,4 +260,5 @@ class AsyncRelayMemorystoresResource:
             body=data,
             cast_to=RelayMemorystoreExecuteCommandResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )

@@ -57,6 +57,7 @@ class RelaySearchesResource:
             body=data,
             cast_to=RelaySearchCreateIndexResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     def delete_index(
@@ -85,6 +86,7 @@ class RelaySearchesResource:
             body=data,
             cast_to=RelaySearchIndexDocumentResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     def index_document_batch(
@@ -100,6 +102,7 @@ class RelaySearchesResource:
             body=data,
             cast_to=RelaySearchIndexDocumentBatchResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     def remove_document(
@@ -132,6 +135,7 @@ class RelaySearchesResource:
             body=data,
             cast_to=RelaySearchSearchQueryResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     def auto_suggest(
@@ -147,6 +151,7 @@ class RelaySearchesResource:
             body=data,
             cast_to=RelaySearchAutoSuggestResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
 
@@ -180,6 +185,7 @@ class AsyncRelaySearchesResource:
             body=data,
             cast_to=RelaySearchCreateIndexResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     async def delete_index(
@@ -208,6 +214,7 @@ class AsyncRelaySearchesResource:
             body=data,
             cast_to=RelaySearchIndexDocumentResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     async def index_document_batch(
@@ -223,6 +230,7 @@ class AsyncRelaySearchesResource:
             body=data,
             cast_to=RelaySearchIndexDocumentBatchResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     async def remove_document(
@@ -255,6 +263,7 @@ class AsyncRelaySearchesResource:
             body=data,
             cast_to=RelaySearchSearchQueryResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     async def auto_suggest(
@@ -270,4 +279,5 @@ class AsyncRelaySearchesResource:
             body=data,
             cast_to=RelaySearchAutoSuggestResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )

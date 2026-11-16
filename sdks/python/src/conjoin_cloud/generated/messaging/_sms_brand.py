@@ -37,6 +37,7 @@ class MessagingSMSBrandsResource:
             cast_to=MessagingSMSBrandCreateSmsBrandResponse,
             request_options=request_options,
             scopes=('messaging_profile_id',),
+            accepts_idempotency_key=True,
         )
 
     def read_sms_brand(
@@ -96,6 +97,7 @@ class MessagingSMSBrandsResource:
             cast_to=Page[MessagingSMSBrandListSmsBrandsItem],
             request_options=request_options,
             scopes=('messaging_profile_id',),
+            accepts_idempotency_key=True,
         )
 
 
@@ -116,6 +118,7 @@ class AsyncMessagingSMSBrandsResource:
             cast_to=MessagingSMSBrandCreateSmsBrandResponse,
             request_options=request_options,
             scopes=('messaging_profile_id',),
+            accepts_idempotency_key=True,
         )
 
     async def read_sms_brand(
@@ -175,4 +178,5 @@ class AsyncMessagingSMSBrandsResource:
             cast_to=AsyncPage[MessagingSMSBrandListSmsBrandsItem],
             request_options=request_options,
             scopes=('messaging_profile_id',),
+            accepts_idempotency_key=True,
         )

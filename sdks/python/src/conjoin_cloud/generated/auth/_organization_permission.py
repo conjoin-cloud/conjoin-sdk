@@ -59,6 +59,7 @@ class AuthOrganizationPermissionsResource:
             cast_to=AuthOrganizationPermissionCreateOrgPermissionResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     def list_org_permissions_count(
@@ -149,6 +150,7 @@ class AuthOrganizationPermissionsResource:
             cast_to=AuthOrganizationPermissionArchiveOrgPermissionResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     def restore_org_permission(
@@ -167,6 +169,7 @@ class AuthOrganizationPermissionsResource:
             cast_to=AuthOrganizationPermissionRestoreOrgPermissionResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
 
@@ -204,6 +207,7 @@ class AsyncAuthOrganizationPermissionsResource:
             cast_to=AuthOrganizationPermissionCreateOrgPermissionResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     async def list_org_permissions_count(
@@ -294,6 +298,7 @@ class AsyncAuthOrganizationPermissionsResource:
             cast_to=AuthOrganizationPermissionArchiveOrgPermissionResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     async def restore_org_permission(
@@ -312,4 +317,5 @@ class AsyncAuthOrganizationPermissionsResource:
             cast_to=AuthOrganizationPermissionRestoreOrgPermissionResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )

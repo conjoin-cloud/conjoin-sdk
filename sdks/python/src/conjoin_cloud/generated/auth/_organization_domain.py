@@ -55,6 +55,7 @@ class AuthOrganizationDomainsResource:
             cast_to=AuthOrganizationDomainCreateResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     def list_count(
@@ -89,6 +90,7 @@ class AuthOrganizationDomainsResource:
             cast_to=AuthOrganizationDomainVerifyResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     def delete(
@@ -144,6 +146,7 @@ class AsyncAuthOrganizationDomainsResource:
             cast_to=AuthOrganizationDomainCreateResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     async def list_count(
@@ -178,6 +181,7 @@ class AsyncAuthOrganizationDomainsResource:
             cast_to=AuthOrganizationDomainVerifyResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     async def delete(

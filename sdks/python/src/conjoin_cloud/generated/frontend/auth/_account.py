@@ -3,7 +3,7 @@ from __future__ import annotations
 from collections.abc import Mapping
 from typing import TYPE_CHECKING, Any
 
-from conjoin_cloud._request_options import AUTH_NONE, RequestOptions
+from conjoin_cloud._request_options import AUTH_PUBLISHABLE_KEY, RequestOptions
 from conjoin_cloud.generated.frontend._models import (
     AuthAccountBatchLookupItem,
     AuthAccountBatchLookupRequest,
@@ -29,7 +29,7 @@ class AuthAccountsResource:
             body=data,
             cast_to=list[AuthAccountBatchLookupItem],
             request_options=request_options,
-            default_auth=AUTH_NONE,
+            default_auth=AUTH_PUBLISHABLE_KEY,
         )
 
 
@@ -49,5 +49,5 @@ class AsyncAuthAccountsResource:
             body=data,
             cast_to=list[AuthAccountBatchLookupItem],
             request_options=request_options,
-            default_auth=AUTH_NONE,
+            default_auth=AUTH_PUBLISHABLE_KEY,
         )

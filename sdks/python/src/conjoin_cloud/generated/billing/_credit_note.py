@@ -56,6 +56,7 @@ class BillingCreditNotesResource:
             cast_to=BillingCreditNoteCreateResponse,
             request_options=request_options,
             scopes=('billing_entity_id',),
+            accepts_idempotency_key=True,
         )
 
     def list_customer_credit_balances(
@@ -67,7 +68,7 @@ class BillingCreditNotesResource:
     ) -> Page[BillingCreditNoteListCustomerCreditBalancesItem]:
         return self._client.request(
             'GET',
-            f'billing/credit-notes/{encode_path_param(customer_id)}/credit-balances',
+            f'billing/customers/{encode_path_param(customer_id)}/credit-balances',
             query=query,
             cast_to=Page[BillingCreditNoteListCustomerCreditBalancesItem],
             request_options=request_options,
@@ -101,6 +102,7 @@ class BillingCreditNotesResource:
             cast_to=BillingCreditNoteVoidResponse,
             request_options=request_options,
             scopes=('billing_entity_id',),
+            accepts_idempotency_key=True,
         )
 
     def list_customer_credit_balances_count(
@@ -112,7 +114,7 @@ class BillingCreditNotesResource:
     ) -> BillingCreditNoteListCustomerCreditBalancesCountResponse:
         return self._client.request(
             'GET',
-            f'billing/credit-notes/{encode_path_param(customer_id)}/credit-balances/count',
+            f'billing/customers/{encode_path_param(customer_id)}/credit-balances/count',
             query=query,
             cast_to=BillingCreditNoteListCustomerCreditBalancesCountResponse,
             request_options=request_options,
@@ -152,6 +154,7 @@ class AsyncBillingCreditNotesResource:
             cast_to=BillingCreditNoteCreateResponse,
             request_options=request_options,
             scopes=('billing_entity_id',),
+            accepts_idempotency_key=True,
         )
 
     async def list_customer_credit_balances(
@@ -163,7 +166,7 @@ class AsyncBillingCreditNotesResource:
     ) -> AsyncPage[BillingCreditNoteListCustomerCreditBalancesItem]:
         return await self._client.request(
             'GET',
-            f'billing/credit-notes/{encode_path_param(customer_id)}/credit-balances',
+            f'billing/customers/{encode_path_param(customer_id)}/credit-balances',
             query=query,
             cast_to=AsyncPage[BillingCreditNoteListCustomerCreditBalancesItem],
             request_options=request_options,
@@ -197,6 +200,7 @@ class AsyncBillingCreditNotesResource:
             cast_to=BillingCreditNoteVoidResponse,
             request_options=request_options,
             scopes=('billing_entity_id',),
+            accepts_idempotency_key=True,
         )
 
     async def list_customer_credit_balances_count(
@@ -208,7 +212,7 @@ class AsyncBillingCreditNotesResource:
     ) -> BillingCreditNoteListCustomerCreditBalancesCountResponse:
         return await self._client.request(
             'GET',
-            f'billing/credit-notes/{encode_path_param(customer_id)}/credit-balances/count',
+            f'billing/customers/{encode_path_param(customer_id)}/credit-balances/count',
             query=query,
             cast_to=BillingCreditNoteListCustomerCreditBalancesCountResponse,
             request_options=request_options,

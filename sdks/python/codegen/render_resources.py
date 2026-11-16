@@ -50,11 +50,22 @@ def _runtime_imports(entries: tuple[MethodEntry, ...]) -> list[str]:
         lines.append("from conjoin_cloud._models import AsyncPage, Page")
     if any(_is_multipart(operation) for operation in operations):
         lines.append("from conjoin_cloud._multipart import MultipartBody")
-    option_names = ["RequestOptions"]
-    if any(operation.auth_mode == "none" for operation in operations):
-        option_names.insert(0, "AUTH_NONE")
-    if any(operation.auth_mode == "scim_bearer" for operation in operations):
-        option_names.append("scim_bearer_auth")
+    modes = {operation.auth_mode for operation in operations}
+    if any(_takes_credential(operation) for operation in operations):
+        lines.append("from conjoin_cloud._credential import Credential")
+    if any(operation.declared_headers for operation in operations):
+        lines.append("from conjoin_cloud._declared_headers import DeclaredHeader")
+    option_names = [
+        name
+        for name, needed in (
+            ("AUTH_NONE", bool(modes & {"none", "portal_ticket"})),
+            ("AUTH_PUBLISHABLE_KEY", "publishable_key" in modes),
+            ("RequestOptions", True),
+            ("scim_bearer_auth", "scim_bearer" in modes),
+            ("session_auth", "session" in modes),
+        )
+        if needed
+    ]
     lines.append(f"from conjoin_cloud._request_options import {', '.join(option_names)}")
     if any(operation.path_parameters for operation in operations):
         lines.append("from conjoin_cloud._url import encode_path_param")
@@ -103,9 +114,10 @@ def _method(entry: MethodEntry, *, is_async: bool) -> list[str]:
     annotation = response_annotation(entry, is_async=is_async)
     lines = [f"    {'async ' if is_async else ''}def {entry.method_name}(", "        self,"]
     lines.extend(f"        {parameter}," for parameter in _method_parameters(entry))
+    lines.append("        *,")
+    lines.extend(f"        {parameter}," for parameter in _keyword_parameters(operation))
     lines.extend(
         [
-            "        *,",
             "        request_options: RequestOptions | Mapping[str, Any] | None = None,",
             f"    ) -> {annotation}:",
         ]
@@ -140,10 +152,16 @@ def _call_arguments(entry: MethodEntry, *, is_async: bool) -> list[str]:
         arguments.append(f"scopes=({scopes})")
     if operation.accepts_idempotency_key:
         arguments.append("accepts_idempotency_key=True")
-    if operation.auth_mode == "none":
+    if operation.auth_mode in ("none", "portal_ticket"):
         arguments.append("default_auth=AUTH_NONE")
     elif operation.auth_mode == "scim_bearer":
         arguments.append("default_auth=scim_bearer_auth(self._scim_token)")
+    elif operation.auth_mode == "publishable_key":
+        arguments.append("default_auth=AUTH_PUBLISHABLE_KEY")
+    elif operation.auth_mode == "session":
+        arguments.append("default_auth=session_auth(session_token)")
+    if operation.declared_headers:
+        arguments.append(_declared_headers_argument(operation))
     if operation.response_kind == "body":
         arguments.append("unwrap_data=False")
     return arguments
@@ -167,6 +185,51 @@ def _method_parameters(entry: MethodEntry) -> list[str]:
             f"query: {query_type}" if query_required else f"query: {query_type} | None = None"
         )
     return parameters
+
+
+def _takes_credential(operation: Operation) -> bool:
+    return operation.auth_mode == "session" or any(
+        header.credential for header in operation.declared_headers
+    )
+
+
+def _keyword_parameters(operation: Operation) -> list[str]:
+    parameters: list[str] = []
+    for header in operation.declared_headers:
+        header_type = "Credential" if header.credential else "str"
+        parameters.append(
+            f"{header.python_name}: {header_type}"
+            if header.required
+            else f"{header.python_name}: {header_type} | None = None"
+        )
+    if operation.auth_mode == "session":
+        parameters.append("session_token: Credential")
+    return parameters
+
+
+def _declared_headers_argument(operation: Operation) -> str:
+    lines = ["declared_headers=("]
+    for header in operation.declared_headers:
+        fields = [
+            f"name={header.name!r}",
+            f"argument={header.python_name!r}",
+            f"value={header.python_name}",
+        ]
+        if header.required:
+            fields.append("required=True")
+        if header.credential:
+            fields.append("credential=True")
+        if header.min_length is not None:
+            fields.append(f"min_length={header.min_length}")
+        if header.max_length is not None:
+            fields.append(f"max_length={header.max_length}")
+        if header.pattern is not None:
+            fields.append(f"pattern={header.pattern!r}")
+        lines.append("                DeclaredHeader(")
+        lines.extend(f"                    {field}," for field in fields)
+        lines.append("                ),")
+    lines.append("            )")
+    return "\n".join(lines)
 
 
 def _body_expression(entry: MethodEntry) -> str:

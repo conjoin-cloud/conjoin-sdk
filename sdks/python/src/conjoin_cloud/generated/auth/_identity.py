@@ -34,6 +34,7 @@ class AuthIdentitiesResource:
             cast_to=AuthIdentityDiscoverAccountResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     def link(
@@ -50,6 +51,7 @@ class AuthIdentitiesResource:
             cast_to=AuthIdentityLinkResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     def unlink(
@@ -65,6 +67,7 @@ class AuthIdentitiesResource:
             body=data,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
 
@@ -85,6 +88,7 @@ class AsyncAuthIdentitiesResource:
             cast_to=AuthIdentityDiscoverAccountResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     async def link(
@@ -101,6 +105,7 @@ class AsyncAuthIdentitiesResource:
             cast_to=AuthIdentityLinkResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     async def unlink(
@@ -116,4 +121,5 @@ class AsyncAuthIdentitiesResource:
             body=data,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )

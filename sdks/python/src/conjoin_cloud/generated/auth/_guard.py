@@ -76,6 +76,7 @@ class AuthGuardsResource:
             cast_to=AuthGuardCreateRuleResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     def list_rules_count(
@@ -180,6 +181,7 @@ class AuthGuardsResource:
             cast_to=AuthGuardAddTrustedIpResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     def remove_trusted_ip(
@@ -195,6 +197,7 @@ class AuthGuardsResource:
             cast_to=AuthGuardRemoveTrustedIpResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     def add_trusted_email(
@@ -210,6 +213,7 @@ class AuthGuardsResource:
             cast_to=AuthGuardAddTrustedEmailResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     def remove_trusted_email(
@@ -225,6 +229,7 @@ class AuthGuardsResource:
             cast_to=AuthGuardRemoveTrustedEmailResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     def add_trusted_domain(
@@ -240,6 +245,7 @@ class AuthGuardsResource:
             cast_to=AuthGuardAddTrustedDomainResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     def remove_trusted_domain(
@@ -255,6 +261,7 @@ class AuthGuardsResource:
             cast_to=AuthGuardRemoveTrustedDomainResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     def list_anonymous_ips(
@@ -283,6 +290,7 @@ class AuthGuardsResource:
             cast_to=AuthGuardAddAnonymousIpsResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     def remove_anonymous_ips(
@@ -298,6 +306,7 @@ class AuthGuardsResource:
             cast_to=AuthGuardRemoveAnonymousIpsResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
 
@@ -333,6 +342,7 @@ class AsyncAuthGuardsResource:
             cast_to=AuthGuardCreateRuleResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     async def list_rules_count(
@@ -437,6 +447,7 @@ class AsyncAuthGuardsResource:
             cast_to=AuthGuardAddTrustedIpResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     async def remove_trusted_ip(
@@ -452,6 +463,7 @@ class AsyncAuthGuardsResource:
             cast_to=AuthGuardRemoveTrustedIpResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     async def add_trusted_email(
@@ -467,6 +479,7 @@ class AsyncAuthGuardsResource:
             cast_to=AuthGuardAddTrustedEmailResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     async def remove_trusted_email(
@@ -482,6 +495,7 @@ class AsyncAuthGuardsResource:
             cast_to=AuthGuardRemoveTrustedEmailResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     async def add_trusted_domain(
@@ -497,6 +511,7 @@ class AsyncAuthGuardsResource:
             cast_to=AuthGuardAddTrustedDomainResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     async def remove_trusted_domain(
@@ -512,6 +527,7 @@ class AsyncAuthGuardsResource:
             cast_to=AuthGuardRemoveTrustedDomainResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     async def list_anonymous_ips(
@@ -540,6 +556,7 @@ class AsyncAuthGuardsResource:
             cast_to=AuthGuardAddAnonymousIpsResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     async def remove_anonymous_ips(
@@ -555,4 +572,5 @@ class AsyncAuthGuardsResource:
             cast_to=AuthGuardRemoveAnonymousIpsResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )

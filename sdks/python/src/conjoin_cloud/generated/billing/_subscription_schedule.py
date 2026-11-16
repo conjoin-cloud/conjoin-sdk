@@ -56,6 +56,7 @@ class BillingSubscriptionSchedulesResource:
             cast_to=BillingSubscriptionScheduleCreateResponse,
             request_options=request_options,
             scopes=('billing_entity_id',),
+            accepts_idempotency_key=True,
         )
 
     def list_count(
@@ -100,6 +101,7 @@ class BillingSubscriptionSchedulesResource:
             cast_to=BillingSubscriptionScheduleCancelResponse,
             request_options=request_options,
             scopes=('billing_entity_id',),
+            accepts_idempotency_key=True,
         )
 
     def release(
@@ -114,6 +116,7 @@ class BillingSubscriptionSchedulesResource:
             cast_to=BillingSubscriptionScheduleReleaseResponse,
             request_options=request_options,
             scopes=('billing_entity_id',),
+            accepts_idempotency_key=True,
         )
 
 
@@ -151,6 +154,7 @@ class AsyncBillingSubscriptionSchedulesResource:
             cast_to=BillingSubscriptionScheduleCreateResponse,
             request_options=request_options,
             scopes=('billing_entity_id',),
+            accepts_idempotency_key=True,
         )
 
     async def list_count(
@@ -195,6 +199,7 @@ class AsyncBillingSubscriptionSchedulesResource:
             cast_to=BillingSubscriptionScheduleCancelResponse,
             request_options=request_options,
             scopes=('billing_entity_id',),
+            accepts_idempotency_key=True,
         )
 
     async def release(
@@ -209,4 +214,5 @@ class AsyncBillingSubscriptionSchedulesResource:
             cast_to=BillingSubscriptionScheduleReleaseResponse,
             request_options=request_options,
             scopes=('billing_entity_id',),
+            accepts_idempotency_key=True,
         )

@@ -7,15 +7,18 @@ from conjoin_cloud._models import AsyncPage, Page
 from conjoin_cloud._request_options import RequestOptions
 from conjoin_cloud._url import encode_path_param
 from conjoin_cloud.generated._models import (
+    MessagingContactAddPropertiesRequest,
     MessagingContactAddPropertiesResponse,
     MessagingContactCreateRequest,
     MessagingContactCreateResponse,
+    MessagingContactDeletePropertiesRequest,
     MessagingContactDeletePropertiesResponse,
     MessagingContactDeleteResponse,
     MessagingContactListItem,
     MessagingContactListRequest,
     MessagingContactSuppressMessagesRequest,
     MessagingContactSuppressMessagesResponse,
+    MessagingContactUpdatePropertyRequest,
     MessagingContactUpdatePropertyResponse,
     MessagingContactUpdateRequest,
     MessagingContactUpdateResponse,
@@ -42,6 +45,7 @@ class MessagingContactsResource:
             cast_to=MessagingContactCreateResponse,
             request_options=request_options,
             scopes=('messaging_profile_id',),
+            accepts_idempotency_key=True,
         )
 
     def suppress_messages(
@@ -103,17 +107,20 @@ class MessagingContactsResource:
             cast_to=Page[MessagingContactListItem],
             request_options=request_options,
             scopes=('messaging_profile_id',),
+            accepts_idempotency_key=True,
         )
 
     def add_properties(
         self,
         contact_id: str,
+        data: MessagingContactAddPropertiesRequest,
         *,
         request_options: RequestOptions | Mapping[str, Any] | None = None,
     ) -> MessagingContactAddPropertiesResponse:
         return self._client.request(
             'PUT',
             f'messaging/contacts/{encode_path_param(contact_id)}/properties',
+            body=data,
             cast_to=MessagingContactAddPropertiesResponse,
             request_options=request_options,
             scopes=('messaging_profile_id',),
@@ -122,12 +129,14 @@ class MessagingContactsResource:
     def update_property(
         self,
         contact_id: str,
+        data: MessagingContactUpdatePropertyRequest,
         *,
         request_options: RequestOptions | Mapping[str, Any] | None = None,
     ) -> MessagingContactUpdatePropertyResponse:
         return self._client.request(
             'PATCH',
             f'messaging/contacts/{encode_path_param(contact_id)}/properties',
+            body=data,
             cast_to=MessagingContactUpdatePropertyResponse,
             request_options=request_options,
             scopes=('messaging_profile_id',),
@@ -136,15 +145,18 @@ class MessagingContactsResource:
     def delete_properties(
         self,
         contact_id: str,
+        data: MessagingContactDeletePropertiesRequest,
         *,
         request_options: RequestOptions | Mapping[str, Any] | None = None,
     ) -> MessagingContactDeletePropertiesResponse:
         return self._client.request(
-            'DELETE',
-            f'messaging/contacts/{encode_path_param(contact_id)}/properties',
+            'POST',
+            f'messaging/contacts/{encode_path_param(contact_id)}/properties/remove',
+            body=data,
             cast_to=MessagingContactDeletePropertiesResponse,
             request_options=request_options,
             scopes=('messaging_profile_id',),
+            accepts_idempotency_key=True,
         )
 
 
@@ -165,6 +177,7 @@ class AsyncMessagingContactsResource:
             cast_to=MessagingContactCreateResponse,
             request_options=request_options,
             scopes=('messaging_profile_id',),
+            accepts_idempotency_key=True,
         )
 
     async def suppress_messages(
@@ -226,17 +239,20 @@ class AsyncMessagingContactsResource:
             cast_to=AsyncPage[MessagingContactListItem],
             request_options=request_options,
             scopes=('messaging_profile_id',),
+            accepts_idempotency_key=True,
         )
 
     async def add_properties(
         self,
         contact_id: str,
+        data: MessagingContactAddPropertiesRequest,
         *,
         request_options: RequestOptions | Mapping[str, Any] | None = None,
     ) -> MessagingContactAddPropertiesResponse:
         return await self._client.request(
             'PUT',
             f'messaging/contacts/{encode_path_param(contact_id)}/properties',
+            body=data,
             cast_to=MessagingContactAddPropertiesResponse,
             request_options=request_options,
             scopes=('messaging_profile_id',),
@@ -245,12 +261,14 @@ class AsyncMessagingContactsResource:
     async def update_property(
         self,
         contact_id: str,
+        data: MessagingContactUpdatePropertyRequest,
         *,
         request_options: RequestOptions | Mapping[str, Any] | None = None,
     ) -> MessagingContactUpdatePropertyResponse:
         return await self._client.request(
             'PATCH',
             f'messaging/contacts/{encode_path_param(contact_id)}/properties',
+            body=data,
             cast_to=MessagingContactUpdatePropertyResponse,
             request_options=request_options,
             scopes=('messaging_profile_id',),
@@ -259,13 +277,16 @@ class AsyncMessagingContactsResource:
     async def delete_properties(
         self,
         contact_id: str,
+        data: MessagingContactDeletePropertiesRequest,
         *,
         request_options: RequestOptions | Mapping[str, Any] | None = None,
     ) -> MessagingContactDeletePropertiesResponse:
         return await self._client.request(
-            'DELETE',
-            f'messaging/contacts/{encode_path_param(contact_id)}/properties',
+            'POST',
+            f'messaging/contacts/{encode_path_param(contact_id)}/properties/remove',
+            body=data,
             cast_to=MessagingContactDeletePropertiesResponse,
             request_options=request_options,
             scopes=('messaging_profile_id',),
+            accepts_idempotency_key=True,
         )

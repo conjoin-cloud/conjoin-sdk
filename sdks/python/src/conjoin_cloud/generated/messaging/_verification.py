@@ -12,7 +12,6 @@ from conjoin_cloud.generated._models import (
     MessagingVerificationCreateResponse,
     MessagingVerificationListMessagesItem,
     MessagingVerificationListMessagesRequest,
-    MessagingVerificationResendRequest,
     MessagingVerificationResendResponse,
 )
 
@@ -32,40 +31,40 @@ class MessagingVerificationsResource:
     ) -> MessagingVerificationCreateResponse:
         return self._client.request(
             'POST',
-            'messaging/otps/send',
+            'messaging/verifications/send',
             body=data,
             cast_to=MessagingVerificationCreateResponse,
             request_options=request_options,
             scopes=('messaging_profile_id',),
+            accepts_idempotency_key=True,
         )
 
     def check(
         self,
-        token: str,
+        verification_id: str,
         data: MessagingVerificationCheckRequest,
         *,
         request_options: RequestOptions | Mapping[str, Any] | None = None,
     ) -> MessagingVerificationCheckResponse:
         return self._client.request(
-            'PATCH',
-            f'messaging/otps/verify/{encode_path_param(token)}',
+            'POST',
+            f'messaging/verifications/{encode_path_param(verification_id)}/check',
             body=data,
             cast_to=MessagingVerificationCheckResponse,
             request_options=request_options,
             scopes=('messaging_profile_id',),
+            accepts_idempotency_key=True,
         )
 
     def resend(
         self,
         verification_id: str,
-        data: MessagingVerificationResendRequest,
         *,
         request_options: RequestOptions | Mapping[str, Any] | None = None,
     ) -> MessagingVerificationResendResponse:
         return self._client.request(
             'PATCH',
-            f'messaging/otps/resend/{encode_path_param(verification_id)}',
-            body=data,
+            f'messaging/verifications/resend/{encode_path_param(verification_id)}',
             cast_to=MessagingVerificationResendResponse,
             request_options=request_options,
             scopes=('messaging_profile_id',),
@@ -79,11 +78,12 @@ class MessagingVerificationsResource:
     ) -> Page[MessagingVerificationListMessagesItem]:
         return self._client.request(
             'POST',
-            'messaging/otps/messages',
+            'messaging/verifications/messages',
             body=data,
             cast_to=Page[MessagingVerificationListMessagesItem],
             request_options=request_options,
             scopes=('messaging_profile_id',),
+            accepts_idempotency_key=True,
         )
 
 
@@ -99,40 +99,40 @@ class AsyncMessagingVerificationsResource:
     ) -> MessagingVerificationCreateResponse:
         return await self._client.request(
             'POST',
-            'messaging/otps/send',
+            'messaging/verifications/send',
             body=data,
             cast_to=MessagingVerificationCreateResponse,
             request_options=request_options,
             scopes=('messaging_profile_id',),
+            accepts_idempotency_key=True,
         )
 
     async def check(
         self,
-        token: str,
+        verification_id: str,
         data: MessagingVerificationCheckRequest,
         *,
         request_options: RequestOptions | Mapping[str, Any] | None = None,
     ) -> MessagingVerificationCheckResponse:
         return await self._client.request(
-            'PATCH',
-            f'messaging/otps/verify/{encode_path_param(token)}',
+            'POST',
+            f'messaging/verifications/{encode_path_param(verification_id)}/check',
             body=data,
             cast_to=MessagingVerificationCheckResponse,
             request_options=request_options,
             scopes=('messaging_profile_id',),
+            accepts_idempotency_key=True,
         )
 
     async def resend(
         self,
         verification_id: str,
-        data: MessagingVerificationResendRequest,
         *,
         request_options: RequestOptions | Mapping[str, Any] | None = None,
     ) -> MessagingVerificationResendResponse:
         return await self._client.request(
             'PATCH',
-            f'messaging/otps/resend/{encode_path_param(verification_id)}',
-            body=data,
+            f'messaging/verifications/resend/{encode_path_param(verification_id)}',
             cast_to=MessagingVerificationResendResponse,
             request_options=request_options,
             scopes=('messaging_profile_id',),
@@ -146,9 +146,10 @@ class AsyncMessagingVerificationsResource:
     ) -> AsyncPage[MessagingVerificationListMessagesItem]:
         return await self._client.request(
             'POST',
-            'messaging/otps/messages',
+            'messaging/verifications/messages',
             body=data,
             cast_to=AsyncPage[MessagingVerificationListMessagesItem],
             request_options=request_options,
             scopes=('messaging_profile_id',),
+            accepts_idempotency_key=True,
         )

@@ -55,6 +55,7 @@ class AuthAppsResource:
             body=data,
             cast_to=AuthAppCreateResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     def list_count(
@@ -125,6 +126,7 @@ class AuthAppsResource:
             f'auth/apps/{encode_path_param(app_id)}/signing-keys/rotate',
             cast_to=AuthAppRotateSigningKeysResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
             unwrap_data=False,
         )
 
@@ -159,6 +161,7 @@ class AsyncAuthAppsResource:
             body=data,
             cast_to=AuthAppCreateResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     async def list_count(
@@ -229,5 +232,6 @@ class AsyncAuthAppsResource:
             f'auth/apps/{encode_path_param(app_id)}/signing-keys/rotate',
             cast_to=AuthAppRotateSigningKeysResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
             unwrap_data=False,
         )

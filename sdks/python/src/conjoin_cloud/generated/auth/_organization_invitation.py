@@ -56,6 +56,7 @@ class AuthOrganizationInvitationsResource:
             cast_to=AuthOrganizationInvitationCreateInvitationResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     def list_invitations_count(
@@ -90,6 +91,7 @@ class AuthOrganizationInvitationsResource:
             cast_to=AuthOrganizationInvitationRevokeInvitationResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     def resend_invitation(
@@ -110,6 +112,7 @@ class AuthOrganizationInvitationsResource:
             cast_to=AuthOrganizationInvitationResendInvitationResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
 
@@ -147,6 +150,7 @@ class AsyncAuthOrganizationInvitationsResource:
             cast_to=AuthOrganizationInvitationCreateInvitationResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     async def list_invitations_count(
@@ -181,6 +185,7 @@ class AsyncAuthOrganizationInvitationsResource:
             cast_to=AuthOrganizationInvitationRevokeInvitationResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     async def resend_invitation(
@@ -201,4 +206,5 @@ class AsyncAuthOrganizationInvitationsResource:
             cast_to=AuthOrganizationInvitationResendInvitationResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )

@@ -34,6 +34,7 @@ class AuthAccountRecoveriesResource:
             cast_to=AuthAccountRecoveryStartRecoveryResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     def verify_recovery(
@@ -50,6 +51,7 @@ class AuthAccountRecoveriesResource:
             cast_to=AuthAccountRecoveryVerifyRecoveryResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     def complete_recovery(
@@ -66,6 +68,7 @@ class AuthAccountRecoveriesResource:
             cast_to=AuthAccountRecoveryCompleteRecoveryResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     def admin_reset_account(
@@ -80,6 +83,7 @@ class AuthAccountRecoveriesResource:
             cast_to=AuthAccountRecoveryAdminResetAccountResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
 
@@ -99,6 +103,7 @@ class AsyncAuthAccountRecoveriesResource:
             cast_to=AuthAccountRecoveryStartRecoveryResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     async def verify_recovery(
@@ -115,6 +120,7 @@ class AsyncAuthAccountRecoveriesResource:
             cast_to=AuthAccountRecoveryVerifyRecoveryResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     async def complete_recovery(
@@ -131,6 +137,7 @@ class AsyncAuthAccountRecoveriesResource:
             cast_to=AuthAccountRecoveryCompleteRecoveryResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
 
     async def admin_reset_account(
@@ -145,4 +152,5 @@ class AsyncAuthAccountRecoveriesResource:
             cast_to=AuthAccountRecoveryAdminResetAccountResponse,
             request_options=request_options,
             scopes=('auth_app_id',),
+            accepts_idempotency_key=True,
         )
