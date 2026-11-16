@@ -18,12 +18,14 @@ import (
 )
 
 const (
-	stepUpAPIKey    = "cak_test_harbourledgerstepup"
-	stepUpAuthApp   = "app_harbourledger"
-	stepUpAccountID = "acc_harbourledger_owner"
-	stepUpSessionID = "sus_harbourledger_0198f0f7"
-	stepUpToken     = "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08"
-	deletedAccount  = `{"response":{"type":"SUCCESS","code":200,"message":"Success"},"data":{"account_id":"acc_harbourledger_owner","deleted":true}}`
+	stepUpAPIKey     = "cak_test_harbourledgerstepup"
+	stepUpAuthApp    = "app_harbourledger"
+	stepUpAccountID  = "acc_harbourledger_owner"
+	stepUpSessionID  = "sus_harbourledger_0198f0f7"
+	stepUpToken      = "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08"
+	pinnedAPIVersion = "2026-06-01"
+	callerVersion    = "9.9.9"
+	deletedAccount   = `{"response":{"type":"SUCCESS","code":200,"message":"Success"},"data":{"account_id":"acc_harbourledger_owner","deleted":true}}`
 )
 
 type receivedRequest struct {
@@ -114,6 +116,34 @@ func TestDeleteAuthAccountKeepsTheTypedStepUpValuesOverFreeFormHeaders(t *testin
 	}
 	if got := request.header.Values("Step-Up-Session-Id"); len(got) != 1 || got[0] != stepUpSessionID {
 		t.Fatalf("the Step-Up-Session-Id header arrived as %q", got)
+	}
+}
+
+func TestFreeFormVersionHeadersInAnotherCaseNeverReachTheWire(t *testing.T) {
+	receiver := startHeaderReceiver(t, deletedAccount)
+	client, err := conjoin.NewClient(
+		conjoin.WithAPIKey(stepUpAPIKey),
+		conjoin.WithBaseURL(receiver.server.URL),
+		conjoin.WithAuthAppID(stepUpAuthApp),
+		conjoin.WithAPIVersion(pinnedAPIVersion),
+		conjoin.WithMaxRetries(0),
+	)
+	if err != nil {
+		t.Fatalf("the client did not start: %v", err)
+	}
+
+	_, err = auth.New(client).Accounts.Delete(context.Background(), stepUpAccountID, nil, auth.DeleteAccountHeaders{},
+		conjoin.WithHeader("x-conjoin-api-version", callerVersion), conjoin.WithHeader("X-CONJOIN-SDK-VERSION", callerVersion))
+	if err != nil {
+		t.Fatalf("the delete failed: %v", err)
+	}
+
+	request := receiver.take()[0]
+	if got := request.header.Values("X-Conjoin-Api-Version"); len(got) != 1 || got[0] != pinnedAPIVersion {
+		t.Fatalf("the X-Conjoin-API-Version header arrived as %q", got)
+	}
+	if got := request.header.Values("X-Conjoin-Sdk-Version"); len(got) != 1 || got[0] == callerVersion || strings.Contains(got[0], ",") {
+		t.Fatalf("the X-Conjoin-SDK-Version header arrived as %q", got)
 	}
 }
 

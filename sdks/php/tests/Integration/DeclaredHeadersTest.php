@@ -40,6 +40,10 @@ final class DeclaredHeadersTest extends TestCase
 
     private const STEP_UP_TOKEN = '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08';
 
+    private const PINNED_API_VERSION = '2026-06-01';
+
+    private const CALLER_VERSION = '9.9.9';
+
     private const DELETE_ACCOUNT = 'DELETE /v1/auth/accounts/{account_id}';
 
     private const FRONTEND_ROUTES = [
@@ -84,6 +88,26 @@ final class DeclaredHeadersTest extends TestCase
         self::assertSame(self::STEP_UP_SESSION_ID, $this->server()->attempt(0)->header('step-up-session-id'));
         self::assertNull($this->server()->attempt(1)->header('step-up-token'));
         self::assertNull($this->server()->attempt(1)->header('step-up-session-id'));
+    }
+
+    public function testFreeFormVersionHeadersInAnotherCaseNeverReachTheWire(): void
+    {
+        $this->startServer('openapi.json', self::DELETE_ACCOUNT);
+        $client = new ConjoinClient(
+            apiKey: self::SECRET_API_KEY,
+            baseUrl: $this->server()->baseUrl(),
+            maxRetries: 0,
+            authAppId: self::AUTH_APP_ID,
+            apiVersion: self::PINNED_API_VERSION,
+        );
+        $headers = new CallOptions(headers: ['x-conjoin-api-version' => self::CALLER_VERSION, 'X-CONJOIN-SDK-VERSION' => self::CALLER_VERSION]);
+
+        (new AuthAccounts($client))->delete(self::ACCOUNT_ID, options: $headers);
+
+        $attempt = $this->server()->attempt(0);
+        self::assertSame(self::PINNED_API_VERSION, $attempt->header('x-conjoin-api-version'));
+        self::assertMatchesRegularExpression('/^\d+\.\d+\.\d+$/', (string) $attempt->header('x-conjoin-sdk-version'));
+        self::assertNotSame(self::CALLER_VERSION, $attempt->header('x-conjoin-sdk-version'));
     }
 
     public static function malformedStepUpTokens(): array

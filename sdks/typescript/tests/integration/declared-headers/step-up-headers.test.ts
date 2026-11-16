@@ -10,6 +10,8 @@ const ACCOUNT_ID = 'acc_harbourledger_owner'
 const STEP_UP_SESSION_ID = 'sus_harbourledger_0198f0f7'
 const STEP_UP_TOKEN = '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08'
 const DELETED_ACCOUNT = { account_id: ACCOUNT_ID, deleted: true }
+const PINNED_API_VERSION = '2026-06-01'
+const CALLER_VERSION = '9.9.9'
 
 type ReceivedRequest = {
   method: string | undefined
@@ -79,6 +81,28 @@ describe('deleteAuthAccount sends the step-up headers it declares', () => {
 
     expect(received[0]?.headers['step-up-token']).toBe(STEP_UP_TOKEN)
     expect(received[0]?.headers['step-up-session-id']).toBe(STEP_UP_SESSION_ID)
+  })
+
+  it('sends one value of each version header when free-form headers repeat them in another case', async () => {
+    const accounts = createAuthAccounts(
+      createConjoinClient({
+        apiKey: API_KEY,
+        baseUrl,
+        authAppId: AUTH_APP_ID,
+        apiVersion: PINNED_API_VERSION,
+        retry: { maxRetries: 0 },
+      }),
+    )
+
+    await accounts.delete(ACCOUNT_ID, undefined, undefined, {
+      headers: { 'x-conjoin-api-version': CALLER_VERSION, 'X-CONJOIN-SDK-VERSION': CALLER_VERSION },
+    })
+
+    const sdkVersion = received[0]?.headers['x-conjoin-sdk-version']
+
+    expect(received[0]?.headers['x-conjoin-api-version']).toBe(PINNED_API_VERSION)
+    expect(sdkVersion).toMatch(/^\d+\.\d+\.\d+$/)
+    expect(sdkVersion).not.toBe(CALLER_VERSION)
   })
 
   it('leaves both headers off the wire when the caller supplies neither', async () => {

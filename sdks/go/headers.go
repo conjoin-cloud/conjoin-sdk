@@ -14,6 +14,8 @@ const (
 var managedHeaders = map[string]bool{
 	http.CanonicalHeaderKey(authorizationHeader):      true,
 	http.CanonicalHeaderKey(contentTypeHeader):        true,
+	http.CanonicalHeaderKey(sdkVersionHeader):         true,
+	http.CanonicalHeaderKey(apiVersionHeader):         true,
 	http.CanonicalHeaderKey(requestIDHeader):          true,
 	http.CanonicalHeaderKey(idempotencyKeyHeader):     true,
 	http.CanonicalHeaderKey(scopeBillingEntityHeader): true,
