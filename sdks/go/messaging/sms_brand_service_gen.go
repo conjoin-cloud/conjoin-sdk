@@ -74,5 +74,6 @@ func (s *SMSBrandsService) ListSmsBrands(ctx context.Context, body *ListSmsBrand
 		BodyRequired:          true,
 		Scopes:                []conjoin.ScopeName{conjoin.ScopeMessagingProfile},
 		AcceptsIdempotencyKey: true,
+		Cursor:                conjoin.CursorInBody,
 	}, opts...)
 }

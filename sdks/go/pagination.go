@@ -115,7 +115,7 @@ func fetchPage[T any](ctx context.Context, client *Client, op Operation, query u
 }
 
 func (p *Page[T]) HasNextPage() bool {
-	return p != nil && p.Cursor.Next != "" && p.client != nil
+	return p != nil && p.Cursor.Next != "" && p.client != nil && p.op.Cursor != CursorNotAccepted
 }
 
 func (p *Page[T]) NextPage(ctx context.Context) (*Page[T], error) {
@@ -125,6 +125,9 @@ func (p *Page[T]) NextPage(ctx context.Context) (*Page[T], error) {
 	if !p.trail.claim(p.Cursor.Next, p.depth) {
 		return nil, &ResponseError{Status: p.status, RequestID: p.RequestID, Reason: "the list returned a cursor that it had returned before"}
 	}
+	if p.op.Cursor == CursorInBody {
+		return p.nextPageInBody(ctx)
+	}
 	query := url.Values{}
 	for key, values := range p.query {
 		if key != cursorNextQueryKey && key != cursorPrevQueryKey {
@@ -133,6 +136,48 @@ func (p *Page[T]) NextPage(ctx context.Context) (*Page[T], error) {
 	}
 	query.Set(cursorNextQueryKey, p.Cursor.Next)
 	return fetchPage[T](ctx, p.client, p.op, query, p.opts, p.trail, p.depth+1)
+}
+
+func (p *Page[T]) nextPageInBody(ctx context.Context) (*Page[T], error) {
+	body, err := bodyWithNextCursor(p.op.Body, p.Cursor.Next)
+	if err != nil {
+		return nil, err
+	}
+	op := p.op
+	op.Body = body
+	opts := append(append([]CallOption(nil), p.opts...), freshIdempotencyKey())
+	return fetchPage[T](ctx, p.client, op, p.query, opts, p.trail, p.depth+1)
+}
+
+func bodyWithNextCursor(body any, next string) (json.RawMessage, error) {
+	fields := map[string]json.RawMessage{}
+	if !isNil(body) {
+		raw, err := json.Marshal(body)
+		if err != nil {
+			return nil, configurationError("the request body could not be encoded as JSON")
+		}
+		if err := json.Unmarshal(raw, &fields); err != nil || fields == nil {
+			return nil, configurationError("a list request body must encode to a JSON object")
+		}
+	}
+	cursor, err := json.Marshal(map[string]string{"next": next})
+	if err != nil {
+		return nil, configurationError("the list cursor could not be encoded as JSON")
+	}
+	fields["cursor"] = cursor
+	encoded, err := json.Marshal(fields)
+	if err != nil {
+		return nil, configurationError("the request body could not be encoded as JSON")
+	}
+	return encoded, nil
+}
+
+func freshIdempotencyKey() CallOption {
+	return callOptionFunc(func(s *callSettings) error {
+		s.idempotencyKey = ""
+		s.hasIdempotency = false
+		return nil
+	})
 }
 
 func (p *Page[T]) All(ctx context.Context) iter.Seq2[T, error] {

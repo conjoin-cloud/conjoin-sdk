@@ -7,6 +7,8 @@ export type ScopeName = 'billingEntityId' | 'messagingProfileId' | 'authAppId'
 
 export type ResponseKind = 'envelope' | 'list' | 'body' | 'empty'
 
+export type CursorLocation = 'query' | 'body' | 'none'
+
 export type DeclaredHeader = {
   name: string
   argumentName: string
@@ -27,6 +29,7 @@ export type OperationInfo = {
   responseContentType: string
   successCode: string
   responseKind: ResponseKind
+  cursorLocation: CursorLocation
   hasQueryParams: boolean
   queryRequired: boolean
   scopes: ScopeName[]
@@ -45,7 +48,11 @@ export type ResourceGroup = {
 
 type Spec = {
   paths: Record<string, Record<string, unknown>>
-  components?: { parameters?: Record<string, Record<string, unknown>>; securitySchemes?: Record<string, unknown> }
+  components?: {
+    parameters?: Record<string, Record<string, unknown>>
+    schemas?: Record<string, unknown>
+    securitySchemes?: Record<string, unknown>
+  }
 }
 
 const HTTP_METHODS = new Set<string>(['get', 'post', 'put', 'patch', 'delete'])
@@ -118,6 +125,38 @@ function readResponseKind(properties: Record<string, unknown> | undefined, hasCo
   const data = properties.data
 
   return isRecord(data) && data.type === 'array' && 'cursor' in properties ? 'list' : 'envelope'
+}
+
+function resolveSchema(spec: Spec, raw: unknown): Record<string, unknown> {
+  if (!isRecord(raw) || typeof raw.$ref !== 'string') return isRecord(raw) ? raw : {}
+
+  const resolved = spec.components?.schemas?.[raw.$ref.replace('#/components/schemas/', '')]
+
+  if (!isRecord(resolved)) throw new Error(`Unresolved schema reference ${raw.$ref}`)
+
+  return resolved
+}
+
+function readCursorLocation(
+  spec: Spec,
+  operationId: string,
+  responseKind: ResponseKind,
+  queryParameters: Record<string, unknown>[],
+  requestContent: Record<string, unknown>,
+): CursorLocation {
+  if (responseKind !== 'list') return 'none'
+
+  const media = requestContent['application/json']
+  const bodySchema = resolveSchema(spec, isRecord(media) ? media.schema : undefined)
+  const bodyProperties = isRecord(bodySchema.properties) ? bodySchema.properties : {}
+  const inBody = 'cursor' in bodyProperties
+  const inQuery = queryParameters.some(parameter => parameter.name === 'cursor')
+
+  if (inBody && inQuery) throw new Error(`${operationId} declares a cursor in both its query and its body`)
+
+  if (inBody) return 'body'
+
+  return inQuery ? 'query' : 'none'
 }
 
 function assertBodyAllowed(httpMethod: HttpMethod, operationId: string): void {
@@ -210,6 +249,7 @@ function buildOperation(spec: Spec, path: string, method: HttpMethod, operation:
   const requestContent = requestBody && isRecord(requestBody.content) ? requestBody.content : {}
   const requestContentType = Object.keys(requestContent)[0] ?? 'application/json'
   const success = readSuccessSchema(operation)
+  const responseKind = readResponseKind(success.properties, success.hasContent)
   if (requestBody !== undefined) assertBodyAllowed(method, String(operation.operationId))
 
   return {
@@ -222,7 +262,8 @@ function buildOperation(spec: Spec, path: string, method: HttpMethod, operation:
     requestContentType,
     responseContentType: success.contentType,
     successCode: success.successCode,
-    responseKind: readResponseKind(success.properties, success.hasContent),
+    responseKind,
+    cursorLocation: readCursorLocation(spec, operationId, responseKind, queryParameters, requestContent),
     hasQueryParams: queryParameters.length > 0,
     queryRequired: queryParameters.some(parameter => parameter.required === true),
     scopes,

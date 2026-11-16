@@ -242,6 +242,68 @@ const expectReturnedData = (result: unknown, body: unknown, schema: unknown, doc
   expect(result).toEqual(body.data)
 }
 
+type DocumentCursorLocation = 'query' | 'body' | 'none'
+
+const readDocumentCursorLocation = (
+  document: JsonRecord,
+  operation: JsonRecord,
+  requestBody: { schema: unknown } | undefined,
+): DocumentCursorLocation => {
+  const bodyProperties = resolveRef(document, requestBody?.schema).properties
+
+  if (isRecord(bodyProperties) && 'cursor' in bodyProperties) return 'body'
+
+  return readParameters(document, operation).some(parameter => parameter.in === 'query' && parameter.name === 'cursor')
+    ? 'query'
+    : 'none'
+}
+
+const isListResponseSchema = (document: JsonRecord, schema: unknown): boolean => {
+  const properties = resolveRef(document, schema).properties
+
+  return isRecord(properties) && 'data' in properties && 'cursor' in properties
+}
+
+const expectNextPageRequest = async (
+  server: ConjoinContractServer,
+  result: unknown,
+  location: DocumentCursorLocation,
+  data: unknown,
+): Promise<void> => {
+  if (!isRecord(result) || typeof result.nextPage !== 'function' || typeof result.hasNextPage !== 'function') {
+    throw new Error('A list operation returned something other than a list page')
+  }
+
+  const next = isRecord(result.cursor) ? result.cursor.next : undefined
+  if (typeof next !== 'string') throw new Error('The sampled list response holds no next cursor')
+
+  if (location === 'none') {
+    expect(result.hasNextPage()).toBe(false)
+    return
+  }
+
+  await result.nextPage()
+
+  const [first, second] = server.recorder.all()
+  if (first === undefined || second === undefined) throw new Error('The next page sent no request')
+
+  expect(second).toMatchObject({ method: first.method, pathTemplate: first.pathTemplate })
+
+  if (location === 'query') {
+    expect(second.query).toEqual({ ...first.query, 'cursor[next]': next })
+    expect(second.body).toEqual(first.body)
+    return
+  }
+
+  expect(second.body).toEqual({ ...(isRecord(data) ? data : {}), cursor: { next } })
+  expect(second.query).toEqual(first.query)
+
+  if (first.headers['idempotency-key'] !== undefined) {
+    expect(second.headers['idempotency-key']).toMatch(SERVER_IDEMPOTENCY_KEY_PATTERN)
+    expect(second.headers['idempotency-key']).not.toBe(first.headers['idempotency-key'])
+  }
+}
+
 describe.each(DOCUMENTS)('every operation in $file', ({ file, moduleDirectory, clientKey }) => {
   const document = loadConjoinOpenApiDocument(file) as unknown as JsonRecord
   const sampler = new SchemaSampler(document)
@@ -355,5 +417,14 @@ describe.each(DOCUMENTS)('every operation in $file', ({ file, moduleDirectory, c
     if (requestBody?.type === 'application/json') expect(request.body).toEqual(data)
 
     expectReturnedData(result, body, success.schema, document)
+
+    if (isListResponseSchema(document, success.schema)) {
+      await expectNextPageRequest(
+        server,
+        result,
+        readDocumentCursorLocation(document, testCase.operation, requestBody),
+        data,
+      )
+    }
   })
 })

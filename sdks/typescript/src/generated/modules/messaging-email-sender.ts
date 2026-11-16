@@ -19,7 +19,7 @@ export function createMessagingEmailSenders(client: ConjoinClient) {
       client.fetch<VerifyData>(`messaging/email/senders/${encodePathParam(senderId)}/verify`, { ...options, method: 'PATCH', scopes: ['messagingProfileId'] }),
 
     listMany: (data: ListManyBody, options?: ConjoinCallOptions) =>
-      client.fetchList<ListManyData>('messaging/email/senders/retrieve', { ...options, method: 'POST', body: data, scopes: ['messagingProfileId'], acceptsIdempotencyKey: true }),
+      client.fetchList<ListManyData>('messaging/email/senders/retrieve', { ...options, method: 'POST', body: data, scopes: ['messagingProfileId'], acceptsIdempotencyKey: true, cursorLocation: 'body' }),
 
     listOne: (senderId: string, options?: ConjoinCallOptions) =>
       client.fetch<ListOneData>(`messaging/email/senders/${encodePathParam(senderId)}`, { ...options, method: 'GET', scopes: ['messagingProfileId'] }),

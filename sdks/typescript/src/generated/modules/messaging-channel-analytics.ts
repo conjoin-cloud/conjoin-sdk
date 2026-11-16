@@ -22,7 +22,7 @@ type IncrementUnsubscribesData = NonNullable<operations['incrementChannelAnalyti
 export function createMessagingChannelAnalytics(client: ConjoinClient) {
   return {
     list: (data: ListBody, options?: ConjoinCallOptions) =>
-      client.fetchList<ListData>('messaging/email/analytics/', { ...options, method: 'POST', body: data, scopes: ['messagingProfileId'], acceptsIdempotencyKey: true }),
+      client.fetchList<ListData>('messaging/email/analytics/', { ...options, method: 'POST', body: data, scopes: ['messagingProfileId'], acceptsIdempotencyKey: true, cursorLocation: 'body' }),
 
     generateSummaries: (channelId: string, data: GenerateSummariesBody, options?: ConjoinCallOptions) =>
       client.fetch<GenerateSummariesData>(`messaging/email/analytics/channels/${encodePathParam(channelId)}/generate`, { ...options, method: 'POST', body: data, scopes: ['messagingProfileId'], acceptsIdempotencyKey: true }),
