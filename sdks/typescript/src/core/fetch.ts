@@ -11,7 +11,7 @@ import { assertValidIdempotencyKey, generateIdempotencyKey, IDEMPOTENCY_KEY_HEAD
 import { type ConjoinListPage, createListPage } from './pagination'
 import { serializeQuery } from './query-serializer'
 import { buildRequestBody } from './request-body'
-import { buildRequestHeaders, readHeaderValue } from './request-headers'
+import { buildRequestHeaders, readHeaderValue, resolveFetchCredentials } from './request-headers'
 import { generateConjoinRequestId, getConjoinRequestIdFromHeaders, isValidConjoinRequestId } from './request-tracing'
 import { canRetryMethod, computeRetryDelayMs, isRetryableStatus, parseRetryAfterMs, sleepUnlessAborted } from './retry'
 import type { ConjoinFetchListResult, ConjoinFetchResult, HttpMethod, RequestOptions, ResolvedConfig } from './types'
@@ -138,6 +138,7 @@ export async function sendConjoinRequest(
   const requestId = resolveRequestId(config, options)
   const idempotencyKey = resolveIdempotencyKey(method, options)
   const headers = assertSendableHeaders(buildRequestHeaders(config, options, { requestId, idempotencyKey }))
+  const credentials = resolveFetchCredentials(config, options.auth)
   const body = buildRequestBody(options.body, options.contentType ?? 'application/json')
   const timeout = resolvePositive(options.timeout, config.timeout, 'timeout')
   const maxRetries = resolveMaxRetries(options.maxRetries, config.retry.maxRetries)
@@ -156,7 +157,7 @@ export async function sendConjoinRequest(
     let bodyText: string | undefined
 
     try {
-      response = await fetch(url, { method, headers, body, signal, credentials: config.credentials })
+      response = await fetch(url, { method, headers, body, signal, credentials })
       if (bufferResponse && response.ok) {
         bodyText = await readBoundedText(response, config.maxResponseBytes, requestId)
       }

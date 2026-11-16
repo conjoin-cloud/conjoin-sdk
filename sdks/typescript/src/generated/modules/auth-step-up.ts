@@ -12,12 +12,12 @@ type ValidateData = NonNullable<operations['validateStepUp']['responses']['200']
 export function createAuthStepUps(client: ConjoinClient) {
   return {
     request: (accountId: string, data: RequestBody, options?: ConjoinCallOptions) =>
-      client.fetch<RequestData>(`auth/accounts/${encodePathParam(accountId)}/step-ups/start`, { ...options, method: 'POST', body: data, scopes: ['authAppId'] }),
+      client.fetch<RequestData>(`auth/accounts/${encodePathParam(accountId)}/step-ups/start`, { ...options, method: 'POST', body: data, scopes: ['authAppId'], acceptsIdempotencyKey: true }),
 
     verify: (accountId: string, data: VerifyBody, options?: ConjoinCallOptions) =>
-      client.fetch<VerifyData>(`auth/accounts/${encodePathParam(accountId)}/step-ups/verify`, { ...options, method: 'POST', body: data, scopes: ['authAppId'] }),
+      client.fetch<VerifyData>(`auth/accounts/${encodePathParam(accountId)}/step-ups/verify`, { ...options, method: 'POST', body: data, scopes: ['authAppId'], acceptsIdempotencyKey: true }),
 
     validate: (accountId: string, data: ValidateBody, options?: ConjoinCallOptions) =>
-      client.fetch<ValidateData>(`auth/accounts/${encodePathParam(accountId)}/step-ups/validate`, { ...options, method: 'POST', body: data, scopes: ['authAppId'] }),
+      client.fetch<ValidateData>(`auth/accounts/${encodePathParam(accountId)}/step-ups/validate`, { ...options, method: 'POST', body: data, scopes: ['authAppId'], acceptsIdempotencyKey: true }),
   }
 }

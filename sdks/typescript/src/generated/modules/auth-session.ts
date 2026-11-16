@@ -43,18 +43,18 @@ export function createAuthSessions(client: ConjoinClient) {
       client.fetch<UpdateData>(`auth/sessions/${encodePathParam(sessionId)}`, { ...options, method: 'PATCH', body: data, scopes: ['authAppId'] }),
 
     validate: (sessionId: string, data: ValidateBody, options?: ConjoinCallOptions) =>
-      client.fetch<ValidateData>(`auth/sessions/${encodePathParam(sessionId)}/validate`, { ...options, method: 'POST', body: data, scopes: ['authAppId'] }),
+      client.fetch<ValidateData>(`auth/sessions/${encodePathParam(sessionId)}/validate`, { ...options, method: 'POST', body: data, scopes: ['authAppId'], acceptsIdempotencyKey: true }),
 
     revoke: (sessionId: string, options?: ConjoinCallOptions) =>
-      client.fetch<RevokeData>(`auth/sessions/${encodePathParam(sessionId)}/revoke`, { ...options, method: 'POST', scopes: ['authAppId'] }),
+      client.fetch<RevokeData>(`auth/sessions/${encodePathParam(sessionId)}/revoke`, { ...options, method: 'POST', scopes: ['authAppId'], acceptsIdempotencyKey: true }),
 
     revokeAllForAccount: (accountId: string, options?: ConjoinCallOptions) =>
-      client.fetch<RevokeAllForAccountData>(`auth/accounts/${encodePathParam(accountId)}/sessions/revoke-all`, { ...options, method: 'POST', scopes: ['authAppId'] }),
+      client.fetch<RevokeAllForAccountData>(`auth/accounts/${encodePathParam(accountId)}/sessions/revoke-all`, { ...options, method: 'POST', scopes: ['authAppId'], acceptsIdempotencyKey: true }),
 
     bulkRevokeAccount: (accountId: string, data: BulkRevokeAccountBody, options?: ConjoinCallOptions) =>
-      client.fetch<BulkRevokeAccountData>(`auth/accounts/${encodePathParam(accountId)}/sessions/revoke`, { ...options, method: 'POST', body: data, scopes: ['authAppId'] }),
+      client.fetch<BulkRevokeAccountData>(`auth/accounts/${encodePathParam(accountId)}/sessions/revoke`, { ...options, method: 'POST', body: data, scopes: ['authAppId'], acceptsIdempotencyKey: true }),
 
     bulkRevokeClient: (clientId: string, data: BulkRevokeClientBody, options?: ConjoinCallOptions) =>
-      client.fetch<BulkRevokeClientData>(`auth/clients/${encodePathParam(clientId)}/sessions/revoke`, { ...options, method: 'POST', body: data, scopes: ['authAppId'] }),
+      client.fetch<BulkRevokeClientData>(`auth/clients/${encodePathParam(clientId)}/sessions/revoke`, { ...options, method: 'POST', body: data, scopes: ['authAppId'], acceptsIdempotencyKey: true }),
   }
 }

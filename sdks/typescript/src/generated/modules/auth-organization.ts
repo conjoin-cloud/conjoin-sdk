@@ -12,6 +12,7 @@ type ReadData = NonNullable<operations['readAuthOrganization']['responses']['200
 type UpdateBody = NonNullable<operations['updateAuthOrganization']['requestBody']>['content']['application/json']
 type UpdateData = NonNullable<operations['updateAuthOrganization']['responses']['200']['content']['application/json']['data']>
 type DeleteData = NonNullable<operations['deleteAuthOrganization']['responses']['200']['content']['application/json']['data']>
+type DeleteQuery = NonNullable<operations['deleteAuthOrganization']['parameters']['query']>
 type UpdateSettingsBody = NonNullable<operations['updateAuthOrganizationSettings']['requestBody']>['content']['application/json']
 type UpdateSettingsData = NonNullable<operations['updateAuthOrganizationSettings']['responses']['200']['content']['application/json']['data']>
 
@@ -21,7 +22,7 @@ export function createAuthOrganizations(client: ConjoinClient) {
       client.fetchList<ListData>('auth/organizations/', { ...options, method: 'GET', query: query as Record<string, unknown> | undefined, scopes: ['authAppId'] }),
 
     create: (data: CreateBody, options?: ConjoinCallOptions) =>
-      client.fetch<CreateData>('auth/organizations/', { ...options, method: 'POST', body: data, scopes: ['authAppId'] }),
+      client.fetch<CreateData>('auth/organizations/', { ...options, method: 'POST', body: data, scopes: ['authAppId'], acceptsIdempotencyKey: true }),
 
     listCount: (query?: ListCountQuery, options?: ConjoinCallOptions) =>
       client.fetch<ListCountData>('auth/organizations/count', { ...options, method: 'GET', query: query as Record<string, unknown> | undefined, scopes: ['authAppId'] }),
@@ -32,8 +33,8 @@ export function createAuthOrganizations(client: ConjoinClient) {
     update: (organizationId: string, data: UpdateBody, options?: ConjoinCallOptions) =>
       client.fetch<UpdateData>(`auth/organizations/${encodePathParam(organizationId)}`, { ...options, method: 'PATCH', body: data, scopes: ['authAppId'] }),
 
-    delete: (organizationId: string, options?: ConjoinCallOptions) =>
-      client.fetch<DeleteData>(`auth/organizations/${encodePathParam(organizationId)}`, { ...options, method: 'DELETE', scopes: ['authAppId'] }),
+    delete: (organizationId: string, query?: DeleteQuery, options?: ConjoinCallOptions) =>
+      client.fetch<DeleteData>(`auth/organizations/${encodePathParam(organizationId)}`, { ...options, method: 'DELETE', query: query as Record<string, unknown> | undefined, scopes: ['authAppId'] }),
 
     updateSettings: (organizationId: string, data: UpdateSettingsBody, options?: ConjoinCallOptions) =>
       client.fetch<UpdateSettingsData>(`auth/organizations/${encodePathParam(organizationId)}/settings`, { ...options, method: 'PATCH', body: data, scopes: ['authAppId'] }),

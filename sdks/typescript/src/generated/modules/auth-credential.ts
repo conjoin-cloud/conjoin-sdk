@@ -45,60 +45,60 @@ export function createAuthCredentials(client: ConjoinClient) {
       client.fetch<UpdateApiKeyData>(`auth/accounts/${encodePathParam(accountId)}/credentials/${encodePathParam(credentialId)}`, { ...options, method: 'PATCH', body: data, scopes: ['authAppId'] }),
 
     createPassword: (accountId: string, data: CreatePasswordBody, options?: ConjoinCallOptions) =>
-      client.fetch<CreatePasswordData>(`auth/accounts/${encodePathParam(accountId)}/password-credentials`, { ...options, method: 'POST', body: data, scopes: ['authAppId'] }),
+      client.fetch<CreatePasswordData>(`auth/accounts/${encodePathParam(accountId)}/password-credentials`, { ...options, method: 'POST', body: data, scopes: ['authAppId'], acceptsIdempotencyKey: true }),
 
     rotatePassword: (accountId: string, data: RotatePasswordBody, options?: ConjoinCallOptions) =>
-      client.fetch<RotatePasswordData>(`auth/accounts/${encodePathParam(accountId)}/password-credentials/rotate`, { ...options, method: 'POST', body: data, scopes: ['authAppId'] }),
+      client.fetch<RotatePasswordData>(`auth/accounts/${encodePathParam(accountId)}/password-credentials/rotate`, { ...options, method: 'POST', body: data, scopes: ['authAppId'], acceptsIdempotencyKey: true }),
 
     enrollTotp: (accountId: string, data: EnrollTotpBody, options?: ConjoinCallOptions) =>
-      client.fetch<EnrollTotpData>(`auth/accounts/${encodePathParam(accountId)}/totp-credentials/enroll`, { ...options, method: 'POST', body: data, scopes: ['authAppId'] }),
+      client.fetch<EnrollTotpData>(`auth/accounts/${encodePathParam(accountId)}/totp-credentials/enroll`, { ...options, method: 'POST', body: data, scopes: ['authAppId'], acceptsIdempotencyKey: true }),
 
     activateTotp: (accountId: string, data: ActivateTotpBody, options?: ConjoinCallOptions) =>
-      client.fetch<ActivateTotpData>(`auth/accounts/${encodePathParam(accountId)}/totp-credentials/activate`, { ...options, method: 'POST', body: data, scopes: ['authAppId'] }),
+      client.fetch<ActivateTotpData>(`auth/accounts/${encodePathParam(accountId)}/totp-credentials/activate`, { ...options, method: 'POST', body: data, scopes: ['authAppId'], acceptsIdempotencyKey: true }),
 
     rotateTotpRecoveryCodes: (accountId: string, data: RotateTotpRecoveryCodesBody, options?: ConjoinCallOptions) =>
-      client.fetch<RotateTotpRecoveryCodesData>(`auth/accounts/${encodePathParam(accountId)}/totp-recovery-codes/rotate`, { ...options, method: 'POST', body: data, scopes: ['authAppId'] }),
+      client.fetch<RotateTotpRecoveryCodesData>(`auth/accounts/${encodePathParam(accountId)}/totp-recovery-codes/rotate`, { ...options, method: 'POST', body: data, scopes: ['authAppId'], acceptsIdempotencyKey: true }),
 
     consumeTotpRecoveryCode: (accountId: string, data: ConsumeTotpRecoveryCodeBody, options?: ConjoinCallOptions) =>
-      client.fetch<ConsumeTotpRecoveryCodeData>(`auth/accounts/${encodePathParam(accountId)}/totp-recovery-codes/consume`, { ...options, method: 'POST', body: data, scopes: ['authAppId'] }),
+      client.fetch<ConsumeTotpRecoveryCodeData>(`auth/accounts/${encodePathParam(accountId)}/totp-recovery-codes/consume`, { ...options, method: 'POST', body: data, scopes: ['authAppId'], acceptsIdempotencyKey: true }),
 
     enrollSmsMfa: (accountId: string, data: EnrollSmsMfaBody, options?: ConjoinCallOptions) =>
-      client.fetch<EnrollSmsMfaData>(`auth/accounts/${encodePathParam(accountId)}/sms-credentials/enroll`, { ...options, method: 'POST', body: data, scopes: ['authAppId'] }),
+      client.fetch<EnrollSmsMfaData>(`auth/accounts/${encodePathParam(accountId)}/sms-credentials/enroll`, { ...options, method: 'POST', body: data, scopes: ['authAppId'], acceptsIdempotencyKey: true }),
 
     sendSmsMfaActivationCode: (accountId: string, options?: ConjoinCallOptions) =>
-      client.fetch<SendSmsMfaActivationCodeData>(`auth/accounts/${encodePathParam(accountId)}/sms-credentials/send-activation-code`, { ...options, method: 'POST', scopes: ['authAppId'] }),
+      client.fetch<SendSmsMfaActivationCodeData>(`auth/accounts/${encodePathParam(accountId)}/sms-credentials/send-activation-code`, { ...options, method: 'POST', scopes: ['authAppId'], acceptsIdempotencyKey: true }),
 
     activateSmsMfa: (accountId: string, data: ActivateSmsMfaBody, options?: ConjoinCallOptions) =>
-      client.fetch<ActivateSmsMfaData>(`auth/accounts/${encodePathParam(accountId)}/sms-credentials/activate`, { ...options, method: 'POST', body: data, scopes: ['authAppId'] }),
+      client.fetch<ActivateSmsMfaData>(`auth/accounts/${encodePathParam(accountId)}/sms-credentials/activate`, { ...options, method: 'POST', body: data, scopes: ['authAppId'], acceptsIdempotencyKey: true }),
 
     verifySmsMfa: (accountId: string, data: VerifySmsMfaBody, options?: ConjoinCallOptions) =>
-      client.fetch<VerifySmsMfaData>(`auth/accounts/${encodePathParam(accountId)}/sms-credentials/verify`, { ...options, method: 'POST', body: data, scopes: ['authAppId'] }),
+      client.fetch<VerifySmsMfaData>(`auth/accounts/${encodePathParam(accountId)}/sms-credentials/verify`, { ...options, method: 'POST', body: data, scopes: ['authAppId'], acceptsIdempotencyKey: true }),
 
     sendSmsMfaChallenge: (accountId: string, options?: ConjoinCallOptions) =>
-      client.fetch<SendSmsMfaChallengeData>(`auth/accounts/${encodePathParam(accountId)}/sms-credentials/send-challenge`, { ...options, method: 'POST', scopes: ['authAppId'] }),
+      client.fetch<SendSmsMfaChallengeData>(`auth/accounts/${encodePathParam(accountId)}/sms-credentials/send-challenge`, { ...options, method: 'POST', scopes: ['authAppId'], acceptsIdempotencyKey: true }),
 
     readApiKeyUsage: (accountId: string, options?: ConjoinCallOptions) =>
       client.fetch<ReadApiKeyUsageData>(`auth/accounts/${encodePathParam(accountId)}/api-key-credentials/usage-stats`, { ...options, method: 'GET', scopes: ['authAppId'] }),
 
     issueApiKey: (accountId: string, data: IssueApiKeyBody, options?: ConjoinCallOptions) =>
-      client.fetch<IssueApiKeyData>(`auth/accounts/${encodePathParam(accountId)}/api-key-credentials`, { ...options, method: 'POST', body: data, scopes: ['authAppId'] }),
+      client.fetch<IssueApiKeyData>(`auth/accounts/${encodePathParam(accountId)}/api-key-credentials`, { ...options, method: 'POST', body: data, scopes: ['authAppId'], acceptsIdempotencyKey: true }),
 
     rotateApiKey: (accountId: string, credentialId: string, data: RotateApiKeyBody, options?: ConjoinCallOptions) =>
-      client.fetch<RotateApiKeyData>(`auth/accounts/${encodePathParam(accountId)}/credentials/${encodePathParam(credentialId)}/rotate`, { ...options, method: 'POST', body: data, scopes: ['authAppId'] }),
+      client.fetch<RotateApiKeyData>(`auth/accounts/${encodePathParam(accountId)}/credentials/${encodePathParam(credentialId)}/rotate`, { ...options, method: 'POST', body: data, scopes: ['authAppId'], acceptsIdempotencyKey: true }),
 
     revokeApiKey: (accountId: string, credentialId: string, data: RevokeApiKeyBody, options?: ConjoinCallOptions) =>
-      client.fetch<RevokeApiKeyData>(`auth/accounts/${encodePathParam(accountId)}/credentials/${encodePathParam(credentialId)}/revoke`, { ...options, method: 'POST', body: data, scopes: ['authAppId'] }),
+      client.fetch<RevokeApiKeyData>(`auth/accounts/${encodePathParam(accountId)}/credentials/${encodePathParam(credentialId)}/revoke`, { ...options, method: 'POST', body: data, scopes: ['authAppId'], acceptsIdempotencyKey: true }),
 
     startPasskeyRegistration: (accountId: string, data: StartPasskeyRegistrationBody, options?: ConjoinCallOptions) =>
-      client.fetch<StartPasskeyRegistrationData>(`auth/accounts/${encodePathParam(accountId)}/passkey-registrations/start`, { ...options, method: 'POST', body: data, scopes: ['authAppId'] }),
+      client.fetch<StartPasskeyRegistrationData>(`auth/accounts/${encodePathParam(accountId)}/passkey-registrations/start`, { ...options, method: 'POST', body: data, scopes: ['authAppId'], acceptsIdempotencyKey: true }),
 
     verifyPasskeyRegistration: (accountId: string, data: VerifyPasskeyRegistrationBody, options?: ConjoinCallOptions) =>
-      client.fetch<VerifyPasskeyRegistrationData>(`auth/accounts/${encodePathParam(accountId)}/passkey-registrations/verify`, { ...options, method: 'POST', body: data, scopes: ['authAppId'] }),
+      client.fetch<VerifyPasskeyRegistrationData>(`auth/accounts/${encodePathParam(accountId)}/passkey-registrations/verify`, { ...options, method: 'POST', body: data, scopes: ['authAppId'], acceptsIdempotencyKey: true }),
 
     startPasskeyentication: (accountId: string, options?: ConjoinCallOptions) =>
-      client.fetch<StartPasskeyenticationData>(`auth/accounts/${encodePathParam(accountId)}/passkey-authentications/start`, { ...options, method: 'POST', scopes: ['authAppId'] }),
+      client.fetch<StartPasskeyenticationData>(`auth/accounts/${encodePathParam(accountId)}/passkey-authentications/start`, { ...options, method: 'POST', scopes: ['authAppId'], acceptsIdempotencyKey: true }),
 
     verifyPasskeyentication: (accountId: string, data: VerifyPasskeyenticationBody, options?: ConjoinCallOptions) =>
-      client.fetch<VerifyPasskeyenticationData>(`auth/accounts/${encodePathParam(accountId)}/passkey-authentications/verify`, { ...options, method: 'POST', body: data, scopes: ['authAppId'] }),
+      client.fetch<VerifyPasskeyenticationData>(`auth/accounts/${encodePathParam(accountId)}/passkey-authentications/verify`, { ...options, method: 'POST', body: data, scopes: ['authAppId'], acceptsIdempotencyKey: true }),
   }
 }

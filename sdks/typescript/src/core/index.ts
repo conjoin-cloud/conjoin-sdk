@@ -34,6 +34,8 @@ export type {
   ConjoinCallOptions,
   ConjoinClient,
   ConjoinConfig,
+  ConjoinDeclaredHeaderRule,
+  ConjoinDeclaredHeaders,
   ConjoinFetchListResult,
   ConjoinFetchResult,
   ConjoinListResponse,

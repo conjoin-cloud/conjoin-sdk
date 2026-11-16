@@ -19,7 +19,7 @@ export function createBillingEntitlementFeatures(client: ConjoinClient) {
       client.fetchList<ListData>('billing/entitlement-features/', { ...options, method: 'GET', query: query as Record<string, unknown> | undefined }),
 
     create: (data: CreateBody, options?: ConjoinCallOptions) =>
-      client.fetch<CreateData>('billing/entitlement-features/', { ...options, method: 'POST', body: data }),
+      client.fetch<CreateData>('billing/entitlement-features/', { ...options, method: 'POST', body: data, acceptsIdempotencyKey: true }),
 
     listCount: (query?: ListCountQuery, options?: ConjoinCallOptions) =>
       client.fetch<ListCountData>('billing/entitlement-features/count', { ...options, method: 'GET', query: query as Record<string, unknown> | undefined }),
@@ -31,6 +31,6 @@ export function createBillingEntitlementFeatures(client: ConjoinClient) {
       client.fetch<UpdateData>(`billing/entitlement-features/${encodePathParam(entitlementFeatureId)}`, { ...options, method: 'PATCH', body: data }),
 
     archive: (entitlementFeatureId: string, options?: ConjoinCallOptions) =>
-      client.fetch<ArchiveData>(`billing/entitlement-features/${encodePathParam(entitlementFeatureId)}/archive`, { ...options, method: 'POST' }),
+      client.fetch<ArchiveData>(`billing/entitlement-features/${encodePathParam(entitlementFeatureId)}/archive`, { ...options, method: 'POST', acceptsIdempotencyKey: true }),
   }
 }

@@ -37,13 +37,13 @@ export function createRelayEvents(client: ConjoinClient) {
       client.fetchList<ReadEventChannelsData>('relay/event-channels/', { ...options, method: 'GET', query: query as Record<string, unknown> | undefined }),
 
     createEventChannel: (data: CreateEventChannelBody, options?: ConjoinCallOptions) =>
-      client.fetch<CreateEventChannelData>('relay/event-channels/', { ...options, method: 'POST', body: data }),
+      client.fetch<CreateEventChannelData>('relay/event-channels/', { ...options, method: 'POST', body: data, acceptsIdempotencyKey: true }),
 
     readEventSubscriptions: (eventChannelId: string, query?: ReadEventSubscriptionsQuery, options?: ConjoinCallOptions) =>
       client.fetchList<ReadEventSubscriptionsData>(`relay/event-channels/${encodePathParam(eventChannelId)}/subscriptions`, { ...options, method: 'GET', query: query as Record<string, unknown> | undefined }),
 
     createEventSubscription: (eventChannelId: string, data: CreateEventSubscriptionBody, options?: ConjoinCallOptions) =>
-      client.fetch<CreateEventSubscriptionData>(`relay/event-channels/${encodePathParam(eventChannelId)}/subscriptions`, { ...options, method: 'POST', body: data }),
+      client.fetch<CreateEventSubscriptionData>(`relay/event-channels/${encodePathParam(eventChannelId)}/subscriptions`, { ...options, method: 'POST', body: data, acceptsIdempotencyKey: true }),
 
     read: (eventChannelId: string, query?: ReadQuery, options?: ConjoinCallOptions) =>
       client.fetchList<ReadData>(`relay/event-channels/${encodePathParam(eventChannelId)}/events`, { ...options, method: 'GET', query: query as Record<string, unknown> | undefined }),
@@ -67,18 +67,18 @@ export function createRelayEvents(client: ConjoinClient) {
       client.fetchJson<DeleteEventSubscriptionResponse>(`relay/event-channels/${encodePathParam(eventChannelId)}/subscriptions/${encodePathParam(subscriptionId)}`, { ...options, method: 'DELETE' }),
 
     pauseEventSubscription: (eventChannelId: string, subscriptionId: string, options?: ConjoinCallOptions) =>
-      client.fetch<PauseEventSubscriptionData>(`relay/event-channels/${encodePathParam(eventChannelId)}/subscriptions/${encodePathParam(subscriptionId)}/pause`, { ...options, method: 'POST' }),
+      client.fetch<PauseEventSubscriptionData>(`relay/event-channels/${encodePathParam(eventChannelId)}/subscriptions/${encodePathParam(subscriptionId)}/pause`, { ...options, method: 'POST', acceptsIdempotencyKey: true }),
 
     resumeEventSubscription: (eventChannelId: string, subscriptionId: string, options?: ConjoinCallOptions) =>
-      client.fetch<ResumeEventSubscriptionData>(`relay/event-channels/${encodePathParam(eventChannelId)}/subscriptions/${encodePathParam(subscriptionId)}/resume`, { ...options, method: 'POST' }),
+      client.fetch<ResumeEventSubscriptionData>(`relay/event-channels/${encodePathParam(eventChannelId)}/subscriptions/${encodePathParam(subscriptionId)}/resume`, { ...options, method: 'POST', acceptsIdempotencyKey: true }),
 
     publishEvent: (eventChannelId: string, data: PublishEventBody, options?: ConjoinCallOptions) =>
-      client.fetch<PublishEventData>(`relay/event-channels/${encodePathParam(eventChannelId)}/publish`, { ...options, method: 'POST', body: data }),
+      client.fetch<PublishEventData>(`relay/event-channels/${encodePathParam(eventChannelId)}/publish`, { ...options, method: 'POST', body: data, acceptsIdempotencyKey: true }),
 
     readCount: (eventChannelId: string, query?: ReadCountQuery, options?: ConjoinCallOptions) =>
       client.fetch<ReadCountData>(`relay/event-channels/${encodePathParam(eventChannelId)}/events/count`, { ...options, method: 'GET', query: query as Record<string, unknown> | undefined }),
 
     replay: (eventChannelId: string, data: ReplayBody, options?: ConjoinCallOptions) =>
-      client.fetchJson<ReplayResponse>(`relay/event-channels/${encodePathParam(eventChannelId)}/replay`, { ...options, method: 'POST', body: data }),
+      client.fetchJson<ReplayResponse>(`relay/event-channels/${encodePathParam(eventChannelId)}/replay`, { ...options, method: 'POST', body: data, acceptsIdempotencyKey: true }),
   }
 }

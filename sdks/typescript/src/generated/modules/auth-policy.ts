@@ -19,7 +19,7 @@ export function createAuthPolicies(client: ConjoinClient) {
       client.fetchList<ListData>(`auth/organizations/${encodePathParam(organizationId)}/policies/`, { ...options, method: 'GET', query: query as Record<string, unknown> | undefined, scopes: ['authAppId'] }),
 
     create: (organizationId: string, data: CreateBody, options?: ConjoinCallOptions) =>
-      client.fetch<CreateData>(`auth/organizations/${encodePathParam(organizationId)}/policies/`, { ...options, method: 'POST', body: data, scopes: ['authAppId'] }),
+      client.fetch<CreateData>(`auth/organizations/${encodePathParam(organizationId)}/policies/`, { ...options, method: 'POST', body: data, scopes: ['authAppId'], acceptsIdempotencyKey: true }),
 
     listCount: (organizationId: string, query?: ListCountQuery, options?: ConjoinCallOptions) =>
       client.fetch<ListCountData>(`auth/organizations/${encodePathParam(organizationId)}/policies/count`, { ...options, method: 'GET', query: query as Record<string, unknown> | undefined, scopes: ['authAppId'] }),

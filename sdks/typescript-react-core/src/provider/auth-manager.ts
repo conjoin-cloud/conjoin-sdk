@@ -68,7 +68,10 @@ export function createAuthManager({ api, transport, onStateChange }: AuthManager
 
   async function readActiveOrganization(authApi: ConjoinAuthApi): Promise<ActiveOrganization> {
     try {
-      const organization = await authApi.selves.readActiveOrganization(transport.sessionCallOptions('GET'))
+      const organization = await authApi.selves.readActiveOrganization(
+        transport.readSessionToken(),
+        transport.sessionCallOptions('GET'),
+      )
 
       return {
         organizationId: organization.active_organization_id,
@@ -162,6 +165,7 @@ export function createAuthManager({ api, transport, onStateChange }: AuthManager
 
     await api.selves.updateActiveOrganization(
       { organization_id: organizationId },
+      transport.readSessionToken(),
       transport.sessionCallOptions('PATCH'),
     )
     await refresh()

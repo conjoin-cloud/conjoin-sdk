@@ -18,10 +18,10 @@ type ListLogsQuery = NonNullable<operations['listAiPolicyLogs']['parameters']['q
 export function createAiPolicies(client: ConjoinClient) {
   return {
     check: (data: CheckBody, options?: ConjoinCallOptions) =>
-      client.fetch<CheckData>('ai/policy/check', { ...options, method: 'POST', body: data }),
+      client.fetch<CheckData>('ai/policy/check', { ...options, method: 'POST', body: data, acceptsIdempotencyKey: true }),
 
     createRule: (data: CreateRuleBody, options?: ConjoinCallOptions) =>
-      client.fetch<CreateRuleData>('ai/policy/rules', { ...options, method: 'POST', body: data }),
+      client.fetch<CreateRuleData>('ai/policy/rules', { ...options, method: 'POST', body: data, acceptsIdempotencyKey: true }),
 
     listRules: (query?: ListRulesQuery, options?: ConjoinCallOptions) =>
       client.fetchList<ListRulesData>('ai/policy/rules', { ...options, method: 'GET', query: query as Record<string, unknown> | undefined }),

@@ -16,9 +16,7 @@ function typeAliases(op: OperationInfo, methodName: string): string[] {
   const lines: string[] = []
 
   if (op.hasRequestBody) {
-    lines.push(
-      `type ${pascal}Body = NonNullable<${operation}['requestBody']>['content']['${op.requestContentType}']`,
-    )
+    lines.push(`type ${pascal}Body = NonNullable<${operation}['requestBody']>['content']['${op.requestContentType}']`)
   }
 
   const content = `${operation}['responses']['${op.successCode}']['content']['${op.responseContentType}']`
@@ -35,7 +33,41 @@ function typeAliases(op: OperationInfo, methodName: string): string[] {
     lines.push(`type ${pascal}Query = NonNullable<${operation}['parameters']['query']>`)
   }
 
+  if (op.declaredHeaders.length > 0) {
+    const fields = op.declaredHeaders.map(header => `${header.argumentName}${header.required ? '' : '?'}: string`)
+    lines.push(`type ${pascal}Headers = { ${fields.join('; ')} }`)
+  }
+
   return lines
+}
+
+const headerRulesName = (methodName: string): string => `${methodName}HeaderRules`
+
+function headerRulesSource(op: OperationInfo, methodName: string): string {
+  const rules = op.declaredHeaders.map(header => {
+    const fields = [
+      `name: ${JSON.stringify(header.name)}`,
+      `argumentName: ${JSON.stringify(header.argumentName)}`,
+      `required: ${header.required}`,
+      ...(header.minLength === undefined ? [] : [`minLength: ${header.minLength}`]),
+      ...(header.maxLength === undefined ? [] : [`maxLength: ${header.maxLength}`]),
+      ...(header.pattern === undefined ? [] : [`pattern: ${JSON.stringify(header.pattern)}`]),
+    ]
+
+    return `  { ${fields.join(', ')} },`
+  })
+
+  return [`const ${headerRulesName(methodName)}: readonly ConjoinDeclaredHeaderRule[] = [`, ...rules, ']'].join('\n')
+}
+
+const hasRequiredHeader = (op: OperationInfo): boolean => op.declaredHeaders.some(header => header.required)
+
+function lockedAuthField(op: OperationInfo): string | undefined {
+  if (op.authMode === 'none' || op.authMode === 'portalTicket') return "auth: { type: 'none' }"
+  if (op.authMode === 'publishableKey') return "auth: { type: 'publishableKey' }"
+  if (op.authMode === 'session') return "auth: { type: 'session', token: sessionToken }"
+
+  return undefined
 }
 
 function resultType(op: OperationInfo, pascal: string): string {
@@ -65,13 +97,29 @@ function methodSource(op: OperationInfo, methodName: string): string {
     params.push(`query${op.queryRequired ? '' : '?'}: ${pascal}Query`)
   }
 
+  if (op.declaredHeaders.length > 0) {
+    const headersRequired = hasRequiredHeader(op)
+
+    if (headersRequired && params.some(param => param.includes('?:'))) {
+      throw new Error(`${op.operationId} declares a required header after an optional argument`)
+    }
+
+    params.push(`headers${headersRequired ? '' : '?'}: ${pascal}Headers`)
+  }
+
+  if (op.authMode === 'session') params.push('sessionToken?: string')
+
   params.push('options?: ConjoinCallOptions')
 
-  const defaults: string[] = []
-  if (op.authMode === 'none') defaults.push("auth: { type: 'none' }")
-  if (op.authMode === 'scimBearer') defaults.push('...scimBearerRequestOptions(scim.scimToken)')
+  const defaults = op.authMode === 'scimBearer' ? ['...scimBearerRequestOptions(scim.scimToken)'] : []
+  const lockedAuth = lockedAuthField(op)
 
-  const fields = [...defaults, '...options', `method: '${op.httpMethod.toUpperCase()}'`]
+  const fields = [
+    ...defaults,
+    '...options',
+    ...(lockedAuth === undefined ? [] : [lockedAuth]),
+    `method: '${op.httpMethod.toUpperCase()}'`,
+  ]
   if (sendsBody) fields.push('body: data')
   if (sendsBody && op.requestContentType.toLowerCase() === 'multipart/form-data') {
     fields.push("contentType: 'multipart/form-data'")
@@ -79,6 +127,9 @@ function methodSource(op: OperationInfo, methodName: string): string {
   if (op.hasQueryParams) fields.push('query: query as Record<string, unknown> | undefined')
   if (op.scopes.length > 0) fields.push(`scopes: [${op.scopes.map(scope => `'${scope}'`).join(', ')}]`)
   if (op.acceptsIdempotencyKey) fields.push('acceptsIdempotencyKey: true')
+  if (op.declaredHeaders.length > 0) {
+    fields.push(`declaredHeaders: { rules: ${headerRulesName(methodName)}, values: headers }`)
+  }
 
   const encodedParams = new Map(op.pathParams.map(p => [p.camelName, `\${encodePathParam(${p.camelName})}`]))
   const runtimePath = buildRuntimePath(op.path, op.pathParams).replace(
@@ -132,9 +183,15 @@ export function resolveMethodEntries(group: ResourceGroup): MethodEntry[] {
 export function renderModule(group: ResourceGroup, apiTypesImport: string, coreImport: string): string {
   const usesScim = group.operations.some(op => op.authMode === 'scimBearer')
   const usesPathParams = group.operations.some(op => op.pathParams.length > 0)
+  const usesDeclaredHeaders = group.operations.some(op => op.declaredHeaders.length > 0)
   const entries = resolveMethodEntries(group)
 
-  const coreTypes = ['ConjoinCallOptions', 'ConjoinClient', ...(usesScim ? ['RequestOptions'] : [])]
+  const coreTypes = [
+    'ConjoinCallOptions',
+    'ConjoinClient',
+    ...(usesDeclaredHeaders ? ['ConjoinDeclaredHeaderRule'] : []),
+    ...(usesScim ? ['RequestOptions'] : []),
+  ]
   const lines: string[] = [
     ...(usesPathParams ? [`import { encodePathParam } from '${coreImport}/path'`] : []),
     `import type { ${coreTypes.join(', ')} } from '${coreImport}/types'`,
@@ -154,6 +211,10 @@ export function renderModule(group: ResourceGroup, apiTypesImport: string, coreI
   }
 
   lines.push('')
+
+  for (const { name, op } of entries) {
+    if (op.declaredHeaders.length > 0) lines.push(headerRulesSource(op, name), '')
+  }
 
   if (usesScim) {
     lines.push(

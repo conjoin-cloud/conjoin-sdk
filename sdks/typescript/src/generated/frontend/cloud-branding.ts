@@ -7,6 +7,6 @@ type ReadPublicProjectQuery = NonNullable<operations['readPublicProjectBranding'
 export function createCloudBrandings(client: ConjoinClient) {
   return {
     readPublicProject: (query?: ReadPublicProjectQuery, options?: ConjoinCallOptions) =>
-      client.fetch<ReadPublicProjectData>('cloud/client/branding/', { auth: { type: 'none' }, ...options, method: 'GET', query: query as Record<string, unknown> | undefined }),
+      client.fetch<ReadPublicProjectData>('cloud/client/branding/', { ...options, auth: { type: 'publishableKey' }, method: 'GET', query: query as Record<string, unknown> | undefined }),
   }
 }

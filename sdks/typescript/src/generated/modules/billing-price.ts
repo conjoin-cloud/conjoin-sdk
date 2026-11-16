@@ -21,7 +21,7 @@ export function createBillingPrices(client: ConjoinClient) {
       client.fetchList<ListData>('billing/prices/', { ...options, method: 'GET', query: query as Record<string, unknown> | undefined, scopes: ['billingEntityId'] }),
 
     create: (data: CreateBody, options?: ConjoinCallOptions) =>
-      client.fetch<CreateData>('billing/prices/', { ...options, method: 'POST', body: data, scopes: ['billingEntityId'] }),
+      client.fetch<CreateData>('billing/prices/', { ...options, method: 'POST', body: data, scopes: ['billingEntityId'], acceptsIdempotencyKey: true }),
 
     listCount: (query?: ListCountQuery, options?: ConjoinCallOptions) =>
       client.fetch<ListCountData>('billing/prices/count', { ...options, method: 'GET', query: query as Record<string, unknown> | undefined, scopes: ['billingEntityId'] }),
@@ -36,9 +36,9 @@ export function createBillingPrices(client: ConjoinClient) {
       client.fetchJson<DeleteResponse>(`billing/prices/${encodePathParam(priceId)}`, { ...options, method: 'DELETE', scopes: ['billingEntityId'] }),
 
     archive: (priceId: string, options?: ConjoinCallOptions) =>
-      client.fetch<ArchiveData>(`billing/prices/${encodePathParam(priceId)}/archive`, { ...options, method: 'POST', scopes: ['billingEntityId'] }),
+      client.fetch<ArchiveData>(`billing/prices/${encodePathParam(priceId)}/archive`, { ...options, method: 'POST', scopes: ['billingEntityId'], acceptsIdempotencyKey: true }),
 
     restore: (priceId: string, options?: ConjoinCallOptions) =>
-      client.fetch<RestoreData>(`billing/prices/${encodePathParam(priceId)}/restore`, { ...options, method: 'POST', scopes: ['billingEntityId'] }),
+      client.fetch<RestoreData>(`billing/prices/${encodePathParam(priceId)}/restore`, { ...options, method: 'POST', scopes: ['billingEntityId'], acceptsIdempotencyKey: true }),
   }
 }

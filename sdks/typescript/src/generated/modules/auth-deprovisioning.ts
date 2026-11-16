@@ -8,6 +8,6 @@ type DeprovisionAccountData = NonNullable<operations['deprovisionAccount']['resp
 export function createAuthDeprovisionings(client: ConjoinClient) {
   return {
     deprovisionAccount: (accountId: string, data: DeprovisionAccountBody, options?: ConjoinCallOptions) =>
-      client.fetch<DeprovisionAccountData>(`auth/accounts/${encodePathParam(accountId)}/deprovision`, { ...options, method: 'POST', body: data, scopes: ['authAppId'] }),
+      client.fetch<DeprovisionAccountData>(`auth/accounts/${encodePathParam(accountId)}/deprovision`, { ...options, method: 'POST', body: data, scopes: ['authAppId'], acceptsIdempotencyKey: true }),
   }
 }

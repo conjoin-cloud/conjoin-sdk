@@ -31,13 +31,13 @@ export function createBillingPriceBundles(client: ConjoinClient) {
       client.fetchList<ListActivationsData>('billing/price-bundle-activations/', { ...options, method: 'GET', query: query as Record<string, unknown> | undefined, scopes: ['billingEntityId'] }),
 
     activate: (data: ActivateBody, options?: ConjoinCallOptions) =>
-      client.fetch<ActivateData>('billing/price-bundle-activations/', { ...options, method: 'POST', body: data, scopes: ['billingEntityId'] }),
+      client.fetch<ActivateData>('billing/price-bundle-activations/', { ...options, method: 'POST', body: data, scopes: ['billingEntityId'], acceptsIdempotencyKey: true }),
 
     listActivationsCount: (query: ListActivationsCountQuery, options?: ConjoinCallOptions) =>
       client.fetch<ListActivationsCountData>('billing/price-bundle-activations/count', { ...options, method: 'GET', query: query as Record<string, unknown> | undefined, scopes: ['billingEntityId'] }),
 
     deactivate: (priceBundleActivationId: string, data: DeactivateBody, options?: ConjoinCallOptions) =>
-      client.fetch<DeactivateData>(`billing/price-bundle-activations/${encodePathParam(priceBundleActivationId)}/deactivate`, { ...options, method: 'POST', body: data, scopes: ['billingEntityId'] }),
+      client.fetch<DeactivateData>(`billing/price-bundle-activations/${encodePathParam(priceBundleActivationId)}/deactivate`, { ...options, method: 'POST', body: data, scopes: ['billingEntityId'], acceptsIdempotencyKey: true }),
 
     readAvailableBundleTransitions: (query: ReadAvailableBundleTransitionsQuery, options?: ConjoinCallOptions) =>
       client.fetch<ReadAvailableBundleTransitionsData>('billing/price-bundle-transitions/', { ...options, method: 'GET', query: query as Record<string, unknown> | undefined, scopes: ['billingEntityId'] }),
@@ -46,7 +46,7 @@ export function createBillingPriceBundles(client: ConjoinClient) {
       client.fetchList<ListData>('billing/price-bundles/', { ...options, method: 'GET', query: query as Record<string, unknown> | undefined, scopes: ['billingEntityId'] }),
 
     create: (data: CreateBody, options?: ConjoinCallOptions) =>
-      client.fetch<CreateData>('billing/price-bundles/', { ...options, method: 'POST', body: data, scopes: ['billingEntityId'] }),
+      client.fetch<CreateData>('billing/price-bundles/', { ...options, method: 'POST', body: data, scopes: ['billingEntityId'], acceptsIdempotencyKey: true }),
 
     listCount: (query?: ListCountQuery, options?: ConjoinCallOptions) =>
       client.fetch<ListCountData>('billing/price-bundles/count', { ...options, method: 'GET', query: query as Record<string, unknown> | undefined, scopes: ['billingEntityId'] }),
@@ -58,12 +58,12 @@ export function createBillingPriceBundles(client: ConjoinClient) {
       client.fetch<UpdateData>(`billing/price-bundles/${encodePathParam(priceBundleId)}`, { ...options, method: 'PATCH', body: data, scopes: ['billingEntityId'] }),
 
     archive: (priceBundleId: string, options?: ConjoinCallOptions) =>
-      client.fetch<ArchiveData>(`billing/price-bundles/${encodePathParam(priceBundleId)}/archive`, { ...options, method: 'POST', scopes: ['billingEntityId'] }),
+      client.fetch<ArchiveData>(`billing/price-bundles/${encodePathParam(priceBundleId)}/archive`, { ...options, method: 'POST', scopes: ['billingEntityId'], acceptsIdempotencyKey: true }),
 
     restore: (priceBundleId: string, options?: ConjoinCallOptions) =>
-      client.fetch<RestoreData>(`billing/price-bundles/${encodePathParam(priceBundleId)}/restore`, { ...options, method: 'POST', scopes: ['billingEntityId'] }),
+      client.fetch<RestoreData>(`billing/price-bundles/${encodePathParam(priceBundleId)}/restore`, { ...options, method: 'POST', scopes: ['billingEntityId'], acceptsIdempotencyKey: true }),
 
     publish: (priceBundleId: string, options?: ConjoinCallOptions) =>
-      client.fetch<PublishData>(`billing/price-bundles/${encodePathParam(priceBundleId)}/publish`, { ...options, method: 'POST', scopes: ['billingEntityId'] }),
+      client.fetch<PublishData>(`billing/price-bundles/${encodePathParam(priceBundleId)}/publish`, { ...options, method: 'POST', scopes: ['billingEntityId'], acceptsIdempotencyKey: true }),
   }
 }

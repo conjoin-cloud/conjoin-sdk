@@ -13,7 +13,13 @@ const SESSION_QUERY_KEYS = [['conjoin', 'auth', 'sessions']]
 const NO_SESSIONS: ConjoinSession[] = []
 
 const readActiveSessions = (authApi: ConjoinAuthApi, transport: AuthTransport): Promise<ConjoinSession[]> =>
-  collectPages(authApi.selves.listSessions({ status: 'active' }, transport.sessionCallOptions('GET')))
+  collectPages(
+    authApi.selves.listSessions(
+      { status: 'active' },
+      transport.readSessionToken(),
+      transport.sessionCallOptions('GET'),
+    ),
+  )
 
 export function useSessions() {
   const authState = useAuthState()
@@ -25,7 +31,11 @@ export function useSessions() {
     async (sessionId: string): Promise<void> => {
       if (authApi === null) throw new Error('Sign-in is not configured for this project')
       if (sessionId === currentSessionId) throw new Error('Sign out to end the current session')
-      await authApi.selves.revokeSession(sessionId, transport.sessionCallOptions('DELETE'))
+      await authApi.selves.revokeSession(
+        sessionId,
+        transport.readSessionToken(),
+        transport.sessionCallOptions('DELETE'),
+      )
     },
     [authApi, transport, currentSessionId],
   )

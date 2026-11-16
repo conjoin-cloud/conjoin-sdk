@@ -12,6 +12,6 @@ export function createAuthConnections(client: ConjoinClient) {
       client.fetch<ListFirstPartyData>('auth/connection-configs/', { ...options, method: 'GET', query: query as Record<string, unknown> | undefined, scopes: ['authAppId'] }),
 
     upsertFirstParty: (data: UpsertFirstPartyBody, options?: ConjoinCallOptions) =>
-      client.fetch<UpsertFirstPartyData>('auth/connection-configs/', { ...options, method: 'POST', body: data, scopes: ['authAppId'] }),
+      client.fetch<UpsertFirstPartyData>('auth/connection-configs/', { ...options, method: 'POST', body: data, scopes: ['authAppId'], acceptsIdempotencyKey: true }),
   }
 }

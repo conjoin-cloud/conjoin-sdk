@@ -7,6 +7,6 @@ type BatchLookupData = NonNullable<operations['batchLookupAccounts']['responses'
 export function createAuthAccounts(client: ConjoinClient) {
   return {
     batchLookup: (data: BatchLookupBody, options?: ConjoinCallOptions) =>
-      client.fetch<BatchLookupData>('auth/client/account-lookups/', { auth: { type: 'none' }, ...options, method: 'POST', body: data }),
+      client.fetch<BatchLookupData>('auth/client/account-lookups/', { ...options, auth: { type: 'publishableKey' }, method: 'POST', body: data }),
   }
 }

@@ -9,15 +9,15 @@ type GetJwksData = NonNullable<operations['getAuthJwks']['responses']['200']['co
 export function createAuthClients(client: ConjoinClient) {
   return {
     getOidcDiscovery: (options?: ConjoinCallOptions) =>
-      client.fetch<GetOidcDiscoveryData>('auth/client/.well-known/openid-configuration', { auth: { type: 'none' }, ...options, method: 'GET' }),
+      client.fetch<GetOidcDiscoveryData>('auth/client/.well-known/openid-configuration', { ...options, auth: { type: 'none' }, method: 'GET' }),
 
     processHandshake: (options?: ConjoinCallOptions) =>
-      client.fetch<ProcessHandshakeData>('auth/client/handshakes', { auth: { type: 'none' }, ...options, method: 'POST' }),
+      client.fetch<ProcessHandshakeData>('auth/client/handshakes', { ...options, auth: { type: 'none' }, method: 'POST' }),
 
     processLogout: (options?: ConjoinCallOptions) =>
-      client.fetch<ProcessLogoutData>('auth/client/logout', { auth: { type: 'none' }, ...options, method: 'POST' }),
+      client.fetch<ProcessLogoutData>('auth/client/logout', { ...options, auth: { type: 'none' }, method: 'POST' }),
 
     getJwks: (options?: ConjoinCallOptions) =>
-      client.fetch<GetJwksData>('auth/client/.well-known/jwks.json', { auth: { type: 'none' }, ...options, method: 'GET' }),
+      client.fetch<GetJwksData>('auth/client/.well-known/jwks.json', { ...options, auth: { type: 'none' }, method: 'GET' }),
   }
 }

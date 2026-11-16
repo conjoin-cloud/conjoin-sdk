@@ -11,7 +11,7 @@ export type ConjoinAccountUpdate = Parameters<ConjoinAuthApi['selves']['updatePr
 const ACCOUNT_QUERY_KEYS = [['conjoin', 'auth', 'account']]
 
 const readAccount = (authApi: ConjoinAuthApi, transport: AuthTransport): Promise<ConjoinAccount> =>
-  authApi.selves.readProfile(transport.sessionCallOptions('GET'))
+  authApi.selves.readProfile(transport.readSessionToken(), transport.sessionCallOptions('GET'))
 
 export function useAccount() {
   const result = useSignedInQuery('account', readAccount)
@@ -25,7 +25,7 @@ export function useUpdateAccount() {
   const mutationFn = useCallback(
     (update: ConjoinAccountUpdate): Promise<ConjoinAccount> => {
       if (authApi === null) return Promise.reject(new Error('Sign-in is not configured for this project'))
-      return authApi.selves.updateProfile(update, transport.sessionCallOptions('PATCH'))
+      return authApi.selves.updateProfile(update, transport.readSessionToken(), transport.sessionCallOptions('PATCH'))
     },
     [authApi, transport],
   )

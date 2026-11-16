@@ -28,7 +28,7 @@ export function createAuthOrganizationGroups(client: ConjoinClient) {
       client.fetchList<ListGroupsData>(`auth/organizations/${encodePathParam(organizationId)}/groups/`, { ...options, method: 'GET', query: query as Record<string, unknown> | undefined, scopes: ['authAppId'] }),
 
     createGroup: (organizationId: string, data: CreateGroupBody, options?: ConjoinCallOptions) =>
-      client.fetch<CreateGroupData>(`auth/organizations/${encodePathParam(organizationId)}/groups/`, { ...options, method: 'POST', body: data, scopes: ['authAppId'] }),
+      client.fetch<CreateGroupData>(`auth/organizations/${encodePathParam(organizationId)}/groups/`, { ...options, method: 'POST', body: data, scopes: ['authAppId'], acceptsIdempotencyKey: true }),
 
     listGroupMembers: (groupId: string, query?: ListGroupMembersQuery, options?: ConjoinCallOptions) =>
       client.fetchList<ListGroupMembersData>(`auth/groups/${encodePathParam(groupId)}/members`, { ...options, method: 'GET', query: query as Record<string, unknown> | undefined, scopes: ['authAppId'] }),
@@ -46,12 +46,12 @@ export function createAuthOrganizationGroups(client: ConjoinClient) {
       client.fetch<DeleteGroupData>(`auth/organizations/${encodePathParam(organizationId)}/groups/${encodePathParam(groupId)}`, { ...options, method: 'DELETE', scopes: ['authAppId'] }),
 
     addGroupMember: (organizationId: string, groupId: string, data: AddGroupMemberBody, options?: ConjoinCallOptions) =>
-      client.fetch<AddGroupMemberData>(`auth/organizations/${encodePathParam(organizationId)}/groups/${encodePathParam(groupId)}/add-members`, { ...options, method: 'POST', body: data, scopes: ['authAppId'] }),
+      client.fetch<AddGroupMemberData>(`auth/organizations/${encodePathParam(organizationId)}/groups/${encodePathParam(groupId)}/add-members`, { ...options, method: 'POST', body: data, scopes: ['authAppId'], acceptsIdempotencyKey: true }),
 
     removeGroupMember: (organizationId: string, groupId: string, data: RemoveGroupMemberBody, options?: ConjoinCallOptions) =>
-      client.fetch<RemoveGroupMemberData>(`auth/organizations/${encodePathParam(organizationId)}/groups/${encodePathParam(groupId)}/remove-members`, { ...options, method: 'POST', body: data, scopes: ['authAppId'] }),
+      client.fetch<RemoveGroupMemberData>(`auth/organizations/${encodePathParam(organizationId)}/groups/${encodePathParam(groupId)}/remove-members`, { ...options, method: 'POST', body: data, scopes: ['authAppId'], acceptsIdempotencyKey: true }),
 
     bulkSyncGroupMembers: (organizationId: string, groupId: string, data: BulkSyncGroupMembersBody, options?: ConjoinCallOptions) =>
-      client.fetch<BulkSyncGroupMembersData>(`auth/organizations/${encodePathParam(organizationId)}/groups/${encodePathParam(groupId)}/sync-members`, { ...options, method: 'POST', body: data, scopes: ['authAppId'] }),
+      client.fetch<BulkSyncGroupMembersData>(`auth/organizations/${encodePathParam(organizationId)}/groups/${encodePathParam(groupId)}/sync-members`, { ...options, method: 'POST', body: data, scopes: ['authAppId'], acceptsIdempotencyKey: true }),
   }
 }

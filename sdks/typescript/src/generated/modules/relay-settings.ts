@@ -16,7 +16,7 @@ export function createRelaySettings(client: ConjoinClient) {
       client.fetch<UpdateData>('relay/settings/', { ...options, method: 'PATCH', body: data }),
 
     rotateSigningSecret: (options?: ConjoinCallOptions) =>
-      client.fetch<RotateSigningSecretData>('relay/settings/signing-secret/rotate', { ...options, method: 'POST' }),
+      client.fetch<RotateSigningSecretData>('relay/settings/signing-secret/rotate', { ...options, method: 'POST', acceptsIdempotencyKey: true }),
 
     revealSigningSecret: (options?: ConjoinCallOptions) =>
       client.fetch<RevealSigningSecretData>('relay/settings/signing-secret', { ...options, method: 'GET' }),

@@ -33,7 +33,7 @@ export function createBillingSubscriptions(client: ConjoinClient) {
       client.fetchList<ListData>('billing/subscriptions/', { ...options, method: 'GET', query: query as Record<string, unknown> | undefined, scopes: ['billingEntityId'] }),
 
     create: (data: CreateBody, options?: ConjoinCallOptions) =>
-      client.fetch<CreateData>('billing/subscriptions/', { ...options, method: 'POST', body: data, scopes: ['billingEntityId'] }),
+      client.fetch<CreateData>('billing/subscriptions/', { ...options, method: 'POST', body: data, scopes: ['billingEntityId'], acceptsIdempotencyKey: true }),
 
     listCycles: (subscriptionId: string, query?: ListCyclesQuery, options?: ConjoinCallOptions) =>
       client.fetchList<ListCyclesData>(`billing/subscriptions/${encodePathParam(subscriptionId)}/cycles`, { ...options, method: 'GET', query: query as Record<string, unknown> | undefined, scopes: ['billingEntityId'] }),
@@ -48,19 +48,19 @@ export function createBillingSubscriptions(client: ConjoinClient) {
       client.fetch<UpdateData>(`billing/subscriptions/${encodePathParam(subscriptionId)}`, { ...options, method: 'PATCH', body: data, scopes: ['billingEntityId'] }),
 
     createPlanChange: (subscriptionId: string, data: CreatePlanChangeBody, options?: ConjoinCallOptions) =>
-      client.fetch<CreatePlanChangeData>(`billing/subscriptions/${encodePathParam(subscriptionId)}/plan-changes`, { ...options, method: 'POST', body: data, scopes: ['billingEntityId'] }),
+      client.fetch<CreatePlanChangeData>(`billing/subscriptions/${encodePathParam(subscriptionId)}/plan-changes`, { ...options, method: 'POST', body: data, scopes: ['billingEntityId'], acceptsIdempotencyKey: true }),
 
     cancel: (subscriptionId: string, data: CancelBody, options?: ConjoinCallOptions) =>
-      client.fetch<CancelData>(`billing/subscriptions/${encodePathParam(subscriptionId)}/cancel`, { ...options, method: 'POST', body: data, scopes: ['billingEntityId'] }),
+      client.fetch<CancelData>(`billing/subscriptions/${encodePathParam(subscriptionId)}/cancel`, { ...options, method: 'POST', body: data, scopes: ['billingEntityId'], acceptsIdempotencyKey: true }),
 
     pause: (subscriptionId: string, data: PauseBody, options?: ConjoinCallOptions) =>
-      client.fetch<PauseData>(`billing/subscriptions/${encodePathParam(subscriptionId)}/pause`, { ...options, method: 'POST', body: data, scopes: ['billingEntityId'] }),
+      client.fetch<PauseData>(`billing/subscriptions/${encodePathParam(subscriptionId)}/pause`, { ...options, method: 'POST', body: data, scopes: ['billingEntityId'], acceptsIdempotencyKey: true }),
 
     resume: (subscriptionId: string, options?: ConjoinCallOptions) =>
-      client.fetch<ResumeData>(`billing/subscriptions/${encodePathParam(subscriptionId)}/resume`, { ...options, method: 'POST', scopes: ['billingEntityId'] }),
+      client.fetch<ResumeData>(`billing/subscriptions/${encodePathParam(subscriptionId)}/resume`, { ...options, method: 'POST', scopes: ['billingEntityId'], acceptsIdempotencyKey: true }),
 
     recordUsage: (subscriptionId: string, data: RecordUsageBody, options?: ConjoinCallOptions) =>
-      client.fetch<RecordUsageData>(`billing/subscriptions/${encodePathParam(subscriptionId)}/usage-records`, { ...options, method: 'POST', body: data, scopes: ['billingEntityId'] }),
+      client.fetch<RecordUsageData>(`billing/subscriptions/${encodePathParam(subscriptionId)}/usage-records`, { ...options, method: 'POST', body: data, scopes: ['billingEntityId'], acceptsIdempotencyKey: true }),
 
     readUsageSummary: (subscriptionId: string, query?: ReadUsageSummaryQuery, options?: ConjoinCallOptions) =>
       client.fetch<ReadUsageSummaryData>(`billing/subscriptions/${encodePathParam(subscriptionId)}/usage-summaries`, { ...options, method: 'GET', query: query as Record<string, unknown> | undefined, scopes: ['billingEntityId'] }),

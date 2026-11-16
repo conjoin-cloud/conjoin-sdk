@@ -30,5 +30,5 @@ export async function currentAccount(overrides?: Partial<NextAdapterConfig>): Pr
     ...(conjoinRequestId ? { conjoinRequestId } : {}),
   })
 
-  return createAuthSelves(client).readProfile({ auth: { type: 'bearer', token: authObj.getToken() } })
+  return createAuthSelves(client).readProfile(authObj.getToken())
 }

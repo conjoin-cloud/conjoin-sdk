@@ -1,10 +1,20 @@
-import { extractPathParams, type PathParam, parseTag, toKebabCase, toPascalCase } from './utils'
+import { type AuthMode, readPortalTicketHeader, resolveAuthMode } from './security'
+import { extractPathParams, isRecord, type PathParam, parseTag, toKebabCase, toPascalCase } from './utils'
 
 export type HttpMethod = 'get' | 'post' | 'put' | 'patch' | 'delete'
 
 export type ScopeName = 'billingEntityId' | 'messagingProfileId' | 'authAppId'
 
 export type ResponseKind = 'envelope' | 'list' | 'body' | 'empty'
+
+export type DeclaredHeader = {
+  name: string
+  argumentName: string
+  required: boolean
+  minLength?: number
+  maxLength?: number
+  pattern?: string
+}
 
 export type OperationInfo = {
   operationId: string
@@ -21,7 +31,8 @@ export type OperationInfo = {
   queryRequired: boolean
   scopes: ScopeName[]
   acceptsIdempotencyKey: boolean
-  authMode: 'default' | 'none' | 'scimBearer'
+  declaredHeaders: DeclaredHeader[]
+  authMode: AuthMode
 }
 
 export type ResourceGroup = {
@@ -34,7 +45,7 @@ export type ResourceGroup = {
 
 type Spec = {
   paths: Record<string, Record<string, unknown>>
-  components?: { parameters?: Record<string, Record<string, unknown>> }
+  components?: { parameters?: Record<string, Record<string, unknown>>; securitySchemes?: Record<string, unknown> }
 }
 
 const HTTP_METHODS = new Set<string>(['get', 'post', 'put', 'patch', 'delete'])
@@ -47,11 +58,19 @@ const SCOPE_HEADER_NAMES: Readonly<Record<string, ScopeName>> = {
 
 const REQUEST_ID_HEADER = 'conjoin-request-id'
 const IDEMPOTENCY_KEY_HEADER = 'idempotency-key'
+const RESERVED_HEADER_NAMES = new Set([
+  'accept',
+  'authorization',
+  'content-length',
+  'content-type',
+  'cookie',
+  'host',
+  'user-agent',
+  'x-conjoin-api-version',
+  'x-conjoin-sdk-version',
+])
 const METHODS_WITHOUT_BODY = new Set<HttpMethod>(['get', 'delete'])
 const NO_CONTENT_STATUS = '204'
-
-const isRecord = (value: unknown): value is Record<string, unknown> =>
-  Boolean(value) && typeof value === 'object' && !Array.isArray(value)
 
 function resolveParameter(spec: Spec, raw: unknown): Record<string, unknown> {
   if (!isRecord(raw)) {
@@ -72,19 +91,6 @@ function resolveParameter(spec: Spec, raw: unknown): Record<string, unknown> {
   }
 
   return resolved
-}
-
-function resolveAuthMode(operation: Record<string, unknown>): OperationInfo['authMode'] {
-  const security = operation.security
-
-  if (!Array.isArray(security)) return 'default'
-  if (security.length === 0) return 'none'
-  if (security.every(requirement => isRecord(requirement) && Object.keys(requirement).length === 0)) return 'none'
-  if (security.some(requirement => isRecord(requirement) && Object.hasOwn(requirement, 'scimBearer'))) {
-    return 'scimBearer'
-  }
-
-  return 'default'
 }
 
 function readSuccessSchema(operation: Record<string, unknown>): {
@@ -120,9 +126,58 @@ function assertBodyAllowed(httpMethod: HttpMethod, operationId: string): void {
   }
 }
 
+const toHeaderArgumentName = (headerName: string): string =>
+  headerName
+    .toLowerCase()
+    .split('-')
+    .map((part, index) => (index === 0 ? part : part.charAt(0).toUpperCase() + part.slice(1)))
+    .join('')
+
+const readOptionalBound = (schema: Record<string, unknown>, key: string, operationId: string): number | undefined => {
+  const value = schema[key]
+
+  if (value === undefined) return undefined
+  if (typeof value !== 'number' || !Number.isSafeInteger(value) || value < 0) {
+    throw new Error(`${operationId} declares a header whose ${key} is not a whole number`)
+  }
+
+  return value
+}
+
+function readDeclaredHeader(parameter: Record<string, unknown>, operationId: string): DeclaredHeader {
+  const name = String(parameter.name)
+
+  if (RESERVED_HEADER_NAMES.has(name.toLowerCase())) {
+    throw new Error(`${operationId} declares the reserved header ${name} as a parameter`)
+  }
+
+  const schema = isRecord(parameter.schema) ? parameter.schema : {}
+
+  if (schema.type !== 'string') {
+    throw new Error(`${operationId} declares the header ${name} without a string schema`)
+  }
+
+  const pattern = schema.pattern
+
+  if (pattern !== undefined && typeof pattern !== 'string') {
+    throw new Error(`${operationId} declares the header ${name} with a pattern that is not a string`)
+  }
+
+  return {
+    name,
+    argumentName: toHeaderArgumentName(name),
+    required: parameter.required === true,
+    minLength: readOptionalBound(schema, 'minLength', operationId),
+    maxLength: readOptionalBound(schema, 'maxLength', operationId),
+    pattern,
+  }
+}
+
 function buildOperation(spec: Spec, path: string, method: HttpMethod, operation: Record<string, unknown>) {
+  const operationId = String(operation.operationId)
   const parameters = Array.isArray(operation.parameters) ? operation.parameters.map(p => resolveParameter(spec, p)) : []
   const scopes: ScopeName[] = []
+  const declaredHeaders: DeclaredHeader[] = []
   let acceptsIdempotencyKey = false
 
   for (const parameter of parameters) {
@@ -136,15 +191,24 @@ function buildOperation(spec: Spec, path: string, method: HttpMethod, operation:
     } else if (headerName === IDEMPOTENCY_KEY_HEADER) {
       acceptsIdempotencyKey = true
     } else if (headerName !== REQUEST_ID_HEADER) {
-      throw new Error(`${String(operation.operationId)} declares the unknown header ${String(parameter.name)}`)
+      declaredHeaders.push(readDeclaredHeader(parameter, operationId))
     }
+  }
+
+  const authMode = resolveAuthMode(operation, operationId)
+
+  if (authMode === 'portalTicket') declaredHeaders.push(readPortalTicketHeader(spec.components?.securitySchemes))
+
+  const argumentNames = new Set(declaredHeaders.map(header => header.argumentName))
+
+  if (argumentNames.size !== declaredHeaders.length) {
+    throw new Error(`${operationId} declares two headers that generate the same argument`)
   }
 
   const queryParameters = parameters.filter(parameter => parameter.in === 'query')
   const requestBody = isRecord(operation.requestBody) ? operation.requestBody : undefined
   const requestContent = requestBody && isRecord(requestBody.content) ? requestBody.content : {}
   const requestContentType = Object.keys(requestContent)[0] ?? 'application/json'
-  const requestMedia = isRecord(requestContent[requestContentType]) ? requestContent[requestContentType] : {}
   const success = readSuccessSchema(operation)
   if (requestBody !== undefined) assertBodyAllowed(method, String(operation.operationId))
 
@@ -163,7 +227,8 @@ function buildOperation(spec: Spec, path: string, method: HttpMethod, operation:
     queryRequired: queryParameters.some(parameter => parameter.required === true),
     scopes,
     acceptsIdempotencyKey: method === 'post' && acceptsIdempotencyKey,
-    authMode: resolveAuthMode(operation),
+    declaredHeaders,
+    authMode,
   } satisfies OperationInfo
 }
 

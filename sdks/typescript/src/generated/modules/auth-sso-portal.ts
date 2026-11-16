@@ -18,9 +18,9 @@ export function createAuthSSOPortals(client: ConjoinClient) {
       client.fetch<UpdateSsoPortalSettingsData>('auth/portal/settings', { ...options, method: 'PATCH', body: data, scopes: ['authAppId'] }),
 
     mintSsoPortalTicket: (organizationId: string, data: MintSsoPortalTicketBody, options?: ConjoinCallOptions) =>
-      client.fetch<MintSsoPortalTicketData>(`auth/organizations/${encodePathParam(organizationId)}/portal-tickets/`, { ...options, method: 'POST', body: data, scopes: ['authAppId'] }),
+      client.fetch<MintSsoPortalTicketData>(`auth/organizations/${encodePathParam(organizationId)}/portal-tickets/`, { ...options, method: 'POST', body: data, scopes: ['authAppId'], acceptsIdempotencyKey: true }),
 
     revokeSsoPortalTicket: (organizationId: string, portalTicketId: string, options?: ConjoinCallOptions) =>
-      client.fetch<RevokeSsoPortalTicketData>(`auth/organizations/${encodePathParam(organizationId)}/portal-tickets/${encodePathParam(portalTicketId)}/revoke`, { ...options, method: 'POST', scopes: ['authAppId'] }),
+      client.fetch<RevokeSsoPortalTicketData>(`auth/organizations/${encodePathParam(organizationId)}/portal-tickets/${encodePathParam(portalTicketId)}/revoke`, { ...options, method: 'POST', scopes: ['authAppId'], acceptsIdempotencyKey: true }),
   }
 }

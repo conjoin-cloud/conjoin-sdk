@@ -12,12 +12,12 @@ type UnlinkData = NonNullable<operations['unlinkIdentity']['responses']['200']['
 export function createAuthIdentities(client: ConjoinClient) {
   return {
     discoverAccount: (data: DiscoverAccountBody, options?: ConjoinCallOptions) =>
-      client.fetch<DiscoverAccountData>('auth/accounts/discover', { ...options, method: 'POST', body: data, scopes: ['authAppId'] }),
+      client.fetch<DiscoverAccountData>('auth/accounts/discover', { ...options, method: 'POST', body: data, scopes: ['authAppId'], acceptsIdempotencyKey: true }),
 
     link: (accountId: string, data: LinkBody, options?: ConjoinCallOptions) =>
-      client.fetch<LinkData>(`auth/accounts/${encodePathParam(accountId)}/identities/link`, { ...options, method: 'POST', body: data, scopes: ['authAppId'] }),
+      client.fetch<LinkData>(`auth/accounts/${encodePathParam(accountId)}/identities/link`, { ...options, method: 'POST', body: data, scopes: ['authAppId'], acceptsIdempotencyKey: true }),
 
     unlink: (accountId: string, data: UnlinkBody, options?: ConjoinCallOptions) =>
-      client.fetch<UnlinkData>(`auth/accounts/${encodePathParam(accountId)}/identities/unlink`, { ...options, method: 'POST', body: data, scopes: ['authAppId'] }),
+      client.fetch<UnlinkData>(`auth/accounts/${encodePathParam(accountId)}/identities/unlink`, { ...options, method: 'POST', body: data, scopes: ['authAppId'], acceptsIdempotencyKey: true }),
   }
 }

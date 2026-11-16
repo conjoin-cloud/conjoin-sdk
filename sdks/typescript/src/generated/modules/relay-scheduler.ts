@@ -30,7 +30,7 @@ export function createRelaySchedulers(client: ConjoinClient) {
       client.fetchList<ReadDefinitionsData>('relay/schedules/', { ...options, method: 'GET', query: query as Record<string, unknown> | undefined }),
 
     createDefinition: (data: CreateDefinitionBody, options?: ConjoinCallOptions) =>
-      client.fetch<CreateDefinitionData>('relay/schedules/', { ...options, method: 'POST', body: data }),
+      client.fetch<CreateDefinitionData>('relay/schedules/', { ...options, method: 'POST', body: data, acceptsIdempotencyKey: true }),
 
     readExecutions: (scheduleId: string, query?: ReadExecutionsQuery, options?: ConjoinCallOptions) =>
       client.fetchList<ReadExecutionsData>(`relay/schedules/${encodePathParam(scheduleId)}/executions`, { ...options, method: 'GET', query: query as Record<string, unknown> | undefined }),
@@ -45,16 +45,16 @@ export function createRelaySchedulers(client: ConjoinClient) {
       client.fetch<UpdateDefinitionData>(`relay/schedules/${encodePathParam(scheduleId)}`, { ...options, method: 'PATCH', body: data }),
 
     pause: (scheduleId: string, options?: ConjoinCallOptions) =>
-      client.fetch<PauseData>(`relay/schedules/${encodePathParam(scheduleId)}/pause`, { ...options, method: 'POST' }),
+      client.fetch<PauseData>(`relay/schedules/${encodePathParam(scheduleId)}/pause`, { ...options, method: 'POST', acceptsIdempotencyKey: true }),
 
     resume: (scheduleId: string, options?: ConjoinCallOptions) =>
-      client.fetch<ResumeData>(`relay/schedules/${encodePathParam(scheduleId)}/resume`, { ...options, method: 'POST' }),
+      client.fetch<ResumeData>(`relay/schedules/${encodePathParam(scheduleId)}/resume`, { ...options, method: 'POST', acceptsIdempotencyKey: true }),
 
     cancel: (scheduleId: string, options?: ConjoinCallOptions) =>
-      client.fetch<CancelData>(`relay/schedules/${encodePathParam(scheduleId)}/cancel`, { ...options, method: 'POST' }),
+      client.fetch<CancelData>(`relay/schedules/${encodePathParam(scheduleId)}/cancel`, { ...options, method: 'POST', acceptsIdempotencyKey: true }),
 
     triggerExecution: (scheduleId: string, options?: ConjoinCallOptions) =>
-      client.fetch<TriggerExecutionData>(`relay/schedules/${encodePathParam(scheduleId)}/trigger`, { ...options, method: 'POST' }),
+      client.fetch<TriggerExecutionData>(`relay/schedules/${encodePathParam(scheduleId)}/trigger`, { ...options, method: 'POST', acceptsIdempotencyKey: true }),
 
     readExecutionsCount: (scheduleId: string, query?: ReadExecutionsCountQuery, options?: ConjoinCallOptions) =>
       client.fetch<ReadExecutionsCountData>(`relay/schedules/${encodePathParam(scheduleId)}/executions/count`, { ...options, method: 'GET', query: query as Record<string, unknown> | undefined }),
@@ -63,6 +63,6 @@ export function createRelaySchedulers(client: ConjoinClient) {
       client.fetch<ReadDeadLetterEntriesCountData>(`relay/schedules/${encodePathParam(scheduleId)}/dead-letters/count`, { ...options, method: 'GET', query: query as Record<string, unknown> | undefined }),
 
     replayDeadLetterEntry: (scheduleId: string, deadLetterId: string, options?: ConjoinCallOptions) =>
-      client.fetch<ReplayDeadLetterEntryData>(`relay/schedules/${encodePathParam(scheduleId)}/dead-letters/${encodePathParam(deadLetterId)}/replay`, { ...options, method: 'POST' }),
+      client.fetch<ReplayDeadLetterEntryData>(`relay/schedules/${encodePathParam(scheduleId)}/dead-letters/${encodePathParam(deadLetterId)}/replay`, { ...options, method: 'POST', acceptsIdempotencyKey: true }),
   }
 }

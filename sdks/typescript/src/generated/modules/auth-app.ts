@@ -21,7 +21,7 @@ export function createAuthApps(client: ConjoinClient) {
       client.fetchList<ListData>('auth/apps/', { ...options, method: 'GET', query: query as Record<string, unknown> | undefined }),
 
     create: (data: CreateBody, options?: ConjoinCallOptions) =>
-      client.fetch<CreateData>('auth/apps/', { ...options, method: 'POST', body: data }),
+      client.fetch<CreateData>('auth/apps/', { ...options, method: 'POST', body: data, acceptsIdempotencyKey: true }),
 
     listCount: (query?: ListCountQuery, options?: ConjoinCallOptions) =>
       client.fetch<ListCountData>('auth/apps/count', { ...options, method: 'GET', query: query as Record<string, unknown> | undefined }),
@@ -36,6 +36,6 @@ export function createAuthApps(client: ConjoinClient) {
       client.fetch<UpdateSettingsData>(`auth/apps/${encodePathParam(appId)}/settings`, { ...options, method: 'PATCH', body: data }),
 
     rotateSigningKeys: (appId: string, options?: ConjoinCallOptions) =>
-      client.fetchJson<RotateSigningKeysResponse>(`auth/apps/${encodePathParam(appId)}/signing-keys/rotate`, { ...options, method: 'POST' }),
+      client.fetchJson<RotateSigningKeysResponse>(`auth/apps/${encodePathParam(appId)}/signing-keys/rotate`, { ...options, method: 'POST', acceptsIdempotencyKey: true }),
   }
 }

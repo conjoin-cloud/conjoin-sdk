@@ -22,7 +22,7 @@ export function createRelayMemorystores(client: ConjoinClient) {
       client.fetchList<ReadClustersData>('relay/memorystore-clusters/', { ...options, method: 'GET', query: query as Record<string, unknown> | undefined }),
 
     createCluster: (data: CreateClusterBody, options?: ConjoinCallOptions) =>
-      client.fetch<CreateClusterData>('relay/memorystore-clusters/', { ...options, method: 'POST', body: data }),
+      client.fetch<CreateClusterData>('relay/memorystore-clusters/', { ...options, method: 'POST', body: data, acceptsIdempotencyKey: true }),
 
     readClustersCount: (query?: ReadClustersCountQuery, options?: ConjoinCallOptions) =>
       client.fetch<ReadClustersCountData>('relay/memorystore-clusters/count', { ...options, method: 'GET', query: query as Record<string, unknown> | undefined }),
@@ -37,9 +37,9 @@ export function createRelayMemorystores(client: ConjoinClient) {
       client.fetch<DeleteClusterData>(`relay/memorystore-clusters/${encodePathParam(memorystoreClusterId)}`, { ...options, method: 'DELETE' }),
 
     suspendCluster: (memorystoreClusterId: string, options?: ConjoinCallOptions) =>
-      client.fetch<SuspendClusterData>(`relay/memorystore-clusters/${encodePathParam(memorystoreClusterId)}/suspend`, { ...options, method: 'POST' }),
+      client.fetch<SuspendClusterData>(`relay/memorystore-clusters/${encodePathParam(memorystoreClusterId)}/suspend`, { ...options, method: 'POST', acceptsIdempotencyKey: true }),
 
     executeCommand: (memorystoreClusterId: string, data: ExecuteCommandBody, options?: ConjoinCallOptions) =>
-      client.fetch<ExecuteCommandData>(`relay/memorystore-clusters/${encodePathParam(memorystoreClusterId)}/execute`, { ...options, method: 'POST', body: data }),
+      client.fetch<ExecuteCommandData>(`relay/memorystore-clusters/${encodePathParam(memorystoreClusterId)}/execute`, { ...options, method: 'POST', body: data, acceptsIdempotencyKey: true }),
   }
 }

@@ -35,7 +35,7 @@ export async function fetchConjoinBranding(
     baseUrl: options?.baseUrl,
   })
 
-  const settings = await createCloudSDKs(client).readSdkSettings({ auth: { type: 'default' } })
+  const settings = await createCloudSDKs(client).readSdkSettings()
   return settings.branding
 }
 

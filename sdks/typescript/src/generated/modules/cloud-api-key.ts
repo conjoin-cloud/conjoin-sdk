@@ -20,13 +20,13 @@ export function createCloudAPIKeys(client: ConjoinClient) {
       client.fetchList<ReadApiKeysData>('cloud/api-keys/', { ...options, method: 'GET', query: query as Record<string, unknown> | undefined }),
 
     createApiKey: (data: CreateApiKeyBody, options?: ConjoinCallOptions) =>
-      client.fetch<CreateApiKeyData>('cloud/api-keys/', { ...options, method: 'POST', body: data }),
+      client.fetch<CreateApiKeyData>('cloud/api-keys/', { ...options, method: 'POST', body: data, acceptsIdempotencyKey: true }),
 
     readApiKeysCount: (query?: ReadApiKeysCountQuery, options?: ConjoinCallOptions) =>
       client.fetch<ReadApiKeysCountData>('cloud/api-keys/count', { ...options, method: 'GET', query: query as Record<string, unknown> | undefined }),
 
     regenerateApiKey: (apiKeyId: string, data: RegenerateApiKeyBody, options?: ConjoinCallOptions) =>
-      client.fetch<RegenerateApiKeyData>(`cloud/api-keys/${encodePathParam(apiKeyId)}/regenerate`, { ...options, method: 'POST', body: data }),
+      client.fetch<RegenerateApiKeyData>(`cloud/api-keys/${encodePathParam(apiKeyId)}/regenerate`, { ...options, method: 'POST', body: data, acceptsIdempotencyKey: true }),
 
     updateApiKey: (apiKeyId: string, data: UpdateApiKeyBody, options?: ConjoinCallOptions) =>
       client.fetch<UpdateApiKeyData>(`cloud/api-keys/${encodePathParam(apiKeyId)}`, { ...options, method: 'PATCH', body: data }),

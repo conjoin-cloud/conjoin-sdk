@@ -20,7 +20,7 @@ export function createBillingCustomers(client: ConjoinClient) {
       client.fetchList<ListData>('billing/customers/', { ...options, method: 'GET', query: query as Record<string, unknown> | undefined, scopes: ['billingEntityId'] }),
 
     create: (data: CreateBody, options?: ConjoinCallOptions) =>
-      client.fetch<CreateData>('billing/customers/', { ...options, method: 'POST', body: data, scopes: ['billingEntityId'] }),
+      client.fetch<CreateData>('billing/customers/', { ...options, method: 'POST', body: data, scopes: ['billingEntityId'], acceptsIdempotencyKey: true }),
 
     listCount: (query?: ListCountQuery, options?: ConjoinCallOptions) =>
       client.fetch<ListCountData>('billing/customers/count', { ...options, method: 'GET', query: query as Record<string, unknown> | undefined, scopes: ['billingEntityId'] }),
@@ -32,9 +32,9 @@ export function createBillingCustomers(client: ConjoinClient) {
       client.fetch<UpdateData>(`billing/customers/${encodePathParam(customerId)}`, { ...options, method: 'PATCH', body: data, scopes: ['billingEntityId'] }),
 
     archive: (customerId: string, options?: ConjoinCallOptions) =>
-      client.fetch<ArchiveData>(`billing/customers/${encodePathParam(customerId)}/archive`, { ...options, method: 'POST', scopes: ['billingEntityId'] }),
+      client.fetch<ArchiveData>(`billing/customers/${encodePathParam(customerId)}/archive`, { ...options, method: 'POST', scopes: ['billingEntityId'], acceptsIdempotencyKey: true }),
 
     restore: (customerId: string, options?: ConjoinCallOptions) =>
-      client.fetch<RestoreData>(`billing/customers/${encodePathParam(customerId)}/restore`, { ...options, method: 'POST', scopes: ['billingEntityId'] }),
+      client.fetch<RestoreData>(`billing/customers/${encodePathParam(customerId)}/restore`, { ...options, method: 'POST', scopes: ['billingEntityId'], acceptsIdempotencyKey: true }),
   }
 }

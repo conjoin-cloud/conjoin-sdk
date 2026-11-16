@@ -28,7 +28,26 @@ type OperationCase = {
 }
 
 const API_KEY = 'cak_test_harbourledgerintegration'
+const PUBLISHABLE_KEY = 'cpk_test_harbourledgerintegration'
+const SESSION_TOKEN = 'sess_harbourledger_signedin'
+const PORTAL_TICKET = 'ptk_harbourledger_portal'
+const PORTAL_TICKET_HEADER = 'x-portal-ticket'
 const SCIM_TOKEN = 'scim_harbourledger_directory'
+const EXPECTED_AUTHORIZATION_BY_SCHEME: Readonly<Record<string, string>> = {
+  conjoinApiKey: `Bearer ${API_KEY}`,
+  scimBearer: `Bearer ${SCIM_TOKEN}`,
+  conjoinPublishableKey: `Bearer ${PUBLISHABLE_KEY}`,
+  conjoinSessionBearer: `Bearer ${SESSION_TOKEN}`,
+}
+const SESSION_SCHEMES = new Set(['conjoinSessionBearer', 'conjoinSessionCookie'])
+const PORTAL_TICKET_SCHEMES = new Set(['conjoinPortalTicketHeader', 'conjoinPortalTicketQuery'])
+const SDK_MANAGED_HEADER_NAMES = new Set([
+  'billing-entity-id',
+  'messaging-profile-id',
+  'auth-app-id',
+  'idempotency-key',
+  'conjoin-request-id',
+])
 const SCOPE_HEADER_VALUES: Readonly<Record<string, string>> = {
   'billing-entity-id': 'ent_harbourledger',
   'messaging-profile-id': 'mpr_harbourledger',
@@ -38,9 +57,13 @@ const SERVER_IDEMPOTENCY_KEY_PATTERN = /^[A-Za-z0-9\-_:.]{1,64}$/
 const HTTP_METHODS = ['get', 'post', 'put', 'patch', 'delete']
 const NO_CONTENT_STATUS = '204'
 
-const DOCUMENTS: ReadonlyArray<{ file: ConjoinOpenApiDocumentFile; moduleDirectory: string }> = [
-  { file: 'openapi.json', moduleDirectory: 'modules' },
-  { file: 'openapi-frontend.json', moduleDirectory: 'frontend' },
+const DOCUMENTS: ReadonlyArray<{
+  file: ConjoinOpenApiDocumentFile
+  moduleDirectory: string
+  clientKey: { apiKey: string } | { publishableKey: string }
+}> = [
+  { file: 'openapi.json', moduleDirectory: 'modules', clientKey: { apiKey: API_KEY } },
+  { file: 'openapi-frontend.json', moduleDirectory: 'frontend', clientKey: { publishableKey: PUBLISHABLE_KEY } },
 ]
 
 const generatedDirectory = resolve(dirname(fileURLToPath(import.meta.url)), '../../../src/generated')
@@ -183,11 +206,19 @@ const expectScopedRequest = (
   }
 
   const scheme = readSecurityScheme(testCase.operation)
-  const expectedAuthorization =
-    scheme === 'conjoinApiKey' ? `Bearer ${API_KEY}` : scheme === 'scimBearer' ? `Bearer ${SCIM_TOKEN}` : undefined
+  const isPortalTicketOperation = scheme !== undefined && PORTAL_TICKET_SCHEMES.has(scheme)
 
-  expect(request.headers.authorization).toBe(expectedAuthorization)
+  expect(request.headers.authorization).toBe(
+    scheme === undefined ? undefined : EXPECTED_AUTHORIZATION_BY_SCHEME[scheme],
+  )
+  expect(request.headers[PORTAL_TICKET_HEADER]).toBe(isPortalTicketOperation ? PORTAL_TICKET : undefined)
+  expect(JSON.stringify(request.query)).not.toContain(PORTAL_TICKET)
 }
+
+const hasCallerSuppliedHeaders = (document: JsonRecord, operation: JsonRecord): boolean =>
+  readParameters(document, operation).some(
+    parameter => parameter.in === 'header' && !SDK_MANAGED_HEADER_NAMES.has(String(parameter.name).toLowerCase()),
+  )
 
 const expectReturnedData = (result: unknown, body: unknown, schema: unknown, document: JsonRecord): void => {
   if (body === undefined) {
@@ -211,7 +242,7 @@ const expectReturnedData = (result: unknown, body: unknown, schema: unknown, doc
   expect(result).toEqual(body.data)
 }
 
-describe.each(DOCUMENTS)('every operation in $file', ({ file, moduleDirectory }) => {
+describe.each(DOCUMENTS)('every operation in $file', ({ file, moduleDirectory, clientKey }) => {
   const document = loadConjoinOpenApiDocument(file) as unknown as JsonRecord
   const sampler = new SchemaSampler(document)
   const cases = buildCases(document)
@@ -224,7 +255,7 @@ describe.each(DOCUMENTS)('every operation in $file', ({ file, moduleDirectory })
       openApiContract: createOpenApiContract(loadConjoinOpenApiDocument(file)),
     })
     client = createConjoinClient({
-      apiKey: API_KEY,
+      ...clientKey,
       baseUrl: server.baseUrl,
       billingEntityId: SCOPE_HEADER_VALUES['billing-entity-id'],
       messagingProfileId: SCOPE_HEADER_VALUES['messaging-profile-id'],
@@ -291,6 +322,16 @@ describe.each(DOCUMENTS)('every operation in $file', ({ file, moduleDirectory })
           : undefined,
       )
     }
+
+    const scheme = readSecurityScheme(testCase.operation)
+
+    if (scheme !== undefined && PORTAL_TICKET_SCHEMES.has(scheme)) {
+      args.push({ portalTicket: PORTAL_TICKET })
+    } else if (hasCallerSuppliedHeaders(document, testCase.operation)) {
+      args.push(undefined)
+    }
+
+    if (scheme !== undefined && SESSION_SCHEMES.has(scheme)) args.push(SESSION_TOKEN)
 
     const success = readSuccessResponse(document, testCase.operation)
     const body = success.schema === undefined ? undefined : sampler.sample(success.schema)

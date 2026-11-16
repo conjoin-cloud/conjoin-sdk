@@ -23,7 +23,7 @@ export function createCloudWebhooks(client: ConjoinClient) {
       client.fetchList<ListData>('cloud/webhooks/', { ...options, method: 'GET', query: query as Record<string, unknown> | undefined }),
 
     register: (data: RegisterBody, options?: ConjoinCallOptions) =>
-      client.fetch<RegisterData>('cloud/webhooks/', { ...options, method: 'POST', body: data }),
+      client.fetch<RegisterData>('cloud/webhooks/', { ...options, method: 'POST', body: data, acceptsIdempotencyKey: true }),
 
     readCount: (query?: ReadCountQuery, options?: ConjoinCallOptions) =>
       client.fetch<ReadCountData>('cloud/webhooks/count', { ...options, method: 'GET', query: query as Record<string, unknown> | undefined }),

@@ -14,7 +14,7 @@ type ListSmsBrandsData = NonNullable<operations['listSmsBrands']['responses']['2
 export function createMessagingSMSBrands(client: ConjoinClient) {
   return {
     createSmsBrand: (data: CreateSmsBrandBody, options?: ConjoinCallOptions) =>
-      client.fetch<CreateSmsBrandData>('messaging/sms/brands/', { ...options, method: 'POST', body: data, scopes: ['messagingProfileId'] }),
+      client.fetch<CreateSmsBrandData>('messaging/sms/brands/', { ...options, method: 'POST', body: data, scopes: ['messagingProfileId'], acceptsIdempotencyKey: true }),
 
     readSmsBrand: (brandId: string, options?: ConjoinCallOptions) =>
       client.fetch<ReadSmsBrandData>(`messaging/sms/brands/${encodePathParam(brandId)}`, { ...options, method: 'GET', scopes: ['messagingProfileId'] }),
@@ -26,6 +26,6 @@ export function createMessagingSMSBrands(client: ConjoinClient) {
       client.fetch<DeleteSmsBrandData>(`messaging/sms/brands/${encodePathParam(brandId)}`, { ...options, method: 'DELETE', scopes: ['messagingProfileId'] }),
 
     listSmsBrands: (data: ListSmsBrandsBody, options?: ConjoinCallOptions) =>
-      client.fetchList<ListSmsBrandsData>('messaging/sms/brands/retrieve', { ...options, method: 'POST', body: data, scopes: ['messagingProfileId'] }),
+      client.fetchList<ListSmsBrandsData>('messaging/sms/brands/retrieve', { ...options, method: 'POST', body: data, scopes: ['messagingProfileId'], acceptsIdempotencyKey: true }),
   }
 }

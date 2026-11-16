@@ -19,24 +19,24 @@ type CompletePasswordResetData = NonNullable<operations['completeAuthPasswordRes
 export function createAuthFlows(client: ConjoinClient) {
   return {
     startSignup: (data: StartSignupBody, options?: ConjoinCallOptions) =>
-      client.fetch<StartSignupData>('auth/client/sign-ups/start', { auth: { type: 'none' }, ...options, method: 'POST', body: data }),
+      client.fetch<StartSignupData>('auth/client/sign-ups/start', { ...options, auth: { type: 'none' }, method: 'POST', body: data }),
 
     completeSignup: (data: CompleteSignupBody, options?: ConjoinCallOptions) =>
-      client.fetch<CompleteSignupData>('auth/client/sign-ups/complete', { auth: { type: 'none' }, ...options, method: 'POST', body: data }),
+      client.fetch<CompleteSignupData>('auth/client/sign-ups/complete', { ...options, auth: { type: 'none' }, method: 'POST', body: data }),
 
     confirmLinkSignup: (data: ConfirmLinkSignupBody, options?: ConjoinCallOptions) =>
-      client.fetch<ConfirmLinkSignupData>('auth/client/sign-ups/confirm-link', { auth: { type: 'none' }, ...options, method: 'POST', body: data }),
+      client.fetch<ConfirmLinkSignupData>('auth/client/sign-ups/confirm-link', { ...options, auth: { type: 'none' }, method: 'POST', body: data }),
 
     startSignin: (data: StartSigninBody, options?: ConjoinCallOptions) =>
-      client.fetch<StartSigninData>('auth/client/sign-ins/start', { auth: { type: 'none' }, ...options, method: 'POST', body: data }),
+      client.fetch<StartSigninData>('auth/client/sign-ins/start', { ...options, auth: { type: 'none' }, method: 'POST', body: data }),
 
     completeSignin: (data: CompleteSigninBody, options?: ConjoinCallOptions) =>
-      client.fetch<CompleteSigninData>('auth/client/sign-ins/complete', { auth: { type: 'none' }, ...options, method: 'POST', body: data }),
+      client.fetch<CompleteSigninData>('auth/client/sign-ins/complete', { ...options, auth: { type: 'none' }, method: 'POST', body: data }),
 
     startPasswordReset: (data: StartPasswordResetBody, options?: ConjoinCallOptions) =>
-      client.fetch<StartPasswordResetData>('auth/client/password-resets/start', { auth: { type: 'none' }, ...options, method: 'POST', body: data }),
+      client.fetch<StartPasswordResetData>('auth/client/password-resets/start', { ...options, auth: { type: 'none' }, method: 'POST', body: data }),
 
     completePasswordReset: (data: CompletePasswordResetBody, options?: ConjoinCallOptions) =>
-      client.fetch<CompletePasswordResetData>('auth/client/password-resets/complete', { auth: { type: 'none' }, ...options, method: 'POST', body: data }),
+      client.fetch<CompletePasswordResetData>('auth/client/password-resets/complete', { ...options, auth: { type: 'none' }, method: 'POST', body: data }),
   }
 }

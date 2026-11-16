@@ -12,10 +12,10 @@ type DeleteData = NonNullable<operations['deleteEmailSenderPool']['responses']['
 export function createMessagingEmailSenderPools(client: ConjoinClient) {
   return {
     create: (data: CreateBody, options?: ConjoinCallOptions) =>
-      client.fetch<CreateData>('messaging/email/sender-pools/', { ...options, method: 'POST', body: data, scopes: ['messagingProfileId'] }),
+      client.fetch<CreateData>('messaging/email/sender-pools/', { ...options, method: 'POST', body: data, scopes: ['messagingProfileId'], acceptsIdempotencyKey: true }),
 
     addEmailSendersToPool: (poolId: string, data: AddEmailSendersToPoolBody, options?: ConjoinCallOptions) =>
-      client.fetch<AddEmailSendersToPoolData>(`messaging/email/sender-pools/${encodePathParam(poolId)}/senders`, { ...options, method: 'POST', body: data, scopes: ['messagingProfileId'] }),
+      client.fetch<AddEmailSendersToPoolData>(`messaging/email/sender-pools/${encodePathParam(poolId)}/senders`, { ...options, method: 'POST', body: data, scopes: ['messagingProfileId'], acceptsIdempotencyKey: true }),
 
     get: (poolId: string, options?: ConjoinCallOptions) =>
       client.fetch<GetData>(`messaging/email/sender-pools/${encodePathParam(poolId)}`, { ...options, method: 'GET', scopes: ['messagingProfileId'] }),

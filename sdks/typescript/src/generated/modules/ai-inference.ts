@@ -15,13 +15,13 @@ type ReadRequestData = NonNullable<operations['readAiInferenceRequest']['respons
 export function createAiInferences(client: ConjoinClient) {
   return {
     createChatCompletion: (data: CreateChatCompletionBody, options?: ConjoinCallOptions) =>
-      client.fetch<CreateChatCompletionData>('ai/inference/chat/completions', { ...options, method: 'POST', body: data }),
+      client.fetch<CreateChatCompletionData>('ai/inference/chat/completions', { ...options, method: 'POST', body: data, acceptsIdempotencyKey: true }),
 
     createAiMultiModel: (data: CreateAiMultiModelBody, options?: ConjoinCallOptions) =>
-      client.fetch<CreateAiMultiModelData>('ai/inference/multi-model', { ...options, method: 'POST', body: data }),
+      client.fetch<CreateAiMultiModelData>('ai/inference/multi-model', { ...options, method: 'POST', body: data, acceptsIdempotencyKey: true }),
 
     createAiBestOfN: (data: CreateAiBestOfNBody, options?: ConjoinCallOptions) =>
-      client.fetch<CreateAiBestOfNData>('ai/inference/best-of-n', { ...options, method: 'POST', body: data }),
+      client.fetch<CreateAiBestOfNData>('ai/inference/best-of-n', { ...options, method: 'POST', body: data, acceptsIdempotencyKey: true }),
 
     listRequests: (query?: ListRequestsQuery, options?: ConjoinCallOptions) =>
       client.fetchList<ListRequestsData>('ai/inference/requests', { ...options, method: 'GET', query: query as Record<string, unknown> | undefined }),
