@@ -18,10 +18,16 @@ export const SCOPE_HEADERS: Readonly<Record<ConjoinScopeName, string>> = {
 
 const HEADER_VALUE_PATTERN = /^[\x21-\x7e]+$/
 
+const SDK_VERSION_HEADER = 'X-Conjoin-SDK-Version'
+
+const API_VERSION_HEADER = 'X-Conjoin-API-Version'
+
 const MANAGED_HEADER_NAMES = new Set(
   [
     'authorization',
     'content-type',
+    SDK_VERSION_HEADER,
+    API_VERSION_HEADER,
     CONJOIN_REQUEST_ID_HEADER,
     IDEMPOTENCY_KEY_HEADER,
     ...Object.values(SCOPE_HEADERS),
@@ -160,8 +166,8 @@ export function buildRequestHeaders(
     ...declaredHeaders,
     ...(authorization ? { Authorization: authorization } : {}),
     ...(contentType === 'application/json' && options.body !== undefined ? { 'Content-Type': contentType } : {}),
-    'X-Conjoin-SDK-Version': SDK_VERSION,
-    'X-Conjoin-API-Version': config.apiVersion,
+    [SDK_VERSION_HEADER]: SDK_VERSION,
+    [API_VERSION_HEADER]: config.apiVersion,
     ...resolveScopeHeaders(config, options.scopes),
     [CONJOIN_REQUEST_ID_HEADER]: managed.requestId,
     ...(managed.idempotencyKey ? { [IDEMPOTENCY_KEY_HEADER]: managed.idempotencyKey } : {}),

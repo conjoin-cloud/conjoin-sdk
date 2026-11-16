@@ -130,7 +130,10 @@ class LocalHttpServer:
                     raw_path=parts.path,
                     path=unquote(parts.path),
                     query=parse_qs(parts.query, keep_blank_values=True),
-                    headers={name.lower(): value for name, value in self.headers.items()},
+                    headers={
+                        name.lower(): ", ".join(self.headers.get_all(name) or [])
+                        for name in self.headers
+                    },
                     body=body,
                     received_at=time.monotonic(),
                 )

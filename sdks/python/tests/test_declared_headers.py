@@ -28,6 +28,8 @@ STEP_UP_TOKEN = "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a0
 HTTP_METHODS = ("get", "post", "put", "patch", "delete")
 PATH_PARAMETER_PATTERN = re.compile(r"\\\{[^}]+\\\}")
 NOT_DOCUMENTED_STATUS = 404
+PINNED_API_VERSION = "2026-06-01"
+CALLER_VERSION = "9.9.9"
 
 
 @dataclass(frozen=True)
@@ -133,6 +135,32 @@ def test_typed_step_up_values_replace_free_form_headers(receiver: LocalHttpServe
     assert first.headers["step-up-session-id"] == STEP_UP_SESSION_ID
     assert "step-up-token" not in second.headers
     assert "step-up-session-id" not in second.headers
+
+
+def test_free_form_version_headers_in_another_case_never_reach_the_wire(
+    receiver: LocalHttpServer,
+) -> None:
+    with Conjoin(
+        api_key=SECRET_API_KEY,
+        base_url=receiver.base_url,
+        auth_app_id=AUTH_APP_ID,
+        api_version=PINNED_API_VERSION,
+        max_retries=0,
+    ) as client:
+        client.auth.accounts.delete(
+            ACCOUNT_ID,
+            request_options={
+                "headers": {
+                    "x-conjoin-api-version": CALLER_VERSION,
+                    "X-CONJOIN-SDK-VERSION": CALLER_VERSION,
+                }
+            },
+        )
+
+    [request] = receiver.requests
+    assert request.headers["x-conjoin-api-version"] == PINNED_API_VERSION
+    assert re.fullmatch(r"\d+\.\d+\.\d+", request.headers["x-conjoin-sdk-version"])
+    assert request.headers["x-conjoin-sdk-version"] != CALLER_VERSION
 
 
 @pytest.mark.parametrize(
