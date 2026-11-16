@@ -35,13 +35,13 @@ export function createRelayQueues(client: ConjoinClient) {
       client.fetchList<ReadQueueDefinitionsData>('relay/queues/', { ...options, method: 'GET', query: query as Record<string, unknown> | undefined }),
 
     createQueueDefinition: (data: CreateQueueDefinitionBody, options?: ConjoinCallOptions) =>
-      client.fetch<CreateQueueDefinitionData>('relay/queues/', { ...options, method: 'POST', body: data }),
+      client.fetch<CreateQueueDefinitionData>('relay/queues/', { ...options, method: 'POST', body: data, acceptsIdempotencyKey: true }),
 
     readQueueTasks: (queueId: string, query?: ReadQueueTasksQuery, options?: ConjoinCallOptions) =>
       client.fetchList<ReadQueueTasksData>(`relay/queues/${encodePathParam(queueId)}/tasks`, { ...options, method: 'GET', query: query as Record<string, unknown> | undefined }),
 
     enqueueTask: (queueId: string, data: EnqueueTaskBody, options?: ConjoinCallOptions) =>
-      client.fetch<EnqueueTaskData>(`relay/queues/${encodePathParam(queueId)}/tasks`, { ...options, method: 'POST', body: data }),
+      client.fetch<EnqueueTaskData>(`relay/queues/${encodePathParam(queueId)}/tasks`, { ...options, method: 'POST', body: data, acceptsIdempotencyKey: true }),
 
     readDeadLetterTasks: (queueId: string, query?: ReadDeadLetterTasksQuery, options?: ConjoinCallOptions) =>
       client.fetchList<ReadDeadLetterTasksData>(`relay/queues/${encodePathParam(queueId)}/dead-letters`, { ...options, method: 'GET', query: query as Record<string, unknown> | undefined }),
@@ -56,13 +56,13 @@ export function createRelayQueues(client: ConjoinClient) {
       client.fetch<DeleteQueueDefinitionData>(`relay/queues/${encodePathParam(queueId)}`, { ...options, method: 'DELETE' }),
 
     pauseQueue: (queueId: string, options?: ConjoinCallOptions) =>
-      client.fetch<PauseQueueData>(`relay/queues/${encodePathParam(queueId)}/pause`, { ...options, method: 'POST' }),
+      client.fetch<PauseQueueData>(`relay/queues/${encodePathParam(queueId)}/pause`, { ...options, method: 'POST', acceptsIdempotencyKey: true }),
 
     resumeQueue: (queueId: string, options?: ConjoinCallOptions) =>
-      client.fetch<ResumeQueueData>(`relay/queues/${encodePathParam(queueId)}/resume`, { ...options, method: 'POST' }),
+      client.fetch<ResumeQueueData>(`relay/queues/${encodePathParam(queueId)}/resume`, { ...options, method: 'POST', acceptsIdempotencyKey: true }),
 
     batchEnqueueTasks: (queueId: string, data: BatchEnqueueTasksBody, options?: ConjoinCallOptions) =>
-      client.fetch<BatchEnqueueTasksData>(`relay/queues/${encodePathParam(queueId)}/enqueue-batch`, { ...options, method: 'POST', body: data }),
+      client.fetch<BatchEnqueueTasksData>(`relay/queues/${encodePathParam(queueId)}/enqueue-batch`, { ...options, method: 'POST', body: data, acceptsIdempotencyKey: true }),
 
     readQueueTasksCount: (queueId: string, query?: ReadQueueTasksCountQuery, options?: ConjoinCallOptions) =>
       client.fetch<ReadQueueTasksCountData>(`relay/queues/${encodePathParam(queueId)}/tasks/count`, { ...options, method: 'GET', query: query as Record<string, unknown> | undefined }),
@@ -71,9 +71,9 @@ export function createRelayQueues(client: ConjoinClient) {
       client.fetch<ReadDeadLetterTasksCountData>(`relay/queues/${encodePathParam(queueId)}/dead-letters/count`, { ...options, method: 'GET', query: query as Record<string, unknown> | undefined }),
 
     replayDeadLetterTask: (queueId: string, deadLetterId: string, options?: ConjoinCallOptions) =>
-      client.fetch<ReplayDeadLetterTaskData>(`relay/queues/${encodePathParam(queueId)}/dead-letters/${encodePathParam(deadLetterId)}/replay`, { ...options, method: 'POST' }),
+      client.fetch<ReplayDeadLetterTaskData>(`relay/queues/${encodePathParam(queueId)}/dead-letters/${encodePathParam(deadLetterId)}/replay`, { ...options, method: 'POST', acceptsIdempotencyKey: true }),
 
     purgeQueueTasks: (queueId: string, data: PurgeQueueTasksBody, options?: ConjoinCallOptions) =>
-      client.fetch<PurgeQueueTasksData>(`relay/queues/${encodePathParam(queueId)}/purge`, { ...options, method: 'POST', body: data }),
+      client.fetch<PurgeQueueTasksData>(`relay/queues/${encodePathParam(queueId)}/purge`, { ...options, method: 'POST', body: data, acceptsIdempotencyKey: true }),
   }
 }

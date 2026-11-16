@@ -19,27 +19,27 @@ type ProcessLogoutData = NonNullable<operations['processNativeLogout']['response
 export function createAuthNatives(client: ConjoinClient) {
   return {
     startSignup: (data: StartSignupBody, options?: ConjoinCallOptions) =>
-      client.fetch<StartSignupData>('auth/client/native/sign-ups/start', { auth: { type: 'none' }, ...options, method: 'POST', body: data }),
+      client.fetch<StartSignupData>('auth/client/native/sign-ups/start', { ...options, auth: { type: 'none' }, method: 'POST', body: data }),
 
     completeSignup: (data: CompleteSignupBody, options?: ConjoinCallOptions) =>
-      client.fetch<CompleteSignupData>('auth/client/native/sign-ups/complete', { auth: { type: 'none' }, ...options, method: 'POST', body: data }),
+      client.fetch<CompleteSignupData>('auth/client/native/sign-ups/complete', { ...options, auth: { type: 'none' }, method: 'POST', body: data }),
 
     confirmLinkSignup: (data: ConfirmLinkSignupBody, options?: ConjoinCallOptions) =>
-      client.fetch<ConfirmLinkSignupData>('auth/client/native/sign-ups/confirm-link', { auth: { type: 'none' }, ...options, method: 'POST', body: data }),
+      client.fetch<ConfirmLinkSignupData>('auth/client/native/sign-ups/confirm-link', { ...options, auth: { type: 'none' }, method: 'POST', body: data }),
 
     startSignin: (data: StartSigninBody, options?: ConjoinCallOptions) =>
-      client.fetch<StartSigninData>('auth/client/native/sign-ins/start', { auth: { type: 'none' }, ...options, method: 'POST', body: data }),
+      client.fetch<StartSigninData>('auth/client/native/sign-ins/start', { ...options, auth: { type: 'none' }, method: 'POST', body: data }),
 
     completeSignin: (data: CompleteSigninBody, options?: ConjoinCallOptions) =>
-      client.fetch<CompleteSigninData>('auth/client/native/sign-ins/complete', { auth: { type: 'none' }, ...options, method: 'POST', body: data }),
+      client.fetch<CompleteSigninData>('auth/client/native/sign-ins/complete', { ...options, auth: { type: 'none' }, method: 'POST', body: data }),
 
     processTokenMint: (options?: ConjoinCallOptions) =>
-      client.fetch<ProcessTokenMintData>('auth/client/native/tokens', { auth: { type: 'none' }, ...options, method: 'POST' }),
+      client.fetch<ProcessTokenMintData>('auth/client/native/tokens', { ...options, auth: { type: 'none' }, method: 'POST' }),
 
     refreshSession: (data: RefreshSessionBody, options?: ConjoinCallOptions) =>
-      client.fetch<RefreshSessionData>('auth/client/native/tokens/refresh', { auth: { type: 'none' }, ...options, method: 'POST', body: data }),
+      client.fetch<RefreshSessionData>('auth/client/native/tokens/refresh', { ...options, auth: { type: 'none' }, method: 'POST', body: data }),
 
     processLogout: (options?: ConjoinCallOptions) =>
-      client.fetch<ProcessLogoutData>('auth/client/native/logout', { auth: { type: 'none' }, ...options, method: 'POST' }),
+      client.fetch<ProcessLogoutData>('auth/client/native/logout', { ...options, auth: { type: 'none' }, method: 'POST' }),
   }
 }

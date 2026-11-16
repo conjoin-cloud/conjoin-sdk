@@ -28,13 +28,13 @@ export function createBillingEntities(client: ConjoinClient) {
       client.fetchList<ListData>('billing/entities/', { ...options, method: 'GET', query: query as Record<string, unknown> | undefined }),
 
     create: (data: CreateBody, options?: ConjoinCallOptions) =>
-      client.fetch<CreateData>('billing/entities/', { ...options, method: 'POST', body: data }),
+      client.fetch<CreateData>('billing/entities/', { ...options, method: 'POST', body: data, acceptsIdempotencyKey: true }),
 
     listCount: (query?: ListCountQuery, options?: ConjoinCallOptions) =>
       client.fetch<ListCountData>('billing/entities/count', { ...options, method: 'GET', query: query as Record<string, unknown> | undefined }),
 
     onboard: (data: OnboardBody, options?: ConjoinCallOptions) =>
-      client.fetchJson<OnboardResponse>('billing/entities/onboard', { ...options, method: 'POST', body: data }),
+      client.fetchJson<OnboardResponse>('billing/entities/onboard', { ...options, method: 'POST', body: data, acceptsIdempotencyKey: true }),
 
     read: (entityId: string, query?: ReadQuery, options?: ConjoinCallOptions) =>
       client.fetch<ReadData>(`billing/entities/${encodePathParam(entityId)}`, { ...options, method: 'GET', query: query as Record<string, unknown> | undefined }),
@@ -43,15 +43,15 @@ export function createBillingEntities(client: ConjoinClient) {
       client.fetch<UpdateData>(`billing/entities/${encodePathParam(entityId)}`, { ...options, method: 'PATCH', body: data }),
 
     createPayoutBankAccount: (entityId: string, data: CreatePayoutBankAccountBody, options?: ConjoinCallOptions) =>
-      client.fetch<CreatePayoutBankAccountData>(`billing/entities/${encodePathParam(entityId)}/payout-bank-accounts`, { ...options, method: 'POST', body: data }),
+      client.fetch<CreatePayoutBankAccountData>(`billing/entities/${encodePathParam(entityId)}/payout-bank-accounts`, { ...options, method: 'POST', body: data, acceptsIdempotencyKey: true }),
 
     createAccountLink: (entityId: string, data: CreateAccountLinkBody, options?: ConjoinCallOptions) =>
-      client.fetchJson<CreateAccountLinkResponse>(`billing/entities/${encodePathParam(entityId)}/account-links`, { ...options, method: 'POST', body: data }),
+      client.fetchJson<CreateAccountLinkResponse>(`billing/entities/${encodePathParam(entityId)}/account-links`, { ...options, method: 'POST', body: data, acceptsIdempotencyKey: true }),
 
     syncOnboarding: (entityId: string, options?: ConjoinCallOptions) =>
-      client.fetchJson<SyncOnboardingResponse>(`billing/entities/${encodePathParam(entityId)}/sync`, { ...options, method: 'POST' }),
+      client.fetchJson<SyncOnboardingResponse>(`billing/entities/${encodePathParam(entityId)}/sync`, { ...options, method: 'POST', acceptsIdempotencyKey: true }),
 
     createPaystackCredentials: (entityId: string, data: CreatePaystackCredentialsBody, options?: ConjoinCallOptions) =>
-      client.fetchJson<CreatePaystackCredentialsResponse>(`billing/entities/${encodePathParam(entityId)}/paystack-credentials`, { ...options, method: 'POST', body: data }),
+      client.fetchJson<CreatePaystackCredentialsResponse>(`billing/entities/${encodePathParam(entityId)}/paystack-credentials`, { ...options, method: 'POST', body: data, acceptsIdempotencyKey: true }),
   }
 }

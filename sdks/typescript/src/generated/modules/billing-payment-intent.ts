@@ -16,12 +16,12 @@ export function createBillingPaymentIntents(client: ConjoinClient) {
       client.fetchList<ListData>('billing/payment-intents/', { ...options, method: 'GET', query: query as Record<string, unknown> | undefined, scopes: ['billingEntityId'] }),
 
     create: (data: CreateBody, options?: ConjoinCallOptions) =>
-      client.fetch<CreateData>('billing/payment-intents/', { ...options, method: 'POST', body: data, scopes: ['billingEntityId'] }),
+      client.fetch<CreateData>('billing/payment-intents/', { ...options, method: 'POST', body: data, scopes: ['billingEntityId'], acceptsIdempotencyKey: true }),
 
     listCount: (query?: ListCountQuery, options?: ConjoinCallOptions) =>
       client.fetch<ListCountData>('billing/payment-intents/count', { ...options, method: 'GET', query: query as Record<string, unknown> | undefined, scopes: ['billingEntityId'] }),
 
     verify: (paymentIntentId: string, options?: ConjoinCallOptions) =>
-      client.fetch<VerifyData>(`billing/payment-intents/${encodePathParam(paymentIntentId)}/verify`, { ...options, method: 'POST', scopes: ['billingEntityId'] }),
+      client.fetch<VerifyData>(`billing/payment-intents/${encodePathParam(paymentIntentId)}/verify`, { ...options, method: 'POST', scopes: ['billingEntityId'], acceptsIdempotencyKey: true }),
   }
 }

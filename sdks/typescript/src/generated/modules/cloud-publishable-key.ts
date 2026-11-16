@@ -18,13 +18,13 @@ export function createCloudPublishableKeys(client: ConjoinClient) {
       client.fetchList<ListData>('cloud/publishable-keys/', { ...options, method: 'GET', query: query as Record<string, unknown> | undefined }),
 
     create: (options?: ConjoinCallOptions) =>
-      client.fetch<CreateData>('cloud/publishable-keys/', { ...options, method: 'POST' }),
+      client.fetch<CreateData>('cloud/publishable-keys/', { ...options, method: 'POST', acceptsIdempotencyKey: true }),
 
     listCount: (query?: ListCountQuery, options?: ConjoinCallOptions) =>
       client.fetch<ListCountData>('cloud/publishable-keys/count', { ...options, method: 'GET', query: query as Record<string, unknown> | undefined }),
 
     rotate: (publishableKeyId: string, options?: ConjoinCallOptions) =>
-      client.fetch<RotateData>(`cloud/publishable-keys/${encodePathParam(publishableKeyId)}/rotate`, { ...options, method: 'POST' }),
+      client.fetch<RotateData>(`cloud/publishable-keys/${encodePathParam(publishableKeyId)}/rotate`, { ...options, method: 'POST', acceptsIdempotencyKey: true }),
 
     update: (publishableKeyId: string, data: UpdateBody, options?: ConjoinCallOptions) =>
       client.fetch<UpdateData>(`cloud/publishable-keys/${encodePathParam(publishableKeyId)}`, { ...options, method: 'PATCH', body: data }),

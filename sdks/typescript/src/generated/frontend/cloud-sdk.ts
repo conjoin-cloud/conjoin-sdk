@@ -6,6 +6,6 @@ type ReadSdkSettingsData = NonNullable<operations['readSdkSettings']['responses'
 export function createCloudSDKs(client: ConjoinClient) {
   return {
     readSdkSettings: (options?: ConjoinCallOptions) =>
-      client.fetch<ReadSdkSettingsData>('cloud/client/settings/', { auth: { type: 'none' }, ...options, method: 'GET' }),
+      client.fetch<ReadSdkSettingsData>('cloud/client/settings/', { ...options, auth: { type: 'publishableKey' }, method: 'GET' }),
   }
 }

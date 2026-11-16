@@ -1,7 +1,13 @@
 import { ConjoinAuthenticationError, ConjoinConfigurationError } from './errors'
 import { IDEMPOTENCY_KEY_HEADER } from './idempotency'
 import { CONJOIN_REQUEST_ID_HEADER } from './request-tracing'
-import type { ConjoinScopeName, RequestOptions, ResolvedConfig } from './types'
+import type {
+  ConjoinDeclaredHeaderRule,
+  ConjoinDeclaredHeaders,
+  ConjoinScopeName,
+  RequestOptions,
+  ResolvedConfig,
+} from './types'
 import { SDK_VERSION } from './version'
 
 export const SCOPE_HEADERS: Readonly<Record<ConjoinScopeName, string>> = {
@@ -22,20 +28,51 @@ const MANAGED_HEADER_NAMES = new Set(
   ].map(name => name.toLowerCase()),
 )
 
+const isBrowserRuntime = (): boolean => typeof globalThis.document !== 'undefined'
+
+const usesSessionCookie = (auth: RequestOptions['auth']): boolean =>
+  auth?.type === 'session' && auth.token === undefined
+
+export function resolveFetchCredentials(
+  config: ResolvedConfig,
+  auth: RequestOptions['auth'],
+): RequestCredentials | undefined {
+  return usesSessionCookie(auth) ? 'include' : config.credentials
+}
+
+function toBearerAuthorization(token: string): string {
+  if (!HEADER_VALUE_PATTERN.test(token)) {
+    throw new ConjoinAuthenticationError('Bearer token must be a non-empty value without spaces', {
+      status: 0,
+      code: 'invalid_bearer_token',
+    })
+  }
+
+  return `Bearer ${token}`
+}
+
 function resolveAuthorization(config: ResolvedConfig, auth: RequestOptions['auth']): string | undefined {
   if (auth?.type === 'none') {
     return undefined
   }
 
   if (auth?.type === 'bearer') {
-    if (!HEADER_VALUE_PATTERN.test(auth.token)) {
-      throw new ConjoinAuthenticationError('Bearer token must be a non-empty value without spaces', {
-        status: 0,
-        code: 'invalid_bearer_token',
-      })
+    return toBearerAuthorization(auth.token)
+  }
+
+  if (auth?.type === 'publishableKey') {
+    if (config.publishableKey === undefined) {
+      throw new ConjoinConfigurationError('This call needs publishableKey in the client settings')
     }
 
-    return `Bearer ${auth.token}`
+    return toBearerAuthorization(config.publishableKey)
+  }
+
+  if (auth?.type === 'session') {
+    if (auth.token !== undefined) return toBearerAuthorization(auth.token)
+    if (isBrowserRuntime()) return undefined
+
+    throw new ConjoinConfigurationError('This call needs sessionToken when it runs outside a browser')
   }
 
   const key = config.apiKey ?? config.publishableKey
@@ -59,10 +96,48 @@ function resolveScopeHeaders(config: ResolvedConfig, scopes: RequestOptions['sco
   return headers
 }
 
-function withoutManagedHeaders(headers: Record<string, string> | undefined): Record<string, string> {
+function withoutManagedHeaders(
+  headers: Record<string, string> | undefined,
+  declaredNames: ReadonlySet<string>,
+): Record<string, string> {
   return Object.fromEntries(
-    Object.entries(headers ?? {}).filter(([name]) => !MANAGED_HEADER_NAMES.has(name.toLowerCase())),
+    Object.entries(headers ?? {}).filter(([name]) => {
+      const lowerName = name.toLowerCase()
+
+      return !MANAGED_HEADER_NAMES.has(lowerName) && !declaredNames.has(lowerName)
+    }),
   )
+}
+
+function assertDeclaredHeaderValue(rule: ConjoinDeclaredHeaderRule, value: string): void {
+  const isTooShort = rule.minLength !== undefined && value.length < rule.minLength
+  const isTooLong = rule.maxLength !== undefined && value.length > rule.maxLength
+  const breaksPattern = rule.pattern !== undefined && !new RegExp(rule.pattern, 'u').test(value)
+
+  if (!HEADER_VALUE_PATTERN.test(value) || isTooShort || isTooLong || breaksPattern) {
+    throw new ConjoinConfigurationError(`${rule.argumentName} does not meet the documented length or format`)
+  }
+}
+
+function resolveDeclaredHeaders(declared: ConjoinDeclaredHeaders | undefined): Record<string, string> {
+  const headers: Record<string, string> = {}
+
+  for (const rule of declared?.rules ?? []) {
+    const value = declared?.values?.[rule.argumentName]
+
+    if (value === undefined) {
+      if (rule.required) {
+        throw new ConjoinConfigurationError(`This call needs ${rule.argumentName}`)
+      }
+
+      continue
+    }
+
+    assertDeclaredHeaderValue(rule, value)
+    headers[rule.name] = value
+  }
+
+  return headers
 }
 
 export type ManagedHeaderValues = {
@@ -77,9 +152,12 @@ export function buildRequestHeaders(
 ): Record<string, string> {
   const authorization = resolveAuthorization(config, options.auth)
   const contentType = options.contentType ?? 'application/json'
+  const declaredHeaders = resolveDeclaredHeaders(options.declaredHeaders)
+  const declaredNames = new Set((options.declaredHeaders?.rules ?? []).map(rule => rule.name.toLowerCase()))
 
   return {
-    ...withoutManagedHeaders(options.headers),
+    ...withoutManagedHeaders(options.headers, declaredNames),
+    ...declaredHeaders,
     ...(authorization ? { Authorization: authorization } : {}),
     ...(contentType === 'application/json' && options.body !== undefined ? { 'Content-Type': contentType } : {}),
     'X-Conjoin-SDK-Version': SDK_VERSION,

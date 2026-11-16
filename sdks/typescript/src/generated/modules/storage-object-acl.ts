@@ -12,10 +12,10 @@ type SetObjectPublicData = NonNullable<operations['setStorageObjectPublic']['res
 export function createStorageObjectACLs(client: ConjoinClient) {
   return {
     grantObjectAcl: (containerNameOrId: string, objectNameOrId: string, data: GrantObjectAclBody, options?: ConjoinCallOptions) =>
-      client.fetch<GrantObjectAclData>(`storage/storage-object/${encodePathParam(containerNameOrId)}/${encodePathParam(objectNameOrId)}/acl/grant`, { ...options, method: 'POST', body: data }),
+      client.fetch<GrantObjectAclData>(`storage/storage-object/${encodePathParam(containerNameOrId)}/${encodePathParam(objectNameOrId)}/acl/grant`, { ...options, method: 'POST', body: data, acceptsIdempotencyKey: true }),
 
     revokeObjectAcl: (containerNameOrId: string, objectNameOrId: string, data: RevokeObjectAclBody, options?: ConjoinCallOptions) =>
-      client.fetch<RevokeObjectAclData>(`storage/storage-object/${encodePathParam(containerNameOrId)}/${encodePathParam(objectNameOrId)}/acl/revoke`, { ...options, method: 'POST', body: data }),
+      client.fetch<RevokeObjectAclData>(`storage/storage-object/${encodePathParam(containerNameOrId)}/${encodePathParam(objectNameOrId)}/acl/revoke`, { ...options, method: 'POST', body: data, acceptsIdempotencyKey: true }),
 
     setObjectPublic: (containerNameOrId: string, objectNameOrId: string, data: SetObjectPublicBody, options?: ConjoinCallOptions) =>
       client.fetch<SetObjectPublicData>(`storage/storage-object/${encodePathParam(containerNameOrId)}/${encodePathParam(objectNameOrId)}/acl/public`, { ...options, method: 'PATCH', body: data }),

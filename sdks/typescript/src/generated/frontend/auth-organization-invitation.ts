@@ -7,6 +7,6 @@ type AcceptData = NonNullable<operations['acceptOrganizationInvitation']['respon
 export function createAuthOrganizationInvitations(client: ConjoinClient) {
   return {
     accept: (data: AcceptBody, options?: ConjoinCallOptions) =>
-      client.fetch<AcceptData>('auth/client/invitations/accept', { auth: { type: 'none' }, ...options, method: 'POST', body: data }),
+      client.fetch<AcceptData>('auth/client/invitations/accept', { ...options, auth: { type: 'none' }, method: 'POST', body: data }),
   }
 }

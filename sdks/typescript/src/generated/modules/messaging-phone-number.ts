@@ -14,7 +14,7 @@ type ReleaseData = NonNullable<operations['releasePhoneNumber']['responses']['20
 export function createMessagingPhoneNumbers(client: ConjoinClient) {
   return {
     purchase: (phoneNumber: string, data: PurchaseBody, options?: ConjoinCallOptions) =>
-      client.fetch<PurchaseData>(`messaging/phone-numbers/${encodePathParam(phoneNumber)}/provision`, { ...options, method: 'POST', body: data, scopes: ['messagingProfileId'] }),
+      client.fetch<PurchaseData>(`messaging/phone-numbers/${encodePathParam(phoneNumber)}/provision`, { ...options, method: 'POST', body: data, scopes: ['messagingProfileId'], acceptsIdempotencyKey: true }),
 
     update: (phoneNumber: string, projectId: string, options?: ConjoinCallOptions) =>
       client.fetch<UpdateData>(`messaging/phone-numbers/transfer/${encodePathParam(phoneNumber)}/project/${encodePathParam(projectId)}`, { ...options, method: 'PATCH', scopes: ['messagingProfileId'] }),
@@ -26,6 +26,6 @@ export function createMessagingPhoneNumbers(client: ConjoinClient) {
       client.fetchList<ListData>('messaging/phone-numbers/', { ...options, method: 'GET', query: query as Record<string, unknown> | undefined, scopes: ['messagingProfileId'] }),
 
     release: (phoneNumber: string, options?: ConjoinCallOptions) =>
-      client.fetch<ReleaseData>(`messaging/phone-numbers/${encodePathParam(phoneNumber)}/release`, { ...options, method: 'POST', scopes: ['messagingProfileId'] }),
+      client.fetch<ReleaseData>(`messaging/phone-numbers/${encodePathParam(phoneNumber)}/release`, { ...options, method: 'POST', scopes: ['messagingProfileId'], acceptsIdempotencyKey: true }),
   }
 }

@@ -22,7 +22,7 @@ export function createAuthOrganizationMemberships(client: ConjoinClient) {
       client.fetchList<ListMembershipsData>(`auth/organizations/${encodePathParam(organizationId)}/memberships/`, { ...options, method: 'GET', query: query as Record<string, unknown> | undefined, scopes: ['authAppId'] }),
 
     createMembership: (organizationId: string, data: CreateMembershipBody, options?: ConjoinCallOptions) =>
-      client.fetch<CreateMembershipData>(`auth/organizations/${encodePathParam(organizationId)}/memberships/`, { ...options, method: 'POST', body: data, scopes: ['authAppId'] }),
+      client.fetch<CreateMembershipData>(`auth/organizations/${encodePathParam(organizationId)}/memberships/`, { ...options, method: 'POST', body: data, scopes: ['authAppId'], acceptsIdempotencyKey: true }),
 
     listMembershipsCount: (organizationId: string, query?: ListMembershipsCountQuery, options?: ConjoinCallOptions) =>
       client.fetch<ListMembershipsCountData>(`auth/organizations/${encodePathParam(organizationId)}/memberships/count`, { ...options, method: 'GET', query: query as Record<string, unknown> | undefined, scopes: ['authAppId'] }),
@@ -34,9 +34,9 @@ export function createAuthOrganizationMemberships(client: ConjoinClient) {
       client.fetch<DeleteMembershipData>(`auth/organizations/${encodePathParam(organizationId)}/memberships/${encodePathParam(membershipId)}`, { ...options, method: 'DELETE', scopes: ['authAppId'] }),
 
     grantOrgAccountRole: (organizationId: string, membershipId: string, data: GrantOrgAccountRoleBody, options?: ConjoinCallOptions) =>
-      client.fetch<GrantOrgAccountRoleData>(`auth/organizations/${encodePathParam(organizationId)}/memberships/${encodePathParam(membershipId)}/grant-role`, { ...options, method: 'POST', body: data, scopes: ['authAppId'] }),
+      client.fetch<GrantOrgAccountRoleData>(`auth/organizations/${encodePathParam(organizationId)}/memberships/${encodePathParam(membershipId)}/grant-role`, { ...options, method: 'POST', body: data, scopes: ['authAppId'], acceptsIdempotencyKey: true }),
 
     revokeOrgAccountRole: (organizationId: string, membershipId: string, data: RevokeOrgAccountRoleBody, options?: ConjoinCallOptions) =>
-      client.fetch<RevokeOrgAccountRoleData>(`auth/organizations/${encodePathParam(organizationId)}/memberships/${encodePathParam(membershipId)}/revoke-role`, { ...options, method: 'POST', body: data, scopes: ['authAppId'] }),
+      client.fetch<RevokeOrgAccountRoleData>(`auth/organizations/${encodePathParam(organizationId)}/memberships/${encodePathParam(membershipId)}/revoke-role`, { ...options, method: 'POST', body: data, scopes: ['authAppId'], acceptsIdempotencyKey: true }),
   }
 }

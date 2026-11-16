@@ -21,13 +21,13 @@ type ReadPresenceData = NonNullable<operations['readBroadcastPresence']['respons
 export function createRelayBroadcasts(client: ConjoinClient) {
   return {
     generateConnectionToken: (options?: ConjoinCallOptions) =>
-      client.fetch<GenerateConnectionTokenData>('relay/broadcast-connection-tokens/', { ...options, method: 'POST' }),
+      client.fetch<GenerateConnectionTokenData>('relay/broadcast-connection-tokens/', { ...options, method: 'POST', acceptsIdempotencyKey: true }),
 
     readChannels: (query?: ReadChannelsQuery, options?: ConjoinCallOptions) =>
       client.fetchList<ReadChannelsData>('relay/broadcast-channels/', { ...options, method: 'GET', query: query as Record<string, unknown> | undefined }),
 
     createChannel: (data: CreateChannelBody, options?: ConjoinCallOptions) =>
-      client.fetch<CreateChannelData>('relay/broadcast-channels/', { ...options, method: 'POST', body: data }),
+      client.fetch<CreateChannelData>('relay/broadcast-channels/', { ...options, method: 'POST', body: data, acceptsIdempotencyKey: true }),
 
     readChannelsCount: (query?: ReadChannelsCountQuery, options?: ConjoinCallOptions) =>
       client.fetch<ReadChannelsCountData>('relay/broadcast-channels/count', { ...options, method: 'GET', query: query as Record<string, unknown> | undefined }),
@@ -39,10 +39,10 @@ export function createRelayBroadcasts(client: ConjoinClient) {
       client.fetch<DeleteChannelData>(`relay/broadcast-channels/${encodePathParam(broadcastChannelId)}`, { ...options, method: 'DELETE' }),
 
     generateAuthToken: (broadcastChannelId: string, data: GenerateAuthTokenBody, options?: ConjoinCallOptions) =>
-      client.fetch<GenerateAuthTokenData>(`relay/broadcast-channels/${encodePathParam(broadcastChannelId)}/auth-tokens`, { ...options, method: 'POST', body: data }),
+      client.fetch<GenerateAuthTokenData>(`relay/broadcast-channels/${encodePathParam(broadcastChannelId)}/auth-tokens`, { ...options, method: 'POST', body: data, acceptsIdempotencyKey: true }),
 
     publishTo: (broadcastChannelId: string, data: PublishToBody, options?: ConjoinCallOptions) =>
-      client.fetch<PublishToData>(`relay/broadcast-channels/${encodePathParam(broadcastChannelId)}/publish`, { ...options, method: 'POST', body: data }),
+      client.fetch<PublishToData>(`relay/broadcast-channels/${encodePathParam(broadcastChannelId)}/publish`, { ...options, method: 'POST', body: data, acceptsIdempotencyKey: true }),
 
     readPresence: (broadcastChannelId: string, options?: ConjoinCallOptions) =>
       client.fetch<ReadPresenceData>(`relay/broadcast-channels/${encodePathParam(broadcastChannelId)}/presence-members`, { ...options, method: 'GET' }),

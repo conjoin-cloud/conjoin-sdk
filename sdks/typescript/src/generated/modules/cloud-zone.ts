@@ -18,7 +18,7 @@ export function createCloudZones(client: ConjoinClient) {
       client.fetchList<ListData>('cloud/zones/', { ...options, method: 'GET', query: query as Record<string, unknown> | undefined }),
 
     create: (data: CreateBody, options?: ConjoinCallOptions) =>
-      client.fetch<CreateData>('cloud/zones/', { ...options, method: 'POST', body: data }),
+      client.fetch<CreateData>('cloud/zones/', { ...options, method: 'POST', body: data, acceptsIdempotencyKey: true }),
 
     readCount: (query?: ReadCountQuery, options?: ConjoinCallOptions) =>
       client.fetch<ReadCountData>('cloud/zones/count', { ...options, method: 'GET', query: query as Record<string, unknown> | undefined }),
@@ -30,6 +30,6 @@ export function createCloudZones(client: ConjoinClient) {
       client.fetch<DeleteData>(`cloud/zones/${encodePathParam(zoneId)}`, { ...options, method: 'DELETE' }),
 
     verifyDns: (zoneId: string, options?: ConjoinCallOptions) =>
-      client.fetch<VerifyDnsData>(`cloud/zones/${encodePathParam(zoneId)}/verify`, { ...options, method: 'POST' }),
+      client.fetch<VerifyDnsData>(`cloud/zones/${encodePathParam(zoneId)}/verify`, { ...options, method: 'POST', acceptsIdempotencyKey: true }),
   }
 }

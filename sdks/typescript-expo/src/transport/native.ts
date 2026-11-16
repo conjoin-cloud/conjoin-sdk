@@ -150,8 +150,10 @@ export function createNativeTransport(): AuthTransport {
     },
 
     sessionCallOptions(): ConjoinCallOptions {
-      return session.accessToken ? { auth: { type: 'bearer', token: session.accessToken } } : {}
+      return {}
     },
+
+    readSessionToken: () => session.accessToken ?? undefined,
 
     flowCallOptions(flow: AuthFlowState): ConjoinCallOptions {
       return {

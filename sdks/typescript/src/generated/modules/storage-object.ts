@@ -23,10 +23,10 @@ type ListQuery = NonNullable<operations['listStorageObjects']['parameters']['que
 export function createStorageObjects(client: ConjoinClient) {
   return {
     createUploadSignedUrl: (containerNameOrId: string, data: CreateUploadSignedUrlBody, options?: ConjoinCallOptions) =>
-      client.fetch<CreateUploadSignedUrlData>(`storage/storage-object/${encodePathParam(containerNameOrId)}/signed-url/upload`, { ...options, method: 'POST', body: data }),
+      client.fetch<CreateUploadSignedUrlData>(`storage/storage-object/${encodePathParam(containerNameOrId)}/signed-url/upload`, { ...options, method: 'POST', body: data, acceptsIdempotencyKey: true }),
 
     createDownloadSignedUrl: (containerNameOrId: string, data: CreateDownloadSignedUrlBody, options?: ConjoinCallOptions) =>
-      client.fetch<CreateDownloadSignedUrlData>(`storage/storage-object/${encodePathParam(containerNameOrId)}/signed-url/download`, { ...options, method: 'POST', body: data }),
+      client.fetch<CreateDownloadSignedUrlData>(`storage/storage-object/${encodePathParam(containerNameOrId)}/signed-url/download`, { ...options, method: 'POST', body: data, acceptsIdempotencyKey: true }),
 
     rename: (containerNameOrId: string, oldName: string, newName: string, options?: ConjoinCallOptions) =>
       client.fetch<RenameData>(`storage/storage-object/rename/${encodePathParam(containerNameOrId)}/${encodePathParam(oldName)}/${encodePathParam(newName)}`, { ...options, method: 'PATCH' }),
@@ -44,7 +44,7 @@ export function createStorageObjects(client: ConjoinClient) {
       client.fetchList<ListVersionsData>(`storage/storage-object/versions/${encodePathParam(containerNameOrId)}/${encodePathParam(objectNameOrId)}`, { ...options, method: 'GET', query: query as Record<string, unknown> | undefined }),
 
     restoreVersion: (containerNameOrId: string, objectNameOrId: string, data: RestoreVersionBody, options?: ConjoinCallOptions) =>
-      client.fetch<RestoreVersionData>(`storage/storage-object/versions/restore/${encodePathParam(containerNameOrId)}/${encodePathParam(objectNameOrId)}`, { ...options, method: 'POST', body: data }),
+      client.fetch<RestoreVersionData>(`storage/storage-object/versions/restore/${encodePathParam(containerNameOrId)}/${encodePathParam(objectNameOrId)}`, { ...options, method: 'POST', body: data, acceptsIdempotencyKey: true }),
 
     checkDuplicate: (containerNameOrId: string, query: CheckDuplicateQuery, options?: ConjoinCallOptions) =>
       client.fetch<CheckDuplicateData>(`storage/storage-object/check-duplicate/${encodePathParam(containerNameOrId)}`, { ...options, method: 'GET', query: query as Record<string, unknown> | undefined }),

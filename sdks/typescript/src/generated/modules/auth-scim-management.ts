@@ -23,18 +23,18 @@ export function createAuthSCIMManagements(client: ConjoinClient) {
       client.fetch<UpdateScimSettingsData>(`auth/organizations/${encodePathParam(organizationId)}/scim-settings`, { ...options, method: 'PATCH', body: data, scopes: ['authAppId'] }),
 
     syncScimRolesForMember: (organizationId: string, membershipId: string, options?: ConjoinCallOptions) =>
-      client.fetch<SyncScimRolesForMemberData>(`auth/organizations/${encodePathParam(organizationId)}/memberships/${encodePathParam(membershipId)}/sync-scim-roles`, { ...options, method: 'POST', scopes: ['authAppId'] }),
+      client.fetch<SyncScimRolesForMemberData>(`auth/organizations/${encodePathParam(organizationId)}/memberships/${encodePathParam(membershipId)}/sync-scim-roles`, { ...options, method: 'POST', scopes: ['authAppId'], acceptsIdempotencyKey: true }),
 
     syncScimRolesForGroup: (organizationId: string, groupId: string, options?: ConjoinCallOptions) =>
-      client.fetch<SyncScimRolesForGroupData>(`auth/organizations/${encodePathParam(organizationId)}/groups/${encodePathParam(groupId)}/sync-scim-roles`, { ...options, method: 'POST', scopes: ['authAppId'] }),
+      client.fetch<SyncScimRolesForGroupData>(`auth/organizations/${encodePathParam(organizationId)}/groups/${encodePathParam(groupId)}/sync-scim-roles`, { ...options, method: 'POST', scopes: ['authAppId'], acceptsIdempotencyKey: true }),
 
     reconcileScimUsers: (organizationId: string, data: ReconcileScimUsersBody, options?: ConjoinCallOptions) =>
-      client.fetch<ReconcileScimUsersData>(`auth/organizations/${encodePathParam(organizationId)}/reconcile-scim-users`, { ...options, method: 'POST', body: data, scopes: ['authAppId'] }),
+      client.fetch<ReconcileScimUsersData>(`auth/organizations/${encodePathParam(organizationId)}/reconcile-scim-users`, { ...options, method: 'POST', body: data, scopes: ['authAppId'], acceptsIdempotencyKey: true }),
 
     reconcileScimGroups: (organizationId: string, data: ReconcileScimGroupsBody, options?: ConjoinCallOptions) =>
-      client.fetch<ReconcileScimGroupsData>(`auth/organizations/${encodePathParam(organizationId)}/reconcile-scim-groups`, { ...options, method: 'POST', body: data, scopes: ['authAppId'] }),
+      client.fetch<ReconcileScimGroupsData>(`auth/organizations/${encodePathParam(organizationId)}/reconcile-scim-groups`, { ...options, method: 'POST', body: data, scopes: ['authAppId'], acceptsIdempotencyKey: true }),
 
     reconcileScimGroupMembers: (organizationId: string, data: ReconcileScimGroupMembersBody, options?: ConjoinCallOptions) =>
-      client.fetch<ReconcileScimGroupMembersData>(`auth/organizations/${encodePathParam(organizationId)}/reconcile-scim-group-members`, { ...options, method: 'POST', body: data, scopes: ['authAppId'] }),
+      client.fetch<ReconcileScimGroupMembersData>(`auth/organizations/${encodePathParam(organizationId)}/reconcile-scim-group-members`, { ...options, method: 'POST', body: data, scopes: ['authAppId'], acceptsIdempotencyKey: true }),
   }
 }

@@ -21,7 +21,7 @@ export function createAuthOrganizationRoles(client: ConjoinClient) {
       client.fetchList<ListOrgRolesData>(`auth/organizations/${encodePathParam(organizationId)}/roles/`, { ...options, method: 'GET', query: query as Record<string, unknown> | undefined, scopes: ['authAppId'] }),
 
     createOrgRole: (organizationId: string, data: CreateOrgRoleBody, options?: ConjoinCallOptions) =>
-      client.fetch<CreateOrgRoleData>(`auth/organizations/${encodePathParam(organizationId)}/roles/`, { ...options, method: 'POST', body: data, scopes: ['authAppId'] }),
+      client.fetch<CreateOrgRoleData>(`auth/organizations/${encodePathParam(organizationId)}/roles/`, { ...options, method: 'POST', body: data, scopes: ['authAppId'], acceptsIdempotencyKey: true }),
 
     listOrgRolesCount: (organizationId: string, query?: ListOrgRolesCountQuery, options?: ConjoinCallOptions) =>
       client.fetch<ListOrgRolesCountData>(`auth/organizations/${encodePathParam(organizationId)}/roles/count`, { ...options, method: 'GET', query: query as Record<string, unknown> | undefined, scopes: ['authAppId'] }),
@@ -36,9 +36,9 @@ export function createAuthOrganizationRoles(client: ConjoinClient) {
       client.fetch<DeleteOrgRoleData>(`auth/organizations/${encodePathParam(organizationId)}/roles/${encodePathParam(roleId)}`, { ...options, method: 'DELETE', scopes: ['authAppId'] }),
 
     archiveOrgRole: (organizationId: string, roleId: string, options?: ConjoinCallOptions) =>
-      client.fetch<ArchiveOrgRoleData>(`auth/organizations/${encodePathParam(organizationId)}/roles/${encodePathParam(roleId)}/archive`, { ...options, method: 'POST', scopes: ['authAppId'] }),
+      client.fetch<ArchiveOrgRoleData>(`auth/organizations/${encodePathParam(organizationId)}/roles/${encodePathParam(roleId)}/archive`, { ...options, method: 'POST', scopes: ['authAppId'], acceptsIdempotencyKey: true }),
 
     restoreOrgRole: (organizationId: string, roleId: string, options?: ConjoinCallOptions) =>
-      client.fetch<RestoreOrgRoleData>(`auth/organizations/${encodePathParam(organizationId)}/roles/${encodePathParam(roleId)}/restore`, { ...options, method: 'POST', scopes: ['authAppId'] }),
+      client.fetch<RestoreOrgRoleData>(`auth/organizations/${encodePathParam(organizationId)}/roles/${encodePathParam(roleId)}/restore`, { ...options, method: 'POST', scopes: ['authAppId'], acceptsIdempotencyKey: true }),
   }
 }

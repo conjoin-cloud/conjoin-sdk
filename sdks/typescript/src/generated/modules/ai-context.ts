@@ -17,7 +17,7 @@ type ListQueryLogsQuery = NonNullable<operations['listAiContextQueryLogs']['para
 export function createAiContexts(client: ConjoinClient) {
   return {
     createIndex: (data: CreateIndexBody, options?: ConjoinCallOptions) =>
-      client.fetch<CreateIndexData>('ai/context/indexes', { ...options, method: 'POST', body: data }),
+      client.fetch<CreateIndexData>('ai/context/indexes', { ...options, method: 'POST', body: data, acceptsIdempotencyKey: true }),
 
     listIndexes: (query?: ListIndexesQuery, options?: ConjoinCallOptions) =>
       client.fetchList<ListIndexesData>('ai/context/indexes', { ...options, method: 'GET', query: query as Record<string, unknown> | undefined }),
@@ -29,10 +29,10 @@ export function createAiContexts(client: ConjoinClient) {
       client.fetch<DeleteIndexData>(`ai/context/indexes/${encodePathParam(indexId)}`, { ...options, method: 'DELETE' }),
 
     syncIndex: (indexId: string, options?: ConjoinCallOptions) =>
-      client.fetch<SyncIndexData>(`ai/context/indexes/${encodePathParam(indexId)}/sync`, { ...options, method: 'POST' }),
+      client.fetch<SyncIndexData>(`ai/context/indexes/${encodePathParam(indexId)}/sync`, { ...options, method: 'POST', acceptsIdempotencyKey: true }),
 
     query: (data: QueryBody, options?: ConjoinCallOptions) =>
-      client.fetch<QueryData>('ai/context/query', { ...options, method: 'POST', body: data }),
+      client.fetch<QueryData>('ai/context/query', { ...options, method: 'POST', body: data, acceptsIdempotencyKey: true }),
 
     listQueryLogs: (query?: ListQueryLogsQuery, options?: ConjoinCallOptions) =>
       client.fetchList<ListQueryLogsData>('ai/context/query-logs', { ...options, method: 'GET', query: query as Record<string, unknown> | undefined }),

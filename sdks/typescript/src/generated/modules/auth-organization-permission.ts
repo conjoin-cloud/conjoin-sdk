@@ -21,7 +21,7 @@ export function createAuthOrganizationPermissions(client: ConjoinClient) {
       client.fetchList<ListOrgPermissionsData>(`auth/organizations/${encodePathParam(organizationId)}/permissions/`, { ...options, method: 'GET', query: query as Record<string, unknown> | undefined, scopes: ['authAppId'] }),
 
     createOrgPermission: (organizationId: string, data: CreateOrgPermissionBody, options?: ConjoinCallOptions) =>
-      client.fetch<CreateOrgPermissionData>(`auth/organizations/${encodePathParam(organizationId)}/permissions/`, { ...options, method: 'POST', body: data, scopes: ['authAppId'] }),
+      client.fetch<CreateOrgPermissionData>(`auth/organizations/${encodePathParam(organizationId)}/permissions/`, { ...options, method: 'POST', body: data, scopes: ['authAppId'], acceptsIdempotencyKey: true }),
 
     listOrgPermissionsCount: (organizationId: string, query?: ListOrgPermissionsCountQuery, options?: ConjoinCallOptions) =>
       client.fetch<ListOrgPermissionsCountData>(`auth/organizations/${encodePathParam(organizationId)}/permissions/count`, { ...options, method: 'GET', query: query as Record<string, unknown> | undefined, scopes: ['authAppId'] }),
@@ -36,9 +36,9 @@ export function createAuthOrganizationPermissions(client: ConjoinClient) {
       client.fetch<DeleteOrgPermissionData>(`auth/organizations/${encodePathParam(organizationId)}/permissions/${encodePathParam(permissionId)}`, { ...options, method: 'DELETE', scopes: ['authAppId'] }),
 
     archiveOrgPermission: (organizationId: string, permissionId: string, options?: ConjoinCallOptions) =>
-      client.fetch<ArchiveOrgPermissionData>(`auth/organizations/${encodePathParam(organizationId)}/permissions/${encodePathParam(permissionId)}/archive`, { ...options, method: 'POST', scopes: ['authAppId'] }),
+      client.fetch<ArchiveOrgPermissionData>(`auth/organizations/${encodePathParam(organizationId)}/permissions/${encodePathParam(permissionId)}/archive`, { ...options, method: 'POST', scopes: ['authAppId'], acceptsIdempotencyKey: true }),
 
     restoreOrgPermission: (organizationId: string, permissionId: string, options?: ConjoinCallOptions) =>
-      client.fetch<RestoreOrgPermissionData>(`auth/organizations/${encodePathParam(organizationId)}/permissions/${encodePathParam(permissionId)}/restore`, { ...options, method: 'POST', scopes: ['authAppId'] }),
+      client.fetch<RestoreOrgPermissionData>(`auth/organizations/${encodePathParam(organizationId)}/permissions/${encodePathParam(permissionId)}/restore`, { ...options, method: 'POST', scopes: ['authAppId'], acceptsIdempotencyKey: true }),
   }
 }

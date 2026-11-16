@@ -23,7 +23,7 @@ type ListData = NonNullable<operations['listMessagingProfiles']['responses']['20
 export function createMessagingProfiles(client: ConjoinClient) {
   return {
     create: (data: CreateBody, options?: ConjoinCallOptions) =>
-      client.fetch<CreateData>('messaging/profiles/', { ...options, method: 'POST', body: data }),
+      client.fetch<CreateData>('messaging/profiles/', { ...options, method: 'POST', body: data, acceptsIdempotencyKey: true }),
 
     enable: (profileId: string, options?: ConjoinCallOptions) =>
       client.fetch<EnableData>(`messaging/profiles/${encodePathParam(profileId)}/enable`, { ...options, method: 'PATCH' }),
@@ -53,6 +53,6 @@ export function createMessagingProfiles(client: ConjoinClient) {
       client.fetch<UpdateVerificationsConfigData>(`messaging/profiles/${encodePathParam(profileId)}/verifications-config`, { ...options, method: 'PATCH', body: data }),
 
     list: (data: ListBody, options?: ConjoinCallOptions) =>
-      client.fetchList<ListData>('messaging/profiles/retrieve', { ...options, method: 'POST', body: data }),
+      client.fetchList<ListData>('messaging/profiles/retrieve', { ...options, method: 'POST', body: data, acceptsIdempotencyKey: true }),
   }
 }

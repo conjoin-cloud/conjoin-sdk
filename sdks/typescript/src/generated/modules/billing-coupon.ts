@@ -18,7 +18,7 @@ export function createBillingCoupons(client: ConjoinClient) {
       client.fetchList<ListData>('billing/coupons/', { ...options, method: 'GET', query: query as Record<string, unknown> | undefined }),
 
     create: (data: CreateBody, options?: ConjoinCallOptions) =>
-      client.fetch<CreateData>('billing/coupons/', { ...options, method: 'POST', body: data }),
+      client.fetch<CreateData>('billing/coupons/', { ...options, method: 'POST', body: data, acceptsIdempotencyKey: true }),
 
     listCount: (query?: ListCountQuery, options?: ConjoinCallOptions) =>
       client.fetch<ListCountData>('billing/coupons/count', { ...options, method: 'GET', query: query as Record<string, unknown> | undefined }),

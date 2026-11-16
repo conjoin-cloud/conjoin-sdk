@@ -19,6 +19,8 @@ const PATTERN_SAMPLES: Readonly<Record<string, string>> = {
   '^[a-z]{3,10}$': 'weekly',
   '^authact_[a-zA-Z0-9_-]+$': 'authact_harbour_ledger',
   '^[a-z][a-z0-9]*(_[a-z0-9]+)*$': 'harbour_ledger',
+  '^[a-zA-Z0-9\\-_:.]+$': 'harbour-ledger:2026.11',
+  '^[0-9A-Za-z#!&@]+$': 'Ledger#2026',
 }
 
 const FORMAT_SAMPLES: Readonly<Record<string, string>> = {

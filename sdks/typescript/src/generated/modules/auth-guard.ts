@@ -40,7 +40,7 @@ export function createAuthGuards(client: ConjoinClient) {
       client.fetchList<ListRulesData>('auth/guard-rules', { ...options, method: 'GET', query: query as Record<string, unknown> | undefined, scopes: ['authAppId'] }),
 
     createRule: (data: CreateRuleBody, options?: ConjoinCallOptions) =>
-      client.fetch<CreateRuleData>('auth/guard-rules', { ...options, method: 'POST', body: data, scopes: ['authAppId'] }),
+      client.fetch<CreateRuleData>('auth/guard-rules', { ...options, method: 'POST', body: data, scopes: ['authAppId'], acceptsIdempotencyKey: true }),
 
     listRulesCount: (query?: ListRulesCountQuery, options?: ConjoinCallOptions) =>
       client.fetch<ListRulesCountData>('auth/guard-rules/count', { ...options, method: 'GET', query: query as Record<string, unknown> | undefined, scopes: ['authAppId'] }),
@@ -61,30 +61,30 @@ export function createAuthGuards(client: ConjoinClient) {
       client.fetch<ListEventsCountData>('auth/guard-events/count', { ...options, method: 'GET', query: query as Record<string, unknown> | undefined, scopes: ['authAppId'] }),
 
     addTrustedIp: (data: AddTrustedIpBody, options?: ConjoinCallOptions) =>
-      client.fetch<AddTrustedIpData>('auth/guard-trusted-ips', { ...options, method: 'POST', body: data, scopes: ['authAppId'] }),
+      client.fetch<AddTrustedIpData>('auth/guard-trusted-ips', { ...options, method: 'POST', body: data, scopes: ['authAppId'], acceptsIdempotencyKey: true }),
 
     removeTrustedIp: (data: RemoveTrustedIpBody, options?: ConjoinCallOptions) =>
-      client.fetch<RemoveTrustedIpData>('auth/guard-trusted-ips/remove', { ...options, method: 'POST', body: data, scopes: ['authAppId'] }),
+      client.fetch<RemoveTrustedIpData>('auth/guard-trusted-ips/remove', { ...options, method: 'POST', body: data, scopes: ['authAppId'], acceptsIdempotencyKey: true }),
 
     addTrustedEmail: (data: AddTrustedEmailBody, options?: ConjoinCallOptions) =>
-      client.fetch<AddTrustedEmailData>('auth/guard-trusted-emails', { ...options, method: 'POST', body: data, scopes: ['authAppId'] }),
+      client.fetch<AddTrustedEmailData>('auth/guard-trusted-emails', { ...options, method: 'POST', body: data, scopes: ['authAppId'], acceptsIdempotencyKey: true }),
 
     removeTrustedEmail: (data: RemoveTrustedEmailBody, options?: ConjoinCallOptions) =>
-      client.fetch<RemoveTrustedEmailData>('auth/guard-trusted-emails/remove', { ...options, method: 'POST', body: data, scopes: ['authAppId'] }),
+      client.fetch<RemoveTrustedEmailData>('auth/guard-trusted-emails/remove', { ...options, method: 'POST', body: data, scopes: ['authAppId'], acceptsIdempotencyKey: true }),
 
     addTrustedDomain: (data: AddTrustedDomainBody, options?: ConjoinCallOptions) =>
-      client.fetch<AddTrustedDomainData>('auth/guard-trusted-domains', { ...options, method: 'POST', body: data, scopes: ['authAppId'] }),
+      client.fetch<AddTrustedDomainData>('auth/guard-trusted-domains', { ...options, method: 'POST', body: data, scopes: ['authAppId'], acceptsIdempotencyKey: true }),
 
     removeTrustedDomain: (data: RemoveTrustedDomainBody, options?: ConjoinCallOptions) =>
-      client.fetch<RemoveTrustedDomainData>('auth/guard-trusted-domains/remove', { ...options, method: 'POST', body: data, scopes: ['authAppId'] }),
+      client.fetch<RemoveTrustedDomainData>('auth/guard-trusted-domains/remove', { ...options, method: 'POST', body: data, scopes: ['authAppId'], acceptsIdempotencyKey: true }),
 
     listAnonymousIps: (options?: ConjoinCallOptions) =>
       client.fetch<ListAnonymousIpsData>('auth/guard-anonymous-ips', { ...options, method: 'GET', scopes: ['authAppId'] }),
 
     addAnonymousIps: (data: AddAnonymousIpsBody, options?: ConjoinCallOptions) =>
-      client.fetch<AddAnonymousIpsData>('auth/guard-anonymous-ips', { ...options, method: 'POST', body: data, scopes: ['authAppId'] }),
+      client.fetch<AddAnonymousIpsData>('auth/guard-anonymous-ips', { ...options, method: 'POST', body: data, scopes: ['authAppId'], acceptsIdempotencyKey: true }),
 
     removeAnonymousIps: (data: RemoveAnonymousIpsBody, options?: ConjoinCallOptions) =>
-      client.fetch<RemoveAnonymousIpsData>('auth/guard-anonymous-ips/remove', { ...options, method: 'POST', body: data, scopes: ['authAppId'] }),
+      client.fetch<RemoveAnonymousIpsData>('auth/guard-anonymous-ips/remove', { ...options, method: 'POST', body: data, scopes: ['authAppId'], acceptsIdempotencyKey: true }),
   }
 }

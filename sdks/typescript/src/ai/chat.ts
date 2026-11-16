@@ -11,7 +11,7 @@ type ChatCompletionHeaderName = keyof NonNullable<operations['createAiChatComple
 type ChatCompletionDeclaresIdempotencyKey = 'idempotency-key' extends Lowercase<ChatCompletionHeaderName> ? true : false
 
 const CHAT_COMPLETIONS_PATH = 'ai/inference/chat/completions'
-const CHAT_COMPLETION_DECLARES_IDEMPOTENCY_KEY: ChatCompletionDeclaresIdempotencyKey = false
+const CHAT_COMPLETION_DECLARES_IDEMPOTENCY_KEY: ChatCompletionDeclaresIdempotencyKey = true
 const MAX_REPORTED_CHUNK_CHARACTERS = 200
 
 export type ChatStreamOptions = Pick<ConjoinCallOptions, 'signal' | 'idempotencyKey' | 'conjoinRequestId'>

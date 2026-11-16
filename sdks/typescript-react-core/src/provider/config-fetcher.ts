@@ -9,7 +9,7 @@ const configCacheKey = (client: ConjoinClient): string =>
   `${client.config.baseUrl} ${client.config.publishableKey ?? client.config.apiKey ?? ''}`
 
 async function readSdkConfig(client: ConjoinClient): Promise<ConjoinSdkConfig> {
-  const settings = await createConjoinPublicApi(client).sdk.readSdkSettings({ auth: { type: 'default' } })
+  const settings = await createConjoinPublicApi(client).sdk.readSdkSettings()
 
   return {
     project_id: settings.project_id,

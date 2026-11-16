@@ -12,15 +12,15 @@ type AdminResetAccountData = NonNullable<operations['adminResetAccount']['respon
 export function createAuthAccountRecoveries(client: ConjoinClient) {
   return {
     startRecovery: (accountId: string, options?: ConjoinCallOptions) =>
-      client.fetch<StartRecoveryData>(`auth/accounts/${encodePathParam(accountId)}/recoveries/start`, { ...options, method: 'POST', scopes: ['authAppId'] }),
+      client.fetch<StartRecoveryData>(`auth/accounts/${encodePathParam(accountId)}/recoveries/start`, { ...options, method: 'POST', scopes: ['authAppId'], acceptsIdempotencyKey: true }),
 
     verifyRecovery: (accountId: string, data: VerifyRecoveryBody, options?: ConjoinCallOptions) =>
-      client.fetch<VerifyRecoveryData>(`auth/accounts/${encodePathParam(accountId)}/recoveries/verify`, { ...options, method: 'POST', body: data, scopes: ['authAppId'] }),
+      client.fetch<VerifyRecoveryData>(`auth/accounts/${encodePathParam(accountId)}/recoveries/verify`, { ...options, method: 'POST', body: data, scopes: ['authAppId'], acceptsIdempotencyKey: true }),
 
     completeRecovery: (accountId: string, data: CompleteRecoveryBody, options?: ConjoinCallOptions) =>
-      client.fetch<CompleteRecoveryData>(`auth/accounts/${encodePathParam(accountId)}/recoveries/complete`, { ...options, method: 'POST', body: data, scopes: ['authAppId'] }),
+      client.fetch<CompleteRecoveryData>(`auth/accounts/${encodePathParam(accountId)}/recoveries/complete`, { ...options, method: 'POST', body: data, scopes: ['authAppId'], acceptsIdempotencyKey: true }),
 
     adminResetAccount: (accountId: string, options?: ConjoinCallOptions) =>
-      client.fetch<AdminResetAccountData>(`auth/accounts/${encodePathParam(accountId)}/reset-mfa`, { ...options, method: 'POST', scopes: ['authAppId'] }),
+      client.fetch<AdminResetAccountData>(`auth/accounts/${encodePathParam(accountId)}/reset-mfa`, { ...options, method: 'POST', scopes: ['authAppId'], acceptsIdempotencyKey: true }),
   }
 }

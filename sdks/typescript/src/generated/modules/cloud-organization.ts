@@ -18,7 +18,7 @@ export function createCloudOrganizations(client: ConjoinClient) {
       client.fetchList<ListData>('cloud/organizations/', { ...options, method: 'GET', query: query as Record<string, unknown> | undefined }),
 
     create: (data: CreateBody, options?: ConjoinCallOptions) =>
-      client.fetch<CreateData>('cloud/organizations/', { ...options, method: 'POST', body: data }),
+      client.fetch<CreateData>('cloud/organizations/', { ...options, method: 'POST', body: data, acceptsIdempotencyKey: true }),
 
     readCount: (query?: ReadCountQuery, options?: ConjoinCallOptions) =>
       client.fetch<ReadCountData>('cloud/organizations/count', { ...options, method: 'GET', query: query as Record<string, unknown> | undefined }),

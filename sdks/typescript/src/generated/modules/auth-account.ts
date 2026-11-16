@@ -1,5 +1,5 @@
 import { encodePathParam } from '../../core/path'
-import type { ConjoinCallOptions, ConjoinClient } from '../../core/types'
+import type { ConjoinCallOptions, ConjoinClient, ConjoinDeclaredHeaderRule } from '../../core/types'
 import type { operations } from '../api-types'
 
 type ListCredentialsData = NonNullable<operations['listCredentials']['responses']['200']['content']['application/json']['data']>[number]
@@ -26,6 +26,8 @@ type ReadData = NonNullable<operations['readAuthAccount']['responses']['200']['c
 type UpdateBody = NonNullable<operations['updateAuthAccount']['requestBody']>['content']['application/json']
 type UpdateData = NonNullable<operations['updateAuthAccount']['responses']['200']['content']['application/json']['data']>
 type DeleteData = NonNullable<operations['deleteAuthAccount']['responses']['200']['content']['application/json']['data']>
+type DeleteQuery = NonNullable<operations['deleteAuthAccount']['parameters']['query']>
+type DeleteHeaders = { stepUpSessionId?: string; stepUpToken?: string }
 type AddEmailBody = NonNullable<operations['addAuthAccountEmail']['requestBody']>['content']['application/json']
 type AddEmailData = NonNullable<operations['addAuthAccountEmail']['responses']['200']['content']['application/json']['data']>
 type RemoveEmailBody = NonNullable<operations['removeAuthAccountEmail']['requestBody']>['content']['application/json']
@@ -44,16 +46,21 @@ type ExportData = NonNullable<operations['exportAuthAccount']['responses']['200'
 type ImportPasswordHashesBody = NonNullable<operations['importPasswordHashes']['requestBody']>['content']['application/json']
 type ImportPasswordHashesData = NonNullable<operations['importPasswordHashes']['responses']['200']['content']['application/json']['data']>
 
+const deleteHeaderRules: readonly ConjoinDeclaredHeaderRule[] = [
+  { name: "Step-Up-Session-ID", argumentName: "stepUpSessionId", required: false, minLength: 1, maxLength: 48 },
+  { name: "Step-Up-Token", argumentName: "stepUpToken", required: false, minLength: 1, maxLength: 256, pattern: "^[0-9a-f]+$" },
+]
+
 export function createAuthAccounts(client: ConjoinClient) {
   return {
     listCredentials: (accountId: string, query?: ListCredentialsQuery, options?: ConjoinCallOptions) =>
       client.fetchList<ListCredentialsData>(`auth/accounts/${encodePathParam(accountId)}/credentials`, { ...options, method: 'GET', query: query as Record<string, unknown> | undefined, scopes: ['authAppId'] }),
 
     verifyCredential: (accountId: string, data: VerifyCredentialBody, options?: ConjoinCallOptions) =>
-      client.fetch<VerifyCredentialData>(`auth/accounts/${encodePathParam(accountId)}/credentials/verify`, { ...options, method: 'POST', body: data, scopes: ['authAppId'] }),
+      client.fetch<VerifyCredentialData>(`auth/accounts/${encodePathParam(accountId)}/credentials/verify`, { ...options, method: 'POST', body: data, scopes: ['authAppId'], acceptsIdempotencyKey: true }),
 
     verifyCredentialMfaTotp: (accountId: string, data: VerifyCredentialMfaTotpBody, options?: ConjoinCallOptions) =>
-      client.fetch<VerifyCredentialMfaTotpData>(`auth/accounts/${encodePathParam(accountId)}/totp-credentials/verify`, { ...options, method: 'POST', body: data, scopes: ['authAppId'] }),
+      client.fetch<VerifyCredentialMfaTotpData>(`auth/accounts/${encodePathParam(accountId)}/totp-credentials/verify`, { ...options, method: 'POST', body: data, scopes: ['authAppId'], acceptsIdempotencyKey: true }),
 
     listCredentialsCount: (accountId: string, query?: ListCredentialsCountQuery, options?: ConjoinCallOptions) =>
       client.fetch<ListCredentialsCountData>(`auth/accounts/${encodePathParam(accountId)}/credentials/count`, { ...options, method: 'GET', query: query as Record<string, unknown> | undefined, scopes: ['authAppId'] }),
@@ -62,13 +69,13 @@ export function createAuthAccounts(client: ConjoinClient) {
       client.fetch<ReadCredentialData>(`auth/accounts/${encodePathParam(accountId)}/credentials/${encodePathParam(credentialId)}`, { ...options, method: 'GET', scopes: ['authAppId'] }),
 
     removeCredential: (accountId: string, credentialId: string, options?: ConjoinCallOptions) =>
-      client.fetch<RemoveCredentialData>(`auth/accounts/${encodePathParam(accountId)}/credentials/${encodePathParam(credentialId)}/remove`, { ...options, method: 'POST', scopes: ['authAppId'] }),
+      client.fetch<RemoveCredentialData>(`auth/accounts/${encodePathParam(accountId)}/credentials/${encodePathParam(credentialId)}/remove`, { ...options, method: 'POST', scopes: ['authAppId'], acceptsIdempotencyKey: true }),
 
     list: (query?: ListQuery, options?: ConjoinCallOptions) =>
       client.fetchList<ListData>('auth/accounts/', { ...options, method: 'GET', query: query as Record<string, unknown> | undefined, scopes: ['authAppId'] }),
 
     create: (data: CreateBody, options?: ConjoinCallOptions) =>
-      client.fetch<CreateData>('auth/accounts/', { ...options, method: 'POST', body: data, scopes: ['authAppId'] }),
+      client.fetch<CreateData>('auth/accounts/', { ...options, method: 'POST', body: data, scopes: ['authAppId'], acceptsIdempotencyKey: true }),
 
     listOrganizationMemberships: (accountId: string, query?: ListOrganizationMembershipsQuery, options?: ConjoinCallOptions) =>
       client.fetchList<ListOrganizationMembershipsData>(`auth/accounts/${encodePathParam(accountId)}/organizations`, { ...options, method: 'GET', query: query as Record<string, unknown> | undefined, scopes: ['authAppId'] }),
@@ -77,7 +84,7 @@ export function createAuthAccounts(client: ConjoinClient) {
       client.fetch<ListCountData>('auth/accounts/count', { ...options, method: 'GET', query: query as Record<string, unknown> | undefined, scopes: ['authAppId'] }),
 
     merge: (data: MergeBody, options?: ConjoinCallOptions) =>
-      client.fetch<MergeData>('auth/accounts/merge', { ...options, method: 'POST', body: data, scopes: ['authAppId'] }),
+      client.fetch<MergeData>('auth/accounts/merge', { ...options, method: 'POST', body: data, scopes: ['authAppId'], acceptsIdempotencyKey: true }),
 
     read: (accountId: string, options?: ConjoinCallOptions) =>
       client.fetch<ReadData>(`auth/accounts/${encodePathParam(accountId)}`, { ...options, method: 'GET', scopes: ['authAppId'] }),
@@ -85,34 +92,34 @@ export function createAuthAccounts(client: ConjoinClient) {
     update: (accountId: string, data: UpdateBody, options?: ConjoinCallOptions) =>
       client.fetch<UpdateData>(`auth/accounts/${encodePathParam(accountId)}`, { ...options, method: 'PATCH', body: data, scopes: ['authAppId'] }),
 
-    delete: (accountId: string, options?: ConjoinCallOptions) =>
-      client.fetch<DeleteData>(`auth/accounts/${encodePathParam(accountId)}`, { ...options, method: 'DELETE', scopes: ['authAppId'] }),
+    delete: (accountId: string, query?: DeleteQuery, headers?: DeleteHeaders, options?: ConjoinCallOptions) =>
+      client.fetch<DeleteData>(`auth/accounts/${encodePathParam(accountId)}`, { ...options, method: 'DELETE', query: query as Record<string, unknown> | undefined, scopes: ['authAppId'], declaredHeaders: { rules: deleteHeaderRules, values: headers } }),
 
     addEmail: (accountId: string, data: AddEmailBody, options?: ConjoinCallOptions) =>
-      client.fetch<AddEmailData>(`auth/accounts/${encodePathParam(accountId)}/emails/add`, { ...options, method: 'POST', body: data, scopes: ['authAppId'] }),
+      client.fetch<AddEmailData>(`auth/accounts/${encodePathParam(accountId)}/emails/add`, { ...options, method: 'POST', body: data, scopes: ['authAppId'], acceptsIdempotencyKey: true }),
 
     removeEmail: (accountId: string, data: RemoveEmailBody, options?: ConjoinCallOptions) =>
-      client.fetch<RemoveEmailData>(`auth/accounts/${encodePathParam(accountId)}/emails/remove`, { ...options, method: 'POST', body: data, scopes: ['authAppId'] }),
+      client.fetch<RemoveEmailData>(`auth/accounts/${encodePathParam(accountId)}/emails/remove`, { ...options, method: 'POST', body: data, scopes: ['authAppId'], acceptsIdempotencyKey: true }),
 
     addPhone: (accountId: string, data: AddPhoneBody, options?: ConjoinCallOptions) =>
-      client.fetch<AddPhoneData>(`auth/accounts/${encodePathParam(accountId)}/phones/add`, { ...options, method: 'POST', body: data, scopes: ['authAppId'] }),
+      client.fetch<AddPhoneData>(`auth/accounts/${encodePathParam(accountId)}/phones/add`, { ...options, method: 'POST', body: data, scopes: ['authAppId'], acceptsIdempotencyKey: true }),
 
     removePhone: (accountId: string, data: RemovePhoneBody, options?: ConjoinCallOptions) =>
-      client.fetch<RemovePhoneData>(`auth/accounts/${encodePathParam(accountId)}/phones/remove`, { ...options, method: 'POST', body: data, scopes: ['authAppId'] }),
+      client.fetch<RemovePhoneData>(`auth/accounts/${encodePathParam(accountId)}/phones/remove`, { ...options, method: 'POST', body: data, scopes: ['authAppId'], acceptsIdempotencyKey: true }),
 
     grantGlobalRole: (accountId: string, data: GrantGlobalRoleBody, options?: ConjoinCallOptions) =>
-      client.fetch<GrantGlobalRoleData>(`auth/accounts/${encodePathParam(accountId)}/global-roles/grant`, { ...options, method: 'POST', body: data, scopes: ['authAppId'] }),
+      client.fetch<GrantGlobalRoleData>(`auth/accounts/${encodePathParam(accountId)}/global-roles/grant`, { ...options, method: 'POST', body: data, scopes: ['authAppId'], acceptsIdempotencyKey: true }),
 
     revokeGlobalRole: (accountId: string, data: RevokeGlobalRoleBody, options?: ConjoinCallOptions) =>
-      client.fetch<RevokeGlobalRoleData>(`auth/accounts/${encodePathParam(accountId)}/global-roles/revoke`, { ...options, method: 'POST', body: data, scopes: ['authAppId'] }),
+      client.fetch<RevokeGlobalRoleData>(`auth/accounts/${encodePathParam(accountId)}/global-roles/revoke`, { ...options, method: 'POST', body: data, scopes: ['authAppId'], acceptsIdempotencyKey: true }),
 
     listOrganizationMembershipsCount: (accountId: string, query?: ListOrganizationMembershipsCountQuery, options?: ConjoinCallOptions) =>
       client.fetch<ListOrganizationMembershipsCountData>(`auth/accounts/${encodePathParam(accountId)}/organizations/count`, { ...options, method: 'GET', query: query as Record<string, unknown> | undefined, scopes: ['authAppId'] }),
 
     export: (accountId: string, options?: ConjoinCallOptions) =>
-      client.fetch<ExportData>(`auth/accounts/${encodePathParam(accountId)}/export`, { ...options, method: 'POST', scopes: ['authAppId'] }),
+      client.fetch<ExportData>(`auth/accounts/${encodePathParam(accountId)}/export`, { ...options, method: 'POST', scopes: ['authAppId'], acceptsIdempotencyKey: true }),
 
     importPasswordHashes: (data: ImportPasswordHashesBody, options?: ConjoinCallOptions) =>
-      client.fetch<ImportPasswordHashesData>('auth/accounts/import-password-hashes', { ...options, method: 'POST', body: data, scopes: ['authAppId'] }),
+      client.fetch<ImportPasswordHashesData>('auth/accounts/import-password-hashes', { ...options, method: 'POST', body: data, scopes: ['authAppId'], acceptsIdempotencyKey: true }),
   }
 }

@@ -12,10 +12,10 @@ type DeleteSmsSenderPoolData = NonNullable<operations['deleteSmsSenderPool']['re
 export function createMessagingSMSSenderPools(client: ConjoinClient) {
   return {
     createSmsSenderPool: (data: CreateSmsSenderPoolBody, options?: ConjoinCallOptions) =>
-      client.fetch<CreateSmsSenderPoolData>('messaging/sms/sender-pools/', { ...options, method: 'POST', body: data, scopes: ['messagingProfileId'] }),
+      client.fetch<CreateSmsSenderPoolData>('messaging/sms/sender-pools/', { ...options, method: 'POST', body: data, scopes: ['messagingProfileId'], acceptsIdempotencyKey: true }),
 
     addSmsSendersToPool: (poolId: string, data: AddSmsSendersToPoolBody, options?: ConjoinCallOptions) =>
-      client.fetch<AddSmsSendersToPoolData>(`messaging/sms/sender-pools/${encodePathParam(poolId)}/senders`, { ...options, method: 'POST', body: data, scopes: ['messagingProfileId'] }),
+      client.fetch<AddSmsSendersToPoolData>(`messaging/sms/sender-pools/${encodePathParam(poolId)}/senders`, { ...options, method: 'POST', body: data, scopes: ['messagingProfileId'], acceptsIdempotencyKey: true }),
 
     getSmsSenderPool: (poolId: string, options?: ConjoinCallOptions) =>
       client.fetch<GetSmsSenderPoolData>(`messaging/sms/sender-pools/${encodePathParam(poolId)}`, { ...options, method: 'GET', scopes: ['messagingProfileId'] }),

@@ -14,7 +14,7 @@ type ListSmsCampaignsData = NonNullable<operations['listSmsCampaigns']['response
 export function createMessagingSMSCampaigns(client: ConjoinClient) {
   return {
     createSmsCampaign: (data: CreateSmsCampaignBody, options?: ConjoinCallOptions) =>
-      client.fetch<CreateSmsCampaignData>('messaging/sms/campaigns/', { ...options, method: 'POST', body: data, scopes: ['messagingProfileId'] }),
+      client.fetch<CreateSmsCampaignData>('messaging/sms/campaigns/', { ...options, method: 'POST', body: data, scopes: ['messagingProfileId'], acceptsIdempotencyKey: true }),
 
     readSmsCampaign: (campaignId: string, options?: ConjoinCallOptions) =>
       client.fetch<ReadSmsCampaignData>(`messaging/sms/campaigns/${encodePathParam(campaignId)}`, { ...options, method: 'GET', scopes: ['messagingProfileId'] }),
@@ -26,6 +26,6 @@ export function createMessagingSMSCampaigns(client: ConjoinClient) {
       client.fetch<DeleteSmsCampaignData>(`messaging/sms/campaigns/${encodePathParam(campaignId)}`, { ...options, method: 'DELETE', scopes: ['messagingProfileId'] }),
 
     listSmsCampaigns: (data: ListSmsCampaignsBody, options?: ConjoinCallOptions) =>
-      client.fetchList<ListSmsCampaignsData>('messaging/sms/campaigns/retrieve', { ...options, method: 'POST', body: data, scopes: ['messagingProfileId'] }),
+      client.fetchList<ListSmsCampaignsData>('messaging/sms/campaigns/retrieve', { ...options, method: 'POST', body: data, scopes: ['messagingProfileId'], acceptsIdempotencyKey: true }),
   }
 }

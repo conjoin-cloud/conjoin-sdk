@@ -17,13 +17,13 @@ export function createAuthOrganizationDomains(client: ConjoinClient) {
       client.fetchList<ListData>(`auth/organizations/${encodePathParam(organizationId)}/domains/`, { ...options, method: 'GET', query: query as Record<string, unknown> | undefined, scopes: ['authAppId'] }),
 
     create: (organizationId: string, data: CreateBody, options?: ConjoinCallOptions) =>
-      client.fetch<CreateData>(`auth/organizations/${encodePathParam(organizationId)}/domains/`, { ...options, method: 'POST', body: data, scopes: ['authAppId'] }),
+      client.fetch<CreateData>(`auth/organizations/${encodePathParam(organizationId)}/domains/`, { ...options, method: 'POST', body: data, scopes: ['authAppId'], acceptsIdempotencyKey: true }),
 
     listCount: (organizationId: string, query?: ListCountQuery, options?: ConjoinCallOptions) =>
       client.fetch<ListCountData>(`auth/organizations/${encodePathParam(organizationId)}/domains/count`, { ...options, method: 'GET', query: query as Record<string, unknown> | undefined, scopes: ['authAppId'] }),
 
     verify: (organizationId: string, domainId: string, options?: ConjoinCallOptions) =>
-      client.fetch<VerifyData>(`auth/organizations/${encodePathParam(organizationId)}/domains/${encodePathParam(domainId)}/verify`, { ...options, method: 'POST', scopes: ['authAppId'] }),
+      client.fetch<VerifyData>(`auth/organizations/${encodePathParam(organizationId)}/domains/${encodePathParam(domainId)}/verify`, { ...options, method: 'POST', scopes: ['authAppId'], acceptsIdempotencyKey: true }),
 
     delete: (organizationId: string, domainId: string, options?: ConjoinCallOptions) =>
       client.fetch<DeleteData>(`auth/organizations/${encodePathParam(organizationId)}/domains/${encodePathParam(domainId)}`, { ...options, method: 'DELETE', scopes: ['authAppId'] }),

@@ -20,18 +20,18 @@ export function createBillingCreditNotes(client: ConjoinClient) {
       client.fetchList<ListData>('billing/credit-notes/', { ...options, method: 'GET', query: query as Record<string, unknown> | undefined, scopes: ['billingEntityId'] }),
 
     create: (data: CreateBody, options?: ConjoinCallOptions) =>
-      client.fetch<CreateData>('billing/credit-notes/', { ...options, method: 'POST', body: data, scopes: ['billingEntityId'] }),
+      client.fetch<CreateData>('billing/credit-notes/', { ...options, method: 'POST', body: data, scopes: ['billingEntityId'], acceptsIdempotencyKey: true }),
 
     listCustomerCreditBalances: (customerId: string, query?: ListCustomerCreditBalancesQuery, options?: ConjoinCallOptions) =>
-      client.fetchList<ListCustomerCreditBalancesData>(`billing/credit-notes/${encodePathParam(customerId)}/credit-balances`, { ...options, method: 'GET', query: query as Record<string, unknown> | undefined, scopes: ['billingEntityId'] }),
+      client.fetchList<ListCustomerCreditBalancesData>(`billing/customers/${encodePathParam(customerId)}/credit-balances`, { ...options, method: 'GET', query: query as Record<string, unknown> | undefined, scopes: ['billingEntityId'] }),
 
     listCount: (query?: ListCountQuery, options?: ConjoinCallOptions) =>
       client.fetch<ListCountData>('billing/credit-notes/count', { ...options, method: 'GET', query: query as Record<string, unknown> | undefined, scopes: ['billingEntityId'] }),
 
     void: (creditNoteId: string, options?: ConjoinCallOptions) =>
-      client.fetch<VoidData>(`billing/credit-notes/${encodePathParam(creditNoteId)}/void`, { ...options, method: 'POST', scopes: ['billingEntityId'] }),
+      client.fetch<VoidData>(`billing/credit-notes/${encodePathParam(creditNoteId)}/void`, { ...options, method: 'POST', scopes: ['billingEntityId'], acceptsIdempotencyKey: true }),
 
     listCustomerCreditBalancesCount: (customerId: string, query?: ListCustomerCreditBalancesCountQuery, options?: ConjoinCallOptions) =>
-      client.fetch<ListCustomerCreditBalancesCountData>(`billing/credit-notes/${encodePathParam(customerId)}/credit-balances/count`, { ...options, method: 'GET', query: query as Record<string, unknown> | undefined, scopes: ['billingEntityId'] }),
+      client.fetch<ListCustomerCreditBalancesCountData>(`billing/customers/${encodePathParam(customerId)}/credit-balances/count`, { ...options, method: 'GET', query: query as Record<string, unknown> | undefined, scopes: ['billingEntityId'] }),
   }
 }

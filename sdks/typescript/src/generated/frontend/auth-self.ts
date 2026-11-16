@@ -20,31 +20,31 @@ type UpdateActiveOrganizationData = NonNullable<operations['updateSelfActiveOrga
 
 export function createAuthSelves(client: ConjoinClient) {
   return {
-    listOrganizations: (query?: ListOrganizationsQuery, options?: ConjoinCallOptions) =>
-      client.fetchList<ListOrganizationsData>('auth/self/organizations', { auth: { type: 'none' }, ...options, method: 'GET', query: query as Record<string, unknown> | undefined }),
+    listOrganizations: (query?: ListOrganizationsQuery, sessionToken?: string, options?: ConjoinCallOptions) =>
+      client.fetchList<ListOrganizationsData>('auth/self/organizations', { ...options, auth: { type: 'session', token: sessionToken }, method: 'GET', query: query as Record<string, unknown> | undefined }),
 
-    listSessions: (query?: ListSessionsQuery, options?: ConjoinCallOptions) =>
-      client.fetchList<ListSessionsData>('auth/self/sessions', { auth: { type: 'none' }, ...options, method: 'GET', query: query as Record<string, unknown> | undefined }),
+    listSessions: (query?: ListSessionsQuery, sessionToken?: string, options?: ConjoinCallOptions) =>
+      client.fetchList<ListSessionsData>('auth/self/sessions', { ...options, auth: { type: 'session', token: sessionToken }, method: 'GET', query: query as Record<string, unknown> | undefined }),
 
-    readProfile: (options?: ConjoinCallOptions) =>
-      client.fetch<ReadProfileData>('auth/self/', { auth: { type: 'none' }, ...options, method: 'GET' }),
+    readProfile: (sessionToken?: string, options?: ConjoinCallOptions) =>
+      client.fetch<ReadProfileData>('auth/self/', { ...options, auth: { type: 'session', token: sessionToken }, method: 'GET' }),
 
-    updateProfile: (data: UpdateProfileBody, options?: ConjoinCallOptions) =>
-      client.fetch<UpdateProfileData>('auth/self/', { auth: { type: 'none' }, ...options, method: 'PATCH', body: data }),
+    updateProfile: (data: UpdateProfileBody, sessionToken?: string, options?: ConjoinCallOptions) =>
+      client.fetch<UpdateProfileData>('auth/self/', { ...options, auth: { type: 'session', token: sessionToken }, method: 'PATCH', body: data }),
 
-    listSessionsCount: (query?: ListSessionsCountQuery, options?: ConjoinCallOptions) =>
-      client.fetch<ListSessionsCountData>('auth/self/sessions/count', { auth: { type: 'none' }, ...options, method: 'GET', query: query as Record<string, unknown> | undefined }),
+    listSessionsCount: (query?: ListSessionsCountQuery, sessionToken?: string, options?: ConjoinCallOptions) =>
+      client.fetch<ListSessionsCountData>('auth/self/sessions/count', { ...options, auth: { type: 'session', token: sessionToken }, method: 'GET', query: query as Record<string, unknown> | undefined }),
 
-    revokeSession: (sessionId: string, options?: ConjoinCallOptions) =>
-      client.fetch<RevokeSessionData>(`auth/self/sessions/${encodePathParam(sessionId)}`, { auth: { type: 'none' }, ...options, method: 'DELETE' }),
+    revokeSession: (sessionId: string, sessionToken?: string, options?: ConjoinCallOptions) =>
+      client.fetch<RevokeSessionData>(`auth/self/sessions/${encodePathParam(sessionId)}`, { ...options, auth: { type: 'session', token: sessionToken }, method: 'DELETE' }),
 
-    listOrganizationsCount: (query?: ListOrganizationsCountQuery, options?: ConjoinCallOptions) =>
-      client.fetch<ListOrganizationsCountData>('auth/self/organizations/count', { auth: { type: 'none' }, ...options, method: 'GET', query: query as Record<string, unknown> | undefined }),
+    listOrganizationsCount: (query?: ListOrganizationsCountQuery, sessionToken?: string, options?: ConjoinCallOptions) =>
+      client.fetch<ListOrganizationsCountData>('auth/self/organizations/count', { ...options, auth: { type: 'session', token: sessionToken }, method: 'GET', query: query as Record<string, unknown> | undefined }),
 
-    readActiveOrganization: (options?: ConjoinCallOptions) =>
-      client.fetch<ReadActiveOrganizationData>('auth/self/active-organization', { auth: { type: 'none' }, ...options, method: 'GET' }),
+    readActiveOrganization: (sessionToken?: string, options?: ConjoinCallOptions) =>
+      client.fetch<ReadActiveOrganizationData>('auth/self/active-organization', { ...options, auth: { type: 'session', token: sessionToken }, method: 'GET' }),
 
-    updateActiveOrganization: (data: UpdateActiveOrganizationBody, options?: ConjoinCallOptions) =>
-      client.fetch<UpdateActiveOrganizationData>('auth/self/active-organization', { auth: { type: 'none' }, ...options, method: 'PATCH', body: data }),
+    updateActiveOrganization: (data: UpdateActiveOrganizationBody, sessionToken?: string, options?: ConjoinCallOptions) =>
+      client.fetch<UpdateActiveOrganizationData>('auth/self/active-organization', { ...options, auth: { type: 'session', token: sessionToken }, method: 'PATCH', body: data }),
   }
 }

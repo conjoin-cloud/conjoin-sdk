@@ -33,9 +33,7 @@ function requireAuthDomain(domain: string): string {
 }
 
 async function readAuthDomainFromSettings(publishableKey: string): Promise<string> {
-  const settings = await createCloudSDKs(createConjoinClient({ publishableKey })).readSdkSettings({
-    auth: { type: 'default' },
-  })
+  const settings = await createCloudSDKs(createConjoinClient({ publishableKey })).readSdkSettings()
 
   if (!settings.auth?.domain) {
     throw new ConjoinConfigurationError('Sign-in is not configured for the project of this publishable key')

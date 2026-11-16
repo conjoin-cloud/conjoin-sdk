@@ -14,7 +14,7 @@ export function createBillingRefunds(client: ConjoinClient) {
       client.fetchList<ListData>('billing/refunds/', { ...options, method: 'GET', query: query as Record<string, unknown> | undefined, scopes: ['billingEntityId'] }),
 
     create: (data: CreateBody, options?: ConjoinCallOptions) =>
-      client.fetch<CreateData>('billing/refunds/', { ...options, method: 'POST', body: data, scopes: ['billingEntityId'] }),
+      client.fetch<CreateData>('billing/refunds/', { ...options, method: 'POST', body: data, scopes: ['billingEntityId'], acceptsIdempotencyKey: true }),
 
     listCount: (query?: ListCountQuery, options?: ConjoinCallOptions) =>
       client.fetch<ListCountData>('billing/refunds/count', { ...options, method: 'GET', query: query as Record<string, unknown> | undefined, scopes: ['billingEntityId'] }),

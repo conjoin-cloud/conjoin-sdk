@@ -18,9 +18,9 @@ export function createAuthTrustedDevices(client: ConjoinClient) {
       client.fetch<ListCountData>(`auth/accounts/${encodePathParam(accountId)}/trusted-devices/count`, { ...options, method: 'GET', query: query as Record<string, unknown> | undefined, scopes: ['authAppId'] }),
 
     revokeAll: (accountId: string, options?: ConjoinCallOptions) =>
-      client.fetch<RevokeAllData>(`auth/accounts/${encodePathParam(accountId)}/trusted-devices/revoke-all`, { ...options, method: 'POST', scopes: ['authAppId'] }),
+      client.fetch<RevokeAllData>(`auth/accounts/${encodePathParam(accountId)}/trusted-devices/revoke-all`, { ...options, method: 'POST', scopes: ['authAppId'], acceptsIdempotencyKey: true }),
 
     revoke: (accountId: string, trustedDeviceId: string, options?: ConjoinCallOptions) =>
-      client.fetch<RevokeData>(`auth/accounts/${encodePathParam(accountId)}/trusted-devices/${encodePathParam(trustedDeviceId)}/revoke`, { ...options, method: 'POST', scopes: ['authAppId'] }),
+      client.fetch<RevokeData>(`auth/accounts/${encodePathParam(accountId)}/trusted-devices/${encodePathParam(trustedDeviceId)}/revoke`, { ...options, method: 'POST', scopes: ['authAppId'], acceptsIdempotencyKey: true }),
   }
 }

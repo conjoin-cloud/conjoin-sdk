@@ -9,7 +9,6 @@ import { createMessagingEmailSenderPools } from '../generated/modules/messaging-
 import { createMessagingMultisends } from '../generated/modules/messaging-multisend'
 import { createMessagingPhoneNumbers } from '../generated/modules/messaging-phone-number'
 import { createMessagingProfiles } from '../generated/modules/messaging-profile'
-import { createMessagingSegments } from '../generated/modules/messaging-segment'
 import { createMessagingSMs } from '../generated/modules/messaging-sms'
 import { createMessagingSMSBrands } from '../generated/modules/messaging-sms-brand'
 import { createMessagingSMSCampaigns } from '../generated/modules/messaging-sms-campaign'
@@ -34,7 +33,6 @@ export function createMessaging(client: ConjoinClient, config: MessagingConfig =
     contacts: createMessagingContacts(profiled),
     contactProperties: createMessagingContactProperties(profiled),
     conversations: createMessagingConversations(profiled),
-    segments: createMessagingSegments(profiled),
     templates: createMessagingTemplates(profiled),
     verifications: createMessagingVerifications(profiled),
     analytics: createMessagingChannelAnalytics(profiled),

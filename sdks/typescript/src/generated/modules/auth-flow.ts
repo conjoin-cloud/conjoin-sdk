@@ -20,24 +20,24 @@ type CompletePasswordResetData = NonNullable<operations['completePasswordReset']
 export function createAuthFlows(client: ConjoinClient) {
   return {
     startSignup: (clientId: string, data: StartSignupBody, options?: ConjoinCallOptions) =>
-      client.fetch<StartSignupData>(`auth/clients/${encodePathParam(clientId)}/sign-ups/start`, { ...options, method: 'POST', body: data, scopes: ['authAppId'] }),
+      client.fetch<StartSignupData>(`auth/clients/${encodePathParam(clientId)}/sign-ups/start`, { ...options, method: 'POST', body: data, scopes: ['authAppId'], acceptsIdempotencyKey: true }),
 
     completeSignup: (clientId: string, data: CompleteSignupBody, options?: ConjoinCallOptions) =>
-      client.fetch<CompleteSignupData>(`auth/clients/${encodePathParam(clientId)}/sign-ups/complete`, { ...options, method: 'POST', body: data, scopes: ['authAppId'] }),
+      client.fetch<CompleteSignupData>(`auth/clients/${encodePathParam(clientId)}/sign-ups/complete`, { ...options, method: 'POST', body: data, scopes: ['authAppId'], acceptsIdempotencyKey: true }),
 
     confirmLinkSignup: (clientId: string, data: ConfirmLinkSignupBody, options?: ConjoinCallOptions) =>
-      client.fetch<ConfirmLinkSignupData>(`auth/clients/${encodePathParam(clientId)}/sign-ups/confirm-link`, { ...options, method: 'POST', body: data, scopes: ['authAppId'] }),
+      client.fetch<ConfirmLinkSignupData>(`auth/clients/${encodePathParam(clientId)}/sign-ups/confirm-link`, { ...options, method: 'POST', body: data, scopes: ['authAppId'], acceptsIdempotencyKey: true }),
 
     startSignin: (clientId: string, data: StartSigninBody, options?: ConjoinCallOptions) =>
-      client.fetch<StartSigninData>(`auth/clients/${encodePathParam(clientId)}/sign-ins/start`, { ...options, method: 'POST', body: data, scopes: ['authAppId'] }),
+      client.fetch<StartSigninData>(`auth/clients/${encodePathParam(clientId)}/sign-ins/start`, { ...options, method: 'POST', body: data, scopes: ['authAppId'], acceptsIdempotencyKey: true }),
 
     completeSignin: (clientId: string, data: CompleteSigninBody, options?: ConjoinCallOptions) =>
-      client.fetch<CompleteSigninData>(`auth/clients/${encodePathParam(clientId)}/sign-ins/complete`, { ...options, method: 'POST', body: data, scopes: ['authAppId'] }),
+      client.fetch<CompleteSigninData>(`auth/clients/${encodePathParam(clientId)}/sign-ins/complete`, { ...options, method: 'POST', body: data, scopes: ['authAppId'], acceptsIdempotencyKey: true }),
 
     startPasswordReset: (clientId: string, data: StartPasswordResetBody, options?: ConjoinCallOptions) =>
-      client.fetch<StartPasswordResetData>(`auth/clients/${encodePathParam(clientId)}/password-resets/start`, { ...options, method: 'POST', body: data, scopes: ['authAppId'] }),
+      client.fetch<StartPasswordResetData>(`auth/clients/${encodePathParam(clientId)}/password-resets/start`, { ...options, method: 'POST', body: data, scopes: ['authAppId'], acceptsIdempotencyKey: true }),
 
     completePasswordReset: (clientId: string, data: CompletePasswordResetBody, options?: ConjoinCallOptions) =>
-      client.fetch<CompletePasswordResetData>(`auth/clients/${encodePathParam(clientId)}/password-resets/complete`, { ...options, method: 'POST', body: data, scopes: ['authAppId'] }),
+      client.fetch<CompletePasswordResetData>(`auth/clients/${encodePathParam(clientId)}/password-resets/complete`, { ...options, method: 'POST', body: data, scopes: ['authAppId'], acceptsIdempotencyKey: true }),
   }
 }

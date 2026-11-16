@@ -75,13 +75,31 @@ export type ConjoinCallOptions = {
   maxRetries?: number
 }
 
-export type RequestOptions = ConjoinCallOptions & {
+export type ConjoinDeclaredHeaderRule = {
+  readonly name: string
+  readonly argumentName: string
+  readonly required: boolean
+  readonly minLength?: number
+  readonly maxLength?: number
+  readonly pattern?: string
+}
+
+export type ConjoinDeclaredHeaders = {
+  rules: readonly ConjoinDeclaredHeaderRule[]
+  values?: Readonly<Record<string, string | undefined>>
+}
+
+export type ConjoinRequestAuth = ConjoinAuthOption | { type: 'publishableKey' } | { type: 'session'; token?: string }
+
+export type RequestOptions = Omit<ConjoinCallOptions, 'auth'> & {
+  auth?: ConjoinRequestAuth
   method?: HttpMethod
   body?: unknown
   contentType?: 'application/json' | 'multipart/form-data'
   query?: Record<string, unknown>
   scopes?: readonly ConjoinScopeName[]
   acceptsIdempotencyKey?: boolean
+  declaredHeaders?: ConjoinDeclaredHeaders
 }
 
 export type Cursor = {

@@ -12,10 +12,10 @@ type ReadEffectivePermissionsQuery = NonNullable<operations['readEffectivePermis
 export function createAuthAuthorizations(client: ConjoinClient) {
   return {
     authorizeAction: (organizationId: string, data: AuthorizeActionBody, options?: ConjoinCallOptions) =>
-      client.fetch<AuthorizeActionData>(`auth/organizations/${encodePathParam(organizationId)}/authorize`, { ...options, method: 'POST', body: data, scopes: ['authAppId'] }),
+      client.fetch<AuthorizeActionData>(`auth/organizations/${encodePathParam(organizationId)}/authorize`, { ...options, method: 'POST', body: data, scopes: ['authAppId'], acceptsIdempotencyKey: true }),
 
     checkRole: (organizationId: string, data: CheckRoleBody, options?: ConjoinCallOptions) =>
-      client.fetch<CheckRoleData>(`auth/organizations/${encodePathParam(organizationId)}/check-role`, { ...options, method: 'POST', body: data, scopes: ['authAppId'] }),
+      client.fetch<CheckRoleData>(`auth/organizations/${encodePathParam(organizationId)}/check-role`, { ...options, method: 'POST', body: data, scopes: ['authAppId'], acceptsIdempotencyKey: true }),
 
     readEffectivePermissions: (organizationId: string, query: ReadEffectivePermissionsQuery, options?: ConjoinCallOptions) =>
       client.fetch<ReadEffectivePermissionsData>(`auth/organizations/${encodePathParam(organizationId)}/effective-permissions`, { ...options, method: 'GET', query: query as Record<string, unknown> | undefined, scopes: ['authAppId'] }),

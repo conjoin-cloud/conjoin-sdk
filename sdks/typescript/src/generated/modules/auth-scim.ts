@@ -38,13 +38,13 @@ function scimBearerRequestOptions(scimToken: string | undefined): RequestOptions
 export function createAuthSCIMs(client: ConjoinClient, scim: AuthSCIMOptions = {}) {
   return {
     scimBulkOperations: (projectId: string, appId: string, data: ScimBulkOperationsBody, options?: ConjoinCallOptions) =>
-      client.fetchJson<ScimBulkOperationsResponse>(`auth/scim/v2/${encodePathParam(projectId)}/${encodePathParam(appId)}/Bulk`, { ...scimBearerRequestOptions(scim.scimToken), ...options, method: 'POST', body: data }),
+      client.fetchJson<ScimBulkOperationsResponse>(`auth/scim/v2/${encodePathParam(projectId)}/${encodePathParam(appId)}/Bulk`, { ...scimBearerRequestOptions(scim.scimToken), ...options, method: 'POST', body: data, acceptsIdempotencyKey: true }),
 
     scimListGroups: (projectId: string, appId: string, options?: ConjoinCallOptions) =>
       client.fetchJson<ScimListGroupsResponse>(`auth/scim/v2/${encodePathParam(projectId)}/${encodePathParam(appId)}/Groups`, { ...scimBearerRequestOptions(scim.scimToken), ...options, method: 'GET' }),
 
     scimCreateGroup: (projectId: string, appId: string, data: ScimCreateGroupBody, options?: ConjoinCallOptions) =>
-      client.fetchJson<ScimCreateGroupResponse>(`auth/scim/v2/${encodePathParam(projectId)}/${encodePathParam(appId)}/Groups`, { ...scimBearerRequestOptions(scim.scimToken), ...options, method: 'POST', body: data }),
+      client.fetchJson<ScimCreateGroupResponse>(`auth/scim/v2/${encodePathParam(projectId)}/${encodePathParam(appId)}/Groups`, { ...scimBearerRequestOptions(scim.scimToken), ...options, method: 'POST', body: data, acceptsIdempotencyKey: true }),
 
     scimGetGroup: (projectId: string, appId: string, id: string, options?: ConjoinCallOptions) =>
       client.fetchJson<ScimGetGroupResponse>(`auth/scim/v2/${encodePathParam(projectId)}/${encodePathParam(appId)}/Groups/${encodePathParam(id)}`, { ...scimBearerRequestOptions(scim.scimToken), ...options, method: 'GET' }),
@@ -59,19 +59,19 @@ export function createAuthSCIMs(client: ConjoinClient, scim: AuthSCIMOptions = {
       client.fetchJson<undefined>(`auth/scim/v2/${encodePathParam(projectId)}/${encodePathParam(appId)}/Groups/${encodePathParam(id)}`, { ...scimBearerRequestOptions(scim.scimToken), ...options, method: 'DELETE' }),
 
     scimGetServiceProviderConfig: (options?: ConjoinCallOptions) =>
-      client.fetchJson<ScimGetServiceProviderConfigResponse>('auth/scim/v2/ServiceProviderConfig', { auth: { type: 'none' }, ...options, method: 'GET' }),
+      client.fetchJson<ScimGetServiceProviderConfigResponse>('auth/scim/v2/ServiceProviderConfig', { ...options, auth: { type: 'none' }, method: 'GET' }),
 
     scimGetSchemas: (options?: ConjoinCallOptions) =>
-      client.fetchJson<ScimGetSchemasResponse>('auth/scim/v2/Schemas', { auth: { type: 'none' }, ...options, method: 'GET' }),
+      client.fetchJson<ScimGetSchemasResponse>('auth/scim/v2/Schemas', { ...options, auth: { type: 'none' }, method: 'GET' }),
 
     scimGetResourceTypes: (options?: ConjoinCallOptions) =>
-      client.fetchJson<ScimGetResourceTypesResponse>('auth/scim/v2/ResourceTypes', { auth: { type: 'none' }, ...options, method: 'GET' }),
+      client.fetchJson<ScimGetResourceTypesResponse>('auth/scim/v2/ResourceTypes', { ...options, auth: { type: 'none' }, method: 'GET' }),
 
     scimListUsers: (projectId: string, appId: string, options?: ConjoinCallOptions) =>
       client.fetchJson<ScimListUsersResponse>(`auth/scim/v2/${encodePathParam(projectId)}/${encodePathParam(appId)}/Users`, { ...scimBearerRequestOptions(scim.scimToken), ...options, method: 'GET' }),
 
     scimCreateUser: (projectId: string, appId: string, data: ScimCreateUserBody, options?: ConjoinCallOptions) =>
-      client.fetchJson<ScimCreateUserResponse>(`auth/scim/v2/${encodePathParam(projectId)}/${encodePathParam(appId)}/Users`, { ...scimBearerRequestOptions(scim.scimToken), ...options, method: 'POST', body: data }),
+      client.fetchJson<ScimCreateUserResponse>(`auth/scim/v2/${encodePathParam(projectId)}/${encodePathParam(appId)}/Users`, { ...scimBearerRequestOptions(scim.scimToken), ...options, method: 'POST', body: data, acceptsIdempotencyKey: true }),
 
     scimGetUser: (projectId: string, appId: string, id: string, options?: ConjoinCallOptions) =>
       client.fetchJson<ScimGetUserResponse>(`auth/scim/v2/${encodePathParam(projectId)}/${encodePathParam(appId)}/Users/${encodePathParam(id)}`, { ...scimBearerRequestOptions(scim.scimToken), ...options, method: 'GET' }),

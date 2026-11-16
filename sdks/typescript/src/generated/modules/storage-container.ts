@@ -8,6 +8,7 @@ type ListData = NonNullable<operations['listStorageContainers']['responses']['20
 type ListQuery = NonNullable<operations['listStorageContainers']['parameters']['query']>
 type ReadData = NonNullable<operations['readStorageContainer']['responses']['200']['content']['application/json']['data']>
 type RequestDeletionData = NonNullable<operations['requestStorageContainerDeletion']['responses']['200']['content']['application/json']['data']>
+type RequestDeletionQuery = NonNullable<operations['requestStorageContainerDeletion']['parameters']['query']>
 type ArchiveData = NonNullable<operations['archiveStorageContainer']['responses']['200']['content']['application/json']['data']>
 type RestoreData = NonNullable<operations['restoreStorageContainer']['responses']['200']['content']['application/json']['data']>
 type UpdateLifecyclePolicyBody = NonNullable<operations['updateStorageContainerLifecyclePolicy']['requestBody']>['content']['application/json']
@@ -23,7 +24,7 @@ type UpdateTransitionPolicyData = NonNullable<operations['updateStorageContainer
 export function createStorageContainers(client: ConjoinClient) {
   return {
     create: (data: CreateBody, options?: ConjoinCallOptions) =>
-      client.fetch<CreateData>('storage/storage-container/', { ...options, method: 'POST', body: data }),
+      client.fetch<CreateData>('storage/storage-container/', { ...options, method: 'POST', body: data, acceptsIdempotencyKey: true }),
 
     list: (query?: ListQuery, options?: ConjoinCallOptions) =>
       client.fetchList<ListData>('storage/storage-container/', { ...options, method: 'GET', query: query as Record<string, unknown> | undefined }),
@@ -31,8 +32,8 @@ export function createStorageContainers(client: ConjoinClient) {
     read: (containerNameOrId: string, options?: ConjoinCallOptions) =>
       client.fetch<ReadData>(`storage/storage-container/${encodePathParam(containerNameOrId)}`, { ...options, method: 'GET' }),
 
-    requestDeletion: (containerNameOrId: string, options?: ConjoinCallOptions) =>
-      client.fetch<RequestDeletionData>(`storage/storage-container/${encodePathParam(containerNameOrId)}`, { ...options, method: 'DELETE' }),
+    requestDeletion: (containerNameOrId: string, query?: RequestDeletionQuery, options?: ConjoinCallOptions) =>
+      client.fetch<RequestDeletionData>(`storage/storage-container/${encodePathParam(containerNameOrId)}`, { ...options, method: 'DELETE', query: query as Record<string, unknown> | undefined }),
 
     archive: (containerNameOrId: string, options?: ConjoinCallOptions) =>
       client.fetch<ArchiveData>(`storage/storage-container/archive/${encodePathParam(containerNameOrId)}`, { ...options, method: 'PATCH' }),

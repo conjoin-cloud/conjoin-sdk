@@ -16,7 +16,7 @@ export function createAuthClients(client: ConjoinClient) {
       client.fetchList<ListData>('auth/clients/', { ...options, method: 'GET', query: query as Record<string, unknown> | undefined, scopes: ['authAppId'] }),
 
     create: (data: CreateBody, options?: ConjoinCallOptions) =>
-      client.fetch<CreateData>('auth/clients/', { ...options, method: 'POST', body: data, scopes: ['authAppId'] }),
+      client.fetch<CreateData>('auth/clients/', { ...options, method: 'POST', body: data, scopes: ['authAppId'], acceptsIdempotencyKey: true }),
 
     listCount: (query?: ListCountQuery, options?: ConjoinCallOptions) =>
       client.fetch<ListCountData>('auth/clients/count', { ...options, method: 'GET', query: query as Record<string, unknown> | undefined, scopes: ['authAppId'] }),

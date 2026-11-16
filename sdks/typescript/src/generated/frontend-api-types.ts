@@ -4,6 +4,142 @@
  */
 
 export interface paths {
+    "/v1/auth/portal/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Read the portal context for the active setup ticket */
+        get: operations["readSsoPortalContext"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/auth/portal/providers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List the identity providers offered by the portal policy */
+        get: operations["readSsoPortalCatalog"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/auth/portal/connections": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Create an enterprise connection through the portal */
+        post: operations["configureSsoPortalConnection"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/auth/portal/connections/{connection_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Update an enterprise connection through the portal */
+        patch: operations["updateSsoPortalConnection"];
+        trace?: never;
+    };
+    "/v1/auth/portal/connections/{connection_id}/import-metadata": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Import IdP SAML metadata for a connection through the portal */
+        post: operations["importSsoPortalMetadata"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/auth/portal/connections/{connection_id}/service-provider-settings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Read the service-provider configuration values for a connection */
+        get: operations["readSsoPortalProviderConfig"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/auth/portal/domains": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Claim and verify an organization domain through the portal */
+        post: operations["verifySsoPortalDomain"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/auth/portal/test/start": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Begin a test sign-in for a pending connection through the portal */
+        post: operations["startSsoPortalTest"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/auth/client/account-lookups/": {
         parameters: {
             query?: never;
@@ -202,142 +338,6 @@ export interface paths {
         put?: never;
         /** Accept an organization invitation */
         post: operations["acceptOrganizationInvitation"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/v1/auth/portal/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Read the portal context for the active setup ticket */
-        get: operations["readSsoPortalContext"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/v1/auth/portal/providers": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** List the identity providers offered by the portal policy */
-        get: operations["readSsoPortalCatalog"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/v1/auth/portal/connections": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Create an enterprise connection through the portal */
-        post: operations["configureSsoPortalConnection"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/v1/auth/portal/connections/{connection_id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        /** Update an enterprise connection through the portal */
-        patch: operations["updateSsoPortalConnection"];
-        trace?: never;
-    };
-    "/v1/auth/portal/connections/{connection_id}/import-metadata": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Import IdP SAML metadata for a connection through the portal */
-        post: operations["importSsoPortalMetadata"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/v1/auth/portal/connections/{connection_id}/service-provider-settings": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Read the service-provider configuration values for a connection */
-        get: operations["readSsoPortalProviderConfig"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/v1/auth/portal/domains": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Claim and verify an organization domain through the portal */
-        post: operations["verifySsoPortalDomain"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/v1/auth/portal/test/start": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Begin a test sign-in for a pending connection through the portal */
-        post: operations["startSsoPortalTest"];
         delete?: never;
         options?: never;
         head?: never;
@@ -624,23 +624,6 @@ export interface paths {
         patch: operations["updateSelfActiveOrganization"];
         trace?: never;
     };
-    "/v1/cloud/client/settings/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Read the SDK settings of the project that the publishable key belongs to */
-        get: operations["readSdkSettings"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/v1/cloud/client/branding/": {
         parameters: {
             query?: never;
@@ -650,6 +633,23 @@ export interface paths {
         };
         /** Read the branding of the project that the publishable key belongs to */
         get: operations["readPublicProjectBranding"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/cloud/client/settings/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Read the SDK settings of the project that the publishable key belongs to */
+        get: operations["readSdkSettings"];
         put?: never;
         post?: never;
         delete?: never;
@@ -694,16 +694,1314 @@ export interface components {
     parameters: {
         /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
         ConjoinRequestId: string;
+        /** @description A key that makes a retry of this request safe. A retry with the same key and the same request returns the first reply with the `Idempotent-Replayed: true` header and changes nothing. The same key with a different request answers 422, and a key whose first request is still being processed answers 409. The server keeps each key for 24 hours. An empty value counts as no key, so the server processes that request once for each time it arrives. */
+        IdempotencyKey: string;
     };
     requestBodies: never;
     headers: {
         /** @description The effective customer-visible root operation identifier for this Conjoin API request. */
         ConjoinRequestId: string;
+        /** @description The server sends this header when the reply is the stored first reply to a request with the same Idempotency-Key. */
+        IdempotentReplayed: "true";
     };
     pathItems: never;
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    readSsoPortalContext: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
+                "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful response */
+            200: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response?: components["schemas"]["ApiSuccessResponseMeta"];
+                        data?: {
+                            organization_id: string;
+                            allowed_providers: ("enterprise_saml" | "enterprise_oidc" | "enterprise_custom")[];
+                            setup_intents: ("sso" | "directory_sync")[];
+                            require_domain_verification: boolean;
+                            providers: {
+                                /** @example string */
+                                provider_key: string;
+                                /** @example string */
+                                label: string;
+                                /** @example string */
+                                display_name: string;
+                                /** @enum {string} */
+                                protocol: "enterprise_saml" | "enterprise_oidc" | "enterprise_custom";
+                                /** @example string */
+                                logo_reference: string;
+                                /** @example string */
+                                setup_guide_slug: string;
+                                required_fields: {
+                                    /** @example string */
+                                    key: string;
+                                    /** @example string */
+                                    label: string;
+                                    is_required: boolean;
+                                    is_secret: boolean;
+                                }[];
+                            }[];
+                        };
+                    };
+                };
+            };
+            /** @description Validation error or bad request */
+            400: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Unauthorized - missing or invalid API key */
+            401: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description The resource does not exist in the scope of the request */
+            404: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiServerErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+        };
+    };
+    readSsoPortalCatalog: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
+                "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful response */
+            200: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response?: components["schemas"]["ApiSuccessResponseMeta"];
+                        data?: {
+                            providers: {
+                                /** @example string */
+                                provider_key: string;
+                                /** @example string */
+                                label: string;
+                                /** @example string */
+                                display_name: string;
+                                /** @enum {string} */
+                                protocol: "enterprise_saml" | "enterprise_oidc" | "enterprise_custom";
+                                /** @example string */
+                                logo_reference: string;
+                                /** @example string */
+                                setup_guide_slug: string;
+                                required_fields: {
+                                    /** @example string */
+                                    key: string;
+                                    /** @example string */
+                                    label: string;
+                                    is_required: boolean;
+                                    is_secret: boolean;
+                                }[];
+                            }[];
+                        };
+                    };
+                };
+            };
+            /** @description Validation error or bad request */
+            400: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Unauthorized - missing or invalid API key */
+            401: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description The resource does not exist in the scope of the request */
+            404: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiServerErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+        };
+    };
+    configureSsoPortalConnection: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
+                "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @constant */
+                    protocol: "enterprise_saml";
+                    /** @example string */
+                    name?: string;
+                    configuration: {
+                        /** @example string */
+                        name: string;
+                        /** @example string */
+                        description?: string;
+                        domain_routing: {
+                            enabled: boolean;
+                            domains: string[];
+                            allow_external_domains: boolean;
+                        };
+                        jit_provisioning: {
+                            enabled: boolean;
+                            update_on_login: boolean;
+                            attribute_mappings: {
+                                /** @example string */
+                                first_name: string;
+                                /** @example string */
+                                last_name: string;
+                                /** @example string */
+                                email: string;
+                                /** @example string */
+                                picture?: string;
+                                custom_attributes: {
+                                    [key: string]: string;
+                                };
+                            };
+                        };
+                        role_mapping: {
+                            enabled: boolean;
+                            role_mappings: {
+                                [key: string]: string;
+                            };
+                            default_role: string | null;
+                            /** @example string */
+                            role_attribute: string;
+                        };
+                        session_timeout: number | null;
+                        require_reauth_for_sensitive_operations: boolean;
+                        saml_config: {
+                            /** @example string */
+                            entity_id: string;
+                            /**
+                             * Format: uri
+                             * @example https://example.com
+                             */
+                            sso_url: string;
+                            /**
+                             * Format: uri
+                             * @example https://example.com
+                             */
+                            slo_url?: string;
+                            /** @example string */
+                            certificate: string;
+                            /** @enum {string} */
+                            request_binding: "HTTP-POST" | "HTTP-Redirect";
+                            /** @enum {string} */
+                            response_binding: "HTTP-POST" | "HTTP-Redirect";
+                            sign_requests: boolean;
+                            require_encrypted_assertions: boolean;
+                            /** @enum {string} */
+                            name_id_format: "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress" | "urn:oasis:names:tc:SAML:2.0:nameid-format:persistent" | "urn:oasis:names:tc:SAML:2.0:nameid-format:transient" | "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified";
+                        };
+                    };
+                } | {
+                    /** @constant */
+                    protocol: "enterprise_oidc";
+                    /** @example string */
+                    name?: string;
+                    configuration: {
+                        /** @example string */
+                        name: string;
+                        /** @example string */
+                        description?: string;
+                        domain_routing: {
+                            enabled: boolean;
+                            domains: string[];
+                            allow_external_domains: boolean;
+                        };
+                        jit_provisioning: {
+                            enabled: boolean;
+                            update_on_login: boolean;
+                            attribute_mappings: {
+                                /** @example string */
+                                first_name: string;
+                                /** @example string */
+                                last_name: string;
+                                /** @example string */
+                                email: string;
+                                /** @example string */
+                                picture?: string;
+                                custom_attributes: {
+                                    [key: string]: string;
+                                };
+                            };
+                        };
+                        role_mapping: {
+                            enabled: boolean;
+                            role_mappings: {
+                                [key: string]: string;
+                            };
+                            default_role: string | null;
+                            /** @example string */
+                            role_attribute: string;
+                        };
+                        session_timeout: number | null;
+                        require_reauth_for_sensitive_operations: boolean;
+                        oidc_config: {
+                            /**
+                             * Format: uri
+                             * @example https://example.com
+                             */
+                            issuer: string;
+                            /** @example string */
+                            client_id: string;
+                            /** @example string */
+                            client_secret: string;
+                            scopes: string[];
+                            /**
+                             * Format: uri
+                             * @example https://example.com
+                             */
+                            discovery_endpoint?: string;
+                            use_pkce: boolean;
+                            additional_parameters: {
+                                [key: string]: string;
+                            };
+                        };
+                    };
+                } | {
+                    /** @constant */
+                    protocol: "enterprise_custom";
+                    /** @example string */
+                    name?: string;
+                    configuration: {
+                        /** @example string */
+                        name: string;
+                        /** @example string */
+                        description?: string;
+                        domain_routing: {
+                            enabled: boolean;
+                            domains: string[];
+                            allow_external_domains: boolean;
+                        };
+                        jit_provisioning: {
+                            enabled: boolean;
+                            update_on_login: boolean;
+                            attribute_mappings: {
+                                /** @example string */
+                                first_name: string;
+                                /** @example string */
+                                last_name: string;
+                                /** @example string */
+                                email: string;
+                                /** @example string */
+                                picture?: string;
+                                custom_attributes: {
+                                    [key: string]: string;
+                                };
+                            };
+                        };
+                        role_mapping: {
+                            enabled: boolean;
+                            role_mappings: {
+                                [key: string]: string;
+                            };
+                            default_role: string | null;
+                            /** @example string */
+                            role_attribute: string;
+                        };
+                        session_timeout: number | null;
+                        require_reauth_for_sensitive_operations: boolean;
+                        custom_config: {
+                            /**
+                             * Format: uri
+                             * @example https://example.com
+                             */
+                            auth_endpoint: string;
+                            /**
+                             * Format: uri
+                             * @example https://example.com
+                             */
+                            token_endpoint: string;
+                            /**
+                             * Format: uri
+                             * @example https://example.com
+                             */
+                            userinfo_endpoint: string;
+                            /** @example string */
+                            client_secret?: string;
+                            /** @enum {string} */
+                            auth_method: "oauth2" | "bearer" | "basic" | "custom";
+                            custom_headers: {
+                                [key: string]: string;
+                            };
+                            custom_parameters: {
+                                [key: string]: string;
+                            };
+                            /** @enum {string} */
+                            response_format: "json" | "xml" | "form";
+                        };
+                    };
+                };
+            };
+        };
+        responses: {
+            /** @description Successful response */
+            201: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response?: components["schemas"]["ApiSuccessResponseMeta"];
+                        data?: {
+                            connection_id: string;
+                            conjoin_account_id: string;
+                            conjoin_project_id: string;
+                            app_id: string;
+                            live_mode: boolean;
+                            organization_id: string | null;
+                            identity: string;
+                            /** @enum {string} */
+                            status: "pending" | "active" | "disabled";
+                            name: string | null;
+                            is_enterprise: boolean;
+                            configuration: {
+                                [key: string]: unknown;
+                            };
+                            date_created: string;
+                            date_updated: string;
+                        };
+                    };
+                };
+            };
+            /** @description Validation error or bad request */
+            400: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Unauthorized - missing or invalid API key */
+            401: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description The resource does not exist in the scope of the request */
+            404: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiServerErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+        };
+    };
+    updateSsoPortalConnection: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
+                "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
+            };
+            path: {
+                connection_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @constant */
+                    protocol: "enterprise_saml";
+                    name?: string | null;
+                    configuration: {
+                        /** @example string */
+                        name: string;
+                        /** @example string */
+                        description?: string;
+                        domain_routing: {
+                            enabled: boolean;
+                            domains: string[];
+                            allow_external_domains: boolean;
+                        };
+                        jit_provisioning: {
+                            enabled: boolean;
+                            update_on_login: boolean;
+                            attribute_mappings: {
+                                /** @example string */
+                                first_name: string;
+                                /** @example string */
+                                last_name: string;
+                                /** @example string */
+                                email: string;
+                                /** @example string */
+                                picture?: string;
+                                custom_attributes: {
+                                    [key: string]: string;
+                                };
+                            };
+                        };
+                        role_mapping: {
+                            enabled: boolean;
+                            role_mappings: {
+                                [key: string]: string;
+                            };
+                            default_role: string | null;
+                            /** @example string */
+                            role_attribute: string;
+                        };
+                        session_timeout: number | null;
+                        require_reauth_for_sensitive_operations: boolean;
+                        saml_config: {
+                            /** @example string */
+                            entity_id: string;
+                            /**
+                             * Format: uri
+                             * @example https://example.com
+                             */
+                            sso_url: string;
+                            /**
+                             * Format: uri
+                             * @example https://example.com
+                             */
+                            slo_url?: string;
+                            /** @example string */
+                            certificate: string;
+                            /** @enum {string} */
+                            request_binding: "HTTP-POST" | "HTTP-Redirect";
+                            /** @enum {string} */
+                            response_binding: "HTTP-POST" | "HTTP-Redirect";
+                            sign_requests: boolean;
+                            require_encrypted_assertions: boolean;
+                            /** @enum {string} */
+                            name_id_format: "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress" | "urn:oasis:names:tc:SAML:2.0:nameid-format:persistent" | "urn:oasis:names:tc:SAML:2.0:nameid-format:transient" | "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified";
+                        };
+                    };
+                } | {
+                    /** @constant */
+                    protocol: "enterprise_oidc";
+                    name?: string | null;
+                    configuration: {
+                        /** @example string */
+                        name: string;
+                        /** @example string */
+                        description?: string;
+                        domain_routing: {
+                            enabled: boolean;
+                            domains: string[];
+                            allow_external_domains: boolean;
+                        };
+                        jit_provisioning: {
+                            enabled: boolean;
+                            update_on_login: boolean;
+                            attribute_mappings: {
+                                /** @example string */
+                                first_name: string;
+                                /** @example string */
+                                last_name: string;
+                                /** @example string */
+                                email: string;
+                                /** @example string */
+                                picture?: string;
+                                custom_attributes: {
+                                    [key: string]: string;
+                                };
+                            };
+                        };
+                        role_mapping: {
+                            enabled: boolean;
+                            role_mappings: {
+                                [key: string]: string;
+                            };
+                            default_role: string | null;
+                            /** @example string */
+                            role_attribute: string;
+                        };
+                        session_timeout: number | null;
+                        require_reauth_for_sensitive_operations: boolean;
+                        oidc_config: {
+                            /**
+                             * Format: uri
+                             * @example https://example.com
+                             */
+                            issuer: string;
+                            /** @example string */
+                            client_id: string;
+                            /** @example string */
+                            client_secret: string;
+                            scopes: string[];
+                            /**
+                             * Format: uri
+                             * @example https://example.com
+                             */
+                            discovery_endpoint?: string;
+                            use_pkce: boolean;
+                            additional_parameters: {
+                                [key: string]: string;
+                            };
+                        };
+                    };
+                } | {
+                    /** @constant */
+                    protocol: "enterprise_custom";
+                    name?: string | null;
+                    configuration: {
+                        /** @example string */
+                        name: string;
+                        /** @example string */
+                        description?: string;
+                        domain_routing: {
+                            enabled: boolean;
+                            domains: string[];
+                            allow_external_domains: boolean;
+                        };
+                        jit_provisioning: {
+                            enabled: boolean;
+                            update_on_login: boolean;
+                            attribute_mappings: {
+                                /** @example string */
+                                first_name: string;
+                                /** @example string */
+                                last_name: string;
+                                /** @example string */
+                                email: string;
+                                /** @example string */
+                                picture?: string;
+                                custom_attributes: {
+                                    [key: string]: string;
+                                };
+                            };
+                        };
+                        role_mapping: {
+                            enabled: boolean;
+                            role_mappings: {
+                                [key: string]: string;
+                            };
+                            default_role: string | null;
+                            /** @example string */
+                            role_attribute: string;
+                        };
+                        session_timeout: number | null;
+                        require_reauth_for_sensitive_operations: boolean;
+                        custom_config: {
+                            /**
+                             * Format: uri
+                             * @example https://example.com
+                             */
+                            auth_endpoint: string;
+                            /**
+                             * Format: uri
+                             * @example https://example.com
+                             */
+                            token_endpoint: string;
+                            /**
+                             * Format: uri
+                             * @example https://example.com
+                             */
+                            userinfo_endpoint: string;
+                            /** @example string */
+                            client_secret?: string;
+                            /** @enum {string} */
+                            auth_method: "oauth2" | "bearer" | "basic" | "custom";
+                            custom_headers: {
+                                [key: string]: string;
+                            };
+                            custom_parameters: {
+                                [key: string]: string;
+                            };
+                            /** @enum {string} */
+                            response_format: "json" | "xml" | "form";
+                        };
+                    };
+                } | {
+                    protocol?: unknown;
+                    name: string | null;
+                };
+            };
+        };
+        responses: {
+            /** @description Successful response */
+            200: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response?: components["schemas"]["ApiSuccessResponseMeta"];
+                        data?: {
+                            connection_id: string;
+                            conjoin_account_id: string;
+                            conjoin_project_id: string;
+                            app_id: string;
+                            live_mode: boolean;
+                            organization_id: string | null;
+                            identity: string;
+                            /** @enum {string} */
+                            status: "pending" | "active" | "disabled";
+                            name: string | null;
+                            is_enterprise: boolean;
+                            configuration: {
+                                [key: string]: unknown;
+                            };
+                            date_created: string;
+                            date_updated: string;
+                        };
+                    };
+                };
+            };
+            /** @description Validation error or bad request */
+            400: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Unauthorized - missing or invalid API key */
+            401: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description The resource does not exist in the scope of the request */
+            404: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiServerErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+        };
+    };
+    importSsoPortalMetadata: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
+                "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
+            };
+            path: {
+                connection_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": {
+                    /** @constant */
+                    source: "url";
+                    /**
+                     * Format: uri
+                     * @example https://example.com
+                     */
+                    metadata_url: string;
+                } | {
+                    /** @constant */
+                    source: "manual";
+                    saml_config: {
+                        /** @example string */
+                        entity_id: string;
+                        /**
+                         * Format: uri
+                         * @example https://example.com
+                         */
+                        sso_url: string;
+                        /**
+                         * Format: uri
+                         * @example https://example.com
+                         */
+                        slo_url?: string;
+                        /** @example string */
+                        certificate: string;
+                        /** @enum {string} */
+                        request_binding: "HTTP-POST" | "HTTP-Redirect";
+                        /** @enum {string} */
+                        response_binding: "HTTP-POST" | "HTTP-Redirect";
+                        sign_requests: boolean;
+                        require_encrypted_assertions: boolean;
+                        /** @enum {string} */
+                        name_id_format: "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress" | "urn:oasis:names:tc:SAML:2.0:nameid-format:persistent" | "urn:oasis:names:tc:SAML:2.0:nameid-format:transient" | "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified";
+                    };
+                } | {
+                    /** @constant */
+                    source: "xml";
+                };
+            };
+        };
+        responses: {
+            /** @description Successful response */
+            200: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response?: components["schemas"]["ApiSuccessResponseMeta"];
+                        data?: {
+                            connection_id: string;
+                            conjoin_account_id: string;
+                            conjoin_project_id: string;
+                            app_id: string;
+                            live_mode: boolean;
+                            organization_id: string | null;
+                            identity: string;
+                            /** @enum {string} */
+                            status: "pending" | "active" | "disabled";
+                            name: string | null;
+                            is_enterprise: boolean;
+                            configuration: {
+                                [key: string]: unknown;
+                            };
+                            date_created: string;
+                            date_updated: string;
+                        };
+                    };
+                };
+            };
+            /** @description Validation error or bad request */
+            400: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Unauthorized - missing or invalid API key */
+            401: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description The resource does not exist in the scope of the request */
+            404: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiServerErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+        };
+    };
+    readSsoPortalProviderConfig: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
+                "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
+            };
+            path: {
+                connection_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful response */
+            200: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response?: components["schemas"]["ApiSuccessResponseMeta"];
+                        data?: {
+                            /** @constant */
+                            protocol: "enterprise_saml";
+                            acs_url: string;
+                            sp_entity_id: string;
+                            sls_url: string;
+                            sp_metadata_xml: string;
+                            signing_keys: {
+                                certificate_id: string;
+                                /** @enum {string} */
+                                status: "active" | "pending" | "previous";
+                                certificate_pem: string;
+                                fingerprint: string;
+                                expires_at: string;
+                                date_created: string;
+                            }[];
+                        } | {
+                            /** @enum {string} */
+                            protocol: "enterprise_oidc" | "enterprise_custom";
+                            redirect_uri_guidance: string;
+                        };
+                    };
+                };
+            };
+            /** @description Validation error or bad request */
+            400: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Unauthorized - missing or invalid API key */
+            401: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description The resource does not exist in the scope of the request */
+            404: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiServerErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+        };
+    };
+    verifySsoPortalDomain: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
+                "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @example string */
+                    domain: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Successful response */
+            201: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response?: components["schemas"]["ApiSuccessResponseMeta"];
+                        data?: {
+                            organization_domain_id: string;
+                            conjoin_account_id: string;
+                            conjoin_project_id: string;
+                            app_id: string;
+                            live_mode: boolean;
+                            organization_id: string;
+                            domain: string;
+                            verification_hostname: string;
+                            verification_token: string;
+                            verification_record_value: string;
+                            verification: {
+                                /** @enum {string} */
+                                status: "verified" | "unverified" | "pending" | "expired";
+                                verified_at: string | null;
+                                expires_at: string | null;
+                            };
+                            last_checked_at: string | null;
+                            recheck: {
+                                grace_started_at: string;
+                                failure_warned_at: string | null;
+                                reminder_sent_at: string | null;
+                            } | null;
+                            date_created: string;
+                            date_updated: string;
+                        };
+                    };
+                };
+            };
+            /** @description Validation error or bad request */
+            400: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Unauthorized - missing or invalid API key */
+            401: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description The resource does not exist in the scope of the request */
+            404: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiServerErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+        };
+    };
+    startSsoPortalTest: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
+                "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @example string */
+                    connection_id: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Successful response */
+            200: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response?: components["schemas"]["ApiSuccessResponseMeta"];
+                        data?: {
+                            redirect_url: string;
+                        };
+                    };
+                };
+            };
+            /** @description Validation error or bad request */
+            400: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Unauthorized - missing or invalid API key */
+            401: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description The resource does not exist in the scope of the request */
+            404: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiServerErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+        };
+    };
     batchLookupAccounts: {
         parameters: {
             query?: never;
@@ -1998,1300 +3296,6 @@ export interface operations {
                                     date_deleted?: string | null;
                                 };
                             };
-                        };
-                    };
-                };
-            };
-            /** @description Validation error or bad request */
-            400: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description Unauthorized - missing or invalid API key */
-            401: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description The resource does not exist in the scope of the request */
-            404: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description Internal server error */
-            500: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiServerErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-        };
-    };
-    readSsoPortalContext: {
-        parameters: {
-            query?: never;
-            header?: {
-                /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
-                "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful response */
-            200: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response?: components["schemas"]["ApiSuccessResponseMeta"];
-                        data?: {
-                            organization_id: string;
-                            allowed_providers: ("enterprise_saml" | "enterprise_oidc" | "enterprise_custom")[];
-                            setup_intents: ("sso" | "directory_sync")[];
-                            require_domain_verification: boolean;
-                            providers: {
-                                /** @example string */
-                                provider_key: string;
-                                /** @example string */
-                                label: string;
-                                /** @example string */
-                                display_name: string;
-                                /** @enum {string} */
-                                protocol: "enterprise_saml" | "enterprise_oidc" | "enterprise_custom";
-                                /** @example string */
-                                logo_reference: string;
-                                /** @example string */
-                                setup_guide_slug: string;
-                                required_fields: {
-                                    /** @example string */
-                                    key: string;
-                                    /** @example string */
-                                    label: string;
-                                    is_required: boolean;
-                                    is_secret: boolean;
-                                }[];
-                            }[];
-                        };
-                    };
-                };
-            };
-            /** @description Validation error or bad request */
-            400: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description Unauthorized - missing or invalid API key */
-            401: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description The resource does not exist in the scope of the request */
-            404: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description Internal server error */
-            500: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiServerErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-        };
-    };
-    readSsoPortalCatalog: {
-        parameters: {
-            query?: never;
-            header?: {
-                /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
-                "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful response */
-            200: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response?: components["schemas"]["ApiSuccessResponseMeta"];
-                        data?: {
-                            providers: {
-                                /** @example string */
-                                provider_key: string;
-                                /** @example string */
-                                label: string;
-                                /** @example string */
-                                display_name: string;
-                                /** @enum {string} */
-                                protocol: "enterprise_saml" | "enterprise_oidc" | "enterprise_custom";
-                                /** @example string */
-                                logo_reference: string;
-                                /** @example string */
-                                setup_guide_slug: string;
-                                required_fields: {
-                                    /** @example string */
-                                    key: string;
-                                    /** @example string */
-                                    label: string;
-                                    is_required: boolean;
-                                    is_secret: boolean;
-                                }[];
-                            }[];
-                        };
-                    };
-                };
-            };
-            /** @description Validation error or bad request */
-            400: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description Unauthorized - missing or invalid API key */
-            401: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description The resource does not exist in the scope of the request */
-            404: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description Internal server error */
-            500: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiServerErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-        };
-    };
-    configureSsoPortalConnection: {
-        parameters: {
-            query?: never;
-            header?: {
-                /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
-                "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": {
-                    /** @constant */
-                    protocol: "enterprise_saml";
-                    /** @example string */
-                    name?: string;
-                    configuration: {
-                        /** @example string */
-                        name: string;
-                        /** @example string */
-                        description?: string;
-                        domain_routing: {
-                            enabled: boolean;
-                            domains: string[];
-                            allow_external_domains: boolean;
-                        };
-                        jit_provisioning: {
-                            enabled: boolean;
-                            update_on_login: boolean;
-                            attribute_mappings: {
-                                /** @example string */
-                                first_name: string;
-                                /** @example string */
-                                last_name: string;
-                                /** @example string */
-                                email: string;
-                                /** @example string */
-                                picture?: string;
-                                custom_attributes: {
-                                    [key: string]: string;
-                                };
-                            };
-                        };
-                        role_mapping: {
-                            enabled: boolean;
-                            role_mappings: {
-                                [key: string]: string;
-                            };
-                            default_role: string | null;
-                            /** @example string */
-                            role_attribute: string;
-                        };
-                        session_timeout: number | null;
-                        require_reauth_for_sensitive_operations: boolean;
-                        saml_config: {
-                            /** @example string */
-                            entity_id: string;
-                            /**
-                             * Format: uri
-                             * @example https://example.com
-                             */
-                            sso_url: string;
-                            /**
-                             * Format: uri
-                             * @example https://example.com
-                             */
-                            slo_url?: string;
-                            /** @example string */
-                            certificate: string;
-                            /** @enum {string} */
-                            request_binding: "HTTP-POST" | "HTTP-Redirect";
-                            /** @enum {string} */
-                            response_binding: "HTTP-POST" | "HTTP-Redirect";
-                            sign_requests: boolean;
-                            require_encrypted_assertions: boolean;
-                            /** @enum {string} */
-                            name_id_format: "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress" | "urn:oasis:names:tc:SAML:2.0:nameid-format:persistent" | "urn:oasis:names:tc:SAML:2.0:nameid-format:transient" | "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified";
-                        };
-                    };
-                } | {
-                    /** @constant */
-                    protocol: "enterprise_oidc";
-                    /** @example string */
-                    name?: string;
-                    configuration: {
-                        /** @example string */
-                        name: string;
-                        /** @example string */
-                        description?: string;
-                        domain_routing: {
-                            enabled: boolean;
-                            domains: string[];
-                            allow_external_domains: boolean;
-                        };
-                        jit_provisioning: {
-                            enabled: boolean;
-                            update_on_login: boolean;
-                            attribute_mappings: {
-                                /** @example string */
-                                first_name: string;
-                                /** @example string */
-                                last_name: string;
-                                /** @example string */
-                                email: string;
-                                /** @example string */
-                                picture?: string;
-                                custom_attributes: {
-                                    [key: string]: string;
-                                };
-                            };
-                        };
-                        role_mapping: {
-                            enabled: boolean;
-                            role_mappings: {
-                                [key: string]: string;
-                            };
-                            default_role: string | null;
-                            /** @example string */
-                            role_attribute: string;
-                        };
-                        session_timeout: number | null;
-                        require_reauth_for_sensitive_operations: boolean;
-                        oidc_config: {
-                            /**
-                             * Format: uri
-                             * @example https://example.com
-                             */
-                            issuer: string;
-                            /** @example string */
-                            client_id: string;
-                            /** @example string */
-                            client_secret: string;
-                            scopes: string[];
-                            /**
-                             * Format: uri
-                             * @example https://example.com
-                             */
-                            discovery_endpoint?: string;
-                            use_pkce: boolean;
-                            additional_parameters: {
-                                [key: string]: string;
-                            };
-                        };
-                    };
-                } | {
-                    /** @constant */
-                    protocol: "enterprise_custom";
-                    /** @example string */
-                    name?: string;
-                    configuration: {
-                        /** @example string */
-                        name: string;
-                        /** @example string */
-                        description?: string;
-                        domain_routing: {
-                            enabled: boolean;
-                            domains: string[];
-                            allow_external_domains: boolean;
-                        };
-                        jit_provisioning: {
-                            enabled: boolean;
-                            update_on_login: boolean;
-                            attribute_mappings: {
-                                /** @example string */
-                                first_name: string;
-                                /** @example string */
-                                last_name: string;
-                                /** @example string */
-                                email: string;
-                                /** @example string */
-                                picture?: string;
-                                custom_attributes: {
-                                    [key: string]: string;
-                                };
-                            };
-                        };
-                        role_mapping: {
-                            enabled: boolean;
-                            role_mappings: {
-                                [key: string]: string;
-                            };
-                            default_role: string | null;
-                            /** @example string */
-                            role_attribute: string;
-                        };
-                        session_timeout: number | null;
-                        require_reauth_for_sensitive_operations: boolean;
-                        custom_config: {
-                            /**
-                             * Format: uri
-                             * @example https://example.com
-                             */
-                            auth_endpoint: string;
-                            /**
-                             * Format: uri
-                             * @example https://example.com
-                             */
-                            token_endpoint: string;
-                            /**
-                             * Format: uri
-                             * @example https://example.com
-                             */
-                            userinfo_endpoint: string;
-                            /** @example string */
-                            client_secret?: string;
-                            /** @enum {string} */
-                            auth_method: "oauth2" | "bearer" | "basic" | "custom";
-                            custom_headers: {
-                                [key: string]: string;
-                            };
-                            custom_parameters: {
-                                [key: string]: string;
-                            };
-                            /** @enum {string} */
-                            response_format: "json" | "xml" | "form";
-                        };
-                    };
-                };
-            };
-        };
-        responses: {
-            /** @description Successful response */
-            201: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response?: components["schemas"]["ApiSuccessResponseMeta"];
-                        data?: {
-                            connection_id: string;
-                            conjoin_account_id: string;
-                            conjoin_project_id: string;
-                            app_id: string;
-                            live_mode: boolean;
-                            organization_id: string | null;
-                            identity: string;
-                            /** @enum {string} */
-                            status: "pending" | "active" | "disabled";
-                            name: string | null;
-                            is_enterprise: boolean;
-                            configuration: {
-                                [key: string]: unknown;
-                            };
-                            date_created: string;
-                            date_updated: string;
-                        };
-                    };
-                };
-            };
-            /** @description Validation error or bad request */
-            400: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description Unauthorized - missing or invalid API key */
-            401: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description The resource does not exist in the scope of the request */
-            404: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description Internal server error */
-            500: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiServerErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-        };
-    };
-    updateSsoPortalConnection: {
-        parameters: {
-            query?: never;
-            header?: {
-                /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
-                "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
-            };
-            path: {
-                connection_id: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": {
-                    /** @constant */
-                    protocol: "enterprise_saml";
-                    name?: string | null;
-                    configuration: {
-                        /** @example string */
-                        name: string;
-                        /** @example string */
-                        description?: string;
-                        domain_routing: {
-                            enabled: boolean;
-                            domains: string[];
-                            allow_external_domains: boolean;
-                        };
-                        jit_provisioning: {
-                            enabled: boolean;
-                            update_on_login: boolean;
-                            attribute_mappings: {
-                                /** @example string */
-                                first_name: string;
-                                /** @example string */
-                                last_name: string;
-                                /** @example string */
-                                email: string;
-                                /** @example string */
-                                picture?: string;
-                                custom_attributes: {
-                                    [key: string]: string;
-                                };
-                            };
-                        };
-                        role_mapping: {
-                            enabled: boolean;
-                            role_mappings: {
-                                [key: string]: string;
-                            };
-                            default_role: string | null;
-                            /** @example string */
-                            role_attribute: string;
-                        };
-                        session_timeout: number | null;
-                        require_reauth_for_sensitive_operations: boolean;
-                        saml_config: {
-                            /** @example string */
-                            entity_id: string;
-                            /**
-                             * Format: uri
-                             * @example https://example.com
-                             */
-                            sso_url: string;
-                            /**
-                             * Format: uri
-                             * @example https://example.com
-                             */
-                            slo_url?: string;
-                            /** @example string */
-                            certificate: string;
-                            /** @enum {string} */
-                            request_binding: "HTTP-POST" | "HTTP-Redirect";
-                            /** @enum {string} */
-                            response_binding: "HTTP-POST" | "HTTP-Redirect";
-                            sign_requests: boolean;
-                            require_encrypted_assertions: boolean;
-                            /** @enum {string} */
-                            name_id_format: "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress" | "urn:oasis:names:tc:SAML:2.0:nameid-format:persistent" | "urn:oasis:names:tc:SAML:2.0:nameid-format:transient" | "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified";
-                        };
-                    };
-                } | {
-                    /** @constant */
-                    protocol: "enterprise_oidc";
-                    name?: string | null;
-                    configuration: {
-                        /** @example string */
-                        name: string;
-                        /** @example string */
-                        description?: string;
-                        domain_routing: {
-                            enabled: boolean;
-                            domains: string[];
-                            allow_external_domains: boolean;
-                        };
-                        jit_provisioning: {
-                            enabled: boolean;
-                            update_on_login: boolean;
-                            attribute_mappings: {
-                                /** @example string */
-                                first_name: string;
-                                /** @example string */
-                                last_name: string;
-                                /** @example string */
-                                email: string;
-                                /** @example string */
-                                picture?: string;
-                                custom_attributes: {
-                                    [key: string]: string;
-                                };
-                            };
-                        };
-                        role_mapping: {
-                            enabled: boolean;
-                            role_mappings: {
-                                [key: string]: string;
-                            };
-                            default_role: string | null;
-                            /** @example string */
-                            role_attribute: string;
-                        };
-                        session_timeout: number | null;
-                        require_reauth_for_sensitive_operations: boolean;
-                        oidc_config: {
-                            /**
-                             * Format: uri
-                             * @example https://example.com
-                             */
-                            issuer: string;
-                            /** @example string */
-                            client_id: string;
-                            /** @example string */
-                            client_secret: string;
-                            scopes: string[];
-                            /**
-                             * Format: uri
-                             * @example https://example.com
-                             */
-                            discovery_endpoint?: string;
-                            use_pkce: boolean;
-                            additional_parameters: {
-                                [key: string]: string;
-                            };
-                        };
-                    };
-                } | {
-                    /** @constant */
-                    protocol: "enterprise_custom";
-                    name?: string | null;
-                    configuration: {
-                        /** @example string */
-                        name: string;
-                        /** @example string */
-                        description?: string;
-                        domain_routing: {
-                            enabled: boolean;
-                            domains: string[];
-                            allow_external_domains: boolean;
-                        };
-                        jit_provisioning: {
-                            enabled: boolean;
-                            update_on_login: boolean;
-                            attribute_mappings: {
-                                /** @example string */
-                                first_name: string;
-                                /** @example string */
-                                last_name: string;
-                                /** @example string */
-                                email: string;
-                                /** @example string */
-                                picture?: string;
-                                custom_attributes: {
-                                    [key: string]: string;
-                                };
-                            };
-                        };
-                        role_mapping: {
-                            enabled: boolean;
-                            role_mappings: {
-                                [key: string]: string;
-                            };
-                            default_role: string | null;
-                            /** @example string */
-                            role_attribute: string;
-                        };
-                        session_timeout: number | null;
-                        require_reauth_for_sensitive_operations: boolean;
-                        custom_config: {
-                            /**
-                             * Format: uri
-                             * @example https://example.com
-                             */
-                            auth_endpoint: string;
-                            /**
-                             * Format: uri
-                             * @example https://example.com
-                             */
-                            token_endpoint: string;
-                            /**
-                             * Format: uri
-                             * @example https://example.com
-                             */
-                            userinfo_endpoint: string;
-                            /** @example string */
-                            client_secret?: string;
-                            /** @enum {string} */
-                            auth_method: "oauth2" | "bearer" | "basic" | "custom";
-                            custom_headers: {
-                                [key: string]: string;
-                            };
-                            custom_parameters: {
-                                [key: string]: string;
-                            };
-                            /** @enum {string} */
-                            response_format: "json" | "xml" | "form";
-                        };
-                    };
-                } | {
-                    protocol?: unknown;
-                    name: string | null;
-                };
-            };
-        };
-        responses: {
-            /** @description Successful response */
-            200: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response?: components["schemas"]["ApiSuccessResponseMeta"];
-                        data?: {
-                            connection_id: string;
-                            conjoin_account_id: string;
-                            conjoin_project_id: string;
-                            app_id: string;
-                            live_mode: boolean;
-                            organization_id: string | null;
-                            identity: string;
-                            /** @enum {string} */
-                            status: "pending" | "active" | "disabled";
-                            name: string | null;
-                            is_enterprise: boolean;
-                            configuration: {
-                                [key: string]: unknown;
-                            };
-                            date_created: string;
-                            date_updated: string;
-                        };
-                    };
-                };
-            };
-            /** @description Validation error or bad request */
-            400: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description Unauthorized - missing or invalid API key */
-            401: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description The resource does not exist in the scope of the request */
-            404: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description Internal server error */
-            500: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiServerErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-        };
-    };
-    importSsoPortalMetadata: {
-        parameters: {
-            query?: never;
-            header?: {
-                /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
-                "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
-            };
-            path: {
-                connection_id: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "multipart/form-data": {
-                    /** @constant */
-                    source: "url";
-                    /**
-                     * Format: uri
-                     * @example https://example.com
-                     */
-                    metadata_url: string;
-                } | {
-                    /** @constant */
-                    source: "manual";
-                    saml_config: {
-                        /** @example string */
-                        entity_id: string;
-                        /**
-                         * Format: uri
-                         * @example https://example.com
-                         */
-                        sso_url: string;
-                        /**
-                         * Format: uri
-                         * @example https://example.com
-                         */
-                        slo_url?: string;
-                        /** @example string */
-                        certificate: string;
-                        /** @enum {string} */
-                        request_binding: "HTTP-POST" | "HTTP-Redirect";
-                        /** @enum {string} */
-                        response_binding: "HTTP-POST" | "HTTP-Redirect";
-                        sign_requests: boolean;
-                        require_encrypted_assertions: boolean;
-                        /** @enum {string} */
-                        name_id_format: "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress" | "urn:oasis:names:tc:SAML:2.0:nameid-format:persistent" | "urn:oasis:names:tc:SAML:2.0:nameid-format:transient" | "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified";
-                    };
-                } | {
-                    /** @constant */
-                    source: "xml";
-                };
-            };
-        };
-        responses: {
-            /** @description Successful response */
-            200: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response?: components["schemas"]["ApiSuccessResponseMeta"];
-                        data?: {
-                            connection_id: string;
-                            conjoin_account_id: string;
-                            conjoin_project_id: string;
-                            app_id: string;
-                            live_mode: boolean;
-                            organization_id: string | null;
-                            identity: string;
-                            /** @enum {string} */
-                            status: "pending" | "active" | "disabled";
-                            name: string | null;
-                            is_enterprise: boolean;
-                            configuration: {
-                                [key: string]: unknown;
-                            };
-                            date_created: string;
-                            date_updated: string;
-                        };
-                    };
-                };
-            };
-            /** @description Validation error or bad request */
-            400: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description Unauthorized - missing or invalid API key */
-            401: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description The resource does not exist in the scope of the request */
-            404: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description Internal server error */
-            500: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiServerErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-        };
-    };
-    readSsoPortalProviderConfig: {
-        parameters: {
-            query?: never;
-            header?: {
-                /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
-                "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
-            };
-            path: {
-                connection_id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful response */
-            200: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response?: components["schemas"]["ApiSuccessResponseMeta"];
-                        data?: {
-                            /** @constant */
-                            protocol: "enterprise_saml";
-                            acs_url: string;
-                            sp_entity_id: string;
-                            sls_url: string;
-                            sp_metadata_xml: string;
-                            signing_keys: {
-                                certificate_id: string;
-                                /** @enum {string} */
-                                status: "active" | "pending" | "previous";
-                                certificate_pem: string;
-                                fingerprint: string;
-                                expires_at: string;
-                                date_created: string;
-                            }[];
-                        } | {
-                            /** @enum {string} */
-                            protocol: "enterprise_oidc" | "enterprise_custom";
-                            redirect_uri_guidance: string;
-                        };
-                    };
-                };
-            };
-            /** @description Validation error or bad request */
-            400: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description Unauthorized - missing or invalid API key */
-            401: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description The resource does not exist in the scope of the request */
-            404: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description Internal server error */
-            500: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiServerErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-        };
-    };
-    verifySsoPortalDomain: {
-        parameters: {
-            query?: never;
-            header?: {
-                /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
-                "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": {
-                    /** @example string */
-                    domain: string;
-                };
-            };
-        };
-        responses: {
-            /** @description Successful response */
-            201: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response?: components["schemas"]["ApiSuccessResponseMeta"];
-                        data?: {
-                            organization_domain_id: string;
-                            conjoin_account_id: string;
-                            conjoin_project_id: string;
-                            app_id: string;
-                            live_mode: boolean;
-                            organization_id: string;
-                            domain: string;
-                            verification_hostname: string;
-                            verification_token: string;
-                            verification_record_value: string;
-                            verification: {
-                                /** @enum {string} */
-                                status: "verified" | "unverified" | "pending" | "expired";
-                                verified_at: string | null;
-                                expires_at: string | null;
-                            };
-                            last_checked_at: string | null;
-                            recheck: {
-                                grace_started_at: string;
-                                failure_warned_at: string | null;
-                                reminder_sent_at: string | null;
-                            } | null;
-                            date_created: string;
-                            date_updated: string;
-                        };
-                    };
-                };
-            };
-            /** @description Validation error or bad request */
-            400: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description Unauthorized - missing or invalid API key */
-            401: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description The resource does not exist in the scope of the request */
-            404: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description Internal server error */
-            500: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiServerErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-        };
-    };
-    startSsoPortalTest: {
-        parameters: {
-            query?: never;
-            header?: {
-                /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
-                "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": {
-                    /** @example string */
-                    connection_id: string;
-                };
-            };
-        };
-        responses: {
-            /** @description Successful response */
-            200: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response?: components["schemas"]["ApiSuccessResponseMeta"];
-                        data?: {
-                            redirect_url: string;
                         };
                     };
                 };
@@ -5323,106 +5327,6 @@ export interface operations {
             };
         };
     };
-    readSdkSettings: {
-        parameters: {
-            query?: never;
-            header?: {
-                /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
-                "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful response */
-            200: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response?: components["schemas"]["ApiSuccessResponseMeta"];
-                        data?: {
-                            project_id: string;
-                            /** @enum {string} */
-                            environment: "live" | "test";
-                            api_url: string;
-                            branding: {
-                                [key: string]: unknown;
-                            } | null;
-                            auth: {
-                                domain: string;
-                                sign_in_methods: string[];
-                                mfa_enabled: boolean;
-                                sign_up_enabled: boolean;
-                            } | null;
-                            relay: {
-                                url: string;
-                            };
-                        };
-                    };
-                };
-            };
-            /** @description Validation error or bad request */
-            400: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description Unauthorized - missing or invalid API key */
-            401: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description The resource does not exist in the scope of the request */
-            404: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description Internal server error */
-            500: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiServerErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-        };
-    };
     readPublicProjectBranding: {
         parameters: {
             query?: {
@@ -5485,6 +5389,106 @@ export interface operations {
                             } | null;
                             date_created: string;
                             date_updated?: string | null;
+                        };
+                    };
+                };
+            };
+            /** @description Validation error or bad request */
+            400: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Unauthorized - missing or invalid API key */
+            401: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description The resource does not exist in the scope of the request */
+            404: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiServerErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+        };
+    };
+    readSdkSettings: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
+                "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful response */
+            200: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response?: components["schemas"]["ApiSuccessResponseMeta"];
+                        data?: {
+                            project_id: string;
+                            /** @enum {string} */
+                            environment: "live" | "test";
+                            api_url: string;
+                            branding: {
+                                [key: string]: unknown;
+                            } | null;
+                            auth: {
+                                domain: string;
+                                sign_in_methods: string[];
+                                mfa_enabled: boolean;
+                                sign_up_enabled: boolean;
+                            } | null;
+                            relay: {
+                                url: string;
+                            };
                         };
                     };
                 };

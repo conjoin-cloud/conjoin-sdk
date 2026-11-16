@@ -201,6 +201,7 @@ export type AuthTransport = {
   finishFlow: (api: ConjoinAuthApi, flow: AuthFlowState) => Promise<AuthSessionGrant | null>
   endSession: (api: ConjoinAuthApi) => Promise<void>
   sessionCallOptions: (method: HttpMethod) => ConjoinCallOptions
+  readSessionToken: () => string | undefined
   flowCallOptions: (flow: AuthFlowState) => ConjoinCallOptions
   createFlowProof: () => Promise<AuthFlowProof>
   saveRedirectFlow: (flow: AuthFlowState) => void

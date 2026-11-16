@@ -15,7 +15,7 @@ type TestByokConnectionData = NonNullable<operations['testAiByokConnection']['re
 export function createAiBYOKs(client: ConjoinClient) {
   return {
     createByokConfig: (data: CreateByokConfigBody, options?: ConjoinCallOptions) =>
-      client.fetch<CreateByokConfigData>('ai/byok/', { ...options, method: 'POST', body: data }),
+      client.fetch<CreateByokConfigData>('ai/byok/', { ...options, method: 'POST', body: data, acceptsIdempotencyKey: true }),
 
     listByokConfigs: (query?: ListByokConfigsQuery, options?: ConjoinCallOptions) =>
       client.fetchList<ListByokConfigsData>('ai/byok/', { ...options, method: 'GET', query: query as Record<string, unknown> | undefined }),
@@ -30,6 +30,6 @@ export function createAiBYOKs(client: ConjoinClient) {
       client.fetch<DeleteByokConfigData>(`ai/byok/${encodePathParam(byokConfigId)}`, { ...options, method: 'DELETE' }),
 
     testByokConnection: (byokConfigId: string, options?: ConjoinCallOptions) =>
-      client.fetch<TestByokConnectionData>(`ai/byok/${encodePathParam(byokConfigId)}/test`, { ...options, method: 'POST' }),
+      client.fetch<TestByokConnectionData>(`ai/byok/${encodePathParam(byokConfigId)}/test`, { ...options, method: 'POST', acceptsIdempotencyKey: true }),
   }
 }

@@ -10,7 +10,7 @@ export type ConjoinMembership = Awaited<ReturnType<ConjoinAuthApi['selves']['lis
 const NO_MEMBERSHIPS: ConjoinMembership[] = []
 
 const readMemberships = (authApi: ConjoinAuthApi, transport: AuthTransport): Promise<ConjoinMembership[]> =>
-  collectPages(authApi.selves.listOrganizations({}, transport.sessionCallOptions('GET')))
+  collectPages(authApi.selves.listOrganizations({}, transport.readSessionToken(), transport.sessionCallOptions('GET')))
 
 export function useOrg() {
   const authState = useAuthState()

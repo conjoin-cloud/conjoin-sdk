@@ -1,3 +1,6 @@
+export const isRecord = (value: unknown): value is Record<string, unknown> =>
+  Boolean(value) && typeof value === 'object' && !Array.isArray(value)
+
 export function toPascalCase(str: string): string {
   return str
     .split(/[\s\-_]+/)

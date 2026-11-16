@@ -73,6 +73,8 @@ export function createWebTransport(): AuthTransport {
       return method === 'GET' ? {} : { headers: readCsrfHeaders() }
     },
 
+    readSessionToken: () => undefined,
+
     flowCallOptions(flow: AuthFlowState): ConjoinCallOptions {
       return {
         headers: {

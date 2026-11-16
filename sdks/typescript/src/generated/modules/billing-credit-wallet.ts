@@ -19,7 +19,7 @@ export function createBillingCreditWallets(client: ConjoinClient) {
       client.fetchList<ListData>('billing/credit-wallets/', { ...options, method: 'GET', query: query as Record<string, unknown> | undefined, scopes: ['billingEntityId'] }),
 
     create: (data: CreateBody, options?: ConjoinCallOptions) =>
-      client.fetch<CreateData>('billing/credit-wallets/', { ...options, method: 'POST', body: data, scopes: ['billingEntityId'] }),
+      client.fetch<CreateData>('billing/credit-wallets/', { ...options, method: 'POST', body: data, scopes: ['billingEntityId'], acceptsIdempotencyKey: true }),
 
     listCount: (query?: ListCountQuery, options?: ConjoinCallOptions) =>
       client.fetch<ListCountData>('billing/credit-wallets/count', { ...options, method: 'GET', query: query as Record<string, unknown> | undefined, scopes: ['billingEntityId'] }),
@@ -28,6 +28,6 @@ export function createBillingCreditWallets(client: ConjoinClient) {
       client.fetch<UpdateData>(`billing/credit-wallets/${encodePathParam(creditWalletId)}`, { ...options, method: 'PATCH', body: data, scopes: ['billingEntityId'] }),
 
     grantCredits: (creditWalletId: string, data: GrantCreditsBody, options?: ConjoinCallOptions) =>
-      client.fetch<GrantCreditsData>(`billing/credit-wallets/${encodePathParam(creditWalletId)}/grant`, { ...options, method: 'POST', body: data, scopes: ['billingEntityId'] }),
+      client.fetch<GrantCreditsData>(`billing/credit-wallets/${encodePathParam(creditWalletId)}/grant`, { ...options, method: 'POST', body: data, scopes: ['billingEntityId'], acceptsIdempotencyKey: true }),
   }
 }

@@ -21,7 +21,7 @@ export function createBillingProducts(client: ConjoinClient) {
       client.fetchList<ListData>('billing/products/', { ...options, method: 'GET', query: query as Record<string, unknown> | undefined, scopes: ['billingEntityId'] }),
 
     create: (data: CreateBody, options?: ConjoinCallOptions) =>
-      client.fetch<CreateData>('billing/products/', { ...options, method: 'POST', body: data, scopes: ['billingEntityId'] }),
+      client.fetch<CreateData>('billing/products/', { ...options, method: 'POST', body: data, scopes: ['billingEntityId'], acceptsIdempotencyKey: true }),
 
     listCount: (query?: ListCountQuery, options?: ConjoinCallOptions) =>
       client.fetch<ListCountData>('billing/products/count', { ...options, method: 'GET', query: query as Record<string, unknown> | undefined, scopes: ['billingEntityId'] }),
@@ -36,9 +36,9 @@ export function createBillingProducts(client: ConjoinClient) {
       client.fetchJson<DeleteResponse>(`billing/products/${encodePathParam(productId)}`, { ...options, method: 'DELETE', scopes: ['billingEntityId'] }),
 
     archive: (productId: string, options?: ConjoinCallOptions) =>
-      client.fetch<ArchiveData>(`billing/products/${encodePathParam(productId)}/archive`, { ...options, method: 'POST', scopes: ['billingEntityId'] }),
+      client.fetch<ArchiveData>(`billing/products/${encodePathParam(productId)}/archive`, { ...options, method: 'POST', scopes: ['billingEntityId'], acceptsIdempotencyKey: true }),
 
     restore: (productId: string, options?: ConjoinCallOptions) =>
-      client.fetch<RestoreData>(`billing/products/${encodePathParam(productId)}/restore`, { ...options, method: 'POST', scopes: ['billingEntityId'] }),
+      client.fetch<RestoreData>(`billing/products/${encodePathParam(productId)}/restore`, { ...options, method: 'POST', scopes: ['billingEntityId'], acceptsIdempotencyKey: true }),
   }
 }

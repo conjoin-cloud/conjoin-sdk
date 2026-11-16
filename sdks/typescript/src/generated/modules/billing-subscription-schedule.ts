@@ -18,7 +18,7 @@ export function createBillingSubscriptionSchedules(client: ConjoinClient) {
       client.fetchList<ListData>(`billing/subscriptions/${encodePathParam(subscriptionId)}/schedules`, { ...options, method: 'GET', query: query as Record<string, unknown> | undefined, scopes: ['billingEntityId'] }),
 
     create: (subscriptionId: string, data: CreateBody, options?: ConjoinCallOptions) =>
-      client.fetch<CreateData>(`billing/subscriptions/${encodePathParam(subscriptionId)}/schedules`, { ...options, method: 'POST', body: data, scopes: ['billingEntityId'] }),
+      client.fetch<CreateData>(`billing/subscriptions/${encodePathParam(subscriptionId)}/schedules`, { ...options, method: 'POST', body: data, scopes: ['billingEntityId'], acceptsIdempotencyKey: true }),
 
     listCount: (subscriptionId: string, query?: ListCountQuery, options?: ConjoinCallOptions) =>
       client.fetch<ListCountData>(`billing/subscriptions/${encodePathParam(subscriptionId)}/schedules/count`, { ...options, method: 'GET', query: query as Record<string, unknown> | undefined, scopes: ['billingEntityId'] }),
@@ -27,9 +27,9 @@ export function createBillingSubscriptionSchedules(client: ConjoinClient) {
       client.fetch<GetData>(`billing/subscription-schedules/${encodePathParam(subscriptionScheduleId)}`, { ...options, method: 'GET', scopes: ['billingEntityId'] }),
 
     cancel: (subscriptionScheduleId: string, options?: ConjoinCallOptions) =>
-      client.fetch<CancelData>(`billing/subscription-schedules/${encodePathParam(subscriptionScheduleId)}/cancel`, { ...options, method: 'POST', scopes: ['billingEntityId'] }),
+      client.fetch<CancelData>(`billing/subscription-schedules/${encodePathParam(subscriptionScheduleId)}/cancel`, { ...options, method: 'POST', scopes: ['billingEntityId'], acceptsIdempotencyKey: true }),
 
     release: (subscriptionScheduleId: string, options?: ConjoinCallOptions) =>
-      client.fetch<ReleaseData>(`billing/subscription-schedules/${encodePathParam(subscriptionScheduleId)}/release`, { ...options, method: 'POST', scopes: ['billingEntityId'] }),
+      client.fetch<ReleaseData>(`billing/subscription-schedules/${encodePathParam(subscriptionScheduleId)}/release`, { ...options, method: 'POST', scopes: ['billingEntityId'], acceptsIdempotencyKey: true }),
   }
 }

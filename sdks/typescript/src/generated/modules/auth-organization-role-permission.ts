@@ -20,9 +20,9 @@ export function createAuthOrganizationRolePermissions(client: ConjoinClient) {
       client.fetch<ListOrgRolePermissionsCountData>(`auth/roles/${encodePathParam(roleId)}/permissions/count`, { ...options, method: 'GET', query: query as Record<string, unknown> | undefined, scopes: ['authAppId'] }),
 
     assignOrgRolePermission: (organizationId: string, roleId: string, data: AssignOrgRolePermissionBody, options?: ConjoinCallOptions) =>
-      client.fetch<AssignOrgRolePermissionData>(`auth/organizations/${encodePathParam(organizationId)}/roles/${encodePathParam(roleId)}/assign-permissions`, { ...options, method: 'POST', body: data, scopes: ['authAppId'] }),
+      client.fetch<AssignOrgRolePermissionData>(`auth/organizations/${encodePathParam(organizationId)}/roles/${encodePathParam(roleId)}/assign-permissions`, { ...options, method: 'POST', body: data, scopes: ['authAppId'], acceptsIdempotencyKey: true }),
 
     removeRolePermission: (organizationId: string, roleId: string, data: RemoveRolePermissionBody, options?: ConjoinCallOptions) =>
-      client.fetch<RemoveRolePermissionData>(`auth/organizations/${encodePathParam(organizationId)}/roles/${encodePathParam(roleId)}/remove-permissions`, { ...options, method: 'POST', body: data, scopes: ['authAppId'] }),
+      client.fetch<RemoveRolePermissionData>(`auth/organizations/${encodePathParam(organizationId)}/roles/${encodePathParam(roleId)}/remove-permissions`, { ...options, method: 'POST', body: data, scopes: ['authAppId'], acceptsIdempotencyKey: true }),
   }
 }
