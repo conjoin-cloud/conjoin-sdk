@@ -1,28 +1,35 @@
-import type { ConjoinClient } from '../../core/types'
+import { encodePathParam } from '../../core/path'
+import type { ConjoinCallOptions, ConjoinClient } from '../../core/types'
 import type { operations } from '../api-types'
 
-type CreateData = NonNullable<operations['createPublishableKey']['responses']['200']['content']['application/json']['data']>
 type ListData = NonNullable<operations['listPublishableKeys']['responses']['200']['content']['application/json']['data']>[number]
+type ListQuery = NonNullable<operations['listPublishableKeys']['parameters']['query']>
+type CreateData = NonNullable<operations['createPublishableKey']['responses']['201']['content']['application/json']['data']>
+type ListCountData = NonNullable<operations['listPublishableKeysCount']['responses']['200']['content']['application/json']['data']>
+type ListCountQuery = NonNullable<operations['listPublishableKeysCount']['parameters']['query']>
 type RotateData = NonNullable<operations['rotatePublishableKey']['responses']['200']['content']['application/json']['data']>
-type UpdateDomainsBody = operations['updatePublishableKeyDomains']['requestBody']['content']['application/json']
-type UpdateDomainsData = NonNullable<operations['updatePublishableKeyDomains']['responses']['200']['content']['application/json']['data']>
+type UpdateBody = NonNullable<operations['updatePublishableKey']['requestBody']>['content']['application/json']
+type UpdateData = NonNullable<operations['updatePublishableKey']['responses']['200']['content']['application/json']['data']>
 type RevokeData = NonNullable<operations['revokePublishableKey']['responses']['200']['content']['application/json']['data']>
 
 export function createCloudPublishableKeys(client: ConjoinClient) {
   return {
-    create: () =>
-      client.fetch<CreateData>('cloud/publishable-key/new', { method: 'POST' }),
+    list: (query?: ListQuery, options?: ConjoinCallOptions) =>
+      client.fetchList<ListData>('cloud/publishable-keys/', { ...options, method: 'GET', query: query as Record<string, unknown> | undefined }),
 
-    list: () =>
-      client.fetchList<ListData>('cloud/publishable-key/'),
+    create: (options?: ConjoinCallOptions) =>
+      client.fetch<CreateData>('cloud/publishable-keys/', { ...options, method: 'POST', acceptsIdempotencyKey: true }),
 
-    rotate: (publishableKeyId: string) =>
-      client.fetch<RotateData>(`cloud/publishable-key/${publishableKeyId}/rotate`, { method: 'POST' }),
+    listCount: (query?: ListCountQuery, options?: ConjoinCallOptions) =>
+      client.fetch<ListCountData>('cloud/publishable-keys/count', { ...options, method: 'GET', query: query as Record<string, unknown> | undefined }),
 
-    updateDomains: (publishableKeyId: string, data: UpdateDomainsBody) =>
-      client.fetch<UpdateDomainsData>(`cloud/publishable-key/${publishableKeyId}/domains`, { method: 'PATCH', body: data }),
+    rotate: (publishableKeyId: string, options?: ConjoinCallOptions) =>
+      client.fetch<RotateData>(`cloud/publishable-keys/${encodePathParam(publishableKeyId)}/rotate`, { ...options, method: 'POST', acceptsIdempotencyKey: true }),
 
-    revoke: (publishableKeyId: string) =>
-      client.fetch<RevokeData>(`cloud/publishable-key/${publishableKeyId}`, { method: 'DELETE' }),
+    update: (publishableKeyId: string, data: UpdateBody, options?: ConjoinCallOptions) =>
+      client.fetch<UpdateData>(`cloud/publishable-keys/${encodePathParam(publishableKeyId)}`, { ...options, method: 'PATCH', body: data }),
+
+    revoke: (publishableKeyId: string, options?: ConjoinCallOptions) =>
+      client.fetch<RevokeData>(`cloud/publishable-keys/${encodePathParam(publishableKeyId)}`, { ...options, method: 'DELETE' }),
   }
 }

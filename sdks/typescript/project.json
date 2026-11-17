@@ -1,12 +1,14 @@
 {
   "name": "sdk-typescript",
   "tags": ["typescript"],
+  "implicitDependencies": ["spec"],
   "targets": {
     "generate": {
       "executor": "nx:run-commands",
       "options": {
         "commands": [
           "pnpm openapi-typescript ../../spec/openapi.json -o src/generated/api-types.ts",
+          "pnpm openapi-typescript ../../spec/openapi-frontend.json -o src/generated/frontend-api-types.ts",
           "pnpm tsx codegen/generate.ts"
         ],
         "parallel": false,

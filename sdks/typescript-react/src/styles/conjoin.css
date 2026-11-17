@@ -576,6 +576,7 @@
     }
 
     [data-conjoin-prompt] {
+      display: block;
       text-align: center;
       font-size: calc(var(--conjoin-font-size-base) * 0.8125);
       color: var(--conjoin-subtle-text);

@@ -1,3 +1,7 @@
+import { ConjoinResponseError } from '../core/errors'
+
+const MAX_PENDING_EVENT_CHARACTERS = 4_194_304
+
 export type ServerSentEvent = {
   event?: string
   data: string
@@ -13,10 +17,14 @@ export async function* iterSSEMessages(body: ReadableStream<Uint8Array>): AsyncG
       const { done, value } = await reader.read()
       if (done) break
 
-      buffer += decoder.decode(value, { stream: true })
+      buffer += decoder.decode(value, { stream: true }).replace(/\r\n/g, '\n')
 
       const chunks = buffer.split('\n\n')
       buffer = chunks.splice(-1)[0]
+
+      if (buffer.length > MAX_PENDING_EVENT_CHARACTERS) {
+        throw new ConjoinResponseError('The stream sent an event larger than the SDK accepts', { status: 200 })
+      }
 
       for (const chunk of chunks) {
         const event = parseSSEChunk(chunk)

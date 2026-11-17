@@ -1,38 +1,37 @@
-import { ConjoinError } from '../core/errors'
-import { CONJOIN_REQUEST_ID_HEADER } from '../core/request-tracing'
-import type { ConjoinClient } from '../core/types'
+import { buildApiError } from '../core/error-response'
+import { ConjoinApiError, ConjoinResponseError } from '../core/errors'
+import { getConjoinRequestIdFromHeaders } from '../core/request-tracing'
+import type { ConjoinCallOptions, ConjoinClient } from '../core/types'
+import type { operations } from '../generated/api-types'
+import { createAiInferences } from '../generated/modules/ai-inference'
 import { iterSSEMessages } from './sse'
 import type { ChatCompletionChunk, ChatCompletionParams, ChatCompletionResponse } from './types'
 
-export type ChatStreamOptions = {
-  signal?: AbortSignal
-}
+type ChatCompletionHeaderName = keyof NonNullable<operations['createAiChatCompletion']['parameters']['header']> & string
+type ChatCompletionDeclaresIdempotencyKey = 'idempotency-key' extends Lowercase<ChatCompletionHeaderName> ? true : false
+
+const CHAT_COMPLETIONS_PATH = 'ai/inference/chat/completions'
+const CHAT_COMPLETION_DECLARES_IDEMPOTENCY_KEY: ChatCompletionDeclaresIdempotencyKey = true
+const MAX_REPORTED_CHUNK_CHARACTERS = 200
+
+export type ChatStreamOptions = Pick<ConjoinCallOptions, 'signal' | 'idempotencyKey' | 'conjoinRequestId'>
 
 export type ChatStream = AsyncIterable<ChatCompletionChunk> & {
   controller: AbortController
 }
 
 export function createAiChat(client: ConjoinClient) {
+  const inferences = createAiInferences(client)
+
   return {
-    async complete(
-      params: Omit<ChatCompletionParams, 'stream'>,
-      options?: ChatStreamOptions,
-    ): Promise<ChatCompletionResponse> {
-      return client.fetch<ChatCompletionResponse>('ai/inference/chat/completions', {
-        method: 'POST',
-        body: { ...params, stream: false },
-        signal: options?.signal,
-      })
+    complete(params: ChatCompletionParams, options?: ChatStreamOptions): Promise<ChatCompletionResponse> {
+      return inferences.createChatCompletion({ ...params, stream: false }, options)
     },
 
-    stream(params: Omit<ChatCompletionParams, 'stream'>, options?: ChatStreamOptions): ChatStream {
+    stream(params: ChatCompletionParams, options?: ChatStreamOptions): ChatStream {
       const controller = new AbortController()
-
-      const signals = [controller.signal]
-      if (options?.signal) signals.push(options.signal)
-      const combinedSignal = AbortSignal.any(signals)
-
-      const iterator = createStreamIterator(client, params, combinedSignal)
+      const signals = options?.signal ? [controller.signal, options.signal] : [controller.signal]
+      const iterator = createStreamIterator(client, params, { ...options, signal: AbortSignal.any(signals) })
 
       return {
         controller,
@@ -61,52 +60,45 @@ export function createAiChat(client: ConjoinClient) {
 
 async function* createStreamIterator(
   client: ConjoinClient,
-  params: Omit<ChatCompletionParams, 'stream'>,
-  signal: AbortSignal,
+  params: ChatCompletionParams,
+  options: ChatStreamOptions,
 ): AsyncGenerator<ChatCompletionChunk> {
-  const response = await client.fetchRaw('ai/inference/chat/completions', {
+  const response = await client.fetchRaw(CHAT_COMPLETIONS_PATH, {
+    ...options,
     method: 'POST',
     body: { ...params, stream: true },
-    signal,
+    acceptsIdempotencyKey: CHAT_COMPLETION_DECLARES_IDEMPOTENCY_KEY,
   })
+  const requestId = getConjoinRequestIdFromHeaders(response.headers)
 
   if (!response.ok) {
-    let body: Record<string, unknown> = {}
-    try {
-      body = (await response.json()) as Record<string, unknown>
-    } catch {
-      /* empty */
-    }
-    const message = typeof body.message === 'string' ? body.message : response.statusText
-    const requestId = response.headers.get(CONJOIN_REQUEST_ID_HEADER) ?? undefined
-    throw new ConjoinError(message, response.status, 'api_error', requestId)
+    throw await buildApiError(response, requestId)
   }
 
   if (!response.body) {
-    throw new ConjoinError('Response body is empty', response.status, 'api_error')
+    throw new ConjoinResponseError('The stream response has no body', { status: response.status, requestId })
   }
 
   for await (const event of iterSSEMessages(response.body)) {
     if (event.data === '[DONE]') return
+
+    let chunk: ChatCompletionChunk | { error?: { message?: unknown; code?: unknown } }
+
     try {
-      const chunk = JSON.parse(event.data) as ChatCompletionChunk | { error: { message: string } }
-      if ('error' in chunk) {
-        throw new ConjoinError(
-          chunk.error.message,
-          response.status,
-          'stream_error',
-          response.headers.get(CONJOIN_REQUEST_ID_HEADER) ?? undefined,
-        )
-      }
-      yield chunk as ChatCompletionChunk
-    } catch (error) {
-      if (error instanceof ConjoinError) throw error
-      throw new ConjoinError(
-        `Failed to parse SSE chunk: ${event.data}`,
-        response.status,
-        'parse_error',
-        response.headers.get(CONJOIN_REQUEST_ID_HEADER) ?? undefined,
+      chunk = JSON.parse(event.data) as typeof chunk
+    } catch {
+      throw new ConjoinResponseError(
+        `The stream sent a chunk that is not JSON: ${event.data.slice(0, MAX_REPORTED_CHUNK_CHARACTERS)}`,
+        { status: response.status, requestId },
       )
     }
+
+    if ('error' in chunk && chunk.error) {
+      const message = typeof chunk.error.message === 'string' ? chunk.error.message : 'The stream reported an error'
+      const code = typeof chunk.error.code === 'string' ? chunk.error.code : 'stream_error'
+      throw new ConjoinApiError(message, { status: response.status, code, requestId })
+    }
+
+    yield chunk as ChatCompletionChunk
   }
 }

@@ -1,318 +1,287 @@
+import { readBoundedText } from './bounded-body'
+import { buildApiError } from './error-response'
 import {
-  ConjoinAuthenticationError,
-  ConjoinError,
+  ConjoinAbortError,
+  ConjoinConfigurationError,
   ConjoinNetworkError,
-  ConjoinRateLimitError,
+  ConjoinResponseError,
   ConjoinTimeoutError,
-  ConjoinValidationError,
 } from './errors'
+import { assertValidIdempotencyKey, generateIdempotencyKey, IDEMPOTENCY_KEY_HEADER } from './idempotency'
+import { type ConjoinListPage, createListPage } from './pagination'
 import { serializeQuery } from './query-serializer'
-import { CONJOIN_REQUEST_ID_HEADER, getConjoinRequestIdFromHeaders, isValidConjoinRequestId } from './request-tracing'
-import type {
-  ConjoinFetchListResult,
-  ConjoinFetchResult,
-  ConjoinListResponse,
-  RequestOptions,
-  ResolvedConfig,
-} from './types'
-import { SDK_VERSION } from './version'
+import { buildRequestBody } from './request-body'
+import { buildRequestHeaders, readHeaderValue, resolveFetchCredentials } from './request-headers'
+import { generateConjoinRequestId, getConjoinRequestIdFromHeaders, isValidConjoinRequestId } from './request-tracing'
+import { canRetryMethod, computeRetryDelayMs, isRetryableStatus, parseRetryAfterMs, sleepUnlessAborted } from './retry'
+import type { ConjoinFetchListResult, ConjoinFetchResult, HttpMethod, RequestOptions, ResolvedConfig } from './types'
+
+const ABSOLUTE_URL_PATTERN = /^[a-z][a-z0-9+.-]*:/i
 
 function buildUrl(config: ResolvedConfig, path: string, query?: Record<string, unknown>): string {
-  let url = `${config.baseUrl}/v1/${path}`
-  if (query) {
-    const qs = serializeQuery(query)
-    if (qs) url += `?${qs}`
-  }
-  return url
-}
-
-function withoutManagedHeaders(headers?: Record<string, string>): Record<string, string> {
-  if (!headers) {
-    return {}
+  if (ABSOLUTE_URL_PATTERN.test(path) || path.startsWith('//')) {
+    throw new ConjoinConfigurationError('path must be relative to the Conjoin API')
   }
 
-  return Object.fromEntries(
-    Object.entries(headers).filter(([name]) => {
-      const normalizedName = name.toLowerCase()
-      return normalizedName !== 'authorization' && normalizedName !== CONJOIN_REQUEST_ID_HEADER.toLowerCase()
-    }),
-  )
+  const relativePath = path.replace(/^\/+/, '').replace(/^v1\//, '')
+  const qs = query ? serializeQuery(query) : ''
+
+  return `${config.baseUrl}/v1/${relativePath}${qs ? `?${qs}` : ''}`
 }
 
-function withoutContentTypeHeader(headers: Record<string, string>): Record<string, string> {
-  return Object.fromEntries(Object.entries(headers).filter(([name]) => name.toLowerCase() !== 'content-type'))
+function resolveRequestId(config: ResolvedConfig, options: RequestOptions): string {
+  const supplied = [
+    options.conjoinRequestId,
+    getConjoinRequestIdFromHeaders(options.headers),
+    config.conjoinRequestId,
+  ].find(isValidConjoinRequestId)
+
+  return supplied ?? generateConjoinRequestId()
 }
 
-function resolveAuthorizationHeader(config: ResolvedConfig, auth: RequestOptions['auth']): string | undefined {
-  if (auth?.type === 'none') {
-    return undefined
-  }
+function resolveIdempotencyKey(method: HttpMethod, options: RequestOptions): string | undefined {
+  const supplied = options.idempotencyKey ?? readHeaderValue(options.headers, IDEMPOTENCY_KEY_HEADER)
 
-  if (auth?.type === 'bearer') {
-    if (auth.token.trim().length === 0) {
-      throw new ConjoinAuthenticationError('Bearer token must not be empty')
+  if (supplied !== undefined) {
+    if (method !== 'POST') {
+      throw new ConjoinConfigurationError('Only a POST takes an idempotency key')
     }
 
-    return `Bearer ${auth.token}`
+    return assertValidIdempotencyKey(supplied)
   }
 
-  const authKey = config.apiKey ?? config.publishableKey
-  return authKey ? `Bearer ${authKey}` : undefined
+  return method === 'POST' && options.acceptsIdempotencyKey ? generateIdempotencyKey() : undefined
 }
 
-function buildHeaders(
-  config: ResolvedConfig,
-  extra?: Record<string, string>,
-  conjoinRequestId?: string,
-  auth?: RequestOptions['auth'],
-  contentType: RequestOptions['contentType'] = 'application/json',
-): Record<string, string> {
-  const authorization = resolveAuthorizationHeader(config, auth)
-  const extraHeaders =
-    contentType === 'multipart/form-data'
-      ? withoutContentTypeHeader(withoutManagedHeaders(extra))
-      : withoutManagedHeaders(extra)
-  const requestId = [conjoinRequestId, getConjoinRequestIdFromHeaders(extra), config.conjoinRequestId].find(
-    isValidConjoinRequestId,
-  )
-  const headers: Record<string, string> = {
-    ...(authorization ? { Authorization: authorization } : {}),
-    ...(contentType === 'application/json' ? { 'Content-Type': 'application/json' } : {}),
-    'X-Conjoin-SDK-Version': SDK_VERSION,
-    'X-Conjoin-API-Version': config.apiVersion,
-    ...extraHeaders,
-    ...(requestId ? { [CONJOIN_REQUEST_ID_HEADER]: requestId } : {}),
+function resolvePositive(value: number | undefined, fallback: number, name: string): number {
+  if (value === undefined) {
+    return fallback
   }
+
+  if (!Number.isFinite(value) || value <= 0 || value > 2 ** 31 - 1) {
+    throw new ConjoinConfigurationError(`${name} must be greater than 0 and at most ${2 ** 31 - 1}`)
+  }
+
+  return value
+}
+
+function resolveMaxRetries(value: number | undefined, fallback: number): number {
+  if (value === undefined) {
+    return fallback
+  }
+
+  if (!Number.isSafeInteger(value) || value < 0) {
+    throw new ConjoinConfigurationError('maxRetries must be a whole number of 0 or more')
+  }
+
+  return value
+}
+
+type AttemptFailure = { kind: 'network'; error: unknown } | { kind: 'timeout' }
+
+function readAttemptFailure(
+  error: unknown,
+  callerSignal: AbortSignal | undefined,
+  timeoutSignal: AbortSignal,
+  requestId: string,
+): AttemptFailure {
+  if (callerSignal?.aborted) {
+    throw new ConjoinAbortError('The caller aborted the request', requestId)
+  }
+
+  if (timeoutSignal.aborted) {
+    return { kind: 'timeout' }
+  }
+
+  return { kind: 'network', error }
+}
+
+function toFailureError(failure: AttemptFailure, timeout: number, requestId: string): Error {
+  if (failure.kind === 'timeout') {
+    return new ConjoinTimeoutError(`Request timed out after ${timeout}ms`, requestId)
+  }
+
+  const message = failure.error instanceof Error ? failure.error.message : 'Network request failed'
+
+  return new ConjoinNetworkError(message, requestId)
+}
+
+function assertSendableHeaders(headers: Record<string, string>): Record<string, string> {
+  try {
+    new Headers(headers)
+  } catch {
+    throw new ConjoinConfigurationError('A request header has a name or value that HTTP does not allow')
+  }
+
   return headers
 }
 
-function isFormDataBody(body: unknown): body is FormData {
-  if (typeof FormData !== 'undefined' && body instanceof FormData) {
-    return true
-  }
-
-  return (
-    Boolean(body) &&
-    typeof body === 'object' &&
-    Object.prototype.toString.call(body) === '[object FormData]' &&
-    typeof (body as { append?: unknown }).append === 'function'
-  )
+async function discardBody(response: Response): Promise<void> {
+  await response.body?.cancel().catch(() => undefined)
 }
 
-function isBlobBody(body: unknown): body is Blob {
-  if (typeof Blob !== 'undefined' && body instanceof Blob) {
-    return true
-  }
-
-  return Boolean(body) && typeof body === 'object' && Object.prototype.toString.call(body) === '[object Blob]'
+export type ConjoinRawResult = {
+  response: Response
+  bodyText?: string
+  requestId: string
+  readBody: <T>(read: (response: Response) => Promise<T>) => Promise<T>
 }
 
-function appendFormDataValue(formData: FormData, key: string, value: unknown): void {
-  if (value === undefined || value === null) {
-    return
-  }
+export async function sendConjoinRequest(
+  config: ResolvedConfig,
+  path: string,
+  options: RequestOptions = {},
+  bufferResponse = false,
+): Promise<ConjoinRawResult> {
+  const method = options.method ?? 'GET'
+  const url = buildUrl(config, path, options.query)
+  const requestId = resolveRequestId(config, options)
+  const idempotencyKey = resolveIdempotencyKey(method, options)
+  const headers = assertSendableHeaders(buildRequestHeaders(config, options, { requestId, idempotencyKey }))
+  const credentials = resolveFetchCredentials(config, options.auth)
+  const body = buildRequestBody(options.body, options.contentType ?? 'application/json')
+  const timeout = resolvePositive(options.timeout, config.timeout, 'timeout')
+  const maxRetries = resolveMaxRetries(options.maxRetries, config.retry.maxRetries)
+  const retryAllowed = canRetryMethod(method, idempotencyKey !== undefined && options.acceptsIdempotencyKey === true)
+  const callerSignal = options.signal
 
-  if (isBlobBody(value)) {
-    formData.append(key, value)
-    return
-  }
-
-  if (Array.isArray(value)) {
-    for (const item of value) {
-      appendFormDataValue(formData, key, item)
+  for (let attempt = 0; ; attempt++) {
+    if (callerSignal?.aborted) {
+      throw new ConjoinAbortError('The caller aborted the request', requestId)
     }
-    return
-  }
 
-  if (typeof value === 'object') {
-    formData.append(key, JSON.stringify(value))
-    return
-  }
+    const timeoutSignal = AbortSignal.timeout(Math.ceil(timeout))
+    const signal = callerSignal ? AbortSignal.any([timeoutSignal, callerSignal]) : timeoutSignal
+    const canRetryAgain = retryAllowed && attempt < maxRetries
+    let response: Response
+    let bodyText: string | undefined
 
-  formData.append(key, String(value))
+    try {
+      response = await fetch(url, { method, headers, body, signal, credentials, redirect: 'error' })
+      if (bufferResponse && response.ok) {
+        bodyText = await readBoundedText(response, config.maxResponseBytes, requestId)
+      }
+    } catch (error) {
+      if (error instanceof ConjoinResponseError) throw error
+      const failure = readAttemptFailure(error, callerSignal, timeoutSignal, requestId)
+
+      if (!canRetryAgain) {
+        throw toFailureError(failure, timeout, requestId)
+      }
+
+      await sleepUnlessAborted(computeRetryDelayMs(attempt, config.retry, undefined), callerSignal, requestId)
+      continue
+    }
+
+    if (canRetryAgain && isRetryableStatus(response.status)) {
+      const retryAfterMs = parseRetryAfterMs(response.headers.get('retry-after'))
+      await discardBody(response)
+      await sleepUnlessAborted(computeRetryDelayMs(attempt, config.retry, retryAfterMs), callerSignal, requestId)
+      continue
+    }
+
+    const readBody = async <T>(read: (value: Response) => Promise<T>): Promise<T> => {
+      try {
+        const value = await read(response)
+        if (callerSignal?.aborted) throw new ConjoinAbortError('The caller aborted the request', requestId)
+        if (response.ok && timeoutSignal.aborted)
+          throw new ConjoinTimeoutError(`Request timed out after ${timeout}ms`, requestId)
+        return value
+      } catch (error) {
+        if (error instanceof ConjoinResponseError) {
+          throw error
+        }
+
+        throw toFailureError(readAttemptFailure(error, callerSignal, timeoutSignal, requestId), timeout, requestId)
+      }
+    }
+
+    return { response, bodyText, requestId, readBody }
+  }
 }
 
-function buildFormData(body: unknown): FormData {
-  if (isFormDataBody(body)) {
-    return body
-  }
-
-  if (!body || typeof body !== 'object' || Array.isArray(body) || isBlobBody(body)) {
-    throw new TypeError('multipart/form-data request body must be a FormData instance or object')
-  }
-
-  const formData = new FormData()
-  for (const [key, value] of Object.entries(body)) {
-    appendFormDataValue(formData, key, value)
-  }
-  return formData
+function readResponseRequestId(response: Response, sentRequestId: string): string {
+  return getConjoinRequestIdFromHeaders(response.headers) ?? sentRequestId
 }
 
-function buildRequestBody(body: unknown, contentType: RequestOptions['contentType']): BodyInit | undefined {
-  if (body === undefined) {
-    return undefined
+async function readJsonBody(result: ConjoinRawResult): Promise<unknown> {
+  const { response } = result
+  const requestId = readResponseRequestId(response, result.requestId)
+
+  if (!response.ok) {
+    throw await result.readBody(value => buildApiError(value, requestId))
   }
 
-  if (contentType === 'multipart/form-data') {
-    return buildFormData(body)
-  }
+  return result.readBody(async value => {
+    const text = result.bodyText ?? (await value.text())
 
-  return JSON.stringify(body)
+    if (text.length === 0) {
+      return undefined
+    }
+
+    try {
+      return JSON.parse(text) as unknown
+    } catch {
+      throw new ConjoinResponseError('The response body was not valid JSON', { status: value.status, requestId })
+    }
+  })
 }
 
-function readResponseRequestId(response: Response): string | undefined {
-  return getConjoinRequestIdFromHeaders(response.headers)
+function metadataOf(result: ConjoinRawResult) {
+  return {
+    requestId: readResponseRequestId(result.response, result.requestId),
+    status: result.response.status,
+    headers: result.response.headers,
+  }
 }
 
-async function handleErrorResponse(response: Response, requestId?: string): Promise<never> {
-  let body: Record<string, unknown> = {}
-  try {
-    body = (await response.json()) as Record<string, unknown>
-  } catch {
-    /* empty */
-  }
+export async function conjoinFetchJson<T>(config: ResolvedConfig, path: string, options?: RequestOptions): Promise<T> {
+  const result = await sendConjoinRequest(config, path, options, true)
 
-  const message = typeof body.message === 'string' ? body.message : response.statusText
-
-  if (response.status === 401) {
-    throw new ConjoinAuthenticationError(message, requestId)
-  }
-
-  if (response.status === 429) {
-    const retryAfter = response.headers.get('retry-after')
-    throw new ConjoinRateLimitError(message, retryAfter ? Number(retryAfter) : undefined, requestId)
-  }
-
-  if (response.status === 400 || response.status === 422) {
-    const errors = Array.isArray(body.errors) ? (body.errors as Array<{ message: string; path: string }>) : []
-    throw new ConjoinValidationError(message, response.status, errors, requestId)
-  }
-
-  throw new ConjoinError(message, response.status, 'api_error', requestId)
-}
-
-function isRetryable(status: number): boolean {
-  return status === 429 || status >= 500
-}
-
-async function sleep(ms: number): Promise<void> {
-  return new Promise(resolve => setTimeout(resolve, ms))
-}
-
-export async function conjoinFetch<T>(config: ResolvedConfig, path: string, options: RequestOptions = {}): Promise<T> {
-  const result = await conjoinFetchWithResponse<T>(config, path, options)
-
-  return result.data
+  return (await readJsonBody(result)) as T
 }
 
 export async function conjoinFetchWithResponse<T>(
   config: ResolvedConfig,
   path: string,
-  options: RequestOptions = {},
+  options?: RequestOptions,
 ): Promise<ConjoinFetchResult<T>> {
-  const response = await conjoinFetchRaw(config, path, options)
-  const requestId = readResponseRequestId(response)
+  const result = await sendConjoinRequest(config, path, options, true)
+  const json = await readJsonBody(result)
+  const data = json && typeof json === 'object' && 'data' in json ? (json as { data: T }).data : (undefined as T)
 
-  if (!response.ok) {
-    await handleErrorResponse(response, requestId)
-  }
-
-  const json = (await response.json()) as { data: T }
-
-  return {
-    data: json.data,
-    metadata: {
-      requestId,
-      status: response.status,
-      headers: response.headers,
-    },
-  }
+  return { data, metadata: metadataOf(result) }
 }
 
-export async function conjoinFetchList<T>(
-  config: ResolvedConfig,
-  path: string,
-  options: RequestOptions = {},
-): Promise<ConjoinListResponse<T>> {
-  const result = await conjoinFetchListWithResponse<T>(config, path, options)
-
-  return result.data
+export async function conjoinFetch<T>(config: ResolvedConfig, path: string, options?: RequestOptions): Promise<T> {
+  return (await conjoinFetchWithResponse<T>(config, path, options)).data
 }
 
 export async function conjoinFetchListWithResponse<T>(
   config: ResolvedConfig,
   path: string,
   options: RequestOptions = {},
+  seenCursors: ReadonlySet<string> = new Set(),
 ): Promise<ConjoinFetchListResult<T>> {
-  const response = await conjoinFetchRaw(config, path, options)
-  const requestId = readResponseRequestId(response)
+  const result = await sendConjoinRequest(config, path, options, true)
+  const json = await readJsonBody(result)
+  const metadata = metadataOf(result)
+  const query = options.query ?? {}
+  const fetchNext = async (next: string, seen: ReadonlySet<string>): Promise<ConjoinListPage<T>> =>
+    (await conjoinFetchListWithResponse<T>(config, path, { ...options, query: { ...query, cursor: { next } } }, seen))
+      .data
 
-  if (!response.ok) {
-    await handleErrorResponse(response, requestId)
-  }
-
-  const json = (await response.json()) as ConjoinListResponse<T>
-
-  return {
-    data: json,
-    metadata: {
-      requestId,
-      status: response.status,
-      headers: response.headers,
-    },
-  }
+  return { data: createListPage<T>(json, metadata.status, metadata.requestId, fetchNext, seenCursors), metadata }
 }
 
-export async function conjoinFetchRaw(
+export async function conjoinFetchList<T>(
   config: ResolvedConfig,
   path: string,
-  options: RequestOptions = {},
-): Promise<Response> {
-  const url = buildUrl(config, path, options.query)
-  const contentType = options.contentType ?? 'application/json'
-  const headers = buildHeaders(config, options.headers, options.conjoinRequestId, options.auth, contentType)
-  const body = buildRequestBody(options.body, contentType)
+  options?: RequestOptions,
+): Promise<ConjoinListPage<T>> {
+  return (await conjoinFetchListWithResponse<T>(config, path, options)).data
+}
 
-  const maxRetries = config.retry.maxRetries
-  const backoffMs = config.retry.backoffMs
-  let lastError: unknown
-
-  for (let attempt = 0; attempt <= maxRetries; attempt++) {
-    try {
-      const timeoutSignal = AbortSignal.timeout(config.timeout)
-      const signals = options.signal ? AbortSignal.any([timeoutSignal, options.signal]) : timeoutSignal
-
-      const response = await fetch(url, {
-        method: options.method ?? 'GET',
-        headers,
-        body,
-        signal: signals,
-      })
-
-      if (!response.ok && isRetryable(response.status) && attempt < maxRetries) {
-        const retryAfter = response.headers.get('retry-after')
-        const delay = retryAfter ? Number(retryAfter) * 1000 : backoffMs * 2 ** attempt
-        await sleep(delay)
-        continue
-      }
-
-      return response
-    } catch (error) {
-      lastError = error
-
-      if (error instanceof DOMException && error.name === 'TimeoutError') {
-        throw new ConjoinTimeoutError(`Request timed out after ${config.timeout}ms`)
-      }
-
-      if (error instanceof DOMException && error.name === 'AbortError') {
-        throw new ConjoinTimeoutError('Request was aborted')
-      }
-
-      if (attempt < maxRetries) {
-        await sleep(backoffMs * 2 ** attempt)
-      }
-    }
-  }
-
-  throw new ConjoinNetworkError(lastError instanceof Error ? lastError.message : 'Network request failed')
+export async function conjoinFetchRaw(config: ResolvedConfig, path: string, options?: RequestOptions) {
+  return (await sendConjoinRequest(config, path, options)).response
 }

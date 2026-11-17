@@ -1,13 +1,26 @@
-export type ConjoinConfig = {
+import type { ConjoinListPage } from './pagination'
+
+export type ConjoinScope = {
+  billingEntityId?: string
+  messagingProfileId?: string
+  authAppId?: string
+}
+
+export type ConjoinScopeName = keyof ConjoinScope
+
+export type ConjoinConfig = ConjoinScope & {
   apiKey?: string
   publishableKey?: string
   baseUrl?: string
   apiVersion?: string
   timeout?: number
+  maxResponseBytes?: number
   conjoinRequestId?: string
+  credentials?: RequestCredentials
   retry?: {
     maxRetries?: number
     backoffMs?: number
+    maxDelayMs?: number
   }
 }
 
@@ -17,10 +30,14 @@ export type ResolvedConfig = {
   readonly baseUrl: string
   readonly apiVersion: string
   readonly timeout: number
+  readonly maxResponseBytes: number
   readonly conjoinRequestId?: string
+  readonly credentials?: RequestCredentials
+  readonly scope: Readonly<ConjoinScope>
   readonly retry: {
     readonly maxRetries: number
     readonly backoffMs: number
+    readonly maxDelayMs: number
   }
 }
 
@@ -40,54 +57,87 @@ export type ConjoinFetchResult<T> = {
 }
 
 export type ConjoinFetchListResult<T> = {
-  data: ConjoinListResponse<T>
+  data: ConjoinListPage<T>
   metadata: ConjoinResponseMetadata
 }
 
-export type RequestOptions = {
-  method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
+export type HttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
+
+export type ConjoinAuthOption = { type: 'default' } | { type: 'none' } | { type: 'bearer'; token: string }
+
+export type ConjoinCallOptions = {
+  idempotencyKey?: string
+  conjoinRequestId?: string
+  headers?: Record<string, string>
+  auth?: ConjoinAuthOption
+  signal?: AbortSignal
+  timeout?: number
+  maxRetries?: number
+}
+
+export type ConjoinDeclaredHeaderRule = {
+  readonly name: string
+  readonly argumentName: string
+  readonly required: boolean
+  readonly minLength?: number
+  readonly maxLength?: number
+  readonly pattern?: string
+}
+
+export type ConjoinDeclaredHeaders = {
+  rules: readonly ConjoinDeclaredHeaderRule[]
+  values?: Readonly<Record<string, string | undefined>>
+}
+
+export type ConjoinRequestAuth = ConjoinAuthOption | { type: 'publishableKey' } | { type: 'session'; token?: string }
+
+export type RequestOptions = Omit<ConjoinCallOptions, 'auth'> & {
+  auth?: ConjoinRequestAuth
+  method?: HttpMethod
   body?: unknown
   contentType?: 'application/json' | 'multipart/form-data'
   query?: Record<string, unknown>
-  headers?: Record<string, string>
-  auth?: { type: 'default' } | { type: 'none' } | { type: 'bearer'; token: string }
-  conjoinRequestId?: string
-  signal?: AbortSignal
-}
-
-export type PaginationParams = {
-  limit?: number
-  cursor?: string
+  scopes?: readonly ConjoinScopeName[]
+  acceptsIdempotencyKey?: boolean
+  declaredHeaders?: ConjoinDeclaredHeaders
 }
 
 export type Cursor = {
-  prev?: string
-  next?: string
+  prev: string | null
+  next: string | null
+}
+
+export type ConjoinResponseMeta = {
+  type?: string
+  code?: number
+  message?: string
 }
 
 export type ConjoinResponse<T> = {
-  success: true
+  response: ConjoinResponseMeta
   data: T
-  status?: number
-  message?: string
-  cursor?: Cursor
 }
 
 export type ConjoinListResponse<T> = {
-  success: true
+  response: ConjoinResponseMeta
   data: T[]
-  status?: number
-  message?: string
-  cursor?: Cursor
+  cursor: Cursor
+}
+
+export type PaginationParams = {
+  limit?: number | string
+  cursor?: { prev?: string; next?: string }
 }
 
 export type ConjoinClient = {
   config: ResolvedConfig
   fetch: <T>(path: string, options?: RequestOptions) => Promise<T>
+  fetchJson: <T>(path: string, options?: RequestOptions) => Promise<T>
   fetchWithResponse: <T>(path: string, options?: RequestOptions) => Promise<ConjoinFetchResult<T>>
-  fetchList: <T>(path: string, options?: RequestOptions) => Promise<ConjoinListResponse<T>>
+  fetchList: <T>(path: string, options?: RequestOptions) => Promise<ConjoinListPage<T>>
   fetchListWithResponse: <T>(path: string, options?: RequestOptions) => Promise<ConjoinFetchListResult<T>>
   fetchRaw: (path: string, options?: RequestOptions) => Promise<Response>
+  withScope: (scope: ConjoinScope) => ConjoinClient
   withRequestTrace: <T>(
     callback: (client: ConjoinClient, requestId: string) => T | Promise<T>,
     options?: ConjoinRequestTraceScopeOptions,

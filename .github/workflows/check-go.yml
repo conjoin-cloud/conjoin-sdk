@@ -1,0 +1,60 @@
+name: Check Go SDK
+
+on:
+  workflow_call:
+    inputs:
+      base:
+        required: true
+        type: string
+      head:
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    name: Go
+    runs-on: blacksmith-4vcpu-ubuntu-2404
+    defaults:
+      run:
+        working-directory: sdks/go
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10
+        with:
+          fetch-depth: 0
+
+      - name: Setup Go
+        uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e
+        with:
+          go-version: '1.27.3'
+          cache-dependency-path: sdks/go/go.mod
+
+      - name: Generate Go SDK
+        run: go run ./internal/cmd/generate
+
+      - name: Fail when generated Go SDK code is out of date
+        run: |
+          git status --porcelain -- .
+          git diff --exit-code -- .
+          test -z "$(git status --porcelain -- .)"
+
+      - name: Vet
+        run: go vet ./...
+
+      - name: Check formatting
+        run: |
+          unformatted="$(gofmt -l .)"
+          if [ -n "$unformatted" ]; then
+            echo "$unformatted"
+            exit 1
+          fi
+
+      - name: Build
+        run: go build ./...
+
+      - name: Test
+        run: go test -race ./...

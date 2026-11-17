@@ -3,16 +3,11 @@ import * as Avatar from '@radix-ui/react-avatar'
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu'
 import * as Separator from '@radix-ui/react-separator'
 import { useCallback } from 'react'
+import { readDisplayName, readInitials, readPrimaryEmail } from '../internal/account-display'
 
 type AccountButtonProps = {
   onManageAccount?: () => void
   onSignOut?: () => void
-}
-
-function getInitials(firstName: string | null, lastName: string | null, email: string): string {
-  if (firstName && lastName) return `${firstName[0]}${lastName[0]}`.toUpperCase()
-  if (firstName) return firstName[0].toUpperCase()
-  return email[0].toUpperCase()
 }
 
 export function AccountButton({ onManageAccount, onSignOut }: AccountButtonProps) {
@@ -26,9 +21,9 @@ export function AccountButton({ onManageAccount, onSignOut }: AccountButtonProps
 
   if (!auth.isLoaded || !auth.isSignedIn) return null
 
-  const displayName = account ? [account.first_name, account.last_name].filter(Boolean).join(' ') || account.email : ''
-  const email = account?.email ?? ''
-  const initials = account ? getInitials(account.first_name, account.last_name, account.email) : ''
+  const displayName = readDisplayName(account ?? null)
+  const email = readPrimaryEmail(account ?? null)
+  const initials = readInitials(account ?? null)
   const showEmail = email !== '' && displayName !== email
 
   return (
@@ -36,7 +31,7 @@ export function AccountButton({ onManageAccount, onSignOut }: AccountButtonProps
       <DropdownMenu.Trigger asChild>
         <button type="button" data-conjoin-trigger="" aria-label="Account menu">
           <Avatar.Root data-conjoin-avatar="" data-size="md">
-            {account?.avatar_url ? <Avatar.Image src={account.avatar_url} alt={displayName} /> : null}
+            {account?.image_url ? <Avatar.Image src={account.image_url} alt={displayName} /> : null}
             <Avatar.Fallback>{initials}</Avatar.Fallback>
           </Avatar.Root>
         </button>

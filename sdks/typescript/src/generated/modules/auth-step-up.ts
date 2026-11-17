@@ -1,22 +1,23 @@
-import type { ConjoinClient } from '../../core/types'
+import { encodePathParam } from '../../core/path'
+import type { ConjoinCallOptions, ConjoinClient } from '../../core/types'
 import type { operations } from '../api-types'
 
-type RequestBody = operations['requestStepUp']['requestBody']['content']['application/json']
+type RequestBody = NonNullable<operations['requestStepUp']['requestBody']>['content']['application/json']
 type RequestData = NonNullable<operations['requestStepUp']['responses']['200']['content']['application/json']['data']>
-type VerifyBody = operations['verifyStepUp']['requestBody']['content']['application/json']
+type VerifyBody = NonNullable<operations['verifyStepUp']['requestBody']>['content']['application/json']
 type VerifyData = NonNullable<operations['verifyStepUp']['responses']['200']['content']['application/json']['data']>
-type ValidateBody = operations['validateStepUp']['requestBody']['content']['application/json']
+type ValidateBody = NonNullable<operations['validateStepUp']['requestBody']>['content']['application/json']
 type ValidateData = NonNullable<operations['validateStepUp']['responses']['200']['content']['application/json']['data']>
 
 export function createAuthStepUps(client: ConjoinClient) {
   return {
-    request: (appId: string, accountId: string, data: RequestBody) =>
-      client.fetch<RequestData>(`auth/step-up/${appId}/account/${accountId}/step-up/request`, { method: 'POST', body: data }),
+    request: (accountId: string, data: RequestBody, options?: ConjoinCallOptions) =>
+      client.fetch<RequestData>(`auth/accounts/${encodePathParam(accountId)}/step-ups/start`, { ...options, method: 'POST', body: data, scopes: ['authAppId'], acceptsIdempotencyKey: true }),
 
-    verify: (appId: string, accountId: string, data: VerifyBody) =>
-      client.fetch<VerifyData>(`auth/step-up/${appId}/account/${accountId}/step-up/verify`, { method: 'POST', body: data }),
+    verify: (accountId: string, data: VerifyBody, options?: ConjoinCallOptions) =>
+      client.fetch<VerifyData>(`auth/accounts/${encodePathParam(accountId)}/step-ups/verify`, { ...options, method: 'POST', body: data, scopes: ['authAppId'], acceptsIdempotencyKey: true }),
 
-    validate: (appId: string, accountId: string, data: ValidateBody) =>
-      client.fetch<ValidateData>(`auth/step-up/${appId}/account/${accountId}/step-up/validate`, { method: 'POST', body: data }),
+    validate: (accountId: string, data: ValidateBody, options?: ConjoinCallOptions) =>
+      client.fetch<ValidateData>(`auth/accounts/${encodePathParam(accountId)}/step-ups/validate`, { ...options, method: 'POST', body: data, scopes: ['authAppId'], acceptsIdempotencyKey: true }),
   }
 }

@@ -1,17 +1,22 @@
-import type { ConjoinClient } from '../../core/types'
+import type { ConjoinCallOptions, ConjoinClient } from '../../core/types'
 import type { operations } from '../api-types'
 
 type ListRecordsData = NonNullable<operations['listAiUsageRecords']['responses']['200']['content']['application/json']['data']>[number]
 type ListRecordsQuery = NonNullable<operations['listAiUsageRecords']['parameters']['query']>
+type ListRecordsCountData = NonNullable<operations['listAiUsageRecordsCount']['responses']['200']['content']['application/json']['data']>
+type ListRecordsCountQuery = NonNullable<operations['listAiUsageRecordsCount']['parameters']['query']>
 type ReadSummaryData = NonNullable<operations['readAiUsageSummary']['responses']['200']['content']['application/json']['data']>
 type ReadSummaryQuery = NonNullable<operations['readAiUsageSummary']['parameters']['query']>
 
 export function createAiUsages(client: ConjoinClient) {
   return {
-    listRecords: (query?: ListRecordsQuery) =>
-      client.fetchList<ListRecordsData>('ai/usage/records', { query: query as Record<string, unknown> }),
+    listRecords: (query?: ListRecordsQuery, options?: ConjoinCallOptions) =>
+      client.fetchList<ListRecordsData>('ai/usage-records/', { ...options, method: 'GET', query: query as Record<string, unknown> | undefined }),
 
-    readSummary: (query?: ReadSummaryQuery) =>
-      client.fetch<ReadSummaryData>('ai/usage/summary', { query: query as Record<string, unknown> }),
+    listRecordsCount: (query?: ListRecordsCountQuery, options?: ConjoinCallOptions) =>
+      client.fetch<ListRecordsCountData>('ai/usage-records/count', { ...options, method: 'GET', query: query as Record<string, unknown> | undefined }),
+
+    readSummary: (query?: ReadSummaryQuery, options?: ConjoinCallOptions) =>
+      client.fetch<ReadSummaryData>('ai/usage/', { ...options, method: 'GET', query: query as Record<string, unknown> | undefined }),
   }
 }

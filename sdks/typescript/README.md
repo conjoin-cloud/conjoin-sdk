@@ -30,14 +30,15 @@ import { createConjoinClient } from '@conjoin-cloud/sdk'
 import { createBillingCustomers } from '@conjoin-cloud/sdk/billing'
 
 const conjoin = createConjoinClient({
-  apiKey: 'ck_live_...',
+  apiKey: 'cak_live_...',
+  billingEntityId: 'entity_123',
 })
 
 const customers = createBillingCustomers(conjoin)
 
-const customer = await customers.create('entity_123', {
-  name: 'Acme Corp',
-  email: 'billing@acme.com',
+const customer = await customers.create({
+  name: 'Harbour Ledger',
+  email: 'billing@example.com',
 })
 
 console.log(customer.customer_id)
@@ -67,29 +68,49 @@ Create one client and pass it to generated resource factories:
 
 ```ts
 const conjoin = createConjoinClient({
-  apiKey: 'ck_live_...',
-  baseUrl: 'https://api.conjoin.cloud',
-  apiVersion: '2025-01-01',
+  apiKey: 'cak_eu_live_...',
   timeout: 30_000,
   retry: {
     maxRetries: 3,
     backoffMs: 500,
+    maxDelayMs: 60_000,
   },
 })
 ```
 
-Use `apiKey` on the server. Use `publishableKey` in browser and mobile clients. Keys with the `ck_test_` and `pk_test_` prefixes use the test environment. Keys with the `ck_live_` and `pk_live_` prefixes use production.
+Use `apiKey` on the server and `publishableKey` in browser and mobile clients, and pass exactly one of them. The SDK picks the regional host from the key, so a `cak_eu_live_` or `cpk_eu_live_` key calls `https://api.eu.conjoin.cloud`, a `gh` key calls `https://api.gh.conjoin.cloud`, and a key with no region code calls `https://api.conjoin.cloud`. Set `baseUrl` only when you need to reach another host.
 
-The SDK retries `429` and `5xx` responses with exponential backoff. It starts with `backoffMs`, doubles the delay after each failed try, and stops after `maxRetries`. Authentication and validation errors return immediately.
+Calls that need a scope read it from the client. Set `billingEntityId`, `messagingProfileId`, or `authAppId` when you create the client, or call `conjoin.withScope({ billingEntityId })` to get a scoped copy. The SDK sends them as the `Billing-Entity-ID`, `Messaging-Profile-ID`, and `Auth-App-ID` headers, and a call that needs a scope that you didn't set throws a `ConjoinConfigurationError` before it sends anything.
+
+### Retries
+
+The SDK retries `GET`, `PUT`, `PATCH`, and `DELETE` calls after a network failure, a timeout, or a `429`, `500`, `502`, `503`, or `504` response. It retries a `POST` only when the API declares an `Idempotency-Key` header for that operation. The SDK then generates a key for each call, or sends the one that you pass, and it keeps the same key on every retry:
+
+```ts
+await customers.create(
+  { email: 'billing@example.com' },
+  { idempotencyKey: 'signup-7f3a9c' },
+)
+```
+
+A `POST` whose operation declares no `Idempotency-Key` header goes out once, because the server can't tell a retry from a second request.
+
+The SDK never retries a `501` or any other `4xx` response. When the server sends `Retry-After`, the SDK waits that long, capped at `retry.maxDelayMs`. Otherwise it waits a random time between zero and `backoffMs * 2 ** attempt`, capped at the same limit. Pass `maxRetries` or `timeout` in the call options to change them for one call.
+
+Pass an `AbortSignal` as `signal` to cancel a call. An abort stops the call at once, during a backoff wait too, and raises a `ConjoinAbortError`, while a call that runs past `timeout` raises a `ConjoinTimeoutError`.
+
+### Request IDs
+
+Every call sends a `Conjoin-Request-Id` header, and every retry of that call sends the same value. Pass `conjoinRequestId` in the client settings or in the call options to reuse an ID from your own logs, or wrap related calls in `conjoin.withRequestTrace((client, requestId) => ...)` so that they share one ID. Every error exposes the ID as `error.requestId`.
 
 ## Auth
 
 ```ts
 import { createAuthAccounts } from '@conjoin-cloud/sdk/auth'
 
-const accounts = createAuthAccounts(conjoin)
+const accounts = createAuthAccounts(conjoin.withScope({ authAppId: 'app_123' }))
 
-const account = await accounts.create('app_123', {
+const account = await accounts.create({
   name: 'Taylor Morgan',
   primary_email: 'member@example.com',
   reference_id: 'member_123',
@@ -98,31 +119,29 @@ const account = await accounts.create('app_123', {
 console.log(account.account_id)
 ```
 
-Pass `appId` as the first argument on auth calls because accounts and sessions are scoped to a Conjoin auth application.
+Accounts and sessions belong to a Conjoin auth application, so the auth calls need `authAppId` on the client.
 
 ## Billing
 
 ```ts
 import { createBillingCustomers } from '@conjoin-cloud/sdk/billing'
 
-const customers = createBillingCustomers(conjoin)
+const customers = createBillingCustomers(conjoin.withScope({ billingEntityId: 'entity_123' }))
 
-const customer = await customers.create('entity_123', {
-  name: 'Acme Corp',
-  email: 'billing@acme.com',
-})
+const page = await customers.list({ limit: 20 })
 
-const page = await customers.list('entity_123', { limit: 20 })
+for (const customer of page.data) {
+  console.log(customer.customer_id)
+}
 
-if (page.cursor?.next) {
-  await customers.list('entity_123', {
-    limit: 20,
-    cursor: page.cursor.next,
-  })
+const nextPage = await page.nextPage()
+
+for await (const customer of page) {
+  console.log(customer.email)
 }
 ```
 
-Pass `entityId` as the first argument on billing calls. List endpoints return cursor-based pagination through `cursor.next`.
+Billing calls need `billingEntityId` on the client. A list call returns a page with `response`, `data`, and `cursor: { prev, next }`. `page.nextPage()` fetches the page after it, or returns `null` on the last page, and `for await` walks every item across every page.
 
 ## Storage
 
@@ -176,7 +195,7 @@ await messaging.sms.sendSms({
 await messaging.emails.send({
   to: 'member@example.com',
   subject: 'Welcome',
-  html: '<h1>Welcome to Acme</h1>',
+  html: '<h1>Welcome to Harbour Ledger</h1>',
 })
 ```
 
@@ -206,7 +225,7 @@ for await (const chunk of stream) {
 stream.controller.abort()
 ```
 
-`stream` returns an `AsyncIterable<ChatCompletionChunk>` and an `AbortController`.
+`complete` returns the chat completion in the OpenAI format, with `choices`, `usage`, and a `_conjoin` object that holds `cost_usd`, `latency_ms`, `is_byok`, and `context_used`. `stream` returns an `AsyncIterable<ChatCompletionChunk>` and an `AbortController`. Both calls send an `Idempotency-Key` header, and the SDK keeps the same key on every retry of a call.
 
 ## Relay Broadcast
 
@@ -214,20 +233,23 @@ stream.controller.abort()
 import { createBroadcastConnection } from '@conjoin-cloud/sdk/relay'
 
 const broadcast = createBroadcastConnection(conjoin, {
-  channels: ['support:room-42'],
+  getConnectionToken: async () => fetchConnectionTokenFromYourServer(),
 })
 
-broadcast.on('message', (channel, data) => {
-  console.log(`[${channel}]`, data)
+await broadcast.connect()
+
+const room = await broadcast.subscribe('support:room-42')
+
+room.on('message', event => {
+  console.log(`[${event.channel_id}]`, event.data)
 })
 
-await broadcast.publish('support:room-42', {
-  user: 'alice',
-  text: 'The ticket is ready for review.',
-})
+await room.publish('message', { text: 'The ticket is ready for review.' })
+
+const { events } = await room.history()
 ```
 
-Use the per-resource relay factories for queues, events, scheduler, memorystore, and search.
+The connection opens a WebSocket at `/v1/relay/broadcast` on the API host, or at the full `ws` or `wss` URL that you pass as `url`, and it authenticates with the token that `getConnectionToken` returns. It reconnects after a dropped socket and subscribes to every channel again. Pass `authToken` to `subscribe` for a channel that needs a separate token. Use the per-resource relay factories for queues, events, scheduler, memorystore, and search.
 
 ## Server Verification
 
@@ -281,6 +303,8 @@ export default conjoinProxy((auth, req) => {
 ```
 
 The proxy reads a client-state cookie at the edge for routing decisions. Use `auth()` inside Server Components and Route Handlers when you need JWT verification.
+
+`auth()` checks tokens against the JWKS on your project's auth domain. Set `CONJOIN_AUTH_DOMAIN`, or pass `authDomain` or `jwksUrl`, to point it there. With only `CONJOIN_PUBLISHABLE_KEY` set, the adapter reads the auth domain from your project's SDK settings and keeps it for five minutes. `currentAccount()` reads the signed-in account's profile from the same auth domain.
 
 ## Express
 
@@ -347,44 +371,49 @@ Every SDK error extends `ConjoinError`:
 
 ```ts
 import {
-  ConjoinAuthenticationError,
+  ConjoinConflictError,
   ConjoinError,
-  ConjoinNetworkError,
+  ConjoinNotFoundError,
   ConjoinRateLimitError,
-  ConjoinStorageError,
-  ConjoinTimeoutError,
   ConjoinValidationError,
 } from '@conjoin-cloud/sdk'
 
 try {
-  const customerInput = {
-    name: 'Acme Corp',
-    email: 'billing@acme.com',
-  }
-
-  await customers.create('entity_123', customerInput)
+  await customers.update('cus_123', { name: 'Harbour Ledger' })
 } catch (err) {
   if (err instanceof ConjoinValidationError) {
     for (const field of err.errors) {
       console.log(`${field.path}: ${field.message}`)
     }
+  } else if (err instanceof ConjoinNotFoundError) {
+    console.log('The customer does not exist.')
+  } else if (err instanceof ConjoinConflictError) {
+    console.log(err.code, err.details)
   } else if (err instanceof ConjoinRateLimitError) {
-    console.log(`Retry after ${err.retryAfter} seconds.`)
-  } else if (err instanceof ConjoinAuthenticationError) {
-    console.log('The API key is invalid or expired.')
+    console.log(`Retry after ${err.retryAfterMs} ms.`)
   } else if (err instanceof ConjoinError) {
-    console.log(err.message)
+    console.log(err.code, err.message, err.requestId)
   }
 }
 ```
 
+Every error exposes `status`, `code`, `param`, `details`, and `requestId`. `param` is `null` and `details` is `null` when the server sends neither.
+
+- `ConjoinValidationError` covers `400` and `422` responses, with field-level details on `.errors`.
 - `ConjoinAuthenticationError` covers `401` responses.
-- `ConjoinValidationError` covers `400` and `422` responses with field-level details on `.errors`.
-- `ConjoinRateLimitError` covers `429` responses and exposes `.retryAfter`.
+- `ConjoinPermissionDeniedError` covers `403` responses.
+- `ConjoinNotFoundError` covers `404` responses.
+- `ConjoinConflictError` covers `409` responses.
+- `ConjoinRateLimitError` covers `429` responses and exposes `.retryAfterMs` when the server sends `Retry-After`.
+- `ConjoinInternalServerError` covers `5xx` responses.
+- `ConjoinApiError` is the base class of every API error, and it covers any other status.
+- `ConjoinResponseError` covers a response body that the SDK can't read.
 - `ConjoinNetworkError` covers DNS failures and refused connections.
-- `ConjoinTimeoutError` covers requests that exceed the configured timeout.
+- `ConjoinTimeoutError` covers calls that run past the configured timeout.
+- `ConjoinAbortError` covers calls that the caller aborted.
+- `ConjoinConfigurationError` covers client settings and call options that the SDK rejects before it sends anything.
 - `ConjoinStorageError` covers upload, download, and signed URL failures.
-- `ConjoinError` is the base class for other API errors.
+- `ConjoinError` is the base class of every SDK error.
 
 ## Bundle and Runtime
 

@@ -1,13 +1,18 @@
 export {
+  type AuthFlowResult,
   type ColorPalette,
   type ConjoinAccount,
   type ConjoinAuthState,
   type ConjoinBranding,
   type ConjoinMembership,
-  type ConjoinOrganization,
   type ConjoinProviderProps,
   type ConjoinSdkConfig,
   type ConjoinSession,
+  type OAuthRedirectResult,
+  type SignInCompleteBody,
+  type SignInStartBody,
+  type SignUpCompleteBody,
+  type SignUpStartBody,
   useAccount,
   useAuth,
   useBundles,
@@ -17,6 +22,8 @@ export {
   useEntitlements,
   useOrg,
   useSession,
+  useSignIn,
+  useSignUp,
   useStorageUpload,
 } from '@conjoin-cloud/react-core'
 export { ConjoinProvider } from './provider'

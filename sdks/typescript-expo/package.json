@@ -48,22 +48,28 @@
     "CHANGELOG.md"
   ],
   "peerDependencies": {
+    "expo-crypto": ">=12.2.0",
     "expo-secure-store": ">=13.0.2",
     "react": ">=18.0.0"
   },
   "peerDependenciesMeta": {
+    "expo-crypto": {
+      "optional": true
+    },
     "expo-secure-store": {
       "optional": true
     }
   },
   "dependencies": {
     "@conjoin-cloud/react-core": "workspace:*",
-    "@conjoin-cloud/sdk": "workspace:*"
+    "@conjoin-cloud/sdk": "workspace:*",
+    "valibot": "1.5.0"
   },
   "devDependencies": {
     "@biomejs/biome": "2.4.6",
     "@types/node": "25.9.1",
     "@types/react": "19.2.14",
+    "expo-crypto": "58.0.7",
     "expo-secure-store": "55.0.13",
     "react": "19.2.6",
     "tsup": "8.5.1",

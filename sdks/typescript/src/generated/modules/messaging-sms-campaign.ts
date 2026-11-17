@@ -1,30 +1,36 @@
-import type { ConjoinClient } from '../../core/types'
+import { encodePathParam } from '../../core/path'
+import type { ConjoinCallOptions, ConjoinClient } from '../../core/types'
 import type { operations } from '../api-types'
 
-type CreateSmsCampaignBody = operations['createSmsCampaign']['requestBody']['content']['application/json']
+type ListSmsCampaignsData = NonNullable<operations['listSmsCampaigns']['responses']['200']['content']['application/json']['data']>[number]
+type ListSmsCampaignsQuery = NonNullable<operations['listSmsCampaigns']['parameters']['query']>
+type CreateSmsCampaignBody = NonNullable<operations['createSmsCampaign']['requestBody']>['content']['application/json']
 type CreateSmsCampaignData = NonNullable<operations['createSmsCampaign']['responses']['201']['content']['application/json']['data']>
+type ListSmsCampaignsCountData = NonNullable<operations['listSmsCampaignsCount']['responses']['200']['content']['application/json']['data']>
+type ListSmsCampaignsCountQuery = NonNullable<operations['listSmsCampaignsCount']['parameters']['query']>
 type ReadSmsCampaignData = NonNullable<operations['readSmsCampaign']['responses']['200']['content']['application/json']['data']>
-type UpdateSmsCampaignBody = operations['updateSmsCampaign']['requestBody']['content']['application/json']
+type UpdateSmsCampaignBody = NonNullable<operations['updateSmsCampaign']['requestBody']>['content']['application/json']
 type UpdateSmsCampaignData = NonNullable<operations['updateSmsCampaign']['responses']['200']['content']['application/json']['data']>
 type DeleteSmsCampaignData = NonNullable<operations['deleteSmsCampaign']['responses']['200']['content']['application/json']['data']>
-type ListSmsCampaignsBody = operations['listSmsCampaigns']['requestBody']['content']['application/json']
-type ListSmsCampaignsData = NonNullable<operations['listSmsCampaigns']['responses']['200']['content']['application/json']['data']>[number]
 
 export function createMessagingSMSCampaigns(client: ConjoinClient) {
   return {
-    createSmsCampaign: (data: CreateSmsCampaignBody) =>
-      client.fetch<CreateSmsCampaignData>('messaging/sms/campaigns/new', { method: 'POST', body: data }),
+    listSmsCampaigns: (query?: ListSmsCampaignsQuery, options?: ConjoinCallOptions) =>
+      client.fetchList<ListSmsCampaignsData>('messaging/sms-campaigns/', { ...options, method: 'GET', query: query as Record<string, unknown> | undefined, scopes: ['messagingProfileId'] }),
 
-    readSmsCampaign: (campaignId: string) =>
-      client.fetch<ReadSmsCampaignData>(`messaging/sms/campaigns/${campaignId}`, { method: 'POST' }),
+    createSmsCampaign: (data: CreateSmsCampaignBody, options?: ConjoinCallOptions) =>
+      client.fetch<CreateSmsCampaignData>('messaging/sms-campaigns/', { ...options, method: 'POST', body: data, scopes: ['messagingProfileId'], acceptsIdempotencyKey: true }),
 
-    updateSmsCampaign: (campaignId: string, data: UpdateSmsCampaignBody) =>
-      client.fetch<UpdateSmsCampaignData>(`messaging/sms/campaigns/${campaignId}`, { method: 'PATCH', body: data }),
+    listSmsCampaignsCount: (query?: ListSmsCampaignsCountQuery, options?: ConjoinCallOptions) =>
+      client.fetch<ListSmsCampaignsCountData>('messaging/sms-campaigns/count', { ...options, method: 'GET', query: query as Record<string, unknown> | undefined, scopes: ['messagingProfileId'] }),
 
-    deleteSmsCampaign: (campaignId: string) =>
-      client.fetch<DeleteSmsCampaignData>(`messaging/sms/campaigns/${campaignId}`, { method: 'DELETE' }),
+    readSmsCampaign: (smsCampaignId: string, options?: ConjoinCallOptions) =>
+      client.fetch<ReadSmsCampaignData>(`messaging/sms-campaigns/${encodePathParam(smsCampaignId)}`, { ...options, method: 'GET', scopes: ['messagingProfileId'] }),
 
-    listSmsCampaigns: (data: ListSmsCampaignsBody) =>
-      client.fetchList<ListSmsCampaignsData>('messaging/sms/campaigns/', { method: 'POST', body: data }),
+    updateSmsCampaign: (smsCampaignId: string, data: UpdateSmsCampaignBody, options?: ConjoinCallOptions) =>
+      client.fetch<UpdateSmsCampaignData>(`messaging/sms-campaigns/${encodePathParam(smsCampaignId)}`, { ...options, method: 'PATCH', body: data, scopes: ['messagingProfileId'] }),
+
+    deleteSmsCampaign: (smsCampaignId: string, options?: ConjoinCallOptions) =>
+      client.fetch<DeleteSmsCampaignData>(`messaging/sms-campaigns/${encodePathParam(smsCampaignId)}`, { ...options, method: 'DELETE', scopes: ['messagingProfileId'] }),
   }
 }

@@ -1,36 +1,49 @@
-import type { ConjoinClient } from '../../core/types'
+import { encodePathParam } from '../../core/path'
+import type { ConjoinCallOptions, ConjoinClient } from '../../core/types'
 import type { operations } from '../api-types'
 
-type CreateSmsSenderBody = operations['createSmsSender']['requestBody']['content']['application/json']
+type ListManySmsSendersData = NonNullable<operations['listManySmsSenders']['responses']['200']['content']['application/json']['data']>[number]
+type ListManySmsSendersQuery = NonNullable<operations['listManySmsSenders']['parameters']['query']>
+type CreateSmsSenderBody = NonNullable<operations['createSmsSender']['requestBody']>['content']['application/json']
 type CreateSmsSenderData = NonNullable<operations['createSmsSender']['responses']['201']['content']['application/json']['data']>
+type ListManySmsSendersCountData = NonNullable<operations['listManySmsSendersCount']['responses']['200']['content']['application/json']['data']>
+type ListManySmsSendersCountQuery = NonNullable<operations['listManySmsSendersCount']['parameters']['query']>
+type ReadSmsSenderData = NonNullable<operations['readSmsSender']['responses']['200']['content']['application/json']['data']>
+type UpdateOneSmsSenderBody = NonNullable<operations['updateOneSmsSender']['requestBody']>['content']['application/json']
+type UpdateOneSmsSenderData = NonNullable<operations['updateOneSmsSender']['responses']['200']['content']['application/json']['data']>
+type DeleteSmsSenderData = NonNullable<operations['deleteSmsSender']['responses']['200']['content']['application/json']['data']>
 type EnableSmsSenderData = NonNullable<operations['enableSmsSender']['responses']['200']['content']['application/json']['data']>
 type DisableSmsSenderData = NonNullable<operations['disableSmsSender']['responses']['200']['content']['application/json']['data']>
-type ListSmsSenderData = NonNullable<operations['listSmsSender']['responses']['200']['content']['application/json']['data']>
-type DeleteSmsSenderData = NonNullable<operations['deleteSmsSender']['responses']['200']['content']['application/json']['data']>
-type UpdateOneSmsSenderData = NonNullable<operations['updateOneSmsSender']['responses']['200']['content']['application/json']['data']>
+type TransferSmsSenderBody = NonNullable<operations['transferSmsSender']['requestBody']>['content']['application/json']
 type TransferSmsSenderData = NonNullable<operations['transferSmsSender']['responses']['200']['content']['application/json']['data']>
 
 export function createMessagingSMSSenders(client: ConjoinClient) {
   return {
-    createSmsSender: (data: CreateSmsSenderBody) =>
-      client.fetch<CreateSmsSenderData>('messaging/sms/senders/new', { method: 'POST', body: data }),
+    listManySmsSenders: (query?: ListManySmsSendersQuery, options?: ConjoinCallOptions) =>
+      client.fetchList<ListManySmsSendersData>('messaging/sms-senders/', { ...options, method: 'GET', query: query as Record<string, unknown> | undefined, scopes: ['messagingProfileId'] }),
 
-    enableSmsSender: (senderId: string) =>
-      client.fetch<EnableSmsSenderData>(`messaging/sms/senders/${senderId}/enable`, { method: 'PATCH' }),
+    createSmsSender: (data: CreateSmsSenderBody, options?: ConjoinCallOptions) =>
+      client.fetch<CreateSmsSenderData>('messaging/sms-senders/', { ...options, method: 'POST', body: data, scopes: ['messagingProfileId'], acceptsIdempotencyKey: true }),
 
-    disableSmsSender: (senderId: string) =>
-      client.fetch<DisableSmsSenderData>(`messaging/sms/senders/${senderId}/disable`, { method: 'PATCH' }),
+    listManySmsSendersCount: (query?: ListManySmsSendersCountQuery, options?: ConjoinCallOptions) =>
+      client.fetch<ListManySmsSendersCountData>('messaging/sms-senders/count', { ...options, method: 'GET', query: query as Record<string, unknown> | undefined, scopes: ['messagingProfileId'] }),
 
-    listSmsSender: (senderId: string) =>
-      client.fetch<ListSmsSenderData>(`messaging/sms/senders/${senderId}`),
+    readSmsSender: (smsSenderId: string, options?: ConjoinCallOptions) =>
+      client.fetch<ReadSmsSenderData>(`messaging/sms-senders/${encodePathParam(smsSenderId)}`, { ...options, method: 'GET', scopes: ['messagingProfileId'] }),
 
-    deleteSmsSender: (senderId: string) =>
-      client.fetch<DeleteSmsSenderData>(`messaging/sms/senders/${senderId}`, { method: 'DELETE' }),
+    updateOneSmsSender: (smsSenderId: string, data: UpdateOneSmsSenderBody, options?: ConjoinCallOptions) =>
+      client.fetch<UpdateOneSmsSenderData>(`messaging/sms-senders/${encodePathParam(smsSenderId)}`, { ...options, method: 'PATCH', body: data, scopes: ['messagingProfileId'] }),
 
-    updateOneSmsSender: (senderId: string) =>
-      client.fetch<UpdateOneSmsSenderData>(`messaging/sms/senders/${senderId}`, { method: 'PATCH' }),
+    deleteSmsSender: (smsSenderId: string, options?: ConjoinCallOptions) =>
+      client.fetch<DeleteSmsSenderData>(`messaging/sms-senders/${encodePathParam(smsSenderId)}`, { ...options, method: 'DELETE', scopes: ['messagingProfileId'] }),
 
-    transferSmsSender: (senderId: string, projectId: string) =>
-      client.fetch<TransferSmsSenderData>(`messaging/sms/senders/transfers/${senderId}/${projectId}`, { method: 'PATCH' }),
+    enableSmsSender: (smsSenderId: string, options?: ConjoinCallOptions) =>
+      client.fetch<EnableSmsSenderData>(`messaging/sms-senders/${encodePathParam(smsSenderId)}/enable`, { ...options, method: 'POST', scopes: ['messagingProfileId'], acceptsIdempotencyKey: true }),
+
+    disableSmsSender: (smsSenderId: string, options?: ConjoinCallOptions) =>
+      client.fetch<DisableSmsSenderData>(`messaging/sms-senders/${encodePathParam(smsSenderId)}/disable`, { ...options, method: 'POST', scopes: ['messagingProfileId'], acceptsIdempotencyKey: true }),
+
+    transferSmsSender: (smsSenderId: string, data: TransferSmsSenderBody, options?: ConjoinCallOptions) =>
+      client.fetch<TransferSmsSenderData>(`messaging/sms-senders/${encodePathParam(smsSenderId)}/transfer`, { ...options, method: 'POST', body: data, scopes: ['messagingProfileId'], acceptsIdempotencyKey: true }),
   }
 }

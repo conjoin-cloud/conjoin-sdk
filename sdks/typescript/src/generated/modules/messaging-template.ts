@@ -1,31 +1,36 @@
-import type { ConjoinClient } from '../../core/types'
+import { encodePathParam } from '../../core/path'
+import type { ConjoinCallOptions, ConjoinClient } from '../../core/types'
 import type { operations } from '../api-types'
 
-type CreateMessageBody = operations['createMessageTemplate']['requestBody']['content']['application/json']
-type CreateMessageData = NonNullable<operations['createMessageTemplate']['responses']['201']['content']['application/json']['data']>
-type ListMessageBody = operations['listMessageTemplates']['requestBody']['content']['application/json']
 type ListMessageData = NonNullable<operations['listMessageTemplates']['responses']['200']['content']['application/json']['data']>[number]
+type ListMessageQuery = NonNullable<operations['listMessageTemplates']['parameters']['query']>
+type CreateMessageBody = NonNullable<operations['createMessageTemplate']['requestBody']>['content']['application/json']
+type CreateMessageData = NonNullable<operations['createMessageTemplate']['responses']['201']['content']['application/json']['data']>
+type ListMessageCountData = NonNullable<operations['listMessageTemplatesCount']['responses']['200']['content']['application/json']['data']>
+type ListMessageCountQuery = NonNullable<operations['listMessageTemplatesCount']['parameters']['query']>
+type ReadMessageData = NonNullable<operations['readMessageTemplate']['responses']['200']['content']['application/json']['data']>
 type DeleteMessageData = NonNullable<operations['deleteMessageTemplate']['responses']['200']['content']['application/json']['data']>
-type DeleteMessagesBody = operations['deleteMessageTemplates']['requestBody']['content']['application/json']
-type DeleteMessagesResponse = operations['deleteMessageTemplates']['responses']['200']['content']['application/json']
-type UpdateMessageBody = operations['updateMessageTemplate']['requestBody']['content']['application/json']
+type UpdateMessageBody = NonNullable<operations['updateMessageTemplate']['requestBody']>['content']['application/json']
 type UpdateMessageData = NonNullable<operations['updateMessageTemplate']['responses']['200']['content']['application/json']['data']>
 
 export function createMessagingTemplates(client: ConjoinClient) {
   return {
-    createMessage: (data: CreateMessageBody) =>
-      client.fetch<CreateMessageData>('messaging/templates/new', { method: 'POST', body: data }),
+    listMessage: (query?: ListMessageQuery, options?: ConjoinCallOptions) =>
+      client.fetchList<ListMessageData>('messaging/templates/', { ...options, method: 'GET', query: query as Record<string, unknown> | undefined, scopes: ['messagingProfileId'] }),
 
-    listMessage: (templateId: string, data: ListMessageBody) =>
-      client.fetchList<ListMessageData>(`messaging/templates/${templateId}`, { method: 'POST', body: data }),
+    createMessage: (data: CreateMessageBody, options?: ConjoinCallOptions) =>
+      client.fetch<CreateMessageData>('messaging/templates/', { ...options, method: 'POST', body: data, scopes: ['messagingProfileId'], acceptsIdempotencyKey: true }),
 
-    deleteMessage: (templateId: string) =>
-      client.fetch<DeleteMessageData>(`messaging/templates/${templateId}`, { method: 'DELETE' }),
+    listMessageCount: (query?: ListMessageCountQuery, options?: ConjoinCallOptions) =>
+      client.fetch<ListMessageCountData>('messaging/templates/count', { ...options, method: 'GET', query: query as Record<string, unknown> | undefined, scopes: ['messagingProfileId'] }),
 
-    deleteMessages: (data: DeleteMessagesBody) =>
-      client.fetch<DeleteMessagesResponse>('messaging/templates/wipe', { method: 'PATCH', body: data }),
+    readMessage: (templateId: string, options?: ConjoinCallOptions) =>
+      client.fetch<ReadMessageData>(`messaging/templates/${encodePathParam(templateId)}`, { ...options, method: 'GET', scopes: ['messagingProfileId'] }),
 
-    updateMessage: (templateId: string, data: UpdateMessageBody) =>
-      client.fetch<UpdateMessageData>(`messaging/templates/update/${templateId}`, { method: 'PATCH', body: data }),
+    deleteMessage: (templateId: string, options?: ConjoinCallOptions) =>
+      client.fetch<DeleteMessageData>(`messaging/templates/${encodePathParam(templateId)}`, { ...options, method: 'DELETE', scopes: ['messagingProfileId'] }),
+
+    updateMessage: (templateId: string, data: UpdateMessageBody, options?: ConjoinCallOptions) =>
+      client.fetch<UpdateMessageData>(`messaging/templates/${encodePathParam(templateId)}`, { ...options, method: 'PATCH', body: data, scopes: ['messagingProfileId'] }),
   }
 }

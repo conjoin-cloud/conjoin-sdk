@@ -3,7 +3,7 @@ import type { ConjoinContractServer } from './conjoin-contract-server'
 import { startConjoinContractServer } from './conjoin-contract-server'
 import { conjoinSuccess } from './response-fixtures'
 
-const EMAIL_SEND_PATH = '/v1/messaging/email/send'
+const EMAIL_SEND_PATH = '/v1/messaging/email-messages/'
 const BOUNDARY = 'conjoinmultipartboundary'
 
 const emailMessageFixture = () => ({
@@ -98,8 +98,10 @@ describe('Conjoin contract server multipart validation', () => {
 
     expect(response.status).toBe(400)
     await expect(response.json()).resolves.toMatchObject({
-      code: 'contract_request_invalid',
-      errors: expect.arrayContaining([expect.objectContaining({ message: expect.stringContaining('subject') })]),
+      error: {
+        code: 'contract_request_invalid',
+        details: expect.arrayContaining([expect.objectContaining({ message: expect.stringContaining('subject') })]),
+      },
     })
     expect(wasHandlerCalled).toBe(false)
   })
@@ -114,10 +116,12 @@ describe('Conjoin contract server multipart validation', () => {
 
     expect(response.status).toBe(400)
     await expect(response.json()).resolves.toMatchObject({
-      code: 'contract_request_invalid',
-      errors: expect.arrayContaining([
-        expect.objectContaining({ path: expect.stringContaining('create_conversation') }),
-      ]),
+      error: {
+        code: 'contract_request_invalid',
+        details: expect.arrayContaining([
+          expect.objectContaining({ path: expect.stringContaining('create_conversation') }),
+        ]),
+      },
     })
     expect(wasHandlerCalled).toBe(false)
   })
@@ -132,8 +136,10 @@ describe('Conjoin contract server multipart validation', () => {
 
     expect(response.status).toBe(400)
     await expect(response.json()).resolves.toMatchObject({
-      code: 'contract_request_invalid',
-      errors: expect.arrayContaining([expect.objectContaining({ path: expect.stringContaining('from') })]),
+      error: {
+        code: 'contract_request_invalid',
+        details: expect.arrayContaining([expect.objectContaining({ path: expect.stringContaining('from') })]),
+      },
     })
     expect(wasHandlerCalled).toBe(false)
   })
@@ -148,10 +154,12 @@ describe('Conjoin contract server multipart validation', () => {
 
     expect(response.status).toBe(400)
     await expect(response.json()).resolves.toMatchObject({
-      code: 'contract_request_invalid',
-      errors: expect.arrayContaining([
-        expect.objectContaining({ path: 'body.default_placeholders', message: 'is not valid JSON' }),
-      ]),
+      error: {
+        code: 'contract_request_invalid',
+        details: expect.arrayContaining([
+          expect.objectContaining({ path: 'body.default_placeholders', message: 'is not valid JSON' }),
+        ]),
+      },
     })
     expect(wasHandlerCalled).toBe(false)
   })
@@ -166,10 +174,12 @@ describe('Conjoin contract server multipart validation', () => {
 
     expect(response.status).toBe(400)
     await expect(response.json()).resolves.toMatchObject({
-      code: 'contract_request_invalid',
-      errors: expect.arrayContaining([
-        expect.objectContaining({ path: 'body.attachments[0]', message: 'is not valid JSON' }),
-      ]),
+      error: {
+        code: 'contract_request_invalid',
+        details: expect.arrayContaining([
+          expect.objectContaining({ path: 'body.attachments[0]', message: 'is not valid JSON' }),
+        ]),
+      },
     })
     expect(wasHandlerCalled).toBe(false)
   })

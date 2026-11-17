@@ -1,14 +1,13 @@
 import { cookies, headers } from 'next/headers'
 import { cache } from 'react'
 import { verifyToken } from '../server/tokens'
-import { getJwksUrl, resolveConfig } from './config'
+import { resolveConfig, resolveJwksUrl } from './config'
 import type { AuthObject, NextAdapterConfig } from './types'
 
 const COOKIE_ACCESS_TOKEN = '__conjoin_auth_at'
 
 async function resolveAuth(overrides?: Partial<NextAdapterConfig>): Promise<AuthObject | null> {
   const config = resolveConfig(overrides)
-  const jwksUrl = getJwksUrl(config)
 
   const headerStore = await headers()
   const cookieStore = await cookies()
@@ -20,6 +19,8 @@ async function resolveAuth(overrides?: Partial<NextAdapterConfig>): Promise<Auth
 
   const token = bearerToken ?? cookieToken
   if (!token) return null
+
+  const jwksUrl = await resolveJwksUrl(config)
 
   try {
     const verified = await verifyToken(token, { jwksUrl })

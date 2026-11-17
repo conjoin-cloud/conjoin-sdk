@@ -1,57 +1,58 @@
-import type { ConjoinClient } from '../../core/types'
+import { encodePathParam } from '../../core/path'
+import type { ConjoinCallOptions, ConjoinClient } from '../../core/types'
 import type { operations } from '../api-types'
 
-type CreateBody = operations['createMessagingProfile']['requestBody']['content']['application/json']
+type ListData = NonNullable<operations['listMessagingProfiles']['responses']['200']['content']['application/json']['data']>[number]
+type ListQuery = NonNullable<operations['listMessagingProfiles']['parameters']['query']>
+type CreateBody = NonNullable<operations['createMessagingProfile']['requestBody']>['content']['application/json']
 type CreateData = NonNullable<operations['createMessagingProfile']['responses']['201']['content']['application/json']['data']>
+type ListCountData = NonNullable<operations['listMessagingProfilesCount']['responses']['200']['content']['application/json']['data']>
+type ListCountQuery = NonNullable<operations['listMessagingProfilesCount']['parameters']['query']>
 type EnableData = NonNullable<operations['enableMessagingProfile']['responses']['200']['content']['application/json']['data']>
 type DisableData = NonNullable<operations['disableMessagingProfile']['responses']['200']['content']['application/json']['data']>
+type EnableChannelsBody = NonNullable<operations['enableMessagingProfileChannels']['requestBody']>['content']['application/json']
+type EnableChannelsData = NonNullable<operations['enableMessagingProfileChannels']['responses']['200']['content']['application/json']['data']>
+type DisableChannelsBody = NonNullable<operations['disableMessagingProfileChannels']['requestBody']>['content']['application/json']
+type DisableChannelsData = NonNullable<operations['disableMessagingProfileChannels']['responses']['200']['content']['application/json']['data']>
 type CloseData = NonNullable<operations['closeMessagingProfile']['responses']['200']['content']['application/json']['data']>
-type UpdateBody = operations['updateMessagingProfile']['requestBody']['content']['application/json']
+type UpdateBody = NonNullable<operations['updateMessagingProfile']['requestBody']>['content']['application/json']
 type UpdateData = NonNullable<operations['updateMessagingProfile']['responses']['200']['content']['application/json']['data']>
 type ReadData = NonNullable<operations['readMessagingProfile']['responses']['200']['content']['application/json']['data']>
 type DeleteData = NonNullable<operations['deleteMessagingProfile']['responses']['200']['content']['application/json']['data']>
-type UpdateEmailConfigBody = operations['updateMessagingProfileEmailConfig']['requestBody']['content']['application/json']
-type UpdateEmailConfigData = NonNullable<operations['updateMessagingProfileEmailConfig']['responses']['200']['content']['application/json']['data']>
-type UpdateMultisendConfigBody = operations['updateMessagingProfileMultisendConfig']['requestBody']['content']['application/json']
-type UpdateMultisendConfigData = NonNullable<operations['updateMessagingProfileMultisendConfig']['responses']['200']['content']['application/json']['data']>
-type UpdateVerificationsConfigBody = operations['updateMessagingProfileVerificationsConfig']['requestBody']['content']['application/json']
-type UpdateVerificationsConfigData = NonNullable<operations['updateMessagingProfileVerificationsConfig']['responses']['200']['content']['application/json']['data']>
-type ListBody = operations['listMessagingProfiles']['requestBody']['content']['application/json']
-type ListData = NonNullable<operations['listMessagingProfiles']['responses']['200']['content']['application/json']['data']>[number]
 
 export function createMessagingProfiles(client: ConjoinClient) {
   return {
-    create: (data: CreateBody) =>
-      client.fetch<CreateData>('messaging/profiles/new', { method: 'POST', body: data }),
+    list: (query?: ListQuery, options?: ConjoinCallOptions) =>
+      client.fetchList<ListData>('messaging/profiles/', { ...options, method: 'GET', query: query as Record<string, unknown> | undefined }),
 
-    enable: (profileId: string) =>
-      client.fetch<EnableData>(`messaging/profiles/${profileId}/enable`, { method: 'PATCH' }),
+    create: (data: CreateBody, options?: ConjoinCallOptions) =>
+      client.fetch<CreateData>('messaging/profiles/', { ...options, method: 'POST', body: data, acceptsIdempotencyKey: true }),
 
-    disable: (profileId: string) =>
-      client.fetch<DisableData>(`messaging/profiles/${profileId}/disable`, { method: 'PATCH' }),
+    listCount: (query?: ListCountQuery, options?: ConjoinCallOptions) =>
+      client.fetch<ListCountData>('messaging/profiles/count', { ...options, method: 'GET', query: query as Record<string, unknown> | undefined }),
 
-    close: (profileId: string) =>
-      client.fetch<CloseData>(`messaging/profiles/${profileId}/close`, { method: 'PATCH' }),
+    enable: (profileId: string, options?: ConjoinCallOptions) =>
+      client.fetch<EnableData>(`messaging/profiles/${encodePathParam(profileId)}/enable`, { ...options, method: 'POST', acceptsIdempotencyKey: true }),
 
-    update: (profileId: string, data: UpdateBody) =>
-      client.fetch<UpdateData>(`messaging/profiles/${profileId}`, { method: 'PATCH', body: data }),
+    disable: (profileId: string, options?: ConjoinCallOptions) =>
+      client.fetch<DisableData>(`messaging/profiles/${encodePathParam(profileId)}/disable`, { ...options, method: 'POST', acceptsIdempotencyKey: true }),
 
-    read: (profileId: string) =>
-      client.fetch<ReadData>(`messaging/profiles/${profileId}`),
+    enableChannels: (profileId: string, data: EnableChannelsBody, options?: ConjoinCallOptions) =>
+      client.fetch<EnableChannelsData>(`messaging/profiles/${encodePathParam(profileId)}/enable-channels`, { ...options, method: 'POST', body: data, acceptsIdempotencyKey: true }),
 
-    delete: (profileId: string) =>
-      client.fetch<DeleteData>(`messaging/profiles/${profileId}`, { method: 'DELETE' }),
+    disableChannels: (profileId: string, data: DisableChannelsBody, options?: ConjoinCallOptions) =>
+      client.fetch<DisableChannelsData>(`messaging/profiles/${encodePathParam(profileId)}/disable-channels`, { ...options, method: 'POST', body: data, acceptsIdempotencyKey: true }),
 
-    updateEmailConfig: (profileId: string, data: UpdateEmailConfigBody) =>
-      client.fetch<UpdateEmailConfigData>(`messaging/profiles/${profileId}/emails-config`, { method: 'PATCH', body: data }),
+    close: (profileId: string, options?: ConjoinCallOptions) =>
+      client.fetch<CloseData>(`messaging/profiles/${encodePathParam(profileId)}/close`, { ...options, method: 'POST', acceptsIdempotencyKey: true }),
 
-    updateMultisendConfig: (profileId: string, data: UpdateMultisendConfigBody) =>
-      client.fetch<UpdateMultisendConfigData>(`messaging/profiles/${profileId}/multisend-config`, { method: 'PATCH', body: data }),
+    update: (profileId: string, data: UpdateBody, options?: ConjoinCallOptions) =>
+      client.fetch<UpdateData>(`messaging/profiles/${encodePathParam(profileId)}`, { ...options, method: 'PATCH', body: data }),
 
-    updateVerificationsConfig: (profileId: string, data: UpdateVerificationsConfigBody) =>
-      client.fetch<UpdateVerificationsConfigData>(`messaging/profiles/${profileId}/verifications-config`, { method: 'PATCH', body: data }),
+    read: (profileId: string, options?: ConjoinCallOptions) =>
+      client.fetch<ReadData>(`messaging/profiles/${encodePathParam(profileId)}`, { ...options, method: 'GET' }),
 
-    list: (data: ListBody) =>
-      client.fetchList<ListData>('messaging/profiles/', { method: 'POST', body: data }),
+    delete: (profileId: string, options?: ConjoinCallOptions) =>
+      client.fetch<DeleteData>(`messaging/profiles/${encodePathParam(profileId)}`, { ...options, method: 'DELETE' }),
   }
 }

@@ -1,81 +1,60 @@
-import type { ConjoinClient } from '../../core/types'
+import { encodePathParam } from '../../core/path'
+import type { ConjoinCallOptions, ConjoinClient } from '../../core/types'
 import type { operations } from '../api-types'
 
-type ReadData = NonNullable<operations['readAuthSession']['responses']['200']['content']['application/json']['data']>
 type ListData = NonNullable<operations['listAuthSessions']['responses']['200']['content']['application/json']['data']>[number]
 type ListQuery = NonNullable<operations['listAuthSessions']['parameters']['query']>
-type CountData = NonNullable<operations['countAuthSessions']['responses']['200']['content']['application/json']['data']>
-type CountQuery = NonNullable<operations['countAuthSessions']['parameters']['query']>
-type UpdateBody = operations['updateAuthSession']['requestBody']['content']['application/json']
-type UpdateData = NonNullable<operations['updateAuthSession']['responses']['200']['content']['application/json']['data']>
-type RefreshBody = operations['refreshAuthSession']['requestBody']['content']['application/json']
-type RefreshData = NonNullable<operations['refreshAuthSession']['responses']['200']['content']['application/json']['data']>
-type ValidateBody = operations['validateAuthSession']['requestBody']['content']['application/json']
-type ValidateData = NonNullable<operations['validateAuthSession']['responses']['200']['content']['application/json']['data']>
-type RevokeBody = operations['revokeAuthSession']['requestBody']['content']['application/json']
-type RevokeData = NonNullable<operations['revokeAuthSession']['responses']['200']['content']['application/json']['data']>
-type RevokeAllForAccountBody = operations['revokeAllAuthSessionsForAccount']['requestBody']['content']['application/json']
-type RevokeAllForAccountData = NonNullable<operations['revokeAllAuthSessionsForAccount']['responses']['200']['content']['application/json']['data']>
-type BulkRevokeAccountBody = operations['bulkRevokeAccountSessions']['requestBody']['content']['application/json']
-type BulkRevokeAccountData = NonNullable<operations['bulkRevokeAccountSessions']['responses']['200']['content']['application/json']['data']>
-type BulkRevokeClientBody = operations['bulkRevokeClientSessions']['requestBody']['content']['application/json']
-type BulkRevokeClientData = NonNullable<operations['bulkRevokeClientSessions']['responses']['200']['content']['application/json']['data']>
-type ListByAccountData = NonNullable<operations['listSessionsByAccount']['responses']['200']['content']['application/json']['data']>[number]
-type ListByAccountQuery = NonNullable<operations['listSessionsByAccount']['parameters']['query']>
-type ListByClientData = NonNullable<operations['listSessionsByClient']['responses']['200']['content']['application/json']['data']>[number]
-type ListByClientQuery = NonNullable<operations['listSessionsByClient']['parameters']['query']>
-type GetActiveCountData = NonNullable<operations['getActiveSessionCount']['responses']['200']['content']['application/json']['data']>
-type GetActiveCountQuery = NonNullable<operations['getActiveSessionCount']['parameters']['query']>
-type GetActiveClientCountData = NonNullable<operations['getActiveClientSessionCount']['responses']['200']['content']['application/json']['data']>
-type GetActiveClientCountQuery = NonNullable<operations['getActiveClientSessionCount']['parameters']['query']>
+type ListCountData = NonNullable<operations['listAuthSessionsCount']['responses']['200']['content']['application/json']['data']>
+type ListCountQuery = NonNullable<operations['listAuthSessionsCount']['parameters']['query']>
+type ReadStatsData = NonNullable<operations['readAuthSessionStats']['responses']['200']['content']['application/json']['data']>
+type ReadStatsQuery = NonNullable<operations['readAuthSessionStats']['parameters']['query']>
 type GetAnalyticsData = NonNullable<operations['getSessionAnalytics']['responses']['200']['content']['application/json']['data']>
 type GetAnalyticsQuery = NonNullable<operations['getSessionAnalytics']['parameters']['query']>
+type ReadData = NonNullable<operations['readAuthSession']['responses']['200']['content']['application/json']['data']>
+type UpdateBody = NonNullable<operations['updateAuthSession']['requestBody']>['content']['application/json']
+type UpdateData = NonNullable<operations['updateAuthSession']['responses']['200']['content']['application/json']['data']>
+type ValidateBody = NonNullable<operations['validateAuthSession']['requestBody']>['content']['application/json']
+type ValidateData = NonNullable<operations['validateAuthSession']['responses']['200']['content']['application/json']['data']>
+type RevokeData = NonNullable<operations['revokeAuthSession']['responses']['200']['content']['application/json']['data']>
+type RevokeAllForAccountData = NonNullable<operations['revokeAllAuthSessionsForAccount']['responses']['200']['content']['application/json']['data']>
+type BulkRevokeAccountBody = NonNullable<operations['bulkRevokeAccountSessions']['requestBody']>['content']['application/json']
+type BulkRevokeAccountData = NonNullable<operations['bulkRevokeAccountSessions']['responses']['200']['content']['application/json']['data']>
+type BulkRevokeClientBody = NonNullable<operations['bulkRevokeClientSessions']['requestBody']>['content']['application/json']
+type BulkRevokeClientData = NonNullable<operations['bulkRevokeClientSessions']['responses']['200']['content']['application/json']['data']>
 
 export function createAuthSessions(client: ConjoinClient) {
   return {
-    read: (appId: string, sessionId: string) =>
-      client.fetch<ReadData>(`auth/session/${appId}/session/${sessionId}`),
+    list: (query?: ListQuery, options?: ConjoinCallOptions) =>
+      client.fetchList<ListData>('auth/sessions', { ...options, method: 'GET', query: query as Record<string, unknown> | undefined, scopes: ['authAppId'] }),
 
-    list: (clientId: string, query?: ListQuery) =>
-      client.fetchList<ListData>(`auth/session/client/${clientId}/sessions`, { query: query as Record<string, unknown> }),
+    listCount: (query?: ListCountQuery, options?: ConjoinCallOptions) =>
+      client.fetch<ListCountData>('auth/sessions/count', { ...options, method: 'GET', query: query as Record<string, unknown> | undefined, scopes: ['authAppId'] }),
 
-    count: (query?: CountQuery) =>
-      client.fetch<CountData>('auth/session/count', { query: query as Record<string, unknown> }),
+    readStats: (query?: ReadStatsQuery, options?: ConjoinCallOptions) =>
+      client.fetch<ReadStatsData>('auth/sessions/stats', { ...options, method: 'GET', query: query as Record<string, unknown> | undefined, scopes: ['authAppId'] }),
 
-    update: (appId: string, sessionId: string, data: UpdateBody) =>
-      client.fetch<UpdateData>(`auth/session/${appId}/session/${sessionId}/update`, { method: 'PATCH', body: data }),
+    getAnalytics: (query: GetAnalyticsQuery, options?: ConjoinCallOptions) =>
+      client.fetch<GetAnalyticsData>('auth/sessions/analytics', { ...options, method: 'GET', query: query as Record<string, unknown> | undefined, scopes: ['authAppId'] }),
 
-    refresh: (appId: string, sessionId: string, data: RefreshBody) =>
-      client.fetch<RefreshData>(`auth/session/${appId}/session/${sessionId}/refresh`, { method: 'POST', body: data }),
+    read: (sessionId: string, options?: ConjoinCallOptions) =>
+      client.fetch<ReadData>(`auth/sessions/${encodePathParam(sessionId)}`, { ...options, method: 'GET', scopes: ['authAppId'] }),
 
-    validate: (appId: string, sessionId: string, data: ValidateBody) =>
-      client.fetch<ValidateData>(`auth/session/${appId}/session/${sessionId}/validate`, { method: 'POST', body: data }),
+    update: (sessionId: string, data: UpdateBody, options?: ConjoinCallOptions) =>
+      client.fetch<UpdateData>(`auth/sessions/${encodePathParam(sessionId)}`, { ...options, method: 'PATCH', body: data, scopes: ['authAppId'] }),
 
-    revoke: (appId: string, clientId: string, sessionId: string, data: RevokeBody) =>
-      client.fetch<RevokeData>(`auth/session/${appId}/client/${clientId}/session/${sessionId}/revoke`, { method: 'POST', body: data }),
+    validate: (sessionId: string, data: ValidateBody, options?: ConjoinCallOptions) =>
+      client.fetch<ValidateData>(`auth/sessions/${encodePathParam(sessionId)}/validate`, { ...options, method: 'POST', body: data, scopes: ['authAppId'], acceptsIdempotencyKey: true }),
 
-    revokeAllForAccount: (appId: string, accountId: string, data: RevokeAllForAccountBody) =>
-      client.fetch<RevokeAllForAccountData>(`auth/session/${appId}/account/${accountId}/sessions/revoke`, { method: 'POST', body: data }),
+    revoke: (sessionId: string, options?: ConjoinCallOptions) =>
+      client.fetch<RevokeData>(`auth/sessions/${encodePathParam(sessionId)}/revoke`, { ...options, method: 'POST', scopes: ['authAppId'], acceptsIdempotencyKey: true }),
 
-    bulkRevokeAccount: (accountId: string, data: BulkRevokeAccountBody) =>
-      client.fetch<BulkRevokeAccountData>(`auth/session/account/${accountId}/sessions/revoke/bulk`, { method: 'POST', body: data }),
+    revokeAllForAccount: (accountId: string, options?: ConjoinCallOptions) =>
+      client.fetch<RevokeAllForAccountData>(`auth/accounts/${encodePathParam(accountId)}/sessions/revoke-all`, { ...options, method: 'POST', scopes: ['authAppId'], acceptsIdempotencyKey: true }),
 
-    bulkRevokeClient: (clientId: string, data: BulkRevokeClientBody) =>
-      client.fetch<BulkRevokeClientData>(`auth/session/client/${clientId}/sessions/revoke/bulk`, { method: 'POST', body: data }),
+    bulkRevokeAccount: (accountId: string, data: BulkRevokeAccountBody, options?: ConjoinCallOptions) =>
+      client.fetch<BulkRevokeAccountData>(`auth/accounts/${encodePathParam(accountId)}/sessions/revoke`, { ...options, method: 'POST', body: data, scopes: ['authAppId'], acceptsIdempotencyKey: true }),
 
-    listByAccount: (query?: ListByAccountQuery) =>
-      client.fetchList<ListByAccountData>('auth/session/sessions/account', { query: query as Record<string, unknown> }),
-
-    listByClient: (query?: ListByClientQuery) =>
-      client.fetchList<ListByClientData>('auth/session/sessions/client', { query: query as Record<string, unknown> }),
-
-    getActiveCount: (query?: GetActiveCountQuery) =>
-      client.fetch<GetActiveCountData>('auth/session/active/count', { query: query as Record<string, unknown> }),
-
-    getActiveClientCount: (query?: GetActiveClientCountQuery) =>
-      client.fetch<GetActiveClientCountData>('auth/session/active/client-count', { query: query as Record<string, unknown> }),
-
-    getAnalytics: (query?: GetAnalyticsQuery) =>
-      client.fetch<GetAnalyticsData>('auth/session/analytics', { query: query as Record<string, unknown> }),
+    bulkRevokeClient: (clientId: string, data: BulkRevokeClientBody, options?: ConjoinCallOptions) =>
+      client.fetch<BulkRevokeClientData>(`auth/clients/${encodePathParam(clientId)}/sessions/revoke`, { ...options, method: 'POST', body: data, scopes: ['authAppId'], acceptsIdempotencyKey: true }),
   }
 }

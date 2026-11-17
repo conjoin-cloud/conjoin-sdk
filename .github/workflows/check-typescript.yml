@@ -41,7 +41,12 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Generate affected TypeScript SDK
-        run: pnpm nx affected -t generate --base="${{ inputs.base }}" --head="${{ inputs.head }}" --exclude=sdk-python --outputStyle=static
+        run: pnpm nx affected -t generate --base="${{ inputs.base }}" --head="${{ inputs.head }}" --exclude=sdk-python,sdk-go,sdk-php --outputStyle=static
+
+      - name: Fail when generated TypeScript SDK code is out of date
+        run: |
+          git status --porcelain -- sdks/typescript/src/generated
+          test -z "$(git status --porcelain -- sdks/typescript/src/generated)"
 
       - name: Check affected TypeScript SDK
-        run: pnpm nx affected -t lint typecheck build test test:integration --base="${{ inputs.base }}" --head="${{ inputs.head }}" --exclude=sdk-python --outputStyle=static
+        run: pnpm nx affected -t lint typecheck build test test:integration --base="${{ inputs.base }}" --head="${{ inputs.head }}" --exclude=sdk-python,sdk-go,sdk-php --outputStyle=static

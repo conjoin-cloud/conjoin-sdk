@@ -1,30 +1,36 @@
-import type { ConjoinClient } from '../../core/types'
+import { encodePathParam } from '../../core/path'
+import type { ConjoinCallOptions, ConjoinClient } from '../../core/types'
 import type { operations } from '../api-types'
 
-type CreateBody = operations['createPolicy']['requestBody']['content']['application/json']
-type CreateData = NonNullable<operations['createPolicy']['responses']['201']['content']['application/json']['data']>
-type ReadData = NonNullable<operations['readPolicy']['responses']['200']['content']['application/json']['data']>
 type ListData = NonNullable<operations['listPolicies']['responses']['200']['content']['application/json']['data']>[number]
 type ListQuery = NonNullable<operations['listPolicies']['parameters']['query']>
-type UpdateBody = operations['updatePolicy']['requestBody']['content']['application/json']
+type CreateBody = NonNullable<operations['createPolicy']['requestBody']>['content']['application/json']
+type CreateData = NonNullable<operations['createPolicy']['responses']['201']['content']['application/json']['data']>
+type ListCountData = NonNullable<operations['listPoliciesCount']['responses']['200']['content']['application/json']['data']>
+type ListCountQuery = NonNullable<operations['listPoliciesCount']['parameters']['query']>
+type ReadData = NonNullable<operations['readPolicy']['responses']['200']['content']['application/json']['data']>
+type UpdateBody = NonNullable<operations['updatePolicy']['requestBody']>['content']['application/json']
 type UpdateData = NonNullable<operations['updatePolicy']['responses']['200']['content']['application/json']['data']>
 type DeleteData = NonNullable<operations['deletePolicy']['responses']['200']['content']['application/json']['data']>
 
 export function createAuthPolicies(client: ConjoinClient) {
   return {
-    create: (appId: string, organizationId: string, data: CreateBody) =>
-      client.fetch<CreateData>(`auth/organization/policy/${appId}/organization/${organizationId}/policy/create`, { method: 'POST', body: data }),
+    list: (organizationId: string, query?: ListQuery, options?: ConjoinCallOptions) =>
+      client.fetchList<ListData>(`auth/organizations/${encodePathParam(organizationId)}/policies/`, { ...options, method: 'GET', query: query as Record<string, unknown> | undefined, scopes: ['authAppId'] }),
 
-    read: (appId: string, organizationId: string, policyId: string) =>
-      client.fetch<ReadData>(`auth/organization/policy/${appId}/organization/${organizationId}/policy/${policyId}`),
+    create: (organizationId: string, data: CreateBody, options?: ConjoinCallOptions) =>
+      client.fetch<CreateData>(`auth/organizations/${encodePathParam(organizationId)}/policies/`, { ...options, method: 'POST', body: data, scopes: ['authAppId'], acceptsIdempotencyKey: true }),
 
-    list: (appId: string, organizationId: string, query?: ListQuery) =>
-      client.fetchList<ListData>(`auth/organization/policy/${appId}/organization/${organizationId}/policy`, { query: query as Record<string, unknown> }),
+    listCount: (organizationId: string, query?: ListCountQuery, options?: ConjoinCallOptions) =>
+      client.fetch<ListCountData>(`auth/organizations/${encodePathParam(organizationId)}/policies/count`, { ...options, method: 'GET', query: query as Record<string, unknown> | undefined, scopes: ['authAppId'] }),
 
-    update: (appId: string, organizationId: string, policyId: string, data: UpdateBody) =>
-      client.fetch<UpdateData>(`auth/organization/policy/${appId}/organization/${organizationId}/policy/${policyId}/update`, { method: 'PATCH', body: data }),
+    read: (organizationId: string, policyId: string, options?: ConjoinCallOptions) =>
+      client.fetch<ReadData>(`auth/organizations/${encodePathParam(organizationId)}/policies/${encodePathParam(policyId)}`, { ...options, method: 'GET', scopes: ['authAppId'] }),
 
-    delete: (appId: string, organizationId: string, policyId: string) =>
-      client.fetch<DeleteData>(`auth/organization/policy/${appId}/organization/${organizationId}/policy/${policyId}/delete`, { method: 'POST' }),
+    update: (organizationId: string, policyId: string, data: UpdateBody, options?: ConjoinCallOptions) =>
+      client.fetch<UpdateData>(`auth/organizations/${encodePathParam(organizationId)}/policies/${encodePathParam(policyId)}`, { ...options, method: 'PATCH', body: data, scopes: ['authAppId'] }),
+
+    delete: (organizationId: string, policyId: string, options?: ConjoinCallOptions) =>
+      client.fetch<DeleteData>(`auth/organizations/${encodePathParam(organizationId)}/policies/${encodePathParam(policyId)}`, { ...options, method: 'DELETE', scopes: ['authAppId'] }),
   }
 }

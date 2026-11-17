@@ -1,30 +1,37 @@
-import type { ConjoinClient } from '../../core/types'
+import { encodePathParam } from '../../core/path'
+import type { ConjoinCallOptions, ConjoinClient } from '../../core/types'
 import type { operations } from '../api-types'
 
-type PurchaseBody = operations['purchasePhoneNumber']['requestBody']['content']['application/json']
-type PurchaseData = NonNullable<operations['purchasePhoneNumber']['responses']['201']['content']['application/json']['data']>
-type UpdateData = NonNullable<operations['updatePhoneNumber']['responses']['200']['content']['application/json']['data']>
-type ListAvailableData = NonNullable<operations['listAvailablePhoneNumbers']['responses']['200']['content']['application/json']['data']>[number]
-type ListAvailableQuery = NonNullable<operations['listAvailablePhoneNumbers']['parameters']['query']>
 type ListData = NonNullable<operations['listPhoneNumbers']['responses']['200']['content']['application/json']['data']>[number]
 type ListQuery = NonNullable<operations['listPhoneNumbers']['parameters']['query']>
+type PurchaseBody = NonNullable<operations['purchasePhoneNumber']['requestBody']>['content']['application/json']
+type PurchaseData = NonNullable<operations['purchasePhoneNumber']['responses']['201']['content']['application/json']['data']>
+type ListCountData = NonNullable<operations['listPhoneNumbersCount']['responses']['200']['content']['application/json']['data']>
+type ListCountQuery = NonNullable<operations['listPhoneNumbersCount']['parameters']['query']>
+type TransferBody = NonNullable<operations['transferPhoneNumber']['requestBody']>['content']['application/json']
+type TransferData = NonNullable<operations['transferPhoneNumber']['responses']['200']['content']['application/json']['data']>
 type ReleaseData = NonNullable<operations['releasePhoneNumber']['responses']['200']['content']['application/json']['data']>
+type ListAvailableData = NonNullable<operations['listAvailablePhoneNumbers']['responses']['200']['content']['application/json']['data']>[number]
+type ListAvailableQuery = NonNullable<operations['listAvailablePhoneNumbers']['parameters']['query']>
 
 export function createMessagingPhoneNumbers(client: ConjoinClient) {
   return {
-    purchase: (phoneNumber: string, data: PurchaseBody) =>
-      client.fetch<PurchaseData>(`messaging/phone-numbers/provision/${phoneNumber}`, { method: 'POST', body: data }),
+    list: (query?: ListQuery, options?: ConjoinCallOptions) =>
+      client.fetchList<ListData>('messaging/phone-numbers/', { ...options, method: 'GET', query: query as Record<string, unknown> | undefined, scopes: ['messagingProfileId'] }),
 
-    update: (phoneNumber: string, projectId: string) =>
-      client.fetch<UpdateData>(`messaging/phone-numbers/transfer/${phoneNumber}/project/${projectId}`, { method: 'PATCH' }),
+    purchase: (data: PurchaseBody, options?: ConjoinCallOptions) =>
+      client.fetch<PurchaseData>('messaging/phone-numbers/', { ...options, method: 'POST', body: data, scopes: ['messagingProfileId'], acceptsIdempotencyKey: true }),
 
-    listAvailable: (query?: ListAvailableQuery) =>
-      client.fetchList<ListAvailableData>('messaging/phone-numbers/available', { query: query as Record<string, unknown> }),
+    listCount: (query?: ListCountQuery, options?: ConjoinCallOptions) =>
+      client.fetch<ListCountData>('messaging/phone-numbers/count', { ...options, method: 'GET', query: query as Record<string, unknown> | undefined, scopes: ['messagingProfileId'] }),
 
-    list: (query?: ListQuery) =>
-      client.fetchList<ListData>('messaging/phone-numbers/', { query: query as Record<string, unknown> }),
+    transfer: (phoneNumberId: string, data: TransferBody, options?: ConjoinCallOptions) =>
+      client.fetch<TransferData>(`messaging/phone-numbers/${encodePathParam(phoneNumberId)}/transfer`, { ...options, method: 'POST', body: data, scopes: ['messagingProfileId'], acceptsIdempotencyKey: true }),
 
-    release: (phoneNumber: string) =>
-      client.fetch<ReleaseData>(`messaging/phone-numbers/release/${phoneNumber}`, { method: 'POST' }),
+    release: (phoneNumberId: string, options?: ConjoinCallOptions) =>
+      client.fetch<ReleaseData>(`messaging/phone-numbers/${encodePathParam(phoneNumberId)}/release`, { ...options, method: 'POST', scopes: ['messagingProfileId'], acceptsIdempotencyKey: true }),
+
+    listAvailable: (query?: ListAvailableQuery, options?: ConjoinCallOptions) =>
+      client.fetchList<ListAvailableData>('messaging/available-phone-numbers/', { ...options, method: 'GET', query: query as Record<string, unknown> | undefined, scopes: ['messagingProfileId'] }),
   }
 }

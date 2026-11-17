@@ -1,6 +1,7 @@
 import { createConjoinClient } from '@conjoin-cloud/sdk'
 import { QueryClient } from '@tanstack/query-core'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { type ConjoinAuthApi, createConjoinAuthApi } from '../auth/auth-api'
 import { type AuthManager, createAuthManager } from './auth-manager'
 import { fetchSdkConfig } from './config-fetcher'
 import {
@@ -9,7 +10,7 @@ import {
   ConjoinAuthStateContext,
   ConjoinClientContext,
 } from './contexts'
-import type { AuthTransport, ConjoinAuthState, ConjoinProviderProps, ConjoinSdkConfig } from './types'
+import type { AuthFlowState, AuthTransport, ConjoinAuthState, ConjoinProviderProps, ConjoinSdkConfig } from './types'
 
 type ConjoinProviderCoreProps = ConjoinProviderProps & {
   transport: AuthTransport
@@ -22,7 +23,7 @@ type ConjoinProviderCoreProps = ConjoinProviderProps & {
 function authStateSignature(state: ConjoinAuthState): string {
   if (!state.isLoaded) return 'loading'
   if (!state.isSignedIn) return 'signed-out'
-  return [state.accountId, state.sessionId, state.organizationId, state.organizationRole].join('|')
+  return JSON.stringify([state.accountId, state.sessionId, state.organizationId, state.organizationRoles])
 }
 
 function mergePartialConfig(partial: Partial<ConjoinSdkConfig>, fallbackBaseUrl: string): ConjoinSdkConfig {
@@ -31,21 +32,28 @@ function mergePartialConfig(partial: Partial<ConjoinSdkConfig>, fallbackBaseUrl:
     environment: partial.environment ?? 'test',
     api_url: partial.api_url ?? fallbackBaseUrl,
     branding: partial.branding ?? null,
-    auth: {
-      domain: partial.auth?.domain ?? '',
-      sign_in_methods: partial.auth?.sign_in_methods ?? [],
-      mfa_enabled: partial.auth?.mfa_enabled ?? false,
-      sign_up_enabled: partial.auth?.sign_up_enabled ?? true,
-    },
+    auth: partial.auth ?? null,
     relay: {
       url: partial.relay?.url ?? '',
     },
   }
 }
 
+function createAuthApiForDomain(publishableKey: string, authDomain: string | undefined): ConjoinAuthApi | null {
+  if (!authDomain) return null
+
+  try {
+    return createConjoinAuthApi(publishableKey, authDomain)
+  } catch {
+    return null
+  }
+}
+
+const AUTH_NOT_CONFIGURED_MESSAGE = 'Sign-in is not configured for this project'
+
 export function ConjoinProviderCore({ publishableKey, children, config, transport }: ConjoinProviderCoreProps) {
   const [sdkConfig, setSdkConfig] = useState<ConjoinSdkConfig | null>(null)
-  const [isConfigLoaded, setIsConfigLoaded] = useState(!!config)
+  const [isConfigLoaded, setIsConfigLoaded] = useState(false)
   const [authState, setAuthState] = useState<ConjoinAuthState>({ isLoaded: false })
 
   const authManagerRef = useRef<AuthManager | null>(null)
@@ -100,13 +108,13 @@ export function ConjoinProviderCore({ publishableKey, children, config, transpor
     }
   }, [client, config])
 
+  const authDomain = sdkConfig?.auth?.domain
+  const authApi = useMemo(() => createAuthApiForDomain(publishableKey, authDomain), [publishableKey, authDomain])
+
   useEffect(() => {
-    const manager = createAuthManager({
-      client,
-      transport,
-      sdkConfig,
-      onStateChange: handleAuthStateChange,
-    })
+    if (!isConfigLoaded) return
+
+    const manager = createAuthManager({ api: authApi, transport, onStateChange: handleAuthStateChange })
 
     authManagerRef.current = manager
     manager.initialize()
@@ -115,7 +123,7 @@ export function ConjoinProviderCore({ publishableKey, children, config, transpor
       manager.destroy()
       authManagerRef.current = null
     }
-  }, [client, transport, sdkConfig, handleAuthStateChange])
+  }, [authApi, transport, isConfigLoaded, handleAuthStateChange])
 
   const getToken = useCallback(() => {
     return authManagerRef.current?.getToken() ?? null
@@ -123,14 +131,34 @@ export function ConjoinProviderCore({ publishableKey, children, config, transpor
 
   const signOut = useCallback(async () => {
     await authManagerRef.current?.signOut()
+    queryClient.removeQueries({ queryKey: ['conjoin', 'auth'] })
+  }, [queryClient])
+
+  const completeFlow = useCallback(async (flow: AuthFlowState) => {
+    const manager = authManagerRef.current
+    if (!manager) throw new Error(AUTH_NOT_CONFIGURED_MESSAGE)
+    await manager.completeFlow(flow)
   }, [])
 
-  const clientContextValue = useMemo(
-    () => ({ client, queryClient, sdkConfig, isConfigLoaded }),
-    [client, queryClient, sdkConfig, isConfigLoaded],
+  const switchOrganization = useCallback(
+    async (organizationId: string | null) => {
+      const manager = authManagerRef.current
+      if (!manager) throw new Error(AUTH_NOT_CONFIGURED_MESSAGE)
+      await manager.switchOrganization(organizationId)
+      await queryClient.invalidateQueries({ queryKey: ['conjoin', 'auth'] })
+    },
+    [queryClient],
   )
 
-  const authActions = useMemo<ConjoinAuthActions>(() => ({ getToken, signOut }), [getToken, signOut])
+  const clientContextValue = useMemo(
+    () => ({ client, queryClient, sdkConfig, isConfigLoaded, authApi, transport }),
+    [client, queryClient, sdkConfig, isConfigLoaded, authApi, transport],
+  )
+
+  const authActions = useMemo<ConjoinAuthActions>(
+    () => ({ getToken, signOut, completeFlow, switchOrganization }),
+    [getToken, signOut, completeFlow, switchOrganization],
+  )
 
   return (
     <ConjoinClientContext.Provider value={clientContextValue}>

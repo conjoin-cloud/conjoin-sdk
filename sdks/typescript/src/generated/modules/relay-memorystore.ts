@@ -1,39 +1,45 @@
-import type { ConjoinClient } from '../../core/types'
+import { encodePathParam } from '../../core/path'
+import type { ConjoinCallOptions, ConjoinClient } from '../../core/types'
 import type { operations } from '../api-types'
 
-type CreateClusterBody = operations['createMemorystoreCluster']['requestBody']['content']['application/json']
-type CreateClusterData = NonNullable<operations['createMemorystoreCluster']['responses']['201']['content']['application/json']['data']>
 type ReadClustersData = NonNullable<operations['readMemorystoreClusters']['responses']['200']['content']['application/json']['data']>[number]
 type ReadClustersQuery = NonNullable<operations['readMemorystoreClusters']['parameters']['query']>
+type CreateClusterBody = NonNullable<operations['createMemorystoreCluster']['requestBody']>['content']['application/json']
+type CreateClusterData = NonNullable<operations['createMemorystoreCluster']['responses']['201']['content']['application/json']['data']>
+type ReadClustersCountData = NonNullable<operations['readMemorystoreClustersCount']['responses']['200']['content']['application/json']['data']>
+type ReadClustersCountQuery = NonNullable<operations['readMemorystoreClustersCount']['parameters']['query']>
 type ReadClusterData = NonNullable<operations['readMemorystoreCluster']['responses']['200']['content']['application/json']['data']>
-type UpdateClusterBody = operations['updateMemorystoreCluster']['requestBody']['content']['application/json']
+type UpdateClusterBody = NonNullable<operations['updateMemorystoreCluster']['requestBody']>['content']['application/json']
 type UpdateClusterData = NonNullable<operations['updateMemorystoreCluster']['responses']['200']['content']['application/json']['data']>
-type SuspendClusterData = NonNullable<operations['suspendMemorystoreCluster']['responses']['200']['content']['application/json']['data']>
 type DeleteClusterData = NonNullable<operations['deleteMemorystoreCluster']['responses']['200']['content']['application/json']['data']>
-type ExecuteCommandBody = operations['executeMemorystoreCommand']['requestBody']['content']['application/json']
+type SuspendClusterData = NonNullable<operations['suspendMemorystoreCluster']['responses']['200']['content']['application/json']['data']>
+type ExecuteCommandBody = NonNullable<operations['executeMemorystoreCommand']['requestBody']>['content']['application/json']
 type ExecuteCommandData = NonNullable<operations['executeMemorystoreCommand']['responses']['200']['content']['application/json']['data']>
 
 export function createRelayMemorystores(client: ConjoinClient) {
   return {
-    createCluster: (data: CreateClusterBody) =>
-      client.fetch<CreateClusterData>('relay/memorystore/clusters/create', { method: 'POST', body: data }),
+    readClusters: (query?: ReadClustersQuery, options?: ConjoinCallOptions) =>
+      client.fetchList<ReadClustersData>('relay/memorystore-clusters/', { ...options, method: 'GET', query: query as Record<string, unknown> | undefined }),
 
-    readClusters: (query?: ReadClustersQuery) =>
-      client.fetchList<ReadClustersData>('relay/memorystore/clusters', { query: query as Record<string, unknown> }),
+    createCluster: (data: CreateClusterBody, options?: ConjoinCallOptions) =>
+      client.fetch<CreateClusterData>('relay/memorystore-clusters/', { ...options, method: 'POST', body: data, acceptsIdempotencyKey: true }),
 
-    readCluster: (clusterId: string) =>
-      client.fetch<ReadClusterData>(`relay/memorystore/clusters/${clusterId}`),
+    readClustersCount: (query?: ReadClustersCountQuery, options?: ConjoinCallOptions) =>
+      client.fetch<ReadClustersCountData>('relay/memorystore-clusters/count', { ...options, method: 'GET', query: query as Record<string, unknown> | undefined }),
 
-    updateCluster: (clusterId: string, data: UpdateClusterBody) =>
-      client.fetch<UpdateClusterData>(`relay/memorystore/clusters/${clusterId}/update`, { method: 'PATCH', body: data }),
+    readCluster: (memorystoreClusterId: string, options?: ConjoinCallOptions) =>
+      client.fetch<ReadClusterData>(`relay/memorystore-clusters/${encodePathParam(memorystoreClusterId)}`, { ...options, method: 'GET' }),
 
-    suspendCluster: (clusterId: string) =>
-      client.fetch<SuspendClusterData>(`relay/memorystore/clusters/${clusterId}/suspend`, { method: 'POST' }),
+    updateCluster: (memorystoreClusterId: string, data: UpdateClusterBody, options?: ConjoinCallOptions) =>
+      client.fetch<UpdateClusterData>(`relay/memorystore-clusters/${encodePathParam(memorystoreClusterId)}`, { ...options, method: 'PATCH', body: data }),
 
-    deleteCluster: (clusterId: string) =>
-      client.fetch<DeleteClusterData>(`relay/memorystore/clusters/${clusterId}/delete`, { method: 'DELETE' }),
+    deleteCluster: (memorystoreClusterId: string, options?: ConjoinCallOptions) =>
+      client.fetch<DeleteClusterData>(`relay/memorystore-clusters/${encodePathParam(memorystoreClusterId)}`, { ...options, method: 'DELETE' }),
 
-    executeCommand: (clusterId: string, data: ExecuteCommandBody) =>
-      client.fetch<ExecuteCommandData>(`relay/memorystore/clusters/${clusterId}/command`, { method: 'POST', body: data }),
+    suspendCluster: (memorystoreClusterId: string, options?: ConjoinCallOptions) =>
+      client.fetch<SuspendClusterData>(`relay/memorystore-clusters/${encodePathParam(memorystoreClusterId)}/suspend`, { ...options, method: 'POST', acceptsIdempotencyKey: true }),
+
+    executeCommand: (memorystoreClusterId: string, data: ExecuteCommandBody, options?: ConjoinCallOptions) =>
+      client.fetch<ExecuteCommandData>(`relay/memorystore-clusters/${encodePathParam(memorystoreClusterId)}/execute`, { ...options, method: 'POST', body: data, acceptsIdempotencyKey: true }),
   }
 }
