@@ -9,7 +9,7 @@ from conjoin_cloud._url import encode_path_param
 from conjoin_cloud.generated._models import (
     MessagingChannelAnalyticsCreateReportRequest,
     MessagingChannelAnalyticsCreateReportResponse,
-    MessagingChannelAnalyticsGenerateSummariesRequest,
+    MessagingChannelAnalyticsGenerateSummariesQuery,
     MessagingChannelAnalyticsGenerateSummariesResponse,
     MessagingChannelAnalyticsIncrementClicksRequest,
     MessagingChannelAnalyticsIncrementClicksResponse,
@@ -21,8 +21,10 @@ from conjoin_cloud.generated._models import (
     MessagingChannelAnalyticsIncrementSubscribesResponse,
     MessagingChannelAnalyticsIncrementUnsubscribesRequest,
     MessagingChannelAnalyticsIncrementUnsubscribesResponse,
+    MessagingChannelAnalyticsListCountQuery,
+    MessagingChannelAnalyticsListCountResponse,
     MessagingChannelAnalyticsListItem,
-    MessagingChannelAnalyticsListRequest,
+    MessagingChannelAnalyticsListQuery,
 )
 
 if TYPE_CHECKING:
@@ -35,56 +37,63 @@ class MessagingChannelAnalyticsResource:
 
     def list(
         self,
-        data: MessagingChannelAnalyticsListRequest,
+        query: MessagingChannelAnalyticsListQuery | None = None,
         *,
         request_options: RequestOptions | Mapping[str, Any] | None = None,
     ) -> Page[MessagingChannelAnalyticsListItem]:
         return self._client.request(
-            'POST',
-            'messaging/email/analytics/',
-            body=data,
+            'GET',
+            'messaging/analytics/',
+            query=query,
             cast_to=Page[MessagingChannelAnalyticsListItem],
             request_options=request_options,
             scopes=('messaging_profile_id',),
-            accepts_idempotency_key=True,
-        )
-
-    def generate_summaries(
-        self,
-        channel_id: str,
-        data: MessagingChannelAnalyticsGenerateSummariesRequest,
-        *,
-        request_options: RequestOptions | Mapping[str, Any] | None = None,
-    ) -> MessagingChannelAnalyticsGenerateSummariesResponse:
-        return self._client.request(
-            'POST',
-            f'messaging/email/analytics/channels/{encode_path_param(channel_id)}/generate',
-            body=data,
-            cast_to=MessagingChannelAnalyticsGenerateSummariesResponse,
-            request_options=request_options,
-            scopes=('messaging_profile_id',),
-            accepts_idempotency_key=True,
         )
 
     def create_report(
         self,
-        message_id: str,
-        channel_id: str,
         data: MessagingChannelAnalyticsCreateReportRequest,
         *,
         request_options: RequestOptions | Mapping[str, Any] | None = None,
     ) -> MessagingChannelAnalyticsCreateReportResponse:
         return self._client.request(
             'POST',
-            (
-                f'messaging/email/analytics/messages/{encode_path_param(message_id)}/channels'
-                f'/{encode_path_param(channel_id)}/reports'
-            ),
+            'messaging/analytics-reports/',
             body=data,
             cast_to=MessagingChannelAnalyticsCreateReportResponse,
             request_options=request_options,
             scopes=('messaging_profile_id',),
             accepts_idempotency_key=True,
+        )
+
+    def list_count(
+        self,
+        query: MessagingChannelAnalyticsListCountQuery | None = None,
+        *,
+        request_options: RequestOptions | Mapping[str, Any] | None = None,
+    ) -> MessagingChannelAnalyticsListCountResponse:
+        return self._client.request(
+            'GET',
+            'messaging/analytics/count',
+            query=query,
+            cast_to=MessagingChannelAnalyticsListCountResponse,
+            request_options=request_options,
+            scopes=('messaging_profile_id',),
+        )
+
+    def generate_summaries(
+        self,
+        query: MessagingChannelAnalyticsGenerateSummariesQuery,
+        *,
+        request_options: RequestOptions | Mapping[str, Any] | None = None,
+    ) -> MessagingChannelAnalyticsGenerateSummariesResponse:
+        return self._client.request(
+            'GET',
+            'messaging/analytics/stats',
+            query=query,
+            cast_to=MessagingChannelAnalyticsGenerateSummariesResponse,
+            request_options=request_options,
+            scopes=('messaging_profile_id',),
         )
 
     def increment_opens(
@@ -95,12 +104,13 @@ class MessagingChannelAnalyticsResource:
         request_options: RequestOptions | Mapping[str, Any] | None = None,
     ) -> MessagingChannelAnalyticsIncrementOpensResponse:
         return self._client.request(
-            'PATCH',
-            f'messaging/email/analytics/{encode_path_param(analytics_id)}/opens',
+            'POST',
+            f'messaging/analytics/{encode_path_param(analytics_id)}/opens',
             body=data,
             cast_to=MessagingChannelAnalyticsIncrementOpensResponse,
             request_options=request_options,
             scopes=('messaging_profile_id',),
+            accepts_idempotency_key=True,
         )
 
     def increment_clicks(
@@ -111,12 +121,13 @@ class MessagingChannelAnalyticsResource:
         request_options: RequestOptions | Mapping[str, Any] | None = None,
     ) -> MessagingChannelAnalyticsIncrementClicksResponse:
         return self._client.request(
-            'PATCH',
-            f'messaging/email/analytics/{encode_path_param(analytics_id)}/clicks',
+            'POST',
+            f'messaging/analytics/{encode_path_param(analytics_id)}/clicks',
             body=data,
             cast_to=MessagingChannelAnalyticsIncrementClicksResponse,
             request_options=request_options,
             scopes=('messaging_profile_id',),
+            accepts_idempotency_key=True,
         )
 
     def increment_deliveries(
@@ -127,12 +138,13 @@ class MessagingChannelAnalyticsResource:
         request_options: RequestOptions | Mapping[str, Any] | None = None,
     ) -> MessagingChannelAnalyticsIncrementDeliveriesResponse:
         return self._client.request(
-            'PATCH',
-            f'messaging/email/analytics/{encode_path_param(analytics_id)}/deliveries',
+            'POST',
+            f'messaging/analytics/{encode_path_param(analytics_id)}/deliveries',
             body=data,
             cast_to=MessagingChannelAnalyticsIncrementDeliveriesResponse,
             request_options=request_options,
             scopes=('messaging_profile_id',),
+            accepts_idempotency_key=True,
         )
 
     def increment_subscribes(
@@ -143,12 +155,13 @@ class MessagingChannelAnalyticsResource:
         request_options: RequestOptions | Mapping[str, Any] | None = None,
     ) -> MessagingChannelAnalyticsIncrementSubscribesResponse:
         return self._client.request(
-            'PATCH',
-            f'messaging/email/analytics/{encode_path_param(analytics_id)}/subscribes',
+            'POST',
+            f'messaging/analytics/{encode_path_param(analytics_id)}/subscribes',
             body=data,
             cast_to=MessagingChannelAnalyticsIncrementSubscribesResponse,
             request_options=request_options,
             scopes=('messaging_profile_id',),
+            accepts_idempotency_key=True,
         )
 
     def increment_unsubscribes(
@@ -159,12 +172,13 @@ class MessagingChannelAnalyticsResource:
         request_options: RequestOptions | Mapping[str, Any] | None = None,
     ) -> MessagingChannelAnalyticsIncrementUnsubscribesResponse:
         return self._client.request(
-            'PATCH',
-            f'messaging/email/analytics/{encode_path_param(analytics_id)}/unsubscribes',
+            'POST',
+            f'messaging/analytics/{encode_path_param(analytics_id)}/unsubscribes',
             body=data,
             cast_to=MessagingChannelAnalyticsIncrementUnsubscribesResponse,
             request_options=request_options,
             scopes=('messaging_profile_id',),
+            accepts_idempotency_key=True,
         )
 
 
@@ -174,56 +188,63 @@ class AsyncMessagingChannelAnalyticsResource:
 
     async def list(
         self,
-        data: MessagingChannelAnalyticsListRequest,
+        query: MessagingChannelAnalyticsListQuery | None = None,
         *,
         request_options: RequestOptions | Mapping[str, Any] | None = None,
     ) -> AsyncPage[MessagingChannelAnalyticsListItem]:
         return await self._client.request(
-            'POST',
-            'messaging/email/analytics/',
-            body=data,
+            'GET',
+            'messaging/analytics/',
+            query=query,
             cast_to=AsyncPage[MessagingChannelAnalyticsListItem],
             request_options=request_options,
             scopes=('messaging_profile_id',),
-            accepts_idempotency_key=True,
-        )
-
-    async def generate_summaries(
-        self,
-        channel_id: str,
-        data: MessagingChannelAnalyticsGenerateSummariesRequest,
-        *,
-        request_options: RequestOptions | Mapping[str, Any] | None = None,
-    ) -> MessagingChannelAnalyticsGenerateSummariesResponse:
-        return await self._client.request(
-            'POST',
-            f'messaging/email/analytics/channels/{encode_path_param(channel_id)}/generate',
-            body=data,
-            cast_to=MessagingChannelAnalyticsGenerateSummariesResponse,
-            request_options=request_options,
-            scopes=('messaging_profile_id',),
-            accepts_idempotency_key=True,
         )
 
     async def create_report(
         self,
-        message_id: str,
-        channel_id: str,
         data: MessagingChannelAnalyticsCreateReportRequest,
         *,
         request_options: RequestOptions | Mapping[str, Any] | None = None,
     ) -> MessagingChannelAnalyticsCreateReportResponse:
         return await self._client.request(
             'POST',
-            (
-                f'messaging/email/analytics/messages/{encode_path_param(message_id)}/channels'
-                f'/{encode_path_param(channel_id)}/reports'
-            ),
+            'messaging/analytics-reports/',
             body=data,
             cast_to=MessagingChannelAnalyticsCreateReportResponse,
             request_options=request_options,
             scopes=('messaging_profile_id',),
             accepts_idempotency_key=True,
+        )
+
+    async def list_count(
+        self,
+        query: MessagingChannelAnalyticsListCountQuery | None = None,
+        *,
+        request_options: RequestOptions | Mapping[str, Any] | None = None,
+    ) -> MessagingChannelAnalyticsListCountResponse:
+        return await self._client.request(
+            'GET',
+            'messaging/analytics/count',
+            query=query,
+            cast_to=MessagingChannelAnalyticsListCountResponse,
+            request_options=request_options,
+            scopes=('messaging_profile_id',),
+        )
+
+    async def generate_summaries(
+        self,
+        query: MessagingChannelAnalyticsGenerateSummariesQuery,
+        *,
+        request_options: RequestOptions | Mapping[str, Any] | None = None,
+    ) -> MessagingChannelAnalyticsGenerateSummariesResponse:
+        return await self._client.request(
+            'GET',
+            'messaging/analytics/stats',
+            query=query,
+            cast_to=MessagingChannelAnalyticsGenerateSummariesResponse,
+            request_options=request_options,
+            scopes=('messaging_profile_id',),
         )
 
     async def increment_opens(
@@ -234,12 +255,13 @@ class AsyncMessagingChannelAnalyticsResource:
         request_options: RequestOptions | Mapping[str, Any] | None = None,
     ) -> MessagingChannelAnalyticsIncrementOpensResponse:
         return await self._client.request(
-            'PATCH',
-            f'messaging/email/analytics/{encode_path_param(analytics_id)}/opens',
+            'POST',
+            f'messaging/analytics/{encode_path_param(analytics_id)}/opens',
             body=data,
             cast_to=MessagingChannelAnalyticsIncrementOpensResponse,
             request_options=request_options,
             scopes=('messaging_profile_id',),
+            accepts_idempotency_key=True,
         )
 
     async def increment_clicks(
@@ -250,12 +272,13 @@ class AsyncMessagingChannelAnalyticsResource:
         request_options: RequestOptions | Mapping[str, Any] | None = None,
     ) -> MessagingChannelAnalyticsIncrementClicksResponse:
         return await self._client.request(
-            'PATCH',
-            f'messaging/email/analytics/{encode_path_param(analytics_id)}/clicks',
+            'POST',
+            f'messaging/analytics/{encode_path_param(analytics_id)}/clicks',
             body=data,
             cast_to=MessagingChannelAnalyticsIncrementClicksResponse,
             request_options=request_options,
             scopes=('messaging_profile_id',),
+            accepts_idempotency_key=True,
         )
 
     async def increment_deliveries(
@@ -266,12 +289,13 @@ class AsyncMessagingChannelAnalyticsResource:
         request_options: RequestOptions | Mapping[str, Any] | None = None,
     ) -> MessagingChannelAnalyticsIncrementDeliveriesResponse:
         return await self._client.request(
-            'PATCH',
-            f'messaging/email/analytics/{encode_path_param(analytics_id)}/deliveries',
+            'POST',
+            f'messaging/analytics/{encode_path_param(analytics_id)}/deliveries',
             body=data,
             cast_to=MessagingChannelAnalyticsIncrementDeliveriesResponse,
             request_options=request_options,
             scopes=('messaging_profile_id',),
+            accepts_idempotency_key=True,
         )
 
     async def increment_subscribes(
@@ -282,12 +306,13 @@ class AsyncMessagingChannelAnalyticsResource:
         request_options: RequestOptions | Mapping[str, Any] | None = None,
     ) -> MessagingChannelAnalyticsIncrementSubscribesResponse:
         return await self._client.request(
-            'PATCH',
-            f'messaging/email/analytics/{encode_path_param(analytics_id)}/subscribes',
+            'POST',
+            f'messaging/analytics/{encode_path_param(analytics_id)}/subscribes',
             body=data,
             cast_to=MessagingChannelAnalyticsIncrementSubscribesResponse,
             request_options=request_options,
             scopes=('messaging_profile_id',),
+            accepts_idempotency_key=True,
         )
 
     async def increment_unsubscribes(
@@ -298,10 +323,11 @@ class AsyncMessagingChannelAnalyticsResource:
         request_options: RequestOptions | Mapping[str, Any] | None = None,
     ) -> MessagingChannelAnalyticsIncrementUnsubscribesResponse:
         return await self._client.request(
-            'PATCH',
-            f'messaging/email/analytics/{encode_path_param(analytics_id)}/unsubscribes',
+            'POST',
+            f'messaging/analytics/{encode_path_param(analytics_id)}/unsubscribes',
             body=data,
             cast_to=MessagingChannelAnalyticsIncrementUnsubscribesResponse,
             request_options=request_options,
             scopes=('messaging_profile_id',),
+            accepts_idempotency_key=True,
         )

@@ -11,9 +11,12 @@ from conjoin_cloud.generated._models import (
     MessagingEmailSenderDeleteResponse,
     MessagingEmailSenderDisableResponse,
     MessagingEmailSenderEnableResponse,
+    MessagingEmailSenderListManyCountQuery,
+    MessagingEmailSenderListManyCountResponse,
     MessagingEmailSenderListManyItem,
-    MessagingEmailSenderListManyRequest,
-    MessagingEmailSenderListOneResponse,
+    MessagingEmailSenderListManyQuery,
+    MessagingEmailSenderReadResponse,
+    MessagingEmailSenderTransferRequest,
     MessagingEmailSenderTransferResponse,
     MessagingEmailSenderVerifyResponse,
 )
@@ -26,60 +29,17 @@ class MessagingEmailSendersResource:
     def __init__(self, client: Conjoin) -> None:
         self._client = client
 
-    def verify(
-        self,
-        sender_id: str,
-        *,
-        request_options: RequestOptions | Mapping[str, Any] | None = None,
-    ) -> MessagingEmailSenderVerifyResponse:
-        return self._client.request(
-            'PATCH',
-            f'messaging/email/senders/{encode_path_param(sender_id)}/verify',
-            cast_to=MessagingEmailSenderVerifyResponse,
-            request_options=request_options,
-            scopes=('messaging_profile_id',),
-        )
-
     def list_many(
         self,
-        data: MessagingEmailSenderListManyRequest,
+        query: MessagingEmailSenderListManyQuery | None = None,
         *,
         request_options: RequestOptions | Mapping[str, Any] | None = None,
     ) -> Page[MessagingEmailSenderListManyItem]:
         return self._client.request(
-            'POST',
-            'messaging/email/senders/retrieve',
-            body=data,
-            cast_to=Page[MessagingEmailSenderListManyItem],
-            request_options=request_options,
-            scopes=('messaging_profile_id',),
-            accepts_idempotency_key=True,
-        )
-
-    def list_one(
-        self,
-        sender_id: str,
-        *,
-        request_options: RequestOptions | Mapping[str, Any] | None = None,
-    ) -> MessagingEmailSenderListOneResponse:
-        return self._client.request(
             'GET',
-            f'messaging/email/senders/{encode_path_param(sender_id)}',
-            cast_to=MessagingEmailSenderListOneResponse,
-            request_options=request_options,
-            scopes=('messaging_profile_id',),
-        )
-
-    def delete(
-        self,
-        sender_id: str,
-        *,
-        request_options: RequestOptions | Mapping[str, Any] | None = None,
-    ) -> MessagingEmailSenderDeleteResponse:
-        return self._client.request(
-            'DELETE',
-            f'messaging/email/senders/{encode_path_param(sender_id)}',
-            cast_to=MessagingEmailSenderDeleteResponse,
+            'messaging/email-senders/',
+            query=query,
+            cast_to=Page[MessagingEmailSenderListManyItem],
             request_options=request_options,
             scopes=('messaging_profile_id',),
         )
@@ -92,7 +52,7 @@ class MessagingEmailSendersResource:
     ) -> MessagingEmailSenderCreateResponse:
         return self._client.request(
             'POST',
-            'messaging/email/senders/',
+            'messaging/email-senders/',
             body=data,
             cast_to=MessagingEmailSenderCreateResponse,
             request_options=request_options,
@@ -100,50 +60,109 @@ class MessagingEmailSendersResource:
             accepts_idempotency_key=True,
         )
 
+    def list_many_count(
+        self,
+        query: MessagingEmailSenderListManyCountQuery | None = None,
+        *,
+        request_options: RequestOptions | Mapping[str, Any] | None = None,
+    ) -> MessagingEmailSenderListManyCountResponse:
+        return self._client.request(
+            'GET',
+            'messaging/email-senders/count',
+            query=query,
+            cast_to=MessagingEmailSenderListManyCountResponse,
+            request_options=request_options,
+            scopes=('messaging_profile_id',),
+        )
+
+    def read(
+        self,
+        email_sender_id: str,
+        *,
+        request_options: RequestOptions | Mapping[str, Any] | None = None,
+    ) -> MessagingEmailSenderReadResponse:
+        return self._client.request(
+            'GET',
+            f'messaging/email-senders/{encode_path_param(email_sender_id)}',
+            cast_to=MessagingEmailSenderReadResponse,
+            request_options=request_options,
+            scopes=('messaging_profile_id',),
+        )
+
+    def delete(
+        self,
+        email_sender_id: str,
+        *,
+        request_options: RequestOptions | Mapping[str, Any] | None = None,
+    ) -> MessagingEmailSenderDeleteResponse:
+        return self._client.request(
+            'DELETE',
+            f'messaging/email-senders/{encode_path_param(email_sender_id)}',
+            cast_to=MessagingEmailSenderDeleteResponse,
+            request_options=request_options,
+            scopes=('messaging_profile_id',),
+        )
+
+    def verify(
+        self,
+        email_sender_id: str,
+        *,
+        request_options: RequestOptions | Mapping[str, Any] | None = None,
+    ) -> MessagingEmailSenderVerifyResponse:
+        return self._client.request(
+            'POST',
+            f'messaging/email-senders/{encode_path_param(email_sender_id)}/verify',
+            cast_to=MessagingEmailSenderVerifyResponse,
+            request_options=request_options,
+            scopes=('messaging_profile_id',),
+            accepts_idempotency_key=True,
+        )
+
     def enable(
         self,
-        sender_id: str,
+        email_sender_id: str,
         *,
         request_options: RequestOptions | Mapping[str, Any] | None = None,
     ) -> MessagingEmailSenderEnableResponse:
         return self._client.request(
-            'PATCH',
-            f'messaging/email/senders/{encode_path_param(sender_id)}/enable',
+            'POST',
+            f'messaging/email-senders/{encode_path_param(email_sender_id)}/enable',
             cast_to=MessagingEmailSenderEnableResponse,
             request_options=request_options,
             scopes=('messaging_profile_id',),
+            accepts_idempotency_key=True,
         )
 
     def disable(
         self,
-        sender_id: str,
+        email_sender_id: str,
         *,
         request_options: RequestOptions | Mapping[str, Any] | None = None,
     ) -> MessagingEmailSenderDisableResponse:
         return self._client.request(
-            'PATCH',
-            f'messaging/email/senders/{encode_path_param(sender_id)}/disable',
+            'POST',
+            f'messaging/email-senders/{encode_path_param(email_sender_id)}/disable',
             cast_to=MessagingEmailSenderDisableResponse,
             request_options=request_options,
             scopes=('messaging_profile_id',),
+            accepts_idempotency_key=True,
         )
 
     def transfer(
         self,
-        sender_id: str,
-        project_id: str,
+        email_sender_id: str,
+        data: MessagingEmailSenderTransferRequest,
         *,
         request_options: RequestOptions | Mapping[str, Any] | None = None,
     ) -> MessagingEmailSenderTransferResponse:
         return self._client.request(
-            'PATCH',
-            (
-                f'messaging/email/senders/transfers/{encode_path_param(sender_id)}'
-                f'/{encode_path_param(project_id)}'
-            ),
+            'POST',
+            f'messaging/email-senders/{encode_path_param(email_sender_id)}/transfer',
+            body=data,
             cast_to=MessagingEmailSenderTransferResponse,
             request_options=request_options,
             scopes=('messaging_profile_id',),
+            accepts_idempotency_key=True,
         )
 
 
@@ -151,60 +170,17 @@ class AsyncMessagingEmailSendersResource:
     def __init__(self, client: AsyncConjoin) -> None:
         self._client = client
 
-    async def verify(
-        self,
-        sender_id: str,
-        *,
-        request_options: RequestOptions | Mapping[str, Any] | None = None,
-    ) -> MessagingEmailSenderVerifyResponse:
-        return await self._client.request(
-            'PATCH',
-            f'messaging/email/senders/{encode_path_param(sender_id)}/verify',
-            cast_to=MessagingEmailSenderVerifyResponse,
-            request_options=request_options,
-            scopes=('messaging_profile_id',),
-        )
-
     async def list_many(
         self,
-        data: MessagingEmailSenderListManyRequest,
+        query: MessagingEmailSenderListManyQuery | None = None,
         *,
         request_options: RequestOptions | Mapping[str, Any] | None = None,
     ) -> AsyncPage[MessagingEmailSenderListManyItem]:
         return await self._client.request(
-            'POST',
-            'messaging/email/senders/retrieve',
-            body=data,
-            cast_to=AsyncPage[MessagingEmailSenderListManyItem],
-            request_options=request_options,
-            scopes=('messaging_profile_id',),
-            accepts_idempotency_key=True,
-        )
-
-    async def list_one(
-        self,
-        sender_id: str,
-        *,
-        request_options: RequestOptions | Mapping[str, Any] | None = None,
-    ) -> MessagingEmailSenderListOneResponse:
-        return await self._client.request(
             'GET',
-            f'messaging/email/senders/{encode_path_param(sender_id)}',
-            cast_to=MessagingEmailSenderListOneResponse,
-            request_options=request_options,
-            scopes=('messaging_profile_id',),
-        )
-
-    async def delete(
-        self,
-        sender_id: str,
-        *,
-        request_options: RequestOptions | Mapping[str, Any] | None = None,
-    ) -> MessagingEmailSenderDeleteResponse:
-        return await self._client.request(
-            'DELETE',
-            f'messaging/email/senders/{encode_path_param(sender_id)}',
-            cast_to=MessagingEmailSenderDeleteResponse,
+            'messaging/email-senders/',
+            query=query,
+            cast_to=AsyncPage[MessagingEmailSenderListManyItem],
             request_options=request_options,
             scopes=('messaging_profile_id',),
         )
@@ -217,7 +193,7 @@ class AsyncMessagingEmailSendersResource:
     ) -> MessagingEmailSenderCreateResponse:
         return await self._client.request(
             'POST',
-            'messaging/email/senders/',
+            'messaging/email-senders/',
             body=data,
             cast_to=MessagingEmailSenderCreateResponse,
             request_options=request_options,
@@ -225,48 +201,107 @@ class AsyncMessagingEmailSendersResource:
             accepts_idempotency_key=True,
         )
 
+    async def list_many_count(
+        self,
+        query: MessagingEmailSenderListManyCountQuery | None = None,
+        *,
+        request_options: RequestOptions | Mapping[str, Any] | None = None,
+    ) -> MessagingEmailSenderListManyCountResponse:
+        return await self._client.request(
+            'GET',
+            'messaging/email-senders/count',
+            query=query,
+            cast_to=MessagingEmailSenderListManyCountResponse,
+            request_options=request_options,
+            scopes=('messaging_profile_id',),
+        )
+
+    async def read(
+        self,
+        email_sender_id: str,
+        *,
+        request_options: RequestOptions | Mapping[str, Any] | None = None,
+    ) -> MessagingEmailSenderReadResponse:
+        return await self._client.request(
+            'GET',
+            f'messaging/email-senders/{encode_path_param(email_sender_id)}',
+            cast_to=MessagingEmailSenderReadResponse,
+            request_options=request_options,
+            scopes=('messaging_profile_id',),
+        )
+
+    async def delete(
+        self,
+        email_sender_id: str,
+        *,
+        request_options: RequestOptions | Mapping[str, Any] | None = None,
+    ) -> MessagingEmailSenderDeleteResponse:
+        return await self._client.request(
+            'DELETE',
+            f'messaging/email-senders/{encode_path_param(email_sender_id)}',
+            cast_to=MessagingEmailSenderDeleteResponse,
+            request_options=request_options,
+            scopes=('messaging_profile_id',),
+        )
+
+    async def verify(
+        self,
+        email_sender_id: str,
+        *,
+        request_options: RequestOptions | Mapping[str, Any] | None = None,
+    ) -> MessagingEmailSenderVerifyResponse:
+        return await self._client.request(
+            'POST',
+            f'messaging/email-senders/{encode_path_param(email_sender_id)}/verify',
+            cast_to=MessagingEmailSenderVerifyResponse,
+            request_options=request_options,
+            scopes=('messaging_profile_id',),
+            accepts_idempotency_key=True,
+        )
+
     async def enable(
         self,
-        sender_id: str,
+        email_sender_id: str,
         *,
         request_options: RequestOptions | Mapping[str, Any] | None = None,
     ) -> MessagingEmailSenderEnableResponse:
         return await self._client.request(
-            'PATCH',
-            f'messaging/email/senders/{encode_path_param(sender_id)}/enable',
+            'POST',
+            f'messaging/email-senders/{encode_path_param(email_sender_id)}/enable',
             cast_to=MessagingEmailSenderEnableResponse,
             request_options=request_options,
             scopes=('messaging_profile_id',),
+            accepts_idempotency_key=True,
         )
 
     async def disable(
         self,
-        sender_id: str,
+        email_sender_id: str,
         *,
         request_options: RequestOptions | Mapping[str, Any] | None = None,
     ) -> MessagingEmailSenderDisableResponse:
         return await self._client.request(
-            'PATCH',
-            f'messaging/email/senders/{encode_path_param(sender_id)}/disable',
+            'POST',
+            f'messaging/email-senders/{encode_path_param(email_sender_id)}/disable',
             cast_to=MessagingEmailSenderDisableResponse,
             request_options=request_options,
             scopes=('messaging_profile_id',),
+            accepts_idempotency_key=True,
         )
 
     async def transfer(
         self,
-        sender_id: str,
-        project_id: str,
+        email_sender_id: str,
+        data: MessagingEmailSenderTransferRequest,
         *,
         request_options: RequestOptions | Mapping[str, Any] | None = None,
     ) -> MessagingEmailSenderTransferResponse:
         return await self._client.request(
-            'PATCH',
-            (
-                f'messaging/email/senders/transfers/{encode_path_param(sender_id)}'
-                f'/{encode_path_param(project_id)}'
-            ),
+            'POST',
+            f'messaging/email-senders/{encode_path_param(email_sender_id)}/transfer',
+            body=data,
             cast_to=MessagingEmailSenderTransferResponse,
             request_options=request_options,
             scopes=('messaging_profile_id',),
+            accepts_idempotency_key=True,
         )

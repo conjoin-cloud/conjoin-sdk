@@ -2,7 +2,26 @@ package messaging
 
 import conjoin "github.com/conjoin-cloud/conjoin-sdk/sdks/go"
 
+type ListSmsCampaignsQuery = ListSmsBrandsQuery
+
+type ListSmsCampaignsItem struct {
+	CampaignID       string                   `json:"campaign_id"`
+	ProfileID        string                   `json:"profile_id"`
+	ConjoinAccountID string                   `json:"conjoin_account_id"`
+	ConjoinProjectID string                   `json:"conjoin_project_id"`
+	LiveMode         bool                     `json:"live_mode"`
+	ReferenceID      conjoin.Nullable[string] `json:"reference_id,omitzero"`
+	BrandID          string                   `json:"brand_id"`
+	UseCase          *string                  `json:"use_case,omitzero"`
+	Description      *string                  `json:"description,omitzero"`
+	Status           string                   `json:"status"`
+	DateCreated      string                   `json:"date_created"`
+	DateUpdated      string                   `json:"date_updated"`
+	DateDeleted      conjoin.Nullable[string] `json:"date_deleted,omitzero"`
+}
+
 type CreateSmsCampaignRequest struct {
+	ReferenceID           *string  `json:"reference_id,omitzero"`
 	BrandID               string   `json:"brand_id"`
 	Title                 string   `json:"title"`
 	Description           string   `json:"description"`
@@ -26,32 +45,18 @@ type CreateSmsCampaignRequest struct {
 	PrivacyPolicyURL      string   `json:"privacy_policy_url"`
 }
 
-type CreateSmsCampaignResponse struct {
-	CampaignID       string                   `json:"campaign_id"`
-	ProfileID        string                   `json:"profile_id"`
-	ConjoinAccountID string                   `json:"conjoin_account_id"`
-	ConjoinProjectID string                   `json:"conjoin_project_id"`
-	LiveMode         bool                     `json:"live_mode"`
-	ReferenceID      conjoin.Nullable[string] `json:"reference_id,omitzero"`
-	BrandID          string                   `json:"brand_id"`
-	UseCase          *string                  `json:"use_case,omitzero"`
-	Description      *string                  `json:"description,omitzero"`
-	Status           string                   `json:"status"`
-	DateCreated      string                   `json:"date_created"`
-	DateUpdated      string                   `json:"date_updated"`
-	DateDeleted      conjoin.Nullable[string] `json:"date_deleted,omitzero"`
-}
+type CreateSmsCampaignResponse = ListSmsCampaignsItem
 
-type ReadSmsCampaignResponse = CreateSmsCampaignResponse
+type ListSmsCampaignsCountQuery = ListSmsBrandsQuery
+
+type ListSmsCampaignsCountResponse = ListChannelAnalyticsCountResponse
+
+type ReadSmsCampaignResponse = ListSmsCampaignsItem
 
 type UpdateSmsCampaignRequest struct {
 	Title string `json:"title"`
 }
 
-type UpdateSmsCampaignResponse = CreateSmsCampaignResponse
+type UpdateSmsCampaignResponse = ListSmsCampaignsItem
 
-type DeleteSmsCampaignResponse = CreateSmsCampaignResponse
-
-type ListSmsCampaignsRequest = ListSmsBrandsRequest
-
-type ListSmsCampaignsItem = CreateSmsCampaignResponse
+type DeleteSmsCampaignResponse = ListSmsCampaignsItem

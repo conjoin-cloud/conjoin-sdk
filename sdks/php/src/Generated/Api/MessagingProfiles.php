@@ -17,6 +17,15 @@ final class MessagingProfiles
     {
     }
 
+    public function list(?array $query = null, ?CallOptions $options = null): ListPage
+    {
+        return $this->client->sendList(new OperationRequest(
+            method: HttpMethod::Get,
+            path: 'messaging/profiles/',
+            query: $query,
+        ), $options);
+    }
+
     public function create(array $data, ?CallOptions $options = null): array
     {
         return $this->client->send(new OperationRequest(
@@ -27,27 +36,59 @@ final class MessagingProfiles
         ), $options)->dataArray();
     }
 
+    public function listCount(?array $query = null, ?CallOptions $options = null): array
+    {
+        return $this->client->send(new OperationRequest(
+            method: HttpMethod::Get,
+            path: 'messaging/profiles/count',
+            query: $query,
+        ), $options)->dataArray();
+    }
+
     public function enable(string $profileId, ?CallOptions $options = null): array
     {
         return $this->client->send(new OperationRequest(
-            method: HttpMethod::Patch,
+            method: HttpMethod::Post,
             path: 'messaging/profiles/' . PathSegment::encode($profileId) . '/enable',
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
     public function disable(string $profileId, ?CallOptions $options = null): array
     {
         return $this->client->send(new OperationRequest(
-            method: HttpMethod::Patch,
+            method: HttpMethod::Post,
             path: 'messaging/profiles/' . PathSegment::encode($profileId) . '/disable',
+            acceptsIdempotencyKey: true,
+        ), $options)->dataArray();
+    }
+
+    public function enableChannels(string $profileId, array $data, ?CallOptions $options = null): array
+    {
+        return $this->client->send(new OperationRequest(
+            method: HttpMethod::Post,
+            path: 'messaging/profiles/' . PathSegment::encode($profileId) . '/enable-channels',
+            body: $data,
+            acceptsIdempotencyKey: true,
+        ), $options)->dataArray();
+    }
+
+    public function disableChannels(string $profileId, array $data, ?CallOptions $options = null): array
+    {
+        return $this->client->send(new OperationRequest(
+            method: HttpMethod::Post,
+            path: 'messaging/profiles/' . PathSegment::encode($profileId) . '/disable-channels',
+            body: $data,
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
     public function close(string $profileId, ?CallOptions $options = null): array
     {
         return $this->client->send(new OperationRequest(
-            method: HttpMethod::Patch,
+            method: HttpMethod::Post,
             path: 'messaging/profiles/' . PathSegment::encode($profileId) . '/close',
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
@@ -74,42 +115,5 @@ final class MessagingProfiles
             method: HttpMethod::Delete,
             path: 'messaging/profiles/' . PathSegment::encode($profileId),
         ), $options)->dataArray();
-    }
-
-    public function updateEmailConfig(string $profileId, array $data, ?CallOptions $options = null): array
-    {
-        return $this->client->send(new OperationRequest(
-            method: HttpMethod::Patch,
-            path: 'messaging/profiles/' . PathSegment::encode($profileId) . '/emails-config',
-            body: $data,
-        ), $options)->dataArray();
-    }
-
-    public function updateMultisendConfig(string $profileId, array $data, ?CallOptions $options = null): array
-    {
-        return $this->client->send(new OperationRequest(
-            method: HttpMethod::Patch,
-            path: 'messaging/profiles/' . PathSegment::encode($profileId) . '/multisend-config',
-            body: $data,
-        ), $options)->dataArray();
-    }
-
-    public function updateVerificationsConfig(string $profileId, array $data, ?CallOptions $options = null): array
-    {
-        return $this->client->send(new OperationRequest(
-            method: HttpMethod::Patch,
-            path: 'messaging/profiles/' . PathSegment::encode($profileId) . '/verifications-config',
-            body: $data,
-        ), $options)->dataArray();
-    }
-
-    public function list(array $data, ?CallOptions $options = null): ListPage
-    {
-        return $this->client->sendList(new OperationRequest(
-            method: HttpMethod::Post,
-            path: 'messaging/profiles/retrieve',
-            body: $data,
-            acceptsIdempotencyKey: true,
-        ), $options);
     }
 }

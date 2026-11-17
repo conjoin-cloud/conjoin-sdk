@@ -18,90 +18,99 @@ final class MessagingChannelAnalytics
     {
     }
 
-    public function list(array $data, ?CallOptions $options = null): ListPage
+    public function list(?array $query = null, ?CallOptions $options = null): ListPage
     {
         return $this->client->sendList(new OperationRequest(
-            method: HttpMethod::Post,
-            path: 'messaging/email/analytics/',
-            body: $data,
+            method: HttpMethod::Get,
+            path: 'messaging/analytics/',
+            query: $query,
             scopes: [Scope::MessagingProfileId],
-            acceptsIdempotencyKey: true,
         ), $options);
     }
 
-    public function generateSummaries(string $channelId, array $data, ?CallOptions $options = null): array
+    public function createReport(array $data, ?CallOptions $options = null): array
     {
         return $this->client->send(new OperationRequest(
             method: HttpMethod::Post,
-            path: 'messaging/email/analytics/channels/' . PathSegment::encode($channelId) . '/generate',
+            path: 'messaging/analytics-reports/',
             body: $data,
             scopes: [Scope::MessagingProfileId],
             acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
-    public function createReport(string $messageId, string $channelId, array $data, ?CallOptions $options = null): array
+    public function listCount(?array $query = null, ?CallOptions $options = null): array
     {
         return $this->client->send(new OperationRequest(
-            method: HttpMethod::Post,
-            path: 'messaging/email/analytics/messages/'
-                . PathSegment::encode($messageId)
-                . '/channels/'
-                . PathSegment::encode($channelId)
-                . '/reports',
-            body: $data,
+            method: HttpMethod::Get,
+            path: 'messaging/analytics/count',
+            query: $query,
             scopes: [Scope::MessagingProfileId],
-            acceptsIdempotencyKey: true,
+        ), $options)->dataArray();
+    }
+
+    public function generateSummaries(array $query, ?CallOptions $options = null): array
+    {
+        return $this->client->send(new OperationRequest(
+            method: HttpMethod::Get,
+            path: 'messaging/analytics/stats',
+            query: $query,
+            scopes: [Scope::MessagingProfileId],
         ), $options)->dataArray();
     }
 
     public function incrementOpens(string $analyticsId, array $data, ?CallOptions $options = null): array
     {
         return $this->client->send(new OperationRequest(
-            method: HttpMethod::Patch,
-            path: 'messaging/email/analytics/' . PathSegment::encode($analyticsId) . '/opens',
+            method: HttpMethod::Post,
+            path: 'messaging/analytics/' . PathSegment::encode($analyticsId) . '/opens',
             body: $data,
             scopes: [Scope::MessagingProfileId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
     public function incrementClicks(string $analyticsId, array $data, ?CallOptions $options = null): array
     {
         return $this->client->send(new OperationRequest(
-            method: HttpMethod::Patch,
-            path: 'messaging/email/analytics/' . PathSegment::encode($analyticsId) . '/clicks',
+            method: HttpMethod::Post,
+            path: 'messaging/analytics/' . PathSegment::encode($analyticsId) . '/clicks',
             body: $data,
             scopes: [Scope::MessagingProfileId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
     public function incrementDeliveries(string $analyticsId, array $data, ?CallOptions $options = null): array
     {
         return $this->client->send(new OperationRequest(
-            method: HttpMethod::Patch,
-            path: 'messaging/email/analytics/' . PathSegment::encode($analyticsId) . '/deliveries',
+            method: HttpMethod::Post,
+            path: 'messaging/analytics/' . PathSegment::encode($analyticsId) . '/deliveries',
             body: $data,
             scopes: [Scope::MessagingProfileId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
     public function incrementSubscribes(string $analyticsId, array $data, ?CallOptions $options = null): array
     {
         return $this->client->send(new OperationRequest(
-            method: HttpMethod::Patch,
-            path: 'messaging/email/analytics/' . PathSegment::encode($analyticsId) . '/subscribes',
+            method: HttpMethod::Post,
+            path: 'messaging/analytics/' . PathSegment::encode($analyticsId) . '/subscribes',
             body: $data,
             scopes: [Scope::MessagingProfileId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
     public function incrementUnsubscribes(string $analyticsId, array $data, ?CallOptions $options = null): array
     {
         return $this->client->send(new OperationRequest(
-            method: HttpMethod::Patch,
-            path: 'messaging/email/analytics/' . PathSegment::encode($analyticsId) . '/unsubscribes',
+            method: HttpMethod::Post,
+            path: 'messaging/analytics/' . PathSegment::encode($analyticsId) . '/unsubscribes',
             body: $data,
             scopes: [Scope::MessagingProfileId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 }

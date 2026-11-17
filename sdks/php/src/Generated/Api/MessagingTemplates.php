@@ -18,6 +18,16 @@ final class MessagingTemplates
     {
     }
 
+    public function listMessage(?array $query = null, ?CallOptions $options = null): ListPage
+    {
+        return $this->client->sendList(new OperationRequest(
+            method: HttpMethod::Get,
+            path: 'messaging/templates/',
+            query: $query,
+            scopes: [Scope::MessagingProfileId],
+        ), $options);
+    }
+
     public function createMessage(array $data, ?CallOptions $options = null): array
     {
         return $this->client->send(new OperationRequest(
@@ -29,15 +39,14 @@ final class MessagingTemplates
         ), $options)->dataArray();
     }
 
-    public function listMessage(array $data, ?CallOptions $options = null): ListPage
+    public function listMessageCount(?array $query = null, ?CallOptions $options = null): array
     {
-        return $this->client->sendList(new OperationRequest(
-            method: HttpMethod::Post,
-            path: 'messaging/templates/retrieve',
-            body: $data,
+        return $this->client->send(new OperationRequest(
+            method: HttpMethod::Get,
+            path: 'messaging/templates/count',
+            query: $query,
             scopes: [Scope::MessagingProfileId],
-            acceptsIdempotencyKey: true,
-        ), $options);
+        ), $options)->dataArray();
     }
 
     public function readMessage(string $templateId, ?CallOptions $options = null): array
@@ -66,15 +75,5 @@ final class MessagingTemplates
             path: 'messaging/templates/' . PathSegment::encode($templateId),
             scopes: [Scope::MessagingProfileId],
         ), $options)->dataArray();
-    }
-
-    public function deleteMessages(array $data, ?CallOptions $options = null): array
-    {
-        return $this->client->send(new OperationRequest(
-            method: HttpMethod::Patch,
-            path: 'messaging/templates/wipe',
-            body: $data,
-            scopes: [Scope::MessagingProfileId],
-        ), $options)->bodyArray();
     }
 }

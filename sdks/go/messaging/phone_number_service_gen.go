@@ -10,12 +10,20 @@ type PhoneNumbersService struct {
 	client *conjoin.Client
 }
 
-func (s *PhoneNumbersService) Purchase(ctx context.Context, phoneNumber string, body *PurchasePhoneNumberRequest, opts ...conjoin.CallOption) (*PurchasePhoneNumberResponse, error) {
+func (s *PhoneNumbersService) List(ctx context.Context, query *ListPhoneNumbersQuery, opts ...conjoin.CallOption) (*conjoin.Page[ListPhoneNumbersItem], error) {
+	return conjoin.List[ListPhoneNumbersItem](ctx, s.client, conjoin.Operation{
+		Method: "GET",
+		Path:   "messaging/phone-numbers/",
+		Query:  query,
+		Scopes: []conjoin.ScopeName{conjoin.ScopeMessagingProfile},
+	}, opts...)
+}
+
+func (s *PhoneNumbersService) Purchase(ctx context.Context, body *PurchasePhoneNumberRequest, opts ...conjoin.CallOption) (*PurchasePhoneNumberResponse, error) {
 	var out PurchasePhoneNumberResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
 		Method:                "POST",
-		Path:                  "messaging/phone-numbers/{phone_number}/provision",
-		PathParams:            []string{phoneNumber},
+		Path:                  "messaging/phone-numbers/",
 		Body:                  body,
 		BodyRequired:          true,
 		Scopes:                []conjoin.ScopeName{conjoin.ScopeMessagingProfile},
@@ -26,13 +34,43 @@ func (s *PhoneNumbersService) Purchase(ctx context.Context, phoneNumber string, 
 	return &out, nil
 }
 
-func (s *PhoneNumbersService) Update(ctx context.Context, phoneNumber string, projectID string, opts ...conjoin.CallOption) (*UpdatePhoneNumberResponse, error) {
-	var out UpdatePhoneNumberResponse
+func (s *PhoneNumbersService) ListCount(ctx context.Context, query *ListPhoneNumbersCountQuery, opts ...conjoin.CallOption) (*ListPhoneNumbersCountResponse, error) {
+	var out ListPhoneNumbersCountResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:     "PATCH",
-		Path:       "messaging/phone-numbers/transfer/{phone_number}/project/{project_id}",
-		PathParams: []string{phoneNumber, projectID},
-		Scopes:     []conjoin.ScopeName{conjoin.ScopeMessagingProfile},
+		Method: "GET",
+		Path:   "messaging/phone-numbers/count",
+		Query:  query,
+		Scopes: []conjoin.ScopeName{conjoin.ScopeMessagingProfile},
+	}, &out, opts...); err != nil {
+		return nil, err
+	}
+	return &out, nil
+}
+
+func (s *PhoneNumbersService) Transfer(ctx context.Context, phoneNumberID string, body *TransferPhoneNumberRequest, opts ...conjoin.CallOption) (*TransferPhoneNumberResponse, error) {
+	var out TransferPhoneNumberResponse
+	if err := s.client.Do(ctx, conjoin.Operation{
+		Method:                "POST",
+		Path:                  "messaging/phone-numbers/{phone_number_id}/transfer",
+		PathParams:            []string{phoneNumberID},
+		Body:                  body,
+		BodyRequired:          true,
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeMessagingProfile},
+		AcceptsIdempotencyKey: true,
+	}, &out, opts...); err != nil {
+		return nil, err
+	}
+	return &out, nil
+}
+
+func (s *PhoneNumbersService) Release(ctx context.Context, phoneNumberID string, opts ...conjoin.CallOption) (*ReleasePhoneNumberResponse, error) {
+	var out ReleasePhoneNumberResponse
+	if err := s.client.Do(ctx, conjoin.Operation{
+		Method:                "POST",
+		Path:                  "messaging/phone-numbers/{phone_number_id}/release",
+		PathParams:            []string{phoneNumberID},
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeMessagingProfile},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -42,31 +80,8 @@ func (s *PhoneNumbersService) Update(ctx context.Context, phoneNumber string, pr
 func (s *PhoneNumbersService) ListAvailable(ctx context.Context, query *ListAvailablePhoneNumbersQuery, opts ...conjoin.CallOption) (*conjoin.Page[ListAvailablePhoneNumbersItem], error) {
 	return conjoin.List[ListAvailablePhoneNumbersItem](ctx, s.client, conjoin.Operation{
 		Method: "GET",
-		Path:   "messaging/phone-numbers/available",
+		Path:   "messaging/available-phone-numbers/",
 		Query:  query,
 		Scopes: []conjoin.ScopeName{conjoin.ScopeMessagingProfile},
 	}, opts...)
-}
-
-func (s *PhoneNumbersService) List(ctx context.Context, query *ListPhoneNumbersQuery, opts ...conjoin.CallOption) (*conjoin.Page[ListPhoneNumbersItem], error) {
-	return conjoin.List[ListPhoneNumbersItem](ctx, s.client, conjoin.Operation{
-		Method: "GET",
-		Path:   "messaging/phone-numbers/",
-		Query:  query,
-		Scopes: []conjoin.ScopeName{conjoin.ScopeMessagingProfile},
-	}, opts...)
-}
-
-func (s *PhoneNumbersService) Release(ctx context.Context, phoneNumber string, opts ...conjoin.CallOption) (*ReleasePhoneNumberResponse, error) {
-	var out ReleasePhoneNumberResponse
-	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:                "POST",
-		Path:                  "messaging/phone-numbers/{phone_number}/release",
-		PathParams:            []string{phoneNumber},
-		Scopes:                []conjoin.ScopeName{conjoin.ScopeMessagingProfile},
-		AcceptsIdempotencyKey: true,
-	}, &out, opts...); err != nil {
-		return nil, err
-	}
-	return &out, nil
 }

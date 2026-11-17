@@ -19,11 +19,21 @@ final class MessagingEmails
     {
     }
 
+    public function listMessages(?array $query = null, ?CallOptions $options = null): ListPage
+    {
+        return $this->client->sendList(new OperationRequest(
+            method: HttpMethod::Get,
+            path: 'messaging/email-messages/',
+            query: $query,
+            scopes: [Scope::MessagingProfileId],
+        ), $options);
+    }
+
     public function send(array $data, ?CallOptions $options = null): array
     {
         return $this->client->send(new OperationRequest(
             method: HttpMethod::Post,
-            path: 'messaging/email/send',
+            path: 'messaging/email-messages/',
             body: $data,
             bodyType: BodyType::Multipart,
             scopes: [Scope::MessagingProfileId],
@@ -31,22 +41,30 @@ final class MessagingEmails
         ), $options)->dataArray();
     }
 
-    public function readMessages(string $messageId, array $data, ?CallOptions $options = null): ListPage
+    public function listMessagesCount(?array $query = null, ?CallOptions $options = null): array
     {
-        return $this->client->sendList(new OperationRequest(
-            method: HttpMethod::Post,
-            path: 'messaging/email/messages/' . PathSegment::encode($messageId),
-            body: $data,
+        return $this->client->send(new OperationRequest(
+            method: HttpMethod::Get,
+            path: 'messaging/email-messages/count',
+            query: $query,
             scopes: [Scope::MessagingProfileId],
-            acceptsIdempotencyKey: true,
-        ), $options);
+        ), $options)->dataArray();
+    }
+
+    public function readMessage(string $emailMessageId, ?CallOptions $options = null): array
+    {
+        return $this->client->send(new OperationRequest(
+            method: HttpMethod::Get,
+            path: 'messaging/email-messages/' . PathSegment::encode($emailMessageId),
+            scopes: [Scope::MessagingProfileId],
+        ), $options)->dataArray();
     }
 
     public function generateSummary(array $data, ?CallOptions $options = null): array
     {
         return $this->client->send(new OperationRequest(
             method: HttpMethod::Post,
-            path: 'messaging/email/summary',
+            path: 'messaging/email-message-previews/',
             body: $data,
             scopes: [Scope::MessagingProfileId],
             acceptsIdempotencyKey: true,

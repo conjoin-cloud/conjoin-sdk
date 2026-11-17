@@ -18,33 +18,51 @@ final class MessagingSMs
     {
     }
 
+    public function listSmsMessages(?array $query = null, ?CallOptions $options = null): ListPage
+    {
+        return $this->client->sendList(new OperationRequest(
+            method: HttpMethod::Get,
+            path: 'messaging/sms-messages/',
+            query: $query,
+            scopes: [Scope::MessagingProfileId],
+        ), $options);
+    }
+
     public function sendSms(array $data, ?CallOptions $options = null): array
     {
         return $this->client->send(new OperationRequest(
             method: HttpMethod::Post,
-            path: 'messaging/sms/send',
+            path: 'messaging/sms-messages/',
             body: $data,
             scopes: [Scope::MessagingProfileId],
             acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
-    public function readSmsMessages(string $messageId, array $data, ?CallOptions $options = null): ListPage
+    public function listSmsMessagesCount(?array $query = null, ?CallOptions $options = null): array
     {
-        return $this->client->sendList(new OperationRequest(
-            method: HttpMethod::Post,
-            path: 'messaging/sms/messages/' . PathSegment::encode($messageId),
-            body: $data,
+        return $this->client->send(new OperationRequest(
+            method: HttpMethod::Get,
+            path: 'messaging/sms-messages/count',
+            query: $query,
             scopes: [Scope::MessagingProfileId],
-            acceptsIdempotencyKey: true,
-        ), $options);
+        ), $options)->dataArray();
+    }
+
+    public function readSmsMessage(string $smsMessageId, ?CallOptions $options = null): array
+    {
+        return $this->client->send(new OperationRequest(
+            method: HttpMethod::Get,
+            path: 'messaging/sms-messages/' . PathSegment::encode($smsMessageId),
+            scopes: [Scope::MessagingProfileId],
+        ), $options)->dataArray();
     }
 
     public function generateSmsSummary(array $data, ?CallOptions $options = null): array
     {
         return $this->client->send(new OperationRequest(
             method: HttpMethod::Post,
-            path: 'messaging/sms/summary',
+            path: 'messaging/sms-message-previews/',
             body: $data,
             scopes: [Scope::MessagingProfileId],
             acceptsIdempotencyKey: true,

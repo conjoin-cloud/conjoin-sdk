@@ -2,6 +2,43 @@ package messaging
 
 import conjoin "github.com/conjoin-cloud/conjoin-sdk/sdks/go"
 
+type ListProfilesQuery struct {
+	ReferenceID any                                   `json:"reference_id,omitzero"`
+	Name        any                                   `json:"name,omitzero"`
+	DateCreated *ListChannelAnalyticsQueryDateCreated `json:"date_created,omitzero"`
+	Cursor      *ListChannelAnalyticsQueryCursor      `json:"cursor,omitzero"`
+	Sort        map[string]string                     `json:"sort,omitzero"`
+	Limit       any                                   `json:"limit,omitzero"`
+}
+
+type ListProfilesItemFeatures struct {
+	SMS   bool `json:"sms"`
+	Email bool `json:"email"`
+}
+
+type ListProfilesItem struct {
+	ProfileID            string                   `json:"profile_id"`
+	ConjoinAccountID     string                   `json:"conjoin_account_id"`
+	ConjoinProjectID     string                   `json:"conjoin_project_id"`
+	LiveMode             bool                     `json:"live_mode"`
+	ReferenceID          conjoin.Nullable[string] `json:"reference_id,omitzero"`
+	Name                 string                   `json:"name"`
+	Description          *string                  `json:"description,omitzero"`
+	IsSystemProfile      bool                     `json:"is_system_profile"`
+	ResourceRegion       string                   `json:"resource_region"`
+	Properties           map[string]any           `json:"properties,omitzero"`
+	MessageRetentionDays float64                  `json:"message_retention_days"`
+	Features             ListProfilesItemFeatures `json:"features"`
+	EmailConfig          map[string]any           `json:"email_config,omitzero"`
+	SMSConfig            map[string]any           `json:"sms_config,omitzero"`
+	MultisendConfig      map[string]any           `json:"multisend_config,omitzero"`
+	VerificationConfig   map[string]any           `json:"verification_config,omitzero"`
+	Status               string                   `json:"status"`
+	DateCreated          string                   `json:"date_created"`
+	DateUpdated          string                   `json:"date_updated"`
+	DateDeleted          conjoin.Nullable[string] `json:"date_deleted,omitzero"`
+}
+
 type CreateProfileRequestFeatures struct {
 	SMS   *bool `json:"sms,omitzero"`
 	Email *bool `json:"email,omitzero"`
@@ -22,6 +59,7 @@ type CreateProfileRequestVerificationsConfig struct {
 }
 
 type CreateProfileRequest struct {
+	ReferenceID          *string                                  `json:"reference_id,omitzero"`
 	Name                 string                                   `json:"name"`
 	Description          *string                                  `json:"description,omitzero"`
 	Features             *CreateProfileRequestFeatures            `json:"features,omitzero"`
@@ -34,93 +72,49 @@ type CreateProfileRequest struct {
 	MessageRetentionDays *float64                                 `json:"message_retention_days,omitzero"`
 }
 
-type CreateProfileResponseFeatures struct {
-	SMS   bool `json:"sms"`
-	Email bool `json:"email"`
-}
+type CreateProfileResponse = ListProfilesItem
 
-type CreateProfileResponse struct {
-	ProfileID            string                        `json:"profile_id"`
-	ConjoinAccountID     string                        `json:"conjoin_account_id"`
-	ConjoinProjectID     string                        `json:"conjoin_project_id"`
-	LiveMode             bool                          `json:"live_mode"`
-	ReferenceID          conjoin.Nullable[string]      `json:"reference_id,omitzero"`
-	Name                 string                        `json:"name"`
-	Description          *string                       `json:"description,omitzero"`
-	IsSystemProfile      bool                          `json:"is_system_profile"`
-	ResourceRegion       string                        `json:"resource_region"`
-	Properties           map[string]any                `json:"properties,omitzero"`
-	MessageRetentionDays float64                       `json:"message_retention_days"`
-	Features             CreateProfileResponseFeatures `json:"features"`
-	EmailConfig          map[string]any                `json:"email_config,omitzero"`
-	SMSConfig            map[string]any                `json:"sms_config,omitzero"`
-	MultisendConfig      map[string]any                `json:"multisend_config,omitzero"`
-	VerificationConfig   map[string]any                `json:"verification_config,omitzero"`
-	Status               string                        `json:"status"`
-	DateCreated          string                        `json:"date_created"`
-	DateUpdated          string                        `json:"date_updated"`
-	DateDeleted          conjoin.Nullable[string]      `json:"date_deleted,omitzero"`
-}
+type ListProfilesCountQuery = ListProfilesQuery
 
-type EnableProfileResponse = CreateProfileResponse
+type ListProfilesCountResponse = ListChannelAnalyticsCountResponse
 
-type DisableProfileResponse = CreateProfileResponse
+type EnableProfileResponse = ListProfilesItem
 
-type CloseProfileResponse = CreateProfileResponse
+type DisableProfileResponse = ListProfilesItem
 
-type UpdateProfileRequest struct {
-	Name                 *string                       `json:"name,omitzero"`
-	Features             *CreateProfileRequestFeatures `json:"features,omitzero"`
-	MessageRetentionDays *float64                      `json:"message_retention_days,omitzero"`
-}
+type EnableProfileChannelsRequest = SuppressContactMessagesRequest
 
-type UpdateProfileResponse = CreateProfileResponse
+type EnableProfileChannelsResponse = ListProfilesItem
 
-type ReadProfileResponse = CreateProfileResponse
+type DisableProfileChannelsRequest = SuppressContactMessagesRequest
 
-type DeleteProfileResponse = CreateProfileResponse
+type DisableProfileChannelsResponse = ListProfilesItem
 
-type UpdateProfileEmailConfigRequestEmailConfigSuppression struct {
+type CloseProfileResponse = ListProfilesItem
+
+type UpdateProfileRequestEmailConfigSuppression struct {
 	Statuses []string `json:"statuses,omitzero"`
 }
 
-type UpdateProfileEmailConfigRequestEmailConfig struct {
-	Suppression *UpdateProfileEmailConfigRequestEmailConfigSuppression `json:"suppression,omitzero"`
-	Tracking    *CreateEmailSenderRequestTracking                      `json:"tracking,omitzero"`
+type UpdateProfileRequestEmailConfig struct {
+	Suppression *UpdateProfileRequestEmailConfigSuppression `json:"suppression,omitzero"`
+	Tracking    *CreateEmailSenderRequestTracking           `json:"tracking,omitzero"`
 }
 
-type UpdateProfileEmailConfigRequest struct {
-	EmailConfig UpdateProfileEmailConfigRequestEmailConfig `json:"email_config"`
-}
-
-type UpdateProfileEmailConfigResponse = CreateProfileResponse
-
-type UpdateProfileMultisendConfigRequestMultisendConfig struct {
+type UpdateProfileRequestMultisendConfig struct {
 	PreferredChannels []string `json:"preferred_channels,omitzero"`
 }
 
-type UpdateProfileMultisendConfigRequest struct {
-	MultisendConfig UpdateProfileMultisendConfigRequestMultisendConfig `json:"multisend_config"`
+type UpdateProfileRequest struct {
+	Name                 *string                                  `json:"name,omitzero"`
+	MessageRetentionDays *float64                                 `json:"message_retention_days,omitzero"`
+	EmailConfig          *UpdateProfileRequestEmailConfig         `json:"email_config,omitzero"`
+	MultisendConfig      *UpdateProfileRequestMultisendConfig     `json:"multisend_config,omitzero"`
+	VerificationsConfig  *CreateProfileRequestVerificationsConfig `json:"verifications_config,omitzero"`
 }
 
-type UpdateProfileMultisendConfigResponse = CreateProfileResponse
+type UpdateProfileResponse = ListProfilesItem
 
-type UpdateProfileVerificationsConfigRequest struct {
-	VerificationsConfig CreateProfileRequestVerificationsConfig `json:"verifications_config"`
-}
+type ReadProfileResponse = ListProfilesItem
 
-type UpdateProfileVerificationsConfigResponse = CreateProfileResponse
-
-type ListProfilesRequestQuery struct {
-	Name any `json:"name,omitzero"`
-}
-
-type ListProfilesRequest struct {
-	Filter map[string]bool                    `json:"filter,omitzero"`
-	Cursor *ListChannelAnalyticsRequestCursor `json:"cursor,omitzero"`
-	Query  *ListProfilesRequestQuery          `json:"query,omitzero"`
-	Sort   map[string]string                  `json:"sort,omitzero"`
-	Limit  any                                `json:"limit,omitzero"`
-}
-
-type ListProfilesItem = CreateProfileResponse
+type DeleteProfileResponse = ListProfilesItem

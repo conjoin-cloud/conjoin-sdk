@@ -10,6 +10,14 @@ type ProfilesService struct {
 	client *conjoin.Client
 }
 
+func (s *ProfilesService) List(ctx context.Context, query *ListProfilesQuery, opts ...conjoin.CallOption) (*conjoin.Page[ListProfilesItem], error) {
+	return conjoin.List[ListProfilesItem](ctx, s.client, conjoin.Operation{
+		Method: "GET",
+		Path:   "messaging/profiles/",
+		Query:  query,
+	}, opts...)
+}
+
 func (s *ProfilesService) Create(ctx context.Context, body *CreateProfileRequest, opts ...conjoin.CallOption) (*CreateProfileResponse, error) {
 	var out CreateProfileResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
@@ -24,12 +32,25 @@ func (s *ProfilesService) Create(ctx context.Context, body *CreateProfileRequest
 	return &out, nil
 }
 
+func (s *ProfilesService) ListCount(ctx context.Context, query *ListProfilesCountQuery, opts ...conjoin.CallOption) (*ListProfilesCountResponse, error) {
+	var out ListProfilesCountResponse
+	if err := s.client.Do(ctx, conjoin.Operation{
+		Method: "GET",
+		Path:   "messaging/profiles/count",
+		Query:  query,
+	}, &out, opts...); err != nil {
+		return nil, err
+	}
+	return &out, nil
+}
+
 func (s *ProfilesService) Enable(ctx context.Context, profileID string, opts ...conjoin.CallOption) (*EnableProfileResponse, error) {
 	var out EnableProfileResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:     "PATCH",
-		Path:       "messaging/profiles/{profile_id}/enable",
-		PathParams: []string{profileID},
+		Method:                "POST",
+		Path:                  "messaging/profiles/{profile_id}/enable",
+		PathParams:            []string{profileID},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -39,9 +60,40 @@ func (s *ProfilesService) Enable(ctx context.Context, profileID string, opts ...
 func (s *ProfilesService) Disable(ctx context.Context, profileID string, opts ...conjoin.CallOption) (*DisableProfileResponse, error) {
 	var out DisableProfileResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:     "PATCH",
-		Path:       "messaging/profiles/{profile_id}/disable",
-		PathParams: []string{profileID},
+		Method:                "POST",
+		Path:                  "messaging/profiles/{profile_id}/disable",
+		PathParams:            []string{profileID},
+		AcceptsIdempotencyKey: true,
+	}, &out, opts...); err != nil {
+		return nil, err
+	}
+	return &out, nil
+}
+
+func (s *ProfilesService) EnableChannels(ctx context.Context, profileID string, body *EnableProfileChannelsRequest, opts ...conjoin.CallOption) (*EnableProfileChannelsResponse, error) {
+	var out EnableProfileChannelsResponse
+	if err := s.client.Do(ctx, conjoin.Operation{
+		Method:                "POST",
+		Path:                  "messaging/profiles/{profile_id}/enable-channels",
+		PathParams:            []string{profileID},
+		Body:                  body,
+		BodyRequired:          true,
+		AcceptsIdempotencyKey: true,
+	}, &out, opts...); err != nil {
+		return nil, err
+	}
+	return &out, nil
+}
+
+func (s *ProfilesService) DisableChannels(ctx context.Context, profileID string, body *DisableProfileChannelsRequest, opts ...conjoin.CallOption) (*DisableProfileChannelsResponse, error) {
+	var out DisableProfileChannelsResponse
+	if err := s.client.Do(ctx, conjoin.Operation{
+		Method:                "POST",
+		Path:                  "messaging/profiles/{profile_id}/disable-channels",
+		PathParams:            []string{profileID},
+		Body:                  body,
+		BodyRequired:          true,
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -51,9 +103,10 @@ func (s *ProfilesService) Disable(ctx context.Context, profileID string, opts ..
 func (s *ProfilesService) Close(ctx context.Context, profileID string, opts ...conjoin.CallOption) (*CloseProfileResponse, error) {
 	var out CloseProfileResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:     "PATCH",
-		Path:       "messaging/profiles/{profile_id}/close",
-		PathParams: []string{profileID},
+		Method:                "POST",
+		Path:                  "messaging/profiles/{profile_id}/close",
+		PathParams:            []string{profileID},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -96,56 +149,4 @@ func (s *ProfilesService) Delete(ctx context.Context, profileID string, opts ...
 		return nil, err
 	}
 	return &out, nil
-}
-
-func (s *ProfilesService) UpdateEmailConfig(ctx context.Context, profileID string, body *UpdateProfileEmailConfigRequest, opts ...conjoin.CallOption) (*UpdateProfileEmailConfigResponse, error) {
-	var out UpdateProfileEmailConfigResponse
-	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "PATCH",
-		Path:         "messaging/profiles/{profile_id}/emails-config",
-		PathParams:   []string{profileID},
-		Body:         body,
-		BodyRequired: true,
-	}, &out, opts...); err != nil {
-		return nil, err
-	}
-	return &out, nil
-}
-
-func (s *ProfilesService) UpdateMultisendConfig(ctx context.Context, profileID string, body *UpdateProfileMultisendConfigRequest, opts ...conjoin.CallOption) (*UpdateProfileMultisendConfigResponse, error) {
-	var out UpdateProfileMultisendConfigResponse
-	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "PATCH",
-		Path:         "messaging/profiles/{profile_id}/multisend-config",
-		PathParams:   []string{profileID},
-		Body:         body,
-		BodyRequired: true,
-	}, &out, opts...); err != nil {
-		return nil, err
-	}
-	return &out, nil
-}
-
-func (s *ProfilesService) UpdateVerificationsConfig(ctx context.Context, profileID string, body *UpdateProfileVerificationsConfigRequest, opts ...conjoin.CallOption) (*UpdateProfileVerificationsConfigResponse, error) {
-	var out UpdateProfileVerificationsConfigResponse
-	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:       "PATCH",
-		Path:         "messaging/profiles/{profile_id}/verifications-config",
-		PathParams:   []string{profileID},
-		Body:         body,
-		BodyRequired: true,
-	}, &out, opts...); err != nil {
-		return nil, err
-	}
-	return &out, nil
-}
-
-func (s *ProfilesService) List(ctx context.Context, body *ListProfilesRequest, opts ...conjoin.CallOption) (*conjoin.Page[ListProfilesItem], error) {
-	return conjoin.List[ListProfilesItem](ctx, s.client, conjoin.Operation{
-		Method:                "POST",
-		Path:                  "messaging/profiles/retrieve",
-		Body:                  body,
-		BodyRequired:          true,
-		AcceptsIdempotencyKey: true,
-	}, opts...)
 }

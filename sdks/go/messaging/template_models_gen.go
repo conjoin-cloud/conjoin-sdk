@@ -2,21 +2,45 @@ package messaging
 
 import conjoin "github.com/conjoin-cloud/conjoin-sdk/sdks/go"
 
-type CreateMessageTemplateRequest struct {
-	TemplateGroupID *string                   `json:"template_group_id,omitzero"`
-	Channel         string                    `json:"channel"`
-	IsOTPTemplate   *bool                     `json:"is_otp_template,omitzero"`
-	Title           string                    `json:"title"`
-	Description     *string                   `json:"description,omitzero"`
-	Language        *string                   `json:"language,omitzero"`
-	Content         string                    `json:"content"`
-	ContentType     string                    `json:"content_type"`
-	ContentLimit    conjoin.Nullable[float64] `json:"content_limit,omitzero"`
-	IsDefault       *bool                     `json:"is_default,omitzero"`
-	IsFavourite     *bool                     `json:"is_favourite,omitzero"`
+type ListMessageTemplatesQueryContentLimit struct {
+	NotEquals any   `json:"not_equals,omitzero"`
+	Gt        any   `json:"gt,omitzero"`
+	Lt        any   `json:"lt,omitzero"`
+	Gte       any   `json:"gte,omitzero"`
+	Lte       any   `json:"lte,omitzero"`
+	HasAny    []any `json:"has_any,omitzero"`
+	HasNone   []any `json:"has_none,omitzero"`
 }
 
-type CreateMessageTemplateResponse struct {
+type ListMessageTemplatesQueryTags struct {
+	IsEmpty                   any      `json:"is_empty,omitzero"`
+	Contains                  []string `json:"contains,omitzero"`
+	LengthLessThan            any      `json:"length_less_than,omitzero"`
+	LengthLessThanOrEquals    any      `json:"length_less_than_or_equals,omitzero"`
+	LengthGreaterThan         any      `json:"length_greater_than,omitzero"`
+	LengthGreaterThanOrEquals any      `json:"length_greater_than_or_equals,omitzero"`
+}
+
+type ListMessageTemplatesQuery struct {
+	TemplateID   any                                    `json:"template_id,omitzero"`
+	ReferenceID  any                                    `json:"reference_id,omitzero"`
+	Title        any                                    `json:"title,omitzero"`
+	Channel      any                                    `json:"channel,omitzero"`
+	ContentType  any                                    `json:"content_type,omitzero"`
+	ContentLimit *ListMessageTemplatesQueryContentLimit `json:"content_limit,omitzero"`
+	IsDefault    any                                    `json:"is_default,omitzero"`
+	Tags         *ListMessageTemplatesQueryTags         `json:"tags,omitzero"`
+	DateCreated  *ListChannelAnalyticsQueryDateCreated  `json:"date_created,omitzero"`
+	DateUpdated  *ListChannelAnalyticsQueryDateCreated  `json:"date_updated,omitzero"`
+	DateDeleted  *ListChannelAnalyticsQueryDateCreated  `json:"date_deleted,omitzero"`
+	DateArchived *ListChannelAnalyticsQueryDateCreated  `json:"date_archived,omitzero"`
+	Search       *string                                `json:"search,omitzero"`
+	Cursor       *ListChannelAnalyticsQueryCursor       `json:"cursor,omitzero"`
+	Sort         map[string]string                      `json:"sort,omitzero"`
+	Limit        any                                    `json:"limit,omitzero"`
+}
+
+type ListMessageTemplatesItem struct {
 	TemplateID       string                    `json:"template_id"`
 	ProfileID        string                    `json:"profile_id"`
 	ConjoinAccountID string                    `json:"conjoin_account_id"`
@@ -41,44 +65,30 @@ type CreateMessageTemplateResponse struct {
 	DateDeleted      conjoin.Nullable[string]  `json:"date_deleted,omitzero"`
 }
 
-type ListMessageTemplatesRequestQueryContentLimit struct {
-	NotEquals *float64  `json:"not_equals,omitzero"`
-	Gt        *float64  `json:"gt,omitzero"`
-	Lt        *float64  `json:"lt,omitzero"`
-	Gte       *float64  `json:"gte,omitzero"`
-	Lte       *float64  `json:"lte,omitzero"`
-	HasAny    []float64 `json:"has_any,omitzero"`
-	HasNone   []float64 `json:"has_none,omitzero"`
+type CreateMessageTemplateRequest struct {
+	ReferenceID     *string                   `json:"reference_id,omitzero"`
+	TemplateGroupID *string                   `json:"template_group_id,omitzero"`
+	Channel         string                    `json:"channel"`
+	IsOTPTemplate   *bool                     `json:"is_otp_template,omitzero"`
+	Title           string                    `json:"title"`
+	Description     *string                   `json:"description,omitzero"`
+	Language        *string                   `json:"language,omitzero"`
+	Content         string                    `json:"content"`
+	ContentType     string                    `json:"content_type"`
+	ContentLimit    conjoin.Nullable[float64] `json:"content_limit,omitzero"`
+	IsDefault       *bool                     `json:"is_default,omitzero"`
+	IsFavourite     *bool                     `json:"is_favourite,omitzero"`
 }
 
-type ListMessageTemplatesRequestQuery struct {
-	TemplateID   any                                                            `json:"template_id,omitzero"`
-	Title        any                                                            `json:"title,omitzero"`
-	Channel      any                                                            `json:"channel,omitzero"`
-	ContentType  any                                                            `json:"content_type,omitzero"`
-	ContentLimit conjoin.Nullable[ListMessageTemplatesRequestQueryContentLimit] `json:"content_limit,omitzero"`
-	IsDefault    *bool                                                          `json:"is_default,omitzero"`
-	Tags         *ListPhoneNumbersQueryQueryType                                `json:"tags,omitzero"`
-	DateCreated  *ListChannelAnalyticsRequestQueryDateCreated                   `json:"date_created,omitzero"`
-	DateUpdated  *ListChannelAnalyticsRequestQueryDateCreated                   `json:"date_updated,omitzero"`
-	DateDeleted  conjoin.Nullable[ListChannelAnalyticsRequestQueryDateCreated]  `json:"date_deleted,omitzero"`
-	DateArchived conjoin.Nullable[ListChannelAnalyticsRequestQueryDateCreated]  `json:"date_archived,omitzero"`
-}
+type CreateMessageTemplateResponse = ListMessageTemplatesItem
 
-type ListMessageTemplatesRequest struct {
-	Cursor *ListChannelAnalyticsRequestCursor `json:"cursor,omitzero"`
-	Filter map[string]bool                    `json:"filter,omitzero"`
-	Query  *ListMessageTemplatesRequestQuery  `json:"query,omitzero"`
-	Search *ListContactsRequestSearch         `json:"search,omitzero"`
-	Sort   map[string]string                  `json:"sort,omitzero"`
-	Limit  any                                `json:"limit,omitzero"`
-}
+type ListMessageTemplatesCountQuery = ListMessageTemplatesQuery
 
-type ListMessageTemplatesItem = CreateMessageTemplateResponse
+type ListMessageTemplatesCountResponse = ListChannelAnalyticsCountResponse
 
-type ReadMessageTemplateResponse = CreateMessageTemplateResponse
+type ReadMessageTemplateResponse = ListMessageTemplatesItem
 
-type DeleteMessageTemplateResponse = CreateMessageTemplateResponse
+type DeleteMessageTemplateResponse = ListMessageTemplatesItem
 
 type UpdateMessageTemplateRequest struct {
 	TemplateGroupID *string                   `json:"template_group_id,omitzero"`
@@ -94,18 +104,4 @@ type UpdateMessageTemplateRequest struct {
 	IsFavourite     *bool                     `json:"is_favourite,omitzero"`
 }
 
-type UpdateMessageTemplateResponse = CreateMessageTemplateResponse
-
-type DeleteMessageTemplatesRequest struct {
-	Query *ListMessageTemplatesRequestQuery `json:"query,omitzero"`
-}
-
-type DeleteMessageTemplatesResponseResponse struct {
-	Type    string `json:"type"`
-	Code    int64  `json:"code"`
-	Message string `json:"message"`
-}
-
-type DeleteMessageTemplatesResponse struct {
-	Response *DeleteMessageTemplatesResponseResponse `json:"response,omitzero"`
-}
+type UpdateMessageTemplateResponse = ListMessageTemplatesItem

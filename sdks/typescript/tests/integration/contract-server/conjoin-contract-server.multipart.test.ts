@@ -3,7 +3,7 @@ import type { ConjoinContractServer } from './conjoin-contract-server'
 import { startConjoinContractServer } from './conjoin-contract-server'
 import { conjoinSuccess } from './response-fixtures'
 
-const EMAIL_SEND_PATH = '/v1/messaging/email/send'
+const EMAIL_SEND_PATH = '/v1/messaging/email-messages/'
 const BOUNDARY = 'conjoinmultipartboundary'
 
 const emailMessageFixture = () => ({

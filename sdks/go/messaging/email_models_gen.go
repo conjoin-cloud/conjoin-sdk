@@ -2,26 +2,27 @@ package messaging
 
 import conjoin "github.com/conjoin-cloud/conjoin-sdk/sdks/go"
 
-type SendEmailRequest struct {
-	ReferenceID         *string                                                      `json:"reference_id,omitzero"`
-	TemplateID          *string                                                      `json:"template_id,omitzero"`
-	SenderPoolID        *string                                                      `json:"sender_pool_id,omitzero"`
-	From                *string                                                      `json:"from,omitzero"`
-	To                  []any                                                        `json:"to,omitzero"`
-	DefaultPlaceholders map[string]any                                               `json:"default_placeholders,omitzero"`
-	Subject             string                                                       `json:"subject"`
-	HTML                *string                                                      `json:"html,omitzero"`
-	Text                *string                                                      `json:"text,omitzero"`
-	Cc                  []string                                                     `json:"cc,omitzero"`
-	Bcc                 []string                                                     `json:"bcc,omitzero"`
-	Attachments         []SendConversationMessageRequestMessagesEmailAttachmentsItem `json:"attachments,omitzero"`
-	ReplyTo             *string                                                      `json:"reply_to,omitzero"`
-	SendAt              *string                                                      `json:"send_at,omitzero"`
-	CreateConversation  *bool                                                        `json:"create_conversation,omitzero"`
-	AcceptsReplies      *bool                                                        `json:"accepts_replies,omitzero"`
+type ListEmailMessagesQuery struct {
+	ConversationID any                                   `json:"conversation_id,omitzero"`
+	BroadcastID    any                                   `json:"broadcast_id,omitzero"`
+	RequestID      any                                   `json:"request_id,omitzero"`
+	MessageID      any                                   `json:"message_id,omitzero"`
+	Subject        any                                   `json:"subject,omitzero"`
+	RecipientID    any                                   `json:"recipient_id,omitzero"`
+	ReferenceID    any                                   `json:"reference_id,omitzero"`
+	Name           any                                   `json:"name,omitzero"`
+	SendAt         *ListChannelAnalyticsQueryDateCreated `json:"send_at,omitzero"`
+	SentAt         *ListChannelAnalyticsQueryDateCreated `json:"sent_at,omitzero"`
+	DateCreated    *ListChannelAnalyticsQueryDateCreated `json:"date_created,omitzero"`
+	Email          any                                   `json:"email,omitzero"`
+	Status         any                                   `json:"status,omitzero"`
+	Search         *string                               `json:"search,omitzero"`
+	Cursor         *ListChannelAnalyticsQueryCursor      `json:"cursor,omitzero"`
+	Sort           map[string]string                     `json:"sort,omitzero"`
+	Limit          any                                   `json:"limit,omitzero"`
 }
 
-type SendEmailResponse struct {
+type ListEmailMessagesItem struct {
 	MessageID        string                   `json:"message_id"`
 	ProfileID        string                   `json:"profile_id"`
 	ConjoinAccountID string                   `json:"conjoin_account_id"`
@@ -48,28 +49,32 @@ type SendEmailResponse struct {
 	DateDeleted      conjoin.Nullable[string] `json:"date_deleted,omitzero"`
 }
 
-type ReadEmailMessagesRequestQuery struct {
-	ConversationID any                                          `json:"conversation_id,omitzero"`
-	BroadcastID    any                                          `json:"broadcast_id,omitzero"`
-	RequestID      any                                          `json:"request_id,omitzero"`
-	MessageID      any                                          `json:"message_id,omitzero"`
-	Subject        any                                          `json:"subject,omitzero"`
-	RecipientID    any                                          `json:"recipient_id,omitzero"`
-	Name           any                                          `json:"name,omitzero"`
-	SendAt         *ListChannelAnalyticsRequestQueryDateCreated `json:"send_at,omitzero"`
-	Email          any                                          `json:"email,omitzero"`
-	Status         any                                          `json:"status,omitzero"`
+type SendEmailRequest struct {
+	ReferenceID         *string                                                      `json:"reference_id,omitzero"`
+	TemplateID          *string                                                      `json:"template_id,omitzero"`
+	SenderPoolID        *string                                                      `json:"sender_pool_id,omitzero"`
+	From                *string                                                      `json:"from,omitzero"`
+	To                  []any                                                        `json:"to,omitzero"`
+	DefaultPlaceholders map[string]any                                               `json:"default_placeholders,omitzero"`
+	Subject             string                                                       `json:"subject"`
+	HTML                *string                                                      `json:"html,omitzero"`
+	Text                *string                                                      `json:"text,omitzero"`
+	Cc                  []string                                                     `json:"cc,omitzero"`
+	Bcc                 []string                                                     `json:"bcc,omitzero"`
+	Attachments         []SendConversationMessageRequestMessagesEmailAttachmentsItem `json:"attachments,omitzero"`
+	ReplyTo             *string                                                      `json:"reply_to,omitzero"`
+	SendAt              *string                                                      `json:"send_at,omitzero"`
+	CreateConversation  *bool                                                        `json:"create_conversation,omitzero"`
+	AcceptsReplies      *bool                                                        `json:"accepts_replies,omitzero"`
 }
 
-type ReadEmailMessagesRequest struct {
-	Cursor *ListChannelAnalyticsRequestCursor `json:"cursor,omitzero"`
-	Query  *ReadEmailMessagesRequestQuery     `json:"query,omitzero"`
-	Search *ListContactsRequestSearch         `json:"search,omitzero"`
-	Sort   map[string]string                  `json:"sort,omitzero"`
-	Limit  any                                `json:"limit,omitzero"`
-}
+type SendEmailResponse = ListEmailMessagesItem
 
-type ReadEmailMessagesItem = SendEmailResponse
+type ListEmailMessagesCountQuery = ListEmailMessagesQuery
+
+type ListEmailMessagesCountResponse = ListChannelAnalyticsCountResponse
+
+type ReadEmailMessageResponse = ListEmailMessagesItem
 
 type GenerateEmailSummaryRequest struct {
 	Currency            string            `json:"currency"`

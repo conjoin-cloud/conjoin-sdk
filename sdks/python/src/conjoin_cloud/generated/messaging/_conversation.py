@@ -12,17 +12,23 @@ from conjoin_cloud.generated._models import (
     MessagingConversationAddOneRecipientRequest,
     MessagingConversationAddOneRecipientResponse,
     MessagingConversationArchiveResponse,
-    MessagingConversationCloneRequest,
-    MessagingConversationCloneResponse,
     MessagingConversationCreateRequest,
     MessagingConversationCreateResponse,
     MessagingConversationDeleteRecipientsResponse,
     MessagingConversationDeleteResponse,
+    MessagingConversationDuplicateRequest,
+    MessagingConversationDuplicateResponse,
+    MessagingConversationListCountQuery,
+    MessagingConversationListCountResponse,
     MessagingConversationListItem,
-    MessagingConversationListRequest,
-    MessagingConversationReadManyRecipientsItem,
-    MessagingConversationReadManyRecipientsRequest,
-    MessagingConversationReadMessagesRequest,
+    MessagingConversationListMessagesCountQuery,
+    MessagingConversationListMessagesCountResponse,
+    MessagingConversationListMessagesQuery,
+    MessagingConversationListQuery,
+    MessagingConversationListRecipientsCountQuery,
+    MessagingConversationListRecipientsCountResponse,
+    MessagingConversationListRecipientsItem,
+    MessagingConversationListRecipientsQuery,
     MessagingConversationReadOneRecipientResponse,
     MessagingConversationSendMessageRequest,
     MessagingConversationUpdateRequest,
@@ -36,6 +42,21 @@ if TYPE_CHECKING:
 class MessagingConversationsResource:
     def __init__(self, client: Conjoin) -> None:
         self._client = client
+
+    def list(
+        self,
+        query: MessagingConversationListQuery | None = None,
+        *,
+        request_options: RequestOptions | Mapping[str, Any] | None = None,
+    ) -> Page[MessagingConversationListItem]:
+        return self._client.request(
+            'GET',
+            'messaging/conversations/',
+            query=query,
+            cast_to=Page[MessagingConversationListItem],
+            request_options=request_options,
+            scopes=('messaging_profile_id',),
+        )
 
     def create(
         self,
@@ -53,18 +74,114 @@ class MessagingConversationsResource:
             accepts_idempotency_key=True,
         )
 
-    def clone(
+    def list_messages(
         self,
         conversation_id: str,
-        data: MessagingConversationCloneRequest,
+        query: MessagingConversationListMessagesQuery,
         *,
         request_options: RequestOptions | Mapping[str, Any] | None = None,
-    ) -> MessagingConversationCloneResponse:
+    ) -> Page[Any]:
+        return self._client.request(
+            'GET',
+            f'messaging/conversations/{encode_path_param(conversation_id)}/messages',
+            query=query,
+            cast_to=Page[Any],
+            request_options=request_options,
+            scopes=('messaging_profile_id',),
+        )
+
+    def list_recipients(
+        self,
+        conversation_id: str,
+        query: MessagingConversationListRecipientsQuery | None = None,
+        *,
+        request_options: RequestOptions | Mapping[str, Any] | None = None,
+    ) -> Page[MessagingConversationListRecipientsItem]:
+        return self._client.request(
+            'GET',
+            f'messaging/conversations/{encode_path_param(conversation_id)}/recipients',
+            query=query,
+            cast_to=Page[MessagingConversationListRecipientsItem],
+            request_options=request_options,
+            scopes=('messaging_profile_id',),
+        )
+
+    def add_one_recipient(
+        self,
+        conversation_id: str,
+        data: MessagingConversationAddOneRecipientRequest,
+        *,
+        request_options: RequestOptions | Mapping[str, Any] | None = None,
+    ) -> MessagingConversationAddOneRecipientResponse:
         return self._client.request(
             'POST',
-            f'messaging/conversations/{encode_path_param(conversation_id)}/clone',
+            f'messaging/conversations/{encode_path_param(conversation_id)}/recipients',
             body=data,
-            cast_to=MessagingConversationCloneResponse,
+            cast_to=MessagingConversationAddOneRecipientResponse,
+            request_options=request_options,
+            scopes=('messaging_profile_id',),
+            accepts_idempotency_key=True,
+        )
+
+    def list_count(
+        self,
+        query: MessagingConversationListCountQuery | None = None,
+        *,
+        request_options: RequestOptions | Mapping[str, Any] | None = None,
+    ) -> MessagingConversationListCountResponse:
+        return self._client.request(
+            'GET',
+            'messaging/conversations/count',
+            query=query,
+            cast_to=MessagingConversationListCountResponse,
+            request_options=request_options,
+            scopes=('messaging_profile_id',),
+        )
+
+    def list_messages_count(
+        self,
+        conversation_id: str,
+        query: MessagingConversationListMessagesCountQuery,
+        *,
+        request_options: RequestOptions | Mapping[str, Any] | None = None,
+    ) -> MessagingConversationListMessagesCountResponse:
+        return self._client.request(
+            'GET',
+            f'messaging/conversations/{encode_path_param(conversation_id)}/messages/count',
+            query=query,
+            cast_to=MessagingConversationListMessagesCountResponse,
+            request_options=request_options,
+            scopes=('messaging_profile_id',),
+        )
+
+    def list_recipients_count(
+        self,
+        conversation_id: str,
+        query: MessagingConversationListRecipientsCountQuery | None = None,
+        *,
+        request_options: RequestOptions | Mapping[str, Any] | None = None,
+    ) -> MessagingConversationListRecipientsCountResponse:
+        return self._client.request(
+            'GET',
+            f'messaging/conversations/{encode_path_param(conversation_id)}/recipients/count',
+            query=query,
+            cast_to=MessagingConversationListRecipientsCountResponse,
+            request_options=request_options,
+            scopes=('messaging_profile_id',),
+        )
+
+    def duplicate(
+        self,
+        conversation_id: str,
+        data: MessagingConversationDuplicateRequest,
+        *,
+        request_options: RequestOptions | Mapping[str, Any] | None = None,
+    ) -> MessagingConversationDuplicateResponse:
+        return self._client.request(
+            'POST',
+            f'messaging/conversations/{encode_path_param(conversation_id)}/duplicate',
+            body=data,
+            cast_to=MessagingConversationDuplicateResponse,
             request_options=request_options,
             scopes=('messaging_profile_id',),
             accepts_idempotency_key=True,
@@ -123,45 +240,9 @@ class MessagingConversationsResource:
         request_options: RequestOptions | Mapping[str, Any] | None = None,
     ) -> MessagingConversationArchiveResponse:
         return self._client.request(
-            'PATCH',
+            'POST',
             f'messaging/conversations/{encode_path_param(conversation_id)}/archive',
             cast_to=MessagingConversationArchiveResponse,
-            request_options=request_options,
-            scopes=('messaging_profile_id',),
-        )
-
-    def list(
-        self,
-        data: MessagingConversationListRequest,
-        *,
-        request_options: RequestOptions | Mapping[str, Any] | None = None,
-    ) -> Page[MessagingConversationListItem]:
-        return self._client.request(
-            'POST',
-            'messaging/conversations/retrieve',
-            body=data,
-            cast_to=Page[MessagingConversationListItem],
-            request_options=request_options,
-            scopes=('messaging_profile_id',),
-            accepts_idempotency_key=True,
-        )
-
-    def read_messages(
-        self,
-        conversation_id: str,
-        parent_message_id: str,
-        data: MessagingConversationReadMessagesRequest,
-        *,
-        request_options: RequestOptions | Mapping[str, Any] | None = None,
-    ) -> Page[Any]:
-        return self._client.request(
-            'POST',
-            (
-                f'messaging/conversations/{encode_path_param(conversation_id)}/messages'
-                f'/{encode_path_param(parent_message_id)}'
-            ),
-            body=data,
-            cast_to=Page[Any],
             request_options=request_options,
             scopes=('messaging_profile_id',),
             accepts_idempotency_key=True,
@@ -203,40 +284,6 @@ class MessagingConversationsResource:
             scopes=('messaging_profile_id',),
         )
 
-    def read_many_recipients(
-        self,
-        conversation_id: str,
-        data: MessagingConversationReadManyRecipientsRequest,
-        *,
-        request_options: RequestOptions | Mapping[str, Any] | None = None,
-    ) -> Page[MessagingConversationReadManyRecipientsItem]:
-        return self._client.request(
-            'POST',
-            f'messaging/conversations/{encode_path_param(conversation_id)}/recipients/retrieve',
-            body=data,
-            cast_to=Page[MessagingConversationReadManyRecipientsItem],
-            request_options=request_options,
-            scopes=('messaging_profile_id',),
-            accepts_idempotency_key=True,
-        )
-
-    def add_one_recipient(
-        self,
-        conversation_id: str,
-        data: MessagingConversationAddOneRecipientRequest,
-        *,
-        request_options: RequestOptions | Mapping[str, Any] | None = None,
-    ) -> MessagingConversationAddOneRecipientResponse:
-        return self._client.request(
-            'POST',
-            f'messaging/conversations/{encode_path_param(conversation_id)}/recipients',
-            body=data,
-            cast_to=MessagingConversationAddOneRecipientResponse,
-            request_options=request_options,
-            scopes=('messaging_profile_id',),
-            accepts_idempotency_key=True,
-        )
-
     def add_many_recipients(
         self,
         conversation_id: str,
@@ -246,7 +293,7 @@ class MessagingConversationsResource:
     ) -> Page[MessagingConversationAddManyRecipientsItem]:
         return self._client.request(
             'POST',
-            f'messaging/conversations/{encode_path_param(conversation_id)}/recipients/batch',
+            f'messaging/conversations/{encode_path_param(conversation_id)}/add-recipients',
             body=data,
             cast_to=Page[MessagingConversationAddManyRecipientsItem],
             request_options=request_options,
@@ -258,6 +305,21 @@ class MessagingConversationsResource:
 class AsyncMessagingConversationsResource:
     def __init__(self, client: AsyncConjoin) -> None:
         self._client = client
+
+    async def list(
+        self,
+        query: MessagingConversationListQuery | None = None,
+        *,
+        request_options: RequestOptions | Mapping[str, Any] | None = None,
+    ) -> AsyncPage[MessagingConversationListItem]:
+        return await self._client.request(
+            'GET',
+            'messaging/conversations/',
+            query=query,
+            cast_to=AsyncPage[MessagingConversationListItem],
+            request_options=request_options,
+            scopes=('messaging_profile_id',),
+        )
 
     async def create(
         self,
@@ -275,18 +337,114 @@ class AsyncMessagingConversationsResource:
             accepts_idempotency_key=True,
         )
 
-    async def clone(
+    async def list_messages(
         self,
         conversation_id: str,
-        data: MessagingConversationCloneRequest,
+        query: MessagingConversationListMessagesQuery,
         *,
         request_options: RequestOptions | Mapping[str, Any] | None = None,
-    ) -> MessagingConversationCloneResponse:
+    ) -> AsyncPage[Any]:
+        return await self._client.request(
+            'GET',
+            f'messaging/conversations/{encode_path_param(conversation_id)}/messages',
+            query=query,
+            cast_to=AsyncPage[Any],
+            request_options=request_options,
+            scopes=('messaging_profile_id',),
+        )
+
+    async def list_recipients(
+        self,
+        conversation_id: str,
+        query: MessagingConversationListRecipientsQuery | None = None,
+        *,
+        request_options: RequestOptions | Mapping[str, Any] | None = None,
+    ) -> AsyncPage[MessagingConversationListRecipientsItem]:
+        return await self._client.request(
+            'GET',
+            f'messaging/conversations/{encode_path_param(conversation_id)}/recipients',
+            query=query,
+            cast_to=AsyncPage[MessagingConversationListRecipientsItem],
+            request_options=request_options,
+            scopes=('messaging_profile_id',),
+        )
+
+    async def add_one_recipient(
+        self,
+        conversation_id: str,
+        data: MessagingConversationAddOneRecipientRequest,
+        *,
+        request_options: RequestOptions | Mapping[str, Any] | None = None,
+    ) -> MessagingConversationAddOneRecipientResponse:
         return await self._client.request(
             'POST',
-            f'messaging/conversations/{encode_path_param(conversation_id)}/clone',
+            f'messaging/conversations/{encode_path_param(conversation_id)}/recipients',
             body=data,
-            cast_to=MessagingConversationCloneResponse,
+            cast_to=MessagingConversationAddOneRecipientResponse,
+            request_options=request_options,
+            scopes=('messaging_profile_id',),
+            accepts_idempotency_key=True,
+        )
+
+    async def list_count(
+        self,
+        query: MessagingConversationListCountQuery | None = None,
+        *,
+        request_options: RequestOptions | Mapping[str, Any] | None = None,
+    ) -> MessagingConversationListCountResponse:
+        return await self._client.request(
+            'GET',
+            'messaging/conversations/count',
+            query=query,
+            cast_to=MessagingConversationListCountResponse,
+            request_options=request_options,
+            scopes=('messaging_profile_id',),
+        )
+
+    async def list_messages_count(
+        self,
+        conversation_id: str,
+        query: MessagingConversationListMessagesCountQuery,
+        *,
+        request_options: RequestOptions | Mapping[str, Any] | None = None,
+    ) -> MessagingConversationListMessagesCountResponse:
+        return await self._client.request(
+            'GET',
+            f'messaging/conversations/{encode_path_param(conversation_id)}/messages/count',
+            query=query,
+            cast_to=MessagingConversationListMessagesCountResponse,
+            request_options=request_options,
+            scopes=('messaging_profile_id',),
+        )
+
+    async def list_recipients_count(
+        self,
+        conversation_id: str,
+        query: MessagingConversationListRecipientsCountQuery | None = None,
+        *,
+        request_options: RequestOptions | Mapping[str, Any] | None = None,
+    ) -> MessagingConversationListRecipientsCountResponse:
+        return await self._client.request(
+            'GET',
+            f'messaging/conversations/{encode_path_param(conversation_id)}/recipients/count',
+            query=query,
+            cast_to=MessagingConversationListRecipientsCountResponse,
+            request_options=request_options,
+            scopes=('messaging_profile_id',),
+        )
+
+    async def duplicate(
+        self,
+        conversation_id: str,
+        data: MessagingConversationDuplicateRequest,
+        *,
+        request_options: RequestOptions | Mapping[str, Any] | None = None,
+    ) -> MessagingConversationDuplicateResponse:
+        return await self._client.request(
+            'POST',
+            f'messaging/conversations/{encode_path_param(conversation_id)}/duplicate',
+            body=data,
+            cast_to=MessagingConversationDuplicateResponse,
             request_options=request_options,
             scopes=('messaging_profile_id',),
             accepts_idempotency_key=True,
@@ -345,45 +503,9 @@ class AsyncMessagingConversationsResource:
         request_options: RequestOptions | Mapping[str, Any] | None = None,
     ) -> MessagingConversationArchiveResponse:
         return await self._client.request(
-            'PATCH',
+            'POST',
             f'messaging/conversations/{encode_path_param(conversation_id)}/archive',
             cast_to=MessagingConversationArchiveResponse,
-            request_options=request_options,
-            scopes=('messaging_profile_id',),
-        )
-
-    async def list(
-        self,
-        data: MessagingConversationListRequest,
-        *,
-        request_options: RequestOptions | Mapping[str, Any] | None = None,
-    ) -> AsyncPage[MessagingConversationListItem]:
-        return await self._client.request(
-            'POST',
-            'messaging/conversations/retrieve',
-            body=data,
-            cast_to=AsyncPage[MessagingConversationListItem],
-            request_options=request_options,
-            scopes=('messaging_profile_id',),
-            accepts_idempotency_key=True,
-        )
-
-    async def read_messages(
-        self,
-        conversation_id: str,
-        parent_message_id: str,
-        data: MessagingConversationReadMessagesRequest,
-        *,
-        request_options: RequestOptions | Mapping[str, Any] | None = None,
-    ) -> AsyncPage[Any]:
-        return await self._client.request(
-            'POST',
-            (
-                f'messaging/conversations/{encode_path_param(conversation_id)}/messages'
-                f'/{encode_path_param(parent_message_id)}'
-            ),
-            body=data,
-            cast_to=AsyncPage[Any],
             request_options=request_options,
             scopes=('messaging_profile_id',),
             accepts_idempotency_key=True,
@@ -425,40 +547,6 @@ class AsyncMessagingConversationsResource:
             scopes=('messaging_profile_id',),
         )
 
-    async def read_many_recipients(
-        self,
-        conversation_id: str,
-        data: MessagingConversationReadManyRecipientsRequest,
-        *,
-        request_options: RequestOptions | Mapping[str, Any] | None = None,
-    ) -> AsyncPage[MessagingConversationReadManyRecipientsItem]:
-        return await self._client.request(
-            'POST',
-            f'messaging/conversations/{encode_path_param(conversation_id)}/recipients/retrieve',
-            body=data,
-            cast_to=AsyncPage[MessagingConversationReadManyRecipientsItem],
-            request_options=request_options,
-            scopes=('messaging_profile_id',),
-            accepts_idempotency_key=True,
-        )
-
-    async def add_one_recipient(
-        self,
-        conversation_id: str,
-        data: MessagingConversationAddOneRecipientRequest,
-        *,
-        request_options: RequestOptions | Mapping[str, Any] | None = None,
-    ) -> MessagingConversationAddOneRecipientResponse:
-        return await self._client.request(
-            'POST',
-            f'messaging/conversations/{encode_path_param(conversation_id)}/recipients',
-            body=data,
-            cast_to=MessagingConversationAddOneRecipientResponse,
-            request_options=request_options,
-            scopes=('messaging_profile_id',),
-            accepts_idempotency_key=True,
-        )
-
     async def add_many_recipients(
         self,
         conversation_id: str,
@@ -468,7 +556,7 @@ class AsyncMessagingConversationsResource:
     ) -> AsyncPage[MessagingConversationAddManyRecipientsItem]:
         return await self._client.request(
             'POST',
-            f'messaging/conversations/{encode_path_param(conversation_id)}/recipients/batch',
+            f'messaging/conversations/{encode_path_param(conversation_id)}/add-recipients',
             body=data,
             cast_to=AsyncPage[MessagingConversationAddManyRecipientsItem],
             request_options=request_options,

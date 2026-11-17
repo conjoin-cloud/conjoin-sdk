@@ -9,12 +9,15 @@ from conjoin_cloud._url import encode_path_param
 from conjoin_cloud.generated._models import (
     MessagingPhoneNumberListAvailableItem,
     MessagingPhoneNumberListAvailableQuery,
+    MessagingPhoneNumberListCountQuery,
+    MessagingPhoneNumberListCountResponse,
     MessagingPhoneNumberListItem,
     MessagingPhoneNumberListQuery,
     MessagingPhoneNumberPurchaseRequest,
     MessagingPhoneNumberPurchaseResponse,
     MessagingPhoneNumberReleaseResponse,
-    MessagingPhoneNumberUpdateResponse,
+    MessagingPhoneNumberTransferRequest,
+    MessagingPhoneNumberTransferResponse,
 )
 
 if TYPE_CHECKING:
@@ -24,56 +27,6 @@ if TYPE_CHECKING:
 class MessagingPhoneNumbersResource:
     def __init__(self, client: Conjoin) -> None:
         self._client = client
-
-    def purchase(
-        self,
-        phone_number: str,
-        data: MessagingPhoneNumberPurchaseRequest,
-        *,
-        request_options: RequestOptions | Mapping[str, Any] | None = None,
-    ) -> MessagingPhoneNumberPurchaseResponse:
-        return self._client.request(
-            'POST',
-            f'messaging/phone-numbers/{encode_path_param(phone_number)}/provision',
-            body=data,
-            cast_to=MessagingPhoneNumberPurchaseResponse,
-            request_options=request_options,
-            scopes=('messaging_profile_id',),
-            accepts_idempotency_key=True,
-        )
-
-    def update(
-        self,
-        phone_number: str,
-        project_id: str,
-        *,
-        request_options: RequestOptions | Mapping[str, Any] | None = None,
-    ) -> MessagingPhoneNumberUpdateResponse:
-        return self._client.request(
-            'PATCH',
-            (
-                f'messaging/phone-numbers/transfer/{encode_path_param(phone_number)}/project'
-                f'/{encode_path_param(project_id)}'
-            ),
-            cast_to=MessagingPhoneNumberUpdateResponse,
-            request_options=request_options,
-            scopes=('messaging_profile_id',),
-        )
-
-    def list_available(
-        self,
-        query: MessagingPhoneNumberListAvailableQuery | None = None,
-        *,
-        request_options: RequestOptions | Mapping[str, Any] | None = None,
-    ) -> Page[MessagingPhoneNumberListAvailableItem]:
-        return self._client.request(
-            'GET',
-            'messaging/phone-numbers/available',
-            query=query,
-            cast_to=Page[MessagingPhoneNumberListAvailableItem],
-            request_options=request_options,
-            scopes=('messaging_profile_id',),
-        )
 
     def list(
         self,
@@ -90,36 +43,15 @@ class MessagingPhoneNumbersResource:
             scopes=('messaging_profile_id',),
         )
 
-    def release(
+    def purchase(
         self,
-        phone_number: str,
-        *,
-        request_options: RequestOptions | Mapping[str, Any] | None = None,
-    ) -> MessagingPhoneNumberReleaseResponse:
-        return self._client.request(
-            'POST',
-            f'messaging/phone-numbers/{encode_path_param(phone_number)}/release',
-            cast_to=MessagingPhoneNumberReleaseResponse,
-            request_options=request_options,
-            scopes=('messaging_profile_id',),
-            accepts_idempotency_key=True,
-        )
-
-
-class AsyncMessagingPhoneNumbersResource:
-    def __init__(self, client: AsyncConjoin) -> None:
-        self._client = client
-
-    async def purchase(
-        self,
-        phone_number: str,
         data: MessagingPhoneNumberPurchaseRequest,
         *,
         request_options: RequestOptions | Mapping[str, Any] | None = None,
     ) -> MessagingPhoneNumberPurchaseResponse:
-        return await self._client.request(
+        return self._client.request(
             'POST',
-            f'messaging/phone-numbers/{encode_path_param(phone_number)}/provision',
+            'messaging/phone-numbers/',
             body=data,
             cast_to=MessagingPhoneNumberPurchaseResponse,
             request_options=request_options,
@@ -127,38 +59,72 @@ class AsyncMessagingPhoneNumbersResource:
             accepts_idempotency_key=True,
         )
 
-    async def update(
+    def list_count(
         self,
-        phone_number: str,
-        project_id: str,
+        query: MessagingPhoneNumberListCountQuery | None = None,
         *,
         request_options: RequestOptions | Mapping[str, Any] | None = None,
-    ) -> MessagingPhoneNumberUpdateResponse:
-        return await self._client.request(
-            'PATCH',
-            (
-                f'messaging/phone-numbers/transfer/{encode_path_param(phone_number)}/project'
-                f'/{encode_path_param(project_id)}'
-            ),
-            cast_to=MessagingPhoneNumberUpdateResponse,
+    ) -> MessagingPhoneNumberListCountResponse:
+        return self._client.request(
+            'GET',
+            'messaging/phone-numbers/count',
+            query=query,
+            cast_to=MessagingPhoneNumberListCountResponse,
             request_options=request_options,
             scopes=('messaging_profile_id',),
         )
 
-    async def list_available(
+    def transfer(
+        self,
+        phone_number_id: str,
+        data: MessagingPhoneNumberTransferRequest,
+        *,
+        request_options: RequestOptions | Mapping[str, Any] | None = None,
+    ) -> MessagingPhoneNumberTransferResponse:
+        return self._client.request(
+            'POST',
+            f'messaging/phone-numbers/{encode_path_param(phone_number_id)}/transfer',
+            body=data,
+            cast_to=MessagingPhoneNumberTransferResponse,
+            request_options=request_options,
+            scopes=('messaging_profile_id',),
+            accepts_idempotency_key=True,
+        )
+
+    def release(
+        self,
+        phone_number_id: str,
+        *,
+        request_options: RequestOptions | Mapping[str, Any] | None = None,
+    ) -> MessagingPhoneNumberReleaseResponse:
+        return self._client.request(
+            'POST',
+            f'messaging/phone-numbers/{encode_path_param(phone_number_id)}/release',
+            cast_to=MessagingPhoneNumberReleaseResponse,
+            request_options=request_options,
+            scopes=('messaging_profile_id',),
+            accepts_idempotency_key=True,
+        )
+
+    def list_available(
         self,
         query: MessagingPhoneNumberListAvailableQuery | None = None,
         *,
         request_options: RequestOptions | Mapping[str, Any] | None = None,
-    ) -> AsyncPage[MessagingPhoneNumberListAvailableItem]:
-        return await self._client.request(
+    ) -> Page[MessagingPhoneNumberListAvailableItem]:
+        return self._client.request(
             'GET',
-            'messaging/phone-numbers/available',
+            'messaging/available-phone-numbers/',
             query=query,
-            cast_to=AsyncPage[MessagingPhoneNumberListAvailableItem],
+            cast_to=Page[MessagingPhoneNumberListAvailableItem],
             request_options=request_options,
             scopes=('messaging_profile_id',),
         )
+
+
+class AsyncMessagingPhoneNumbersResource:
+    def __init__(self, client: AsyncConjoin) -> None:
+        self._client = client
 
     async def list(
         self,
@@ -175,17 +141,80 @@ class AsyncMessagingPhoneNumbersResource:
             scopes=('messaging_profile_id',),
         )
 
+    async def purchase(
+        self,
+        data: MessagingPhoneNumberPurchaseRequest,
+        *,
+        request_options: RequestOptions | Mapping[str, Any] | None = None,
+    ) -> MessagingPhoneNumberPurchaseResponse:
+        return await self._client.request(
+            'POST',
+            'messaging/phone-numbers/',
+            body=data,
+            cast_to=MessagingPhoneNumberPurchaseResponse,
+            request_options=request_options,
+            scopes=('messaging_profile_id',),
+            accepts_idempotency_key=True,
+        )
+
+    async def list_count(
+        self,
+        query: MessagingPhoneNumberListCountQuery | None = None,
+        *,
+        request_options: RequestOptions | Mapping[str, Any] | None = None,
+    ) -> MessagingPhoneNumberListCountResponse:
+        return await self._client.request(
+            'GET',
+            'messaging/phone-numbers/count',
+            query=query,
+            cast_to=MessagingPhoneNumberListCountResponse,
+            request_options=request_options,
+            scopes=('messaging_profile_id',),
+        )
+
+    async def transfer(
+        self,
+        phone_number_id: str,
+        data: MessagingPhoneNumberTransferRequest,
+        *,
+        request_options: RequestOptions | Mapping[str, Any] | None = None,
+    ) -> MessagingPhoneNumberTransferResponse:
+        return await self._client.request(
+            'POST',
+            f'messaging/phone-numbers/{encode_path_param(phone_number_id)}/transfer',
+            body=data,
+            cast_to=MessagingPhoneNumberTransferResponse,
+            request_options=request_options,
+            scopes=('messaging_profile_id',),
+            accepts_idempotency_key=True,
+        )
+
     async def release(
         self,
-        phone_number: str,
+        phone_number_id: str,
         *,
         request_options: RequestOptions | Mapping[str, Any] | None = None,
     ) -> MessagingPhoneNumberReleaseResponse:
         return await self._client.request(
             'POST',
-            f'messaging/phone-numbers/{encode_path_param(phone_number)}/release',
+            f'messaging/phone-numbers/{encode_path_param(phone_number_id)}/release',
             cast_to=MessagingPhoneNumberReleaseResponse,
             request_options=request_options,
             scopes=('messaging_profile_id',),
             accepts_idempotency_key=True,
+        )
+
+    async def list_available(
+        self,
+        query: MessagingPhoneNumberListAvailableQuery | None = None,
+        *,
+        request_options: RequestOptions | Mapping[str, Any] | None = None,
+    ) -> AsyncPage[MessagingPhoneNumberListAvailableItem]:
+        return await self._client.request(
+            'GET',
+            'messaging/available-phone-numbers/',
+            query=query,
+            cast_to=AsyncPage[MessagingPhoneNumberListAvailableItem],
+            request_options=request_options,
+            scopes=('messaging_profile_id',),
         )

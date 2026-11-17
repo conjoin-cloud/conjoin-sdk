@@ -18,54 +18,52 @@ final class MessagingContactProperties
     {
     }
 
+    public function list(?array $query = null, ?CallOptions $options = null): ListPage
+    {
+        return $this->client->sendList(new OperationRequest(
+            method: HttpMethod::Get,
+            path: 'messaging/contact-properties/',
+            query: $query,
+            scopes: [Scope::MessagingProfileId],
+        ), $options);
+    }
+
     public function createContactProperty(array $data, ?CallOptions $options = null): array
     {
         return $this->client->send(new OperationRequest(
             method: HttpMethod::Post,
-            path: 'messaging/contacts/properties',
+            path: 'messaging/contact-properties/',
             body: $data,
             scopes: [Scope::MessagingProfileId],
             acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
-    public function fetchOneContactProperty(string $propertyId, ?CallOptions $options = null): array
+    public function listCount(?array $query = null, ?CallOptions $options = null): array
     {
         return $this->client->send(new OperationRequest(
             method: HttpMethod::Get,
-            path: 'messaging/contacts/properties/' . PathSegment::encode($propertyId),
+            path: 'messaging/contact-properties/count',
+            query: $query,
             scopes: [Scope::MessagingProfileId],
         ), $options)->dataArray();
     }
 
-    public function deleteContactProperty(string $propertyId, ?CallOptions $options = null): array
+    public function fetchOneContactProperty(string $contactPropertyId, ?CallOptions $options = null): array
+    {
+        return $this->client->send(new OperationRequest(
+            method: HttpMethod::Get,
+            path: 'messaging/contact-properties/' . PathSegment::encode($contactPropertyId),
+            scopes: [Scope::MessagingProfileId],
+        ), $options)->dataArray();
+    }
+
+    public function deleteContactProperty(string $contactPropertyId, ?CallOptions $options = null): array
     {
         return $this->client->send(new OperationRequest(
             method: HttpMethod::Delete,
-            path: 'messaging/contacts/properties/' . PathSegment::encode($propertyId),
+            path: 'messaging/contact-properties/' . PathSegment::encode($contactPropertyId),
             scopes: [Scope::MessagingProfileId],
         ), $options)->dataArray();
-    }
-
-    public function list(array $data, ?CallOptions $options = null): ListPage
-    {
-        return $this->client->sendList(new OperationRequest(
-            method: HttpMethod::Post,
-            path: 'messaging/contacts/properties/retrieve',
-            body: $data,
-            scopes: [Scope::MessagingProfileId],
-            acceptsIdempotencyKey: true,
-        ), $options);
-    }
-
-    public function deleteMany(array $data, ?CallOptions $options = null): ListPage
-    {
-        return $this->client->sendList(new OperationRequest(
-            method: HttpMethod::Post,
-            path: 'messaging/contacts/properties/remove',
-            body: $data,
-            scopes: [Scope::MessagingProfileId],
-            acceptsIdempotencyKey: true,
-        ), $options);
     }
 }

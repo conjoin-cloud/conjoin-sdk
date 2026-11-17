@@ -2,16 +2,21 @@ package messaging
 
 import conjoin "github.com/conjoin-cloud/conjoin-sdk/sdks/go"
 
-type CreateSmsSenderRequest struct {
-	SenderType         *string  `json:"sender_type,omitzero"`
-	Sender             *string  `json:"sender,omitzero"`
-	SupportedCountries []string `json:"supported_countries,omitzero"`
-	Capability         string   `json:"capability"`
-	IsDefaultSender    *bool    `json:"is_default_sender,omitzero"`
-	IsTestSender       *bool    `json:"is_test_sender,omitzero"`
+type ListManySmsSendersQuery struct {
+	SenderID        any                                   `json:"sender_id,omitzero"`
+	ReferenceID     any                                   `json:"reference_id,omitzero"`
+	Sender          *string                               `json:"sender,omitzero"`
+	Capability      any                                   `json:"capability,omitzero"`
+	Status          any                                   `json:"status,omitzero"`
+	IsDefaultSender any                                   `json:"is_default_sender,omitzero"`
+	IsTestSender    any                                   `json:"is_test_sender,omitzero"`
+	DateCreated     *ListChannelAnalyticsQueryDateCreated `json:"date_created,omitzero"`
+	Cursor          *ListChannelAnalyticsQueryCursor      `json:"cursor,omitzero"`
+	Sort            map[string]string                     `json:"sort,omitzero"`
+	Limit           any                                   `json:"limit,omitzero"`
 }
 
-type CreateSmsSenderResponse struct {
+type ListManySmsSendersItem struct {
 	SenderID             string                   `json:"sender_id"`
 	ProfileID            string                   `json:"profile_id"`
 	ConjoinAccountID     string                   `json:"conjoin_account_id"`
@@ -33,13 +38,23 @@ type CreateSmsSenderResponse struct {
 	DateDeleted          conjoin.Nullable[string] `json:"date_deleted,omitzero"`
 }
 
-type EnableSmsSenderResponse = CreateSmsSenderResponse
+type CreateSmsSenderRequest struct {
+	SenderType         *string  `json:"sender_type,omitzero"`
+	Sender             *string  `json:"sender,omitzero"`
+	SupportedCountries []string `json:"supported_countries,omitzero"`
+	ReferenceID        *string  `json:"reference_id,omitzero"`
+	Capability         string   `json:"capability"`
+	IsDefaultSender    *bool    `json:"is_default_sender,omitzero"`
+	IsTestSender       *bool    `json:"is_test_sender,omitzero"`
+}
 
-type DisableSmsSenderResponse = CreateSmsSenderResponse
+type CreateSmsSenderResponse = ListManySmsSendersItem
 
-type ListSmsSenderResponse = CreateSmsSenderResponse
+type ListManySmsSendersCountQuery = ListManySmsSendersQuery
 
-type DeleteSmsSenderResponse = CreateSmsSenderResponse
+type ListManySmsSendersCountResponse = ListChannelAnalyticsCountResponse
+
+type ReadSmsSenderResponse = ListManySmsSendersItem
 
 type UpdateOneSmsSenderRequestProperties struct {
 	IndiaTemplateID *string `json:"india_template_id,omitzero"`
@@ -52,6 +67,14 @@ type UpdateOneSmsSenderRequest struct {
 	Properties      *UpdateOneSmsSenderRequestProperties `json:"properties,omitzero"`
 }
 
-type UpdateOneSmsSenderResponse = CreateSmsSenderResponse
+type UpdateOneSmsSenderResponse = ListManySmsSendersItem
 
-type TransferSmsSenderResponse = CreateSmsSenderResponse
+type DeleteSmsSenderResponse = ListManySmsSendersItem
+
+type EnableSmsSenderResponse = ListManySmsSendersItem
+
+type DisableSmsSenderResponse = ListManySmsSendersItem
+
+type TransferSmsSenderRequest = TransferEmailSenderRequest
+
+type TransferSmsSenderResponse = ListManySmsSendersItem

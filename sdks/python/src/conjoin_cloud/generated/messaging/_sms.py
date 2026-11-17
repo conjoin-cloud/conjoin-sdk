@@ -10,8 +10,11 @@ from conjoin_cloud._wire import wire_names
 from conjoin_cloud.generated._models import (
     MessagingSMSGenerateSmsSummaryRequest,
     MessagingSMSGenerateSmsSummaryResponse,
-    MessagingSMSReadSmsMessagesItem,
-    MessagingSMSReadSmsMessagesRequest,
+    MessagingSMSListSmsMessagesCountQuery,
+    MessagingSMSListSmsMessagesCountResponse,
+    MessagingSMSListSmsMessagesItem,
+    MessagingSMSListSmsMessagesQuery,
+    MessagingSMSReadSmsMessageResponse,
     MessagingSMSSendSmsRequest,
     MessagingSMSSendSmsResponse,
 )
@@ -29,6 +32,21 @@ class MessagingSMsResource:
     def __init__(self, client: Conjoin) -> None:
         self._client = client
 
+    def list_sms_messages(
+        self,
+        query: MessagingSMSListSmsMessagesQuery | None = None,
+        *,
+        request_options: RequestOptions | Mapping[str, Any] | None = None,
+    ) -> Page[MessagingSMSListSmsMessagesItem]:
+        return self._client.request(
+            'GET',
+            'messaging/sms-messages/',
+            query=query,
+            cast_to=Page[MessagingSMSListSmsMessagesItem],
+            request_options=request_options,
+            scopes=('messaging_profile_id',),
+        )
+
     def send_sms(
         self,
         data: MessagingSMSSendSmsRequest,
@@ -37,7 +55,7 @@ class MessagingSMsResource:
     ) -> MessagingSMSSendSmsResponse:
         return self._client.request(
             'POST',
-            'messaging/sms/send',
+            'messaging/sms-messages/',
             body=wire_names(data, _SEND_SMS_BODY_ALIASES),
             cast_to=MessagingSMSSendSmsResponse,
             request_options=request_options,
@@ -45,21 +63,33 @@ class MessagingSMsResource:
             accepts_idempotency_key=True,
         )
 
-    def read_sms_messages(
+    def list_sms_messages_count(
         self,
-        message_id: str,
-        data: MessagingSMSReadSmsMessagesRequest,
+        query: MessagingSMSListSmsMessagesCountQuery | None = None,
         *,
         request_options: RequestOptions | Mapping[str, Any] | None = None,
-    ) -> Page[MessagingSMSReadSmsMessagesItem]:
+    ) -> MessagingSMSListSmsMessagesCountResponse:
         return self._client.request(
-            'POST',
-            f'messaging/sms/messages/{encode_path_param(message_id)}',
-            body=data,
-            cast_to=Page[MessagingSMSReadSmsMessagesItem],
+            'GET',
+            'messaging/sms-messages/count',
+            query=query,
+            cast_to=MessagingSMSListSmsMessagesCountResponse,
             request_options=request_options,
             scopes=('messaging_profile_id',),
-            accepts_idempotency_key=True,
+        )
+
+    def read_sms_message(
+        self,
+        sms_message_id: str,
+        *,
+        request_options: RequestOptions | Mapping[str, Any] | None = None,
+    ) -> MessagingSMSReadSmsMessageResponse:
+        return self._client.request(
+            'GET',
+            f'messaging/sms-messages/{encode_path_param(sms_message_id)}',
+            cast_to=MessagingSMSReadSmsMessageResponse,
+            request_options=request_options,
+            scopes=('messaging_profile_id',),
         )
 
     def generate_sms_summary(
@@ -70,7 +100,7 @@ class MessagingSMsResource:
     ) -> MessagingSMSGenerateSmsSummaryResponse:
         return self._client.request(
             'POST',
-            'messaging/sms/summary',
+            'messaging/sms-message-previews/',
             body=data,
             cast_to=MessagingSMSGenerateSmsSummaryResponse,
             request_options=request_options,
@@ -83,6 +113,21 @@ class AsyncMessagingSMsResource:
     def __init__(self, client: AsyncConjoin) -> None:
         self._client = client
 
+    async def list_sms_messages(
+        self,
+        query: MessagingSMSListSmsMessagesQuery | None = None,
+        *,
+        request_options: RequestOptions | Mapping[str, Any] | None = None,
+    ) -> AsyncPage[MessagingSMSListSmsMessagesItem]:
+        return await self._client.request(
+            'GET',
+            'messaging/sms-messages/',
+            query=query,
+            cast_to=AsyncPage[MessagingSMSListSmsMessagesItem],
+            request_options=request_options,
+            scopes=('messaging_profile_id',),
+        )
+
     async def send_sms(
         self,
         data: MessagingSMSSendSmsRequest,
@@ -91,7 +136,7 @@ class AsyncMessagingSMsResource:
     ) -> MessagingSMSSendSmsResponse:
         return await self._client.request(
             'POST',
-            'messaging/sms/send',
+            'messaging/sms-messages/',
             body=wire_names(data, _SEND_SMS_BODY_ALIASES),
             cast_to=MessagingSMSSendSmsResponse,
             request_options=request_options,
@@ -99,21 +144,33 @@ class AsyncMessagingSMsResource:
             accepts_idempotency_key=True,
         )
 
-    async def read_sms_messages(
+    async def list_sms_messages_count(
         self,
-        message_id: str,
-        data: MessagingSMSReadSmsMessagesRequest,
+        query: MessagingSMSListSmsMessagesCountQuery | None = None,
         *,
         request_options: RequestOptions | Mapping[str, Any] | None = None,
-    ) -> AsyncPage[MessagingSMSReadSmsMessagesItem]:
+    ) -> MessagingSMSListSmsMessagesCountResponse:
         return await self._client.request(
-            'POST',
-            f'messaging/sms/messages/{encode_path_param(message_id)}',
-            body=data,
-            cast_to=AsyncPage[MessagingSMSReadSmsMessagesItem],
+            'GET',
+            'messaging/sms-messages/count',
+            query=query,
+            cast_to=MessagingSMSListSmsMessagesCountResponse,
             request_options=request_options,
             scopes=('messaging_profile_id',),
-            accepts_idempotency_key=True,
+        )
+
+    async def read_sms_message(
+        self,
+        sms_message_id: str,
+        *,
+        request_options: RequestOptions | Mapping[str, Any] | None = None,
+    ) -> MessagingSMSReadSmsMessageResponse:
+        return await self._client.request(
+            'GET',
+            f'messaging/sms-messages/{encode_path_param(sms_message_id)}',
+            cast_to=MessagingSMSReadSmsMessageResponse,
+            request_options=request_options,
+            scopes=('messaging_profile_id',),
         )
 
     async def generate_sms_summary(
@@ -124,7 +181,7 @@ class AsyncMessagingSMsResource:
     ) -> MessagingSMSGenerateSmsSummaryResponse:
         return await self._client.request(
             'POST',
-            'messaging/sms/summary',
+            'messaging/sms-message-previews/',
             body=data,
             cast_to=MessagingSMSGenerateSmsSummaryResponse,
             request_options=request_options,

@@ -18,53 +18,62 @@ final class MessagingSMSBrands
     {
     }
 
+    public function listSmsBrands(?array $query = null, ?CallOptions $options = null): ListPage
+    {
+        return $this->client->sendList(new OperationRequest(
+            method: HttpMethod::Get,
+            path: 'messaging/sms-brands/',
+            query: $query,
+            scopes: [Scope::MessagingProfileId],
+        ), $options);
+    }
+
     public function createSmsBrand(array $data, ?CallOptions $options = null): array
     {
         return $this->client->send(new OperationRequest(
             method: HttpMethod::Post,
-            path: 'messaging/sms/brands/',
+            path: 'messaging/sms-brands/',
             body: $data,
             scopes: [Scope::MessagingProfileId],
             acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
-    public function readSmsBrand(string $brandId, ?CallOptions $options = null): array
+    public function listSmsBrandsCount(?array $query = null, ?CallOptions $options = null): array
     {
         return $this->client->send(new OperationRequest(
             method: HttpMethod::Get,
-            path: 'messaging/sms/brands/' . PathSegment::encode($brandId),
+            path: 'messaging/sms-brands/count',
+            query: $query,
             scopes: [Scope::MessagingProfileId],
         ), $options)->dataArray();
     }
 
-    public function updateSmsBrand(string $brandId, array $data, ?CallOptions $options = null): array
+    public function readSmsBrand(string $smsBrandId, ?CallOptions $options = null): array
+    {
+        return $this->client->send(new OperationRequest(
+            method: HttpMethod::Get,
+            path: 'messaging/sms-brands/' . PathSegment::encode($smsBrandId),
+            scopes: [Scope::MessagingProfileId],
+        ), $options)->dataArray();
+    }
+
+    public function updateSmsBrand(string $smsBrandId, array $data, ?CallOptions $options = null): array
     {
         return $this->client->send(new OperationRequest(
             method: HttpMethod::Patch,
-            path: 'messaging/sms/brands/' . PathSegment::encode($brandId),
+            path: 'messaging/sms-brands/' . PathSegment::encode($smsBrandId),
             body: $data,
             scopes: [Scope::MessagingProfileId],
         ), $options)->dataArray();
     }
 
-    public function deleteSmsBrand(string $brandId, ?CallOptions $options = null): array
+    public function deleteSmsBrand(string $smsBrandId, ?CallOptions $options = null): array
     {
         return $this->client->send(new OperationRequest(
             method: HttpMethod::Delete,
-            path: 'messaging/sms/brands/' . PathSegment::encode($brandId),
+            path: 'messaging/sms-brands/' . PathSegment::encode($smsBrandId),
             scopes: [Scope::MessagingProfileId],
         ), $options)->dataArray();
-    }
-
-    public function listSmsBrands(array $data, ?CallOptions $options = null): ListPage
-    {
-        return $this->client->sendList(new OperationRequest(
-            method: HttpMethod::Post,
-            path: 'messaging/sms/brands/retrieve',
-            body: $data,
-            scopes: [Scope::MessagingProfileId],
-            acceptsIdempotencyKey: true,
-        ), $options);
     }
 }

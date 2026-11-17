@@ -9,10 +9,11 @@ from conjoin_cloud._url import encode_path_param
 from conjoin_cloud.generated._models import (
     MessagingContactPropertiesCreateContactPropertyResponse,
     MessagingContactPropertiesDeleteContactPropertyResponse,
-    MessagingContactPropertiesDeleteManyItem,
     MessagingContactPropertiesFetchOneContactPropertyResponse,
+    MessagingContactPropertiesListCountQuery,
+    MessagingContactPropertiesListCountResponse,
     MessagingContactPropertiesListItem,
-    MessagingContactPropertiesListRequest,
+    MessagingContactPropertiesListQuery,
 )
 
 if TYPE_CHECKING:
@@ -23,6 +24,21 @@ class MessagingContactPropertiesResource:
     def __init__(self, client: Conjoin) -> None:
         self._client = client
 
+    def list(
+        self,
+        query: MessagingContactPropertiesListQuery | None = None,
+        *,
+        request_options: RequestOptions | Mapping[str, Any] | None = None,
+    ) -> Page[MessagingContactPropertiesListItem]:
+        return self._client.request(
+            'GET',
+            'messaging/contact-properties/',
+            query=query,
+            cast_to=Page[MessagingContactPropertiesListItem],
+            request_options=request_options,
+            scopes=('messaging_profile_id',),
+        )
+
     def create_contact_property(
         self,
         data: Mapping[str, Any],
@@ -31,7 +47,7 @@ class MessagingContactPropertiesResource:
     ) -> MessagingContactPropertiesCreateContactPropertyResponse:
         return self._client.request(
             'POST',
-            'messaging/contacts/properties',
+            'messaging/contact-properties/',
             body=data,
             cast_to=MessagingContactPropertiesCreateContactPropertyResponse,
             request_options=request_options,
@@ -39,15 +55,30 @@ class MessagingContactPropertiesResource:
             accepts_idempotency_key=True,
         )
 
+    def list_count(
+        self,
+        query: MessagingContactPropertiesListCountQuery | None = None,
+        *,
+        request_options: RequestOptions | Mapping[str, Any] | None = None,
+    ) -> MessagingContactPropertiesListCountResponse:
+        return self._client.request(
+            'GET',
+            'messaging/contact-properties/count',
+            query=query,
+            cast_to=MessagingContactPropertiesListCountResponse,
+            request_options=request_options,
+            scopes=('messaging_profile_id',),
+        )
+
     def fetch_one_contact_property(
         self,
-        property_id: str,
+        contact_property_id: str,
         *,
         request_options: RequestOptions | Mapping[str, Any] | None = None,
     ) -> MessagingContactPropertiesFetchOneContactPropertyResponse:
         return self._client.request(
             'GET',
-            f'messaging/contacts/properties/{encode_path_param(property_id)}',
+            f'messaging/contact-properties/{encode_path_param(contact_property_id)}',
             cast_to=MessagingContactPropertiesFetchOneContactPropertyResponse,
             request_options=request_options,
             scopes=('messaging_profile_id',),
@@ -55,54 +86,37 @@ class MessagingContactPropertiesResource:
 
     def delete_contact_property(
         self,
-        property_id: str,
+        contact_property_id: str,
         *,
         request_options: RequestOptions | Mapping[str, Any] | None = None,
     ) -> MessagingContactPropertiesDeleteContactPropertyResponse:
         return self._client.request(
             'DELETE',
-            f'messaging/contacts/properties/{encode_path_param(property_id)}',
+            f'messaging/contact-properties/{encode_path_param(contact_property_id)}',
             cast_to=MessagingContactPropertiesDeleteContactPropertyResponse,
             request_options=request_options,
             scopes=('messaging_profile_id',),
-        )
-
-    def list(
-        self,
-        data: MessagingContactPropertiesListRequest,
-        *,
-        request_options: RequestOptions | Mapping[str, Any] | None = None,
-    ) -> Page[MessagingContactPropertiesListItem]:
-        return self._client.request(
-            'POST',
-            'messaging/contacts/properties/retrieve',
-            body=data,
-            cast_to=Page[MessagingContactPropertiesListItem],
-            request_options=request_options,
-            scopes=('messaging_profile_id',),
-            accepts_idempotency_key=True,
-        )
-
-    def delete_many(
-        self,
-        data: Mapping[str, Any],
-        *,
-        request_options: RequestOptions | Mapping[str, Any] | None = None,
-    ) -> Page[MessagingContactPropertiesDeleteManyItem]:
-        return self._client.request(
-            'POST',
-            'messaging/contacts/properties/remove',
-            body=data,
-            cast_to=Page[MessagingContactPropertiesDeleteManyItem],
-            request_options=request_options,
-            scopes=('messaging_profile_id',),
-            accepts_idempotency_key=True,
         )
 
 
 class AsyncMessagingContactPropertiesResource:
     def __init__(self, client: AsyncConjoin) -> None:
         self._client = client
+
+    async def list(
+        self,
+        query: MessagingContactPropertiesListQuery | None = None,
+        *,
+        request_options: RequestOptions | Mapping[str, Any] | None = None,
+    ) -> AsyncPage[MessagingContactPropertiesListItem]:
+        return await self._client.request(
+            'GET',
+            'messaging/contact-properties/',
+            query=query,
+            cast_to=AsyncPage[MessagingContactPropertiesListItem],
+            request_options=request_options,
+            scopes=('messaging_profile_id',),
+        )
 
     async def create_contact_property(
         self,
@@ -112,7 +126,7 @@ class AsyncMessagingContactPropertiesResource:
     ) -> MessagingContactPropertiesCreateContactPropertyResponse:
         return await self._client.request(
             'POST',
-            'messaging/contacts/properties',
+            'messaging/contact-properties/',
             body=data,
             cast_to=MessagingContactPropertiesCreateContactPropertyResponse,
             request_options=request_options,
@@ -120,15 +134,30 @@ class AsyncMessagingContactPropertiesResource:
             accepts_idempotency_key=True,
         )
 
+    async def list_count(
+        self,
+        query: MessagingContactPropertiesListCountQuery | None = None,
+        *,
+        request_options: RequestOptions | Mapping[str, Any] | None = None,
+    ) -> MessagingContactPropertiesListCountResponse:
+        return await self._client.request(
+            'GET',
+            'messaging/contact-properties/count',
+            query=query,
+            cast_to=MessagingContactPropertiesListCountResponse,
+            request_options=request_options,
+            scopes=('messaging_profile_id',),
+        )
+
     async def fetch_one_contact_property(
         self,
-        property_id: str,
+        contact_property_id: str,
         *,
         request_options: RequestOptions | Mapping[str, Any] | None = None,
     ) -> MessagingContactPropertiesFetchOneContactPropertyResponse:
         return await self._client.request(
             'GET',
-            f'messaging/contacts/properties/{encode_path_param(property_id)}',
+            f'messaging/contact-properties/{encode_path_param(contact_property_id)}',
             cast_to=MessagingContactPropertiesFetchOneContactPropertyResponse,
             request_options=request_options,
             scopes=('messaging_profile_id',),
@@ -136,46 +165,14 @@ class AsyncMessagingContactPropertiesResource:
 
     async def delete_contact_property(
         self,
-        property_id: str,
+        contact_property_id: str,
         *,
         request_options: RequestOptions | Mapping[str, Any] | None = None,
     ) -> MessagingContactPropertiesDeleteContactPropertyResponse:
         return await self._client.request(
             'DELETE',
-            f'messaging/contacts/properties/{encode_path_param(property_id)}',
+            f'messaging/contact-properties/{encode_path_param(contact_property_id)}',
             cast_to=MessagingContactPropertiesDeleteContactPropertyResponse,
             request_options=request_options,
             scopes=('messaging_profile_id',),
-        )
-
-    async def list(
-        self,
-        data: MessagingContactPropertiesListRequest,
-        *,
-        request_options: RequestOptions | Mapping[str, Any] | None = None,
-    ) -> AsyncPage[MessagingContactPropertiesListItem]:
-        return await self._client.request(
-            'POST',
-            'messaging/contacts/properties/retrieve',
-            body=data,
-            cast_to=AsyncPage[MessagingContactPropertiesListItem],
-            request_options=request_options,
-            scopes=('messaging_profile_id',),
-            accepts_idempotency_key=True,
-        )
-
-    async def delete_many(
-        self,
-        data: Mapping[str, Any],
-        *,
-        request_options: RequestOptions | Mapping[str, Any] | None = None,
-    ) -> AsyncPage[MessagingContactPropertiesDeleteManyItem]:
-        return await self._client.request(
-            'POST',
-            'messaging/contacts/properties/remove',
-            body=data,
-            cast_to=AsyncPage[MessagingContactPropertiesDeleteManyItem],
-            request_options=request_options,
-            scopes=('messaging_profile_id',),
-            accepts_idempotency_key=True,
         )
