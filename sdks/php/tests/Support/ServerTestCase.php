@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace ConjoinCloud\Tests\Support;
 
-use ConjoinCloud\CallOptions;
 use ConjoinCloud\ConjoinClient;
 use ConjoinCloud\HttpMethod;
 use ConjoinCloud\OperationRequest;
@@ -19,9 +18,13 @@ abstract class ServerTestCase extends TestCase
 
     protected const NEW_CUSTOMER = ['email' => 'billing.owner@example.com'];
 
-    protected const REQUEST_ID_PATTERN = '/^cnj_req_[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/D';
-
     protected const SERVER_IDEMPOTENCY_KEY_PATTERN = '/^[A-Za-z0-9\-_:.]{1,64}$/D';
+
+    private const TIMEOUT_SECONDS = 2.0;
+
+    private const BACKOFF_SECONDS = 0.001;
+
+    private const MAX_RETRY_DELAY_SECONDS = 0.05;
 
     private ?ServerProcess $server = null;
 
@@ -45,34 +48,27 @@ abstract class ServerTestCase extends TestCase
         return $this->server;
     }
 
-    protected function client(
-        float $timeoutSeconds = 2.0,
-        int $maxRetries = 3,
-        float $backoffSeconds = 0.001,
-        float $maxRetryDelaySeconds = 0.05,
-        int $maxResponseBytes = 16_777_216,
-    ): ConjoinClient {
+    protected function client(int $maxRetries = 3): ConjoinClient
+    {
         return new ConjoinClient(
             apiKey: self::API_KEY,
             baseUrl: $this->server()->baseUrl(),
-            timeoutSeconds: $timeoutSeconds,
+            timeoutSeconds: self::TIMEOUT_SECONDS,
             maxRetries: $maxRetries,
-            backoffSeconds: $backoffSeconds,
-            maxRetryDelaySeconds: $maxRetryDelaySeconds,
-            maxResponseBytes: $maxResponseBytes,
+            backoffSeconds: self::BACKOFF_SECONDS,
+            maxRetryDelaySeconds: self::MAX_RETRY_DELAY_SECONDS,
         );
     }
 
-    protected static function read(ConjoinClient $client, string $path = 'billing/customers/cus_1', ?CallOptions $options = null): ApiResponse
+    protected static function read(ConjoinClient $client): ApiResponse
     {
-        return $client->send(new OperationRequest(HttpMethod::Get, $path), $options);
+        return $client->send(new OperationRequest(HttpMethod::Get, 'billing/customers/cus_1'));
     }
 
-    protected static function createCustomer(ConjoinClient $client, bool $acceptsIdempotencyKey, ?CallOptions $options = null): ApiResponse
+    protected static function createCustomer(ConjoinClient $client, bool $acceptsIdempotencyKey): ApiResponse
     {
         return $client->send(
             new OperationRequest(HttpMethod::Post, 'billing/customers/', body: self::NEW_CUSTOMER, acceptsIdempotencyKey: $acceptsIdempotencyKey),
-            $options,
         );
     }
 

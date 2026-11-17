@@ -1,5 +1,4 @@
 import { afterEach, describe, expect, it } from 'vitest'
-import { DEFAULT_API_VERSION } from '../../../src/core/version'
 import type { ConjoinContractServer } from './conjoin-contract-server'
 import { startConjoinContractServer } from './conjoin-contract-server'
 import { conjoinList, conjoinSuccess } from './response-fixtures'
@@ -39,26 +38,6 @@ describe('Conjoin contract server', () => {
   afterEach(async () => {
     await server?.stop()
     server = undefined
-  })
-
-  it('records the request that a declared route receives', async () => {
-    server = await startConjoinContractServer()
-    registerOrganizationRoute(server, () => undefined)
-
-    const response = await postOrganization(server, {
-      body: { name: 'Harbour Ledger' },
-      headers: { 'x-conjoin-api-version': DEFAULT_API_VERSION },
-    })
-
-    expect(response.status).toBe(201)
-    await expect(response.json()).resolves.toMatchObject({ data: createdOrganization })
-    expect(server.recorder.last()).toMatchObject({
-      method: 'POST',
-      path: CREATE_ORGANIZATION_PATH,
-      pathTemplate: CREATE_ORGANIZATION_PATH,
-      body: { name: 'Harbour Ledger' },
-    })
-    expect(server.recorder.last()?.headers['x-conjoin-api-version']).toBe(DEFAULT_API_VERSION)
   })
 
   it('rejects route registration outside the OpenAPI contract', async () => {

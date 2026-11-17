@@ -6,9 +6,5 @@
     "types": ["node"]
   },
   "include": ["../src", "./**/*.ts"],
-  "exclude": [
-    "../node_modules",
-    "../dist",
-    "./e2e/realtime/realtime-app.e2e.test.ts"
-  ]
+  "exclude": ["../node_modules", "../dist"]
 }

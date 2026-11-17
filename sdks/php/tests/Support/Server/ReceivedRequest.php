@@ -12,7 +12,6 @@ final class ReceivedRequest
         public readonly string $query,
         public readonly array $headers,
         public readonly string $body,
-        public readonly float $receivedAt,
     ) {
     }
 

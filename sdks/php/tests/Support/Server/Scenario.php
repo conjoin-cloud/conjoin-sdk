@@ -21,8 +21,6 @@ final class Scenario
 
     private array $customersByKey = [];
 
-    private ?array $pages = null;
-
     private array $contract = [];
 
     public function __construct(private readonly ?ContractRoutes $routes)
@@ -42,9 +40,6 @@ final class Scenario
             'query' => $request->query,
             'headers' => $request->headers,
             'body' => base64_encode($request->body),
-            'receivedAt' => $request->receivedAt,
-            'pathTemplate' => $match?->template,
-            'pathParams' => $match === null ? [] : $match->params,
         ];
         $behaviour = array_shift($this->behaviours);
 
@@ -55,9 +50,7 @@ final class Scenario
         return match ($behaviour->kind) {
             Behaviour::DROP_BEFORE_STORE => Reply::drop(),
             Behaviour::DROP_AFTER_STORE => $this->storeThenDrop($request),
-            Behaviour::SLOW => $this->answer($request, $match)->delayed($behaviour->delaySeconds),
             Behaviour::STATUS => Reply::raw($behaviour->status, $behaviour->body ?? '{"data":null}', $behaviour->headers),
-            Behaviour::LARGE => Reply::raw($behaviour->status, '{"data":"' . str_repeat('a', $behaviour->paddingBytes) . '"}'),
             default => $this->answer($request, $match),
         };
     }
@@ -81,10 +74,6 @@ final class Scenario
             return $this->storeCustomer($request);
         }
 
-        if ($this->pages !== null && $request->method === 'GET') {
-            return $this->page($request);
-        }
-
         return Reply::json(200, self::success(200, ['path' => $request->path, 'method' => $request->method]));
     }
 
@@ -101,17 +90,6 @@ final class Scenario
             'data' => null,
             'error' => ['code' => 'no_contract_route', 'param' => null, 'details' => null],
         ]);
-    }
-
-    private function page(ReceivedRequest $request): Reply
-    {
-        parse_str($request->query, $query);
-        $cursor = is_array($query['cursor'] ?? null) ? ($query['cursor']['next'] ?? '') : '';
-        $page = $this->pages[is_string($cursor) ? $cursor : ''] ?? null;
-        $data = is_array($page) ? ($page['data'] ?? []) : [];
-        $next = is_array($page) ? ($page['next'] ?? null) : null;
-
-        return Reply::json(200, self::success(200, $data) + ['cursor' => ['prev' => null, 'next' => $next]]);
     }
 
     private function isCustomerCreate(ReceivedRequest $request): bool
@@ -155,8 +133,6 @@ final class Scenario
             return match (substr($request->path, strlen(self::CONTROL_PREFIX))) {
                 'queue' => $this->queue($payload),
                 'state' => Reply::json(200, ['attempts' => $this->attempts, 'customers' => $this->customers]),
-                'reset' => $this->reset(),
-                'pages' => $this->servePages($payload),
                 'contract' => $this->register($payload),
                 default => Reply::json(404, ['message' => 'Unknown control call']),
             };
@@ -174,40 +150,6 @@ final class Scenario
         foreach ($payload as $item) {
             $this->behaviours[] = Behaviour::fromArray($item);
         }
-
-        return self::accepted();
-    }
-
-    private function reset(): Reply
-    {
-        $this->behaviours = [];
-        $this->attempts = [];
-        $this->customers = [];
-        $this->customersByKey = [];
-        $this->pages = null;
-        $this->contract = [];
-
-        return self::accepted();
-    }
-
-    private function servePages(mixed $payload): Reply
-    {
-        if (!is_array($payload)) {
-            throw new InvalidArgumentException('The pages call takes an object of pages keyed by cursor');
-        }
-
-        $pages = [];
-
-        foreach ($payload as $cursor => $page) {
-            if (!is_array($page) || !is_array($page['data'] ?? null) || !array_is_list($page['data'])) {
-                throw new InvalidArgumentException('Every page needs a data list');
-            }
-
-            $next = $page['next'] ?? null;
-            $pages[(string) $cursor] = ['data' => $page['data'], 'next' => is_string($next) ? $next : null];
-        }
-
-        $this->pages = $pages;
 
         return self::accepted();
     }

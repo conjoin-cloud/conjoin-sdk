@@ -64,7 +64,6 @@ final class ContractRoutes
             return null;
         }
 
-        $params = [];
         $literals = 0;
 
         foreach ($parts as $index => $part) {
@@ -74,12 +73,11 @@ final class ContractRoutes
                 return null;
             }
 
-            if (preg_match(self::PARAMETER_PATTERN, $part, $match) === 1) {
+            if (preg_match(self::PARAMETER_PATTERN, $part) === 1) {
                 if ($segment === '') {
                     return null;
                 }
 
-                $params[$match[1]] = rawurldecode($segment);
                 continue;
             }
 
@@ -90,6 +88,6 @@ final class ContractRoutes
             $literals++;
         }
 
-        return new RouteMatch($template, $params, $literals);
+        return new RouteMatch($template, $literals);
     }
 }

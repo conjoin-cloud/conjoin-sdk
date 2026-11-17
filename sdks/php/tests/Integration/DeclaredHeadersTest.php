@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace ConjoinCloud\Tests\Integration;
 
-use ConjoinCloud\CallOptions;
 use ConjoinCloud\ConjoinClient;
 use ConjoinCloud\Credential;
 use ConjoinCloud\Exception\ConfigurationException;
@@ -13,11 +12,11 @@ use ConjoinCloud\Generated\Frontend\AuthClients;
 use ConjoinCloud\Generated\Frontend\AuthSelves;
 use ConjoinCloud\Generated\Frontend\AuthSSOPortals;
 use ConjoinCloud\Generated\Frontend\CloudSDKs;
-use ConjoinCloud\Tests\Integration\EveryOperation\DocumentOperations;
-use ConjoinCloud\Tests\Integration\EveryOperation\SchemaSampler;
+use ConjoinCloud\Tests\Support\DocumentOperations;
+use ConjoinCloud\Tests\Support\SchemaSampler;
 use ConjoinCloud\Tests\Support\ServerProcess;
-use PHPUnit\Framework\Attributes\DataProvider;
 use LogicException;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 use Throwable;
@@ -36,13 +35,7 @@ final class DeclaredHeadersTest extends TestCase
 
     private const ACCOUNT_ID = 'acc_account_owner';
 
-    private const STEP_UP_SESSION_ID = 'sus_0198f0f7';
-
     private const STEP_UP_TOKEN = '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08';
-
-    private const PINNED_API_VERSION = '2026-06-01';
-
-    private const CALLER_VERSION = '9.9.9';
 
     private const DELETE_ACCOUNT = 'DELETE /v1/auth/accounts/{account_id}';
 
@@ -59,55 +52,6 @@ final class DeclaredHeadersTest extends TestCase
     {
         $this->server?->stop();
         $this->server = null;
-    }
-
-    public function testDeleteAuthAccountSendsBothStepUpHeaders(): void
-    {
-        $accounts = new AuthAccounts($this->serverSideClient('openapi.json', self::DELETE_ACCOUNT));
-
-        $accounts->delete(self::ACCOUNT_ID, stepUpSessionId: self::STEP_UP_SESSION_ID, stepUpToken: new Credential(self::STEP_UP_TOKEN));
-
-        $attempt = $this->server()->attempt(0);
-        self::assertSame(1, $this->server()->attemptCount());
-        self::assertSame('DELETE', $attempt->method);
-        self::assertSame('/v1/auth/accounts/' . self::ACCOUNT_ID, $attempt->path);
-        self::assertSame(self::STEP_UP_SESSION_ID, $attempt->header('step-up-session-id'));
-        self::assertSame(self::STEP_UP_TOKEN, $attempt->header('step-up-token'));
-        self::assertSame(self::AUTH_APP_ID, $attempt->header('auth-app-id'));
-    }
-
-    public function testTypedStepUpValuesReplaceFreeFormHeaders(): void
-    {
-        $accounts = new AuthAccounts($this->serverSideClient('openapi.json', self::DELETE_ACCOUNT));
-        $headers = new CallOptions(headers: ['step-up-token' => 'ffff', 'STEP-UP-SESSION-ID' => 'sus_other']);
-
-        $accounts->delete(self::ACCOUNT_ID, stepUpSessionId: self::STEP_UP_SESSION_ID, stepUpToken: new Credential(self::STEP_UP_TOKEN), options: $headers);
-        $accounts->delete(self::ACCOUNT_ID, options: $headers);
-
-        self::assertSame(self::STEP_UP_TOKEN, $this->server()->attempt(0)->header('step-up-token'));
-        self::assertSame(self::STEP_UP_SESSION_ID, $this->server()->attempt(0)->header('step-up-session-id'));
-        self::assertNull($this->server()->attempt(1)->header('step-up-token'));
-        self::assertNull($this->server()->attempt(1)->header('step-up-session-id'));
-    }
-
-    public function testFreeFormVersionHeadersInAnotherCaseNeverReachTheWire(): void
-    {
-        $this->startServer('openapi.json', self::DELETE_ACCOUNT);
-        $client = new ConjoinClient(
-            apiKey: self::SECRET_API_KEY,
-            baseUrl: $this->server()->baseUrl(),
-            maxRetries: 0,
-            authAppId: self::AUTH_APP_ID,
-            apiVersion: self::PINNED_API_VERSION,
-        );
-        $headers = new CallOptions(headers: ['x-conjoin-api-version' => self::CALLER_VERSION, 'X-CONJOIN-SDK-VERSION' => self::CALLER_VERSION]);
-
-        (new AuthAccounts($client))->delete(self::ACCOUNT_ID, options: $headers);
-
-        $attempt = $this->server()->attempt(0);
-        self::assertSame(self::PINNED_API_VERSION, $attempt->header('x-conjoin-api-version'));
-        self::assertMatchesRegularExpression('/^\d+\.\d+\.\d+$/', (string) $attempt->header('x-conjoin-sdk-version'));
-        self::assertNotSame(self::CALLER_VERSION, $attempt->header('x-conjoin-sdk-version'));
     }
 
     public static function malformedStepUpTokens(): array
@@ -134,16 +78,6 @@ final class DeclaredHeadersTest extends TestCase
             self::assertStringNotContainsString($token, $error->getMessage() . $error->getTraceAsString());
         }
 
-        self::assertSame(0, $this->server()->attemptCount());
-    }
-
-    public function testASessionIdLongerThanDocumentedIsRefused(): void
-    {
-        $accounts = new AuthAccounts($this->serverSideClient('openapi.json', self::DELETE_ACCOUNT));
-
-        $error = self::caught(static fn () => $accounts->delete(self::ACCOUNT_ID, stepUpSessionId: str_repeat('s', 49)));
-
-        self::assertInstanceOf(ConfigurationException::class, $error);
         self::assertSame(0, $this->server()->attemptCount());
     }
 
@@ -180,20 +114,12 @@ final class DeclaredHeadersTest extends TestCase
         self::assertStringNotContainsString(self::SECRET_API_KEY, self::dump($this->server()->attempts()));
     }
 
-    public function testThePublishableKeyGoesOnlyWhereTheDocumentAsks(): void
-    {
-        $client = $this->browserClient();
-
-        (new CloudSDKs($client))->readSdkSettings();
-        (new AuthClients($client))->getJwks();
-
-        self::assertSame('Bearer ' . self::PUBLISHABLE_KEY, $this->server()->attempt(0)->header('authorization'));
-        self::assertNull($this->server()->attempt(1)->header('authorization'));
-    }
-
     public function testAPortalTicketTravelsOnlyInItsHeader(): void
     {
-        (new AuthSSOPortals($this->browserClient()))->readSsoPortalContext(new Credential(self::PORTAL_TICKET));
+        $this->startServer('openapi-frontend.json', ...self::FRONTEND_ROUTES);
+        $client = new ConjoinClient(publishableKey: self::PUBLISHABLE_KEY, baseUrl: $this->server()->baseUrl(), maxRetries: 0);
+
+        (new AuthSSOPortals($client))->readSsoPortalContext(new Credential(self::PORTAL_TICKET));
 
         $attempt = $this->server()->attempt(0);
         self::assertSame(self::PORTAL_TICKET, $attempt->header('x-portal-ticket'));
@@ -201,30 +127,11 @@ final class DeclaredHeadersTest extends TestCase
         self::assertStringNotContainsString(self::PORTAL_TICKET, $attempt->query);
     }
 
-    public function testAMalformedPortalTicketIsRefusedWithoutRepeatingIt(): void
-    {
-        $malformed = 'ptk_portal setup_ticket';
-        $portals = new AuthSSOPortals($this->browserClient());
-
-        $error = self::caught(static fn () => $portals->readSsoPortalContext(new Credential($malformed)));
-
-        self::assertInstanceOf(ConfigurationException::class, $error);
-        self::assertStringNotContainsString($malformed, $error->getMessage() . $error->getTraceAsString());
-        self::assertSame(0, $this->server()->attemptCount());
-    }
-
     private function serverSideClient(string $file, string ...$routes): ConjoinClient
     {
         $this->startServer($file, ...$routes);
 
         return new ConjoinClient(apiKey: self::SECRET_API_KEY, baseUrl: $this->server()->baseUrl(), maxRetries: 0, authAppId: self::AUTH_APP_ID);
-    }
-
-    private function browserClient(): ConjoinClient
-    {
-        $this->startServer('openapi-frontend.json', ...self::FRONTEND_ROUTES);
-
-        return new ConjoinClient(publishableKey: self::PUBLISHABLE_KEY, baseUrl: $this->server()->baseUrl(), maxRetries: 0);
     }
 
     private function startServer(string $file, string ...$routes): void

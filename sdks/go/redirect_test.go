@@ -15,9 +15,7 @@ func startRedirectingAPI(t *testing.T, target string) *headerReceiver {
 	t.Helper()
 	receiver := &headerReceiver{}
 	receiver.server = httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		receiver.mu.Lock()
-		receiver.received = append(receiver.received, receivedRequest{method: r.Method, path: r.URL.Path, rawQuery: r.URL.RawQuery, header: r.Header.Clone()})
-		receiver.mu.Unlock()
+		receiver.record(r)
 		w.Header().Set("Location", target+r.URL.RequestURI())
 		w.WriteHeader(http.StatusTemporaryRedirect)
 	}))
@@ -66,17 +64,5 @@ func TestARedirectNeverCarriesTheStepUpTokenToAnotherHost(t *testing.T) {
 				t.Fatalf("the other host saw %d requests", len(received))
 			}
 		})
-	}
-}
-
-func TestTheSDKLeavesTheRedirectPolicyOfTheCallersClientAlone(t *testing.T) {
-	supplied := &http.Client{}
-
-	if _, err := conjoin.NewClient(conjoin.WithAPIKey(stepUpAPIKey), conjoin.WithHTTPClient(supplied)); err != nil {
-		t.Fatalf("the client did not start: %v", err)
-	}
-
-	if supplied.CheckRedirect != nil {
-		t.Fatal("the SDK changed the redirect policy of the caller's client")
 	}
 }

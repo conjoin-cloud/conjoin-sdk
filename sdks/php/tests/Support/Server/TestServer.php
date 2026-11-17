@@ -12,7 +12,7 @@ final class TestServer
 
     private const READ_CHUNK_BYTES = 65_536;
 
-    private const IDLE_WAIT_SECONDS = 0.5;
+    private const IDLE_WAIT_MICROSECONDS = 500_000;
 
     private const LISTENER_KEY = 'listener';
 
@@ -61,11 +61,9 @@ final class TestServer
             return false;
         }
 
-        $now = microtime(true);
         $read = [self::LISTENER_KEY => $listener, self::STDIN_KEY => $stdin];
         $write = [];
         $except = null;
-        $wait = self::IDLE_WAIT_SECONDS;
 
         foreach ($this->connections as $id => $connection) {
             if (!$connection instanceof Connection || !is_resource($connection->socket)) {
@@ -73,18 +71,13 @@ final class TestServer
             }
 
             $read[$id] = $connection->socket;
-            $until = $connection->secondsUntilWrite($now);
 
-            if ($connection->wantsWrite($now)) {
+            if ($connection->wantsWrite()) {
                 $write[$id] = $connection->socket;
-            } elseif ($until !== null) {
-                $wait = min($wait, $until);
             }
         }
 
-        $seconds = (int) floor($wait);
-
-        if (stream_select($read, $write, $except, $seconds, (int) (($wait - $seconds) * 1_000_000)) === false) {
+        if (stream_select($read, $write, $except, 0, self::IDLE_WAIT_MICROSECONDS) === false) {
             throw new RuntimeException('The test server could not wait on its sockets');
         }
 
