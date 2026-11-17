@@ -1,26 +1,23 @@
-import type { ConjoinClient } from '../../core/types'
+import { encodePathParam } from '../../core/path'
+import type { ConjoinCallOptions, ConjoinClient } from '../../core/types'
 import type { operations } from '../api-types'
 
-type AuthorizeActionBody = operations['authorizeAction']['requestBody']['content']['application/json']
+type AuthorizeActionBody = NonNullable<operations['authorizeAction']['requestBody']>['content']['application/json']
 type AuthorizeActionData = NonNullable<operations['authorizeAction']['responses']['200']['content']['application/json']['data']>
-type CheckRoleBody = operations['checkRole']['requestBody']['content']['application/json']
+type CheckRoleBody = NonNullable<operations['checkRole']['requestBody']>['content']['application/json']
 type CheckRoleData = NonNullable<operations['checkRole']['responses']['200']['content']['application/json']['data']>
 type ReadEffectivePermissionsData = NonNullable<operations['readEffectivePermissions']['responses']['200']['content']['application/json']['data']>
-type RemoveRolePermissionBody = operations['removeRolePermission']['requestBody']['content']['application/json']
-type RemoveRolePermissionData = NonNullable<operations['removeRolePermission']['responses']['200']['content']['application/json']['data']>
+type ReadEffectivePermissionsQuery = NonNullable<operations['readEffectivePermissions']['parameters']['query']>
 
 export function createAuthAuthorizations(client: ConjoinClient) {
   return {
-    authorizeAction: (appId: string, organizationId: string, data: AuthorizeActionBody) =>
-      client.fetch<AuthorizeActionData>(`auth/authorization/${appId}/organization/${organizationId}/authorize`, { method: 'POST', body: data }),
+    authorizeAction: (organizationId: string, data: AuthorizeActionBody, options?: ConjoinCallOptions) =>
+      client.fetch<AuthorizeActionData>(`auth/organizations/${encodePathParam(organizationId)}/authorize`, { ...options, method: 'POST', body: data, scopes: ['authAppId'], acceptsIdempotencyKey: true }),
 
-    checkRole: (appId: string, organizationId: string, data: CheckRoleBody) =>
-      client.fetch<CheckRoleData>(`auth/authorization/${appId}/organization/${organizationId}/has-role`, { method: 'POST', body: data }),
+    checkRole: (organizationId: string, data: CheckRoleBody, options?: ConjoinCallOptions) =>
+      client.fetch<CheckRoleData>(`auth/organizations/${encodePathParam(organizationId)}/check-role`, { ...options, method: 'POST', body: data, scopes: ['authAppId'], acceptsIdempotencyKey: true }),
 
-    readEffectivePermissions: (appId: string, organizationId: string, accountId: string) =>
-      client.fetch<ReadEffectivePermissionsData>(`auth/authorization/${appId}/organization/${organizationId}/account/${accountId}/effective-permissions`),
-
-    removeRolePermission: (appId: string, organizationId: string, roleId: string, data: RemoveRolePermissionBody) =>
-      client.fetch<RemoveRolePermissionData>(`auth/authorization/${appId}/organization/${organizationId}/role/${roleId}/permission/remove`, { method: 'POST', body: data }),
+    readEffectivePermissions: (organizationId: string, query: ReadEffectivePermissionsQuery, options?: ConjoinCallOptions) =>
+      client.fetch<ReadEffectivePermissionsData>(`auth/organizations/${encodePathParam(organizationId)}/effective-permissions`, { ...options, method: 'GET', query: query as Record<string, unknown> | undefined, scopes: ['authAppId'] }),
   }
 }

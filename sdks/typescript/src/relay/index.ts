@@ -1,4 +1,16 @@
 export * from '../generated/modules/relay-index'
-export type { BroadcastConnection } from './broadcast'
 export { createBroadcastConnection } from './broadcast'
-export type { BroadcastConnectionOptions, BroadcastListener, BroadcastMessage, ConnectionState } from './types'
+export { ConjoinBroadcastError } from './broadcast-requests'
+export type {
+  BroadcastConnection,
+  BroadcastConnectionOptions,
+  BroadcastEvent,
+  BroadcastHistory,
+  BroadcastListener,
+  BroadcastPublishResult,
+  BroadcastSubscribeOptions,
+  BroadcastSubscription,
+  BroadcastTokenSource,
+  BroadcastWebSocketConstructor,
+  ConnectionState,
+} from './types'

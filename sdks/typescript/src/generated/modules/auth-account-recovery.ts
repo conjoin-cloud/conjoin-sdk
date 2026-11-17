@@ -1,25 +1,26 @@
-import type { ConjoinClient } from '../../core/types'
+import { encodePathParam } from '../../core/path'
+import type { ConjoinCallOptions, ConjoinClient } from '../../core/types'
 import type { operations } from '../api-types'
 
 type StartRecoveryData = NonNullable<operations['startRecovery']['responses']['200']['content']['application/json']['data']>
-type VerifyRecoveryBody = operations['verifyRecovery']['requestBody']['content']['application/json']
+type VerifyRecoveryBody = NonNullable<operations['verifyRecovery']['requestBody']>['content']['application/json']
 type VerifyRecoveryData = NonNullable<operations['verifyRecovery']['responses']['200']['content']['application/json']['data']>
-type CompleteRecoveryBody = operations['completeRecovery']['requestBody']['content']['application/json']
+type CompleteRecoveryBody = NonNullable<operations['completeRecovery']['requestBody']>['content']['application/json']
 type CompleteRecoveryData = NonNullable<operations['completeRecovery']['responses']['200']['content']['application/json']['data']>
 type AdminResetAccountData = NonNullable<operations['adminResetAccount']['responses']['200']['content']['application/json']['data']>
 
 export function createAuthAccountRecoveries(client: ConjoinClient) {
   return {
-    startRecovery: (appId: string, accountId: string) =>
-      client.fetch<StartRecoveryData>(`auth/recovery/${appId}/account/${accountId}/recovery/start`, { method: 'POST' }),
+    startRecovery: (accountId: string, options?: ConjoinCallOptions) =>
+      client.fetch<StartRecoveryData>(`auth/accounts/${encodePathParam(accountId)}/recoveries/start`, { ...options, method: 'POST', scopes: ['authAppId'], acceptsIdempotencyKey: true }),
 
-    verifyRecovery: (appId: string, accountId: string, data: VerifyRecoveryBody) =>
-      client.fetch<VerifyRecoveryData>(`auth/recovery/${appId}/account/${accountId}/recovery/verify`, { method: 'POST', body: data }),
+    verifyRecovery: (accountId: string, data: VerifyRecoveryBody, options?: ConjoinCallOptions) =>
+      client.fetch<VerifyRecoveryData>(`auth/accounts/${encodePathParam(accountId)}/recoveries/verify`, { ...options, method: 'POST', body: data, scopes: ['authAppId'], acceptsIdempotencyKey: true }),
 
-    completeRecovery: (appId: string, accountId: string, data: CompleteRecoveryBody) =>
-      client.fetch<CompleteRecoveryData>(`auth/recovery/${appId}/account/${accountId}/recovery/complete`, { method: 'POST', body: data }),
+    completeRecovery: (accountId: string, data: CompleteRecoveryBody, options?: ConjoinCallOptions) =>
+      client.fetch<CompleteRecoveryData>(`auth/accounts/${encodePathParam(accountId)}/recoveries/complete`, { ...options, method: 'POST', body: data, scopes: ['authAppId'], acceptsIdempotencyKey: true }),
 
-    adminResetAccount: (appId: string, accountId: string) =>
-      client.fetch<AdminResetAccountData>(`auth/recovery/${appId}/account/${accountId}/recovery/admin-reset`, { method: 'POST' }),
+    adminResetAccount: (accountId: string, options?: ConjoinCallOptions) =>
+      client.fetch<AdminResetAccountData>(`auth/accounts/${encodePathParam(accountId)}/reset-mfa`, { ...options, method: 'POST', scopes: ['authAppId'], acceptsIdempotencyKey: true }),
   }
 }

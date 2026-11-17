@@ -1,42 +1,44 @@
-import type { ConjoinClient } from '../../core/types'
+import { encodePathParam } from '../../core/path'
+import type { ConjoinCallOptions, ConjoinClient } from '../../core/types'
 import type { operations } from '../api-types'
 
-type CreateOrgRoleBody = operations['createOrgRole']['requestBody']['content']['application/json']
-type CreateOrgRoleData = NonNullable<operations['createOrgRole']['responses']['201']['content']['application/json']['data']>
-type ReadOrgRoleData = NonNullable<operations['readOrgRole']['responses']['200']['content']['application/json']['data']>
 type ListOrgRolesData = NonNullable<operations['listOrgRoles']['responses']['200']['content']['application/json']['data']>[number]
 type ListOrgRolesQuery = NonNullable<operations['listOrgRoles']['parameters']['query']>
-type UpdateOrgRoleBody = operations['updateOrgRole']['requestBody']['content']['application/json']
+type CreateOrgRoleBody = NonNullable<operations['createOrgRole']['requestBody']>['content']['application/json']
+type CreateOrgRoleData = NonNullable<operations['createOrgRole']['responses']['201']['content']['application/json']['data']>
+type ListOrgRolesCountData = NonNullable<operations['listOrgRolesCount']['responses']['200']['content']['application/json']['data']>
+type ListOrgRolesCountQuery = NonNullable<operations['listOrgRolesCount']['parameters']['query']>
+type ReadOrgRoleData = NonNullable<operations['readOrgRole']['responses']['200']['content']['application/json']['data']>
+type UpdateOrgRoleBody = NonNullable<operations['updateOrgRole']['requestBody']>['content']['application/json']
 type UpdateOrgRoleData = NonNullable<operations['updateOrgRole']['responses']['200']['content']['application/json']['data']>
+type DeleteOrgRoleData = NonNullable<operations['deleteOrgRole']['responses']['200']['content']['application/json']['data']>
 type ArchiveOrgRoleData = NonNullable<operations['archiveOrgRole']['responses']['200']['content']['application/json']['data']>
 type RestoreOrgRoleData = NonNullable<operations['restoreOrgRole']['responses']['200']['content']['application/json']['data']>
-type DeleteOrgRoleData = NonNullable<operations['deleteOrgRole']['responses']['200']['content']['application/json']['data']>
-type ReadOrgRolePermissionsData = NonNullable<operations['readOrgRolePermissions']['responses']['200']['content']['application/json']['data']>[number]
 
 export function createAuthOrganizationRoles(client: ConjoinClient) {
   return {
-    createOrgRole: (organizationId: string, data: CreateOrgRoleBody) =>
-      client.fetch<CreateOrgRoleData>(`auth/organization/role/${organizationId}/create`, { method: 'POST', body: data }),
+    listOrgRoles: (organizationId: string, query?: ListOrgRolesQuery, options?: ConjoinCallOptions) =>
+      client.fetchList<ListOrgRolesData>(`auth/organizations/${encodePathParam(organizationId)}/roles/`, { ...options, method: 'GET', query: query as Record<string, unknown> | undefined, scopes: ['authAppId'] }),
 
-    readOrgRole: (organizationId: string, roleId: string) =>
-      client.fetch<ReadOrgRoleData>(`auth/organization/role/${organizationId}/${roleId}`),
+    createOrgRole: (organizationId: string, data: CreateOrgRoleBody, options?: ConjoinCallOptions) =>
+      client.fetch<CreateOrgRoleData>(`auth/organizations/${encodePathParam(organizationId)}/roles/`, { ...options, method: 'POST', body: data, scopes: ['authAppId'], acceptsIdempotencyKey: true }),
 
-    listOrgRoles: (organizationId: string, query?: ListOrgRolesQuery) =>
-      client.fetchList<ListOrgRolesData>(`auth/organization/role/${organizationId}`, { query: query as Record<string, unknown> }),
+    listOrgRolesCount: (organizationId: string, query?: ListOrgRolesCountQuery, options?: ConjoinCallOptions) =>
+      client.fetch<ListOrgRolesCountData>(`auth/organizations/${encodePathParam(organizationId)}/roles/count`, { ...options, method: 'GET', query: query as Record<string, unknown> | undefined, scopes: ['authAppId'] }),
 
-    updateOrgRole: (organizationId: string, roleId: string, data: UpdateOrgRoleBody) =>
-      client.fetch<UpdateOrgRoleData>(`auth/organization/role/${organizationId}/${roleId}/update`, { method: 'PATCH', body: data }),
+    readOrgRole: (organizationId: string, roleId: string, options?: ConjoinCallOptions) =>
+      client.fetch<ReadOrgRoleData>(`auth/organizations/${encodePathParam(organizationId)}/roles/${encodePathParam(roleId)}`, { ...options, method: 'GET', scopes: ['authAppId'] }),
 
-    archiveOrgRole: (organizationId: string, roleId: string) =>
-      client.fetch<ArchiveOrgRoleData>(`auth/organization/role/${organizationId}/${roleId}/archive`, { method: 'PATCH' }),
+    updateOrgRole: (organizationId: string, roleId: string, data: UpdateOrgRoleBody, options?: ConjoinCallOptions) =>
+      client.fetch<UpdateOrgRoleData>(`auth/organizations/${encodePathParam(organizationId)}/roles/${encodePathParam(roleId)}`, { ...options, method: 'PATCH', body: data, scopes: ['authAppId'] }),
 
-    restoreOrgRole: (organizationId: string, roleId: string) =>
-      client.fetch<RestoreOrgRoleData>(`auth/organization/role/${organizationId}/${roleId}/restore`, { method: 'PATCH' }),
+    deleteOrgRole: (organizationId: string, roleId: string, options?: ConjoinCallOptions) =>
+      client.fetch<DeleteOrgRoleData>(`auth/organizations/${encodePathParam(organizationId)}/roles/${encodePathParam(roleId)}`, { ...options, method: 'DELETE', scopes: ['authAppId'] }),
 
-    deleteOrgRole: (organizationId: string, roleId: string) =>
-      client.fetch<DeleteOrgRoleData>(`auth/organization/role/${organizationId}/${roleId}/delete`, { method: 'DELETE' }),
+    archiveOrgRole: (organizationId: string, roleId: string, options?: ConjoinCallOptions) =>
+      client.fetch<ArchiveOrgRoleData>(`auth/organizations/${encodePathParam(organizationId)}/roles/${encodePathParam(roleId)}/archive`, { ...options, method: 'POST', scopes: ['authAppId'], acceptsIdempotencyKey: true }),
 
-    readOrgRolePermissions: (organizationId: string, roleId: string) =>
-      client.fetchList<ReadOrgRolePermissionsData>(`auth/organization/role/${organizationId}/${roleId}/permissions`),
+    restoreOrgRole: (organizationId: string, roleId: string, options?: ConjoinCallOptions) =>
+      client.fetch<RestoreOrgRoleData>(`auth/organizations/${encodePathParam(organizationId)}/roles/${encodePathParam(roleId)}/restore`, { ...options, method: 'POST', scopes: ['authAppId'], acceptsIdempotencyKey: true }),
   }
 }

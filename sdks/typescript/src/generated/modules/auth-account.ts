@@ -1,130 +1,125 @@
-import type { ConjoinClient } from '../../core/types'
+import { encodePathParam } from '../../core/path'
+import type { ConjoinCallOptions, ConjoinClient, ConjoinDeclaredHeaderRule } from '../../core/types'
 import type { operations } from '../api-types'
 
-type CreateBody = operations['createAuthAccount']['requestBody']['content']['application/json']
-type CreateData = NonNullable<operations['createAuthAccount']['responses']['201']['content']['application/json']['data']>
-type ReadData = NonNullable<operations['readAuthAccount']['responses']['200']['content']['application/json']['data']>
-type ListData = NonNullable<operations['listAuthAccounts']['responses']['200']['content']['application/json']['data']>[number]
-type ListQuery = NonNullable<operations['listAuthAccounts']['parameters']['query']>
-type CountData = NonNullable<operations['countAuthAccounts']['responses']['200']['content']['application/json']['data']>
-type CountQuery = NonNullable<operations['countAuthAccounts']['parameters']['query']>
-type UpdateBody = operations['updateAuthAccount']['requestBody']['content']['application/json']
-type UpdateData = NonNullable<operations['updateAuthAccount']['responses']['200']['content']['application/json']['data']>
-type UpdateMetadataBody = operations['updateAuthAccountMetadata']['requestBody']['content']['application/json']
-type UpdateMetadataData = NonNullable<operations['updateAuthAccountMetadata']['responses']['200']['content']['application/json']['data']>
-type UpdateStatusBody = operations['updateAuthAccountStatus']['requestBody']['content']['application/json']
-type UpdateStatusData = NonNullable<operations['updateAuthAccountStatus']['responses']['200']['content']['application/json']['data']>
-type AddEmailBody = operations['addAuthAccountEmail']['requestBody']['content']['application/json']
-type AddEmailData = NonNullable<operations['addAuthAccountEmail']['responses']['200']['content']['application/json']['data']>
-type AddPhoneBody = operations['addAuthAccountPhone']['requestBody']['content']['application/json']
-type AddPhoneData = NonNullable<operations['addAuthAccountPhone']['responses']['200']['content']['application/json']['data']>
-type RemoveEmailBody = operations['removeAuthAccountEmail']['requestBody']['content']['application/json']
-type RemoveEmailData = NonNullable<operations['removeAuthAccountEmail']['responses']['200']['content']['application/json']['data']>
-type RemovePhoneBody = operations['removeAuthAccountPhone']['requestBody']['content']['application/json']
-type RemovePhoneData = NonNullable<operations['removeAuthAccountPhone']['responses']['200']['content']['application/json']['data']>
-type ListOrganizationMembershipsData = NonNullable<operations['listAccountOrganizationMemberships']['responses']['200']['content']['application/json']['data']>[number]
-type ListOrganizationMembershipsQuery = NonNullable<operations['listAccountOrganizationMemberships']['parameters']['query']>
-type GrantOrgRoleBody = operations['grantOrgAccountRole']['requestBody']['content']['application/json']
-type GrantOrgRoleData = NonNullable<operations['grantOrgAccountRole']['responses']['200']['content']['application/json']['data']>
-type RevokeOrgRoleBody = operations['revokeOrgAccountRole']['requestBody']['content']['application/json']
-type RevokeOrgRoleData = NonNullable<operations['revokeOrgAccountRole']['responses']['200']['content']['application/json']['data']>
-type VerifyCredentialBody = operations['verifyCredential']['requestBody']['content']['application/json']
-type VerifyCredentialData = NonNullable<operations['verifyCredential']['responses']['200']['content']['application/json']['data']>
-type VerifyCredentialMfaTotpBody = operations['verifyCredentialMfaTotp']['requestBody']['content']['application/json']
-type VerifyCredentialMfaTotpData = NonNullable<operations['verifyCredentialMfaTotp']['responses']['200']['content']['application/json']['data']>
-type CountCredentialsData = NonNullable<operations['countCredentials']['responses']['200']['content']['application/json']['data']>
-type CountCredentialsQuery = NonNullable<operations['countCredentials']['parameters']['query']>
 type ListCredentialsData = NonNullable<operations['listCredentials']['responses']['200']['content']['application/json']['data']>[number]
 type ListCredentialsQuery = NonNullable<operations['listCredentials']['parameters']['query']>
-type RemoveCredentialBody = operations['removeCredential']['requestBody']['content']['application/json']
+type VerifyCredentialBody = NonNullable<operations['verifyCredential']['requestBody']>['content']['application/json']
+type VerifyCredentialData = NonNullable<operations['verifyCredential']['responses']['200']['content']['application/json']['data']>
+type VerifyCredentialMfaTotpBody = NonNullable<operations['verifyCredentialMfaTotp']['requestBody']>['content']['application/json']
+type VerifyCredentialMfaTotpData = NonNullable<operations['verifyCredentialMfaTotp']['responses']['200']['content']['application/json']['data']>
+type ListCredentialsCountData = NonNullable<operations['listCredentialsCount']['responses']['200']['content']['application/json']['data']>
+type ListCredentialsCountQuery = NonNullable<operations['listCredentialsCount']['parameters']['query']>
+type ReadCredentialData = NonNullable<operations['readCredential']['responses']['200']['content']['application/json']['data']>
 type RemoveCredentialData = NonNullable<operations['removeCredential']['responses']['200']['content']['application/json']['data']>
-type GrantGlobalRoleBody = operations['grantGlobalRole']['requestBody']['content']['application/json']
-type GrantGlobalRoleData = NonNullable<operations['grantGlobalRole']['responses']['200']['content']['application/json']['data']>
-type RevokeGlobalRoleBody = operations['revokeGlobalRole']['requestBody']['content']['application/json']
-type RevokeGlobalRoleData = NonNullable<operations['revokeGlobalRole']['responses']['200']['content']['application/json']['data']>
-type DeleteBody = operations['deleteAuthAccount']['requestBody']['content']['application/json']
-type DeleteData = NonNullable<operations['deleteAuthAccount']['responses']['200']['content']['application/json']['data']>
-type ExportData = NonNullable<operations['exportAuthAccount']['responses']['200']['content']['application/json']['data']>
-type SetCustomAttributesBody = operations['setAuthAccountCustomAttributes']['requestBody']['content']['application/json']
-type SetCustomAttributesData = NonNullable<operations['setAuthAccountCustomAttributes']['responses']['200']['content']['application/json']['data']>
-type MergeBody = operations['mergeAuthAccounts']['requestBody']['content']['application/json']
+type ListData = NonNullable<operations['listAuthAccounts']['responses']['200']['content']['application/json']['data']>[number]
+type ListQuery = NonNullable<operations['listAuthAccounts']['parameters']['query']>
+type CreateBody = NonNullable<operations['createAuthAccount']['requestBody']>['content']['application/json']
+type CreateData = NonNullable<operations['createAuthAccount']['responses']['201']['content']['application/json']['data']>
+type ListOrganizationMembershipsData = NonNullable<operations['listAccountOrganizationMemberships']['responses']['200']['content']['application/json']['data']>[number]
+type ListOrganizationMembershipsQuery = NonNullable<operations['listAccountOrganizationMemberships']['parameters']['query']>
+type ListCountData = NonNullable<operations['listAuthAccountsCount']['responses']['200']['content']['application/json']['data']>
+type ListCountQuery = NonNullable<operations['listAuthAccountsCount']['parameters']['query']>
+type MergeBody = NonNullable<operations['mergeAuthAccounts']['requestBody']>['content']['application/json']
 type MergeData = NonNullable<operations['mergeAuthAccounts']['responses']['200']['content']['application/json']['data']>
+type ReadData = NonNullable<operations['readAuthAccount']['responses']['200']['content']['application/json']['data']>
+type UpdateBody = NonNullable<operations['updateAuthAccount']['requestBody']>['content']['application/json']
+type UpdateData = NonNullable<operations['updateAuthAccount']['responses']['200']['content']['application/json']['data']>
+type DeleteData = NonNullable<operations['deleteAuthAccount']['responses']['200']['content']['application/json']['data']>
+type DeleteQuery = NonNullable<operations['deleteAuthAccount']['parameters']['query']>
+type DeleteHeaders = { stepUpSessionId?: string; stepUpToken?: string }
+type AddEmailBody = NonNullable<operations['addAuthAccountEmail']['requestBody']>['content']['application/json']
+type AddEmailData = NonNullable<operations['addAuthAccountEmail']['responses']['200']['content']['application/json']['data']>
+type RemoveEmailBody = NonNullable<operations['removeAuthAccountEmail']['requestBody']>['content']['application/json']
+type RemoveEmailData = NonNullable<operations['removeAuthAccountEmail']['responses']['200']['content']['application/json']['data']>
+type AddPhoneBody = NonNullable<operations['addAuthAccountPhone']['requestBody']>['content']['application/json']
+type AddPhoneData = NonNullable<operations['addAuthAccountPhone']['responses']['200']['content']['application/json']['data']>
+type RemovePhoneBody = NonNullable<operations['removeAuthAccountPhone']['requestBody']>['content']['application/json']
+type RemovePhoneData = NonNullable<operations['removeAuthAccountPhone']['responses']['200']['content']['application/json']['data']>
+type GrantGlobalRoleBody = NonNullable<operations['grantGlobalRole']['requestBody']>['content']['application/json']
+type GrantGlobalRoleData = NonNullable<operations['grantGlobalRole']['responses']['200']['content']['application/json']['data']>
+type RevokeGlobalRoleBody = NonNullable<operations['revokeGlobalRole']['requestBody']>['content']['application/json']
+type RevokeGlobalRoleData = NonNullable<operations['revokeGlobalRole']['responses']['200']['content']['application/json']['data']>
+type ListOrganizationMembershipsCountData = NonNullable<operations['listAccountOrganizationMembershipsCount']['responses']['200']['content']['application/json']['data']>
+type ListOrganizationMembershipsCountQuery = NonNullable<operations['listAccountOrganizationMembershipsCount']['parameters']['query']>
+type ExportData = NonNullable<operations['exportAuthAccount']['responses']['200']['content']['application/json']['data']>
+type ImportPasswordHashesBody = NonNullable<operations['importPasswordHashes']['requestBody']>['content']['application/json']
+type ImportPasswordHashesData = NonNullable<operations['importPasswordHashes']['responses']['200']['content']['application/json']['data']>
+
+const deleteHeaderRules: readonly ConjoinDeclaredHeaderRule[] = [
+  { name: "Step-Up-Session-ID", argumentName: "stepUpSessionId", required: false, minLength: 1, maxLength: 48 },
+  { name: "Step-Up-Token", argumentName: "stepUpToken", required: false, minLength: 1, maxLength: 256, pattern: "^[0-9a-f]+$" },
+]
 
 export function createAuthAccounts(client: ConjoinClient) {
   return {
-    create: (appId: string, data: CreateBody) =>
-      client.fetch<CreateData>(`auth/account/${appId}/account/create`, { method: 'POST', body: data }),
+    listCredentials: (accountId: string, query?: ListCredentialsQuery, options?: ConjoinCallOptions) =>
+      client.fetchList<ListCredentialsData>(`auth/accounts/${encodePathParam(accountId)}/credentials`, { ...options, method: 'GET', query: query as Record<string, unknown> | undefined, scopes: ['authAppId'] }),
 
-    read: (appId: string, accountId: string) =>
-      client.fetch<ReadData>(`auth/account/${appId}/account/${accountId}`),
+    verifyCredential: (accountId: string, data: VerifyCredentialBody, options?: ConjoinCallOptions) =>
+      client.fetch<VerifyCredentialData>(`auth/accounts/${encodePathParam(accountId)}/credentials/verify`, { ...options, method: 'POST', body: data, scopes: ['authAppId'], acceptsIdempotencyKey: true }),
 
-    list: (query?: ListQuery) =>
-      client.fetchList<ListData>('auth/account/', { query: query as Record<string, unknown> }),
+    verifyCredentialMfaTotp: (accountId: string, data: VerifyCredentialMfaTotpBody, options?: ConjoinCallOptions) =>
+      client.fetch<VerifyCredentialMfaTotpData>(`auth/accounts/${encodePathParam(accountId)}/totp-credentials/verify`, { ...options, method: 'POST', body: data, scopes: ['authAppId'], acceptsIdempotencyKey: true }),
 
-    count: (query?: CountQuery) =>
-      client.fetch<CountData>('auth/account/count', { query: query as Record<string, unknown> }),
+    listCredentialsCount: (accountId: string, query?: ListCredentialsCountQuery, options?: ConjoinCallOptions) =>
+      client.fetch<ListCredentialsCountData>(`auth/accounts/${encodePathParam(accountId)}/credentials/count`, { ...options, method: 'GET', query: query as Record<string, unknown> | undefined, scopes: ['authAppId'] }),
 
-    update: (appId: string, accountId: string, data: UpdateBody) =>
-      client.fetch<UpdateData>(`auth/account/${appId}/account/${accountId}/update`, { method: 'PATCH', body: data }),
+    readCredential: (accountId: string, credentialId: string, options?: ConjoinCallOptions) =>
+      client.fetch<ReadCredentialData>(`auth/accounts/${encodePathParam(accountId)}/credentials/${encodePathParam(credentialId)}`, { ...options, method: 'GET', scopes: ['authAppId'] }),
 
-    updateMetadata: (appId: string, accountId: string, data: UpdateMetadataBody) =>
-      client.fetch<UpdateMetadataData>(`auth/account/${appId}/account/${accountId}/metadata/update`, { method: 'PATCH', body: data }),
+    removeCredential: (accountId: string, credentialId: string, options?: ConjoinCallOptions) =>
+      client.fetch<RemoveCredentialData>(`auth/accounts/${encodePathParam(accountId)}/credentials/${encodePathParam(credentialId)}/remove`, { ...options, method: 'POST', scopes: ['authAppId'], acceptsIdempotencyKey: true }),
 
-    updateStatus: (appId: string, accountId: string, data: UpdateStatusBody) =>
-      client.fetch<UpdateStatusData>(`auth/account/${appId}/account/${accountId}/status/update`, { method: 'PATCH', body: data }),
+    list: (query?: ListQuery, options?: ConjoinCallOptions) =>
+      client.fetchList<ListData>('auth/accounts/', { ...options, method: 'GET', query: query as Record<string, unknown> | undefined, scopes: ['authAppId'] }),
 
-    addEmail: (appId: string, accountId: string, data: AddEmailBody) =>
-      client.fetch<AddEmailData>(`auth/account/${appId}/account/${accountId}/email/add`, { method: 'POST', body: data }),
+    create: (data: CreateBody, options?: ConjoinCallOptions) =>
+      client.fetch<CreateData>('auth/accounts/', { ...options, method: 'POST', body: data, scopes: ['authAppId'], acceptsIdempotencyKey: true }),
 
-    addPhone: (appId: string, accountId: string, data: AddPhoneBody) =>
-      client.fetch<AddPhoneData>(`auth/account/${appId}/account/${accountId}/phone/add`, { method: 'POST', body: data }),
+    listOrganizationMemberships: (accountId: string, query?: ListOrganizationMembershipsQuery, options?: ConjoinCallOptions) =>
+      client.fetchList<ListOrganizationMembershipsData>(`auth/accounts/${encodePathParam(accountId)}/organizations`, { ...options, method: 'GET', query: query as Record<string, unknown> | undefined, scopes: ['authAppId'] }),
 
-    removeEmail: (appId: string, accountId: string, data: RemoveEmailBody) =>
-      client.fetch<RemoveEmailData>(`auth/account/${appId}/account/${accountId}/email/remove`, { method: 'POST', body: data }),
+    listCount: (query?: ListCountQuery, options?: ConjoinCallOptions) =>
+      client.fetch<ListCountData>('auth/accounts/count', { ...options, method: 'GET', query: query as Record<string, unknown> | undefined, scopes: ['authAppId'] }),
 
-    removePhone: (appId: string, accountId: string, data: RemovePhoneBody) =>
-      client.fetch<RemovePhoneData>(`auth/account/${appId}/account/${accountId}/phone/remove`, { method: 'POST', body: data }),
+    merge: (data: MergeBody, options?: ConjoinCallOptions) =>
+      client.fetch<MergeData>('auth/accounts/merge', { ...options, method: 'POST', body: data, scopes: ['authAppId'], acceptsIdempotencyKey: true }),
 
-    listOrganizationMemberships: (appId: string, accountId: string, query?: ListOrganizationMembershipsQuery) =>
-      client.fetchList<ListOrganizationMembershipsData>(`auth/account/${appId}/account/${accountId}/organizations`, { query: query as Record<string, unknown> }),
+    read: (accountId: string, options?: ConjoinCallOptions) =>
+      client.fetch<ReadData>(`auth/accounts/${encodePathParam(accountId)}`, { ...options, method: 'GET', scopes: ['authAppId'] }),
 
-    grantOrgRole: (appId: string, organizationId: string, accountId: string, data: GrantOrgRoleBody) =>
-      client.fetch<GrantOrgRoleData>(`auth/account/${appId}/organization/${organizationId}/account/${accountId}/role/grant`, { method: 'POST', body: data }),
+    update: (accountId: string, data: UpdateBody, options?: ConjoinCallOptions) =>
+      client.fetch<UpdateData>(`auth/accounts/${encodePathParam(accountId)}`, { ...options, method: 'PATCH', body: data, scopes: ['authAppId'] }),
 
-    revokeOrgRole: (appId: string, organizationId: string, accountId: string, data: RevokeOrgRoleBody) =>
-      client.fetch<RevokeOrgRoleData>(`auth/account/${appId}/organization/${organizationId}/account/${accountId}/role/revoke`, { method: 'POST', body: data }),
+    delete: (accountId: string, query?: DeleteQuery, headers?: DeleteHeaders, options?: ConjoinCallOptions) =>
+      client.fetch<DeleteData>(`auth/accounts/${encodePathParam(accountId)}`, { ...options, method: 'DELETE', query: query as Record<string, unknown> | undefined, scopes: ['authAppId'], declaredHeaders: { rules: deleteHeaderRules, values: headers } }),
 
-    verifyCredential: (appId: string, accountId: string, data: VerifyCredentialBody) =>
-      client.fetch<VerifyCredentialData>(`auth/account/${appId}/account/${accountId}/credential/verify`, { method: 'POST', body: data }),
+    addEmail: (accountId: string, data: AddEmailBody, options?: ConjoinCallOptions) =>
+      client.fetch<AddEmailData>(`auth/accounts/${encodePathParam(accountId)}/emails/add`, { ...options, method: 'POST', body: data, scopes: ['authAppId'], acceptsIdempotencyKey: true }),
 
-    verifyCredentialMfaTotp: (appId: string, accountId: string, data: VerifyCredentialMfaTotpBody) =>
-      client.fetch<VerifyCredentialMfaTotpData>(`auth/account/${appId}/account/${accountId}/credential/mfa/totp/verify`, { method: 'POST', body: data }),
+    removeEmail: (accountId: string, data: RemoveEmailBody, options?: ConjoinCallOptions) =>
+      client.fetch<RemoveEmailData>(`auth/accounts/${encodePathParam(accountId)}/emails/remove`, { ...options, method: 'POST', body: data, scopes: ['authAppId'], acceptsIdempotencyKey: true }),
 
-    countCredentials: (appId: string, accountId: string, query?: CountCredentialsQuery) =>
-      client.fetch<CountCredentialsData>(`auth/account/${appId}/account/${accountId}/credential/count`, { query: query as Record<string, unknown> }),
+    addPhone: (accountId: string, data: AddPhoneBody, options?: ConjoinCallOptions) =>
+      client.fetch<AddPhoneData>(`auth/accounts/${encodePathParam(accountId)}/phones/add`, { ...options, method: 'POST', body: data, scopes: ['authAppId'], acceptsIdempotencyKey: true }),
 
-    listCredentials: (appId: string, accountId: string, query?: ListCredentialsQuery) =>
-      client.fetchList<ListCredentialsData>(`auth/account/${appId}/account/${accountId}/credential`, { query: query as Record<string, unknown> }),
+    removePhone: (accountId: string, data: RemovePhoneBody, options?: ConjoinCallOptions) =>
+      client.fetch<RemovePhoneData>(`auth/accounts/${encodePathParam(accountId)}/phones/remove`, { ...options, method: 'POST', body: data, scopes: ['authAppId'], acceptsIdempotencyKey: true }),
 
-    removeCredential: (appId: string, accountId: string, data: RemoveCredentialBody) =>
-      client.fetch<RemoveCredentialData>(`auth/account/${appId}/account/${accountId}/credential/remove`, { method: 'POST', body: data }),
+    grantGlobalRole: (accountId: string, data: GrantGlobalRoleBody, options?: ConjoinCallOptions) =>
+      client.fetch<GrantGlobalRoleData>(`auth/accounts/${encodePathParam(accountId)}/global-roles/grant`, { ...options, method: 'POST', body: data, scopes: ['authAppId'], acceptsIdempotencyKey: true }),
 
-    grantGlobalRole: (appId: string, accountId: string, data: GrantGlobalRoleBody) =>
-      client.fetch<GrantGlobalRoleData>(`auth/account/${appId}/account/${accountId}/global-role/grant`, { method: 'POST', body: data }),
+    revokeGlobalRole: (accountId: string, data: RevokeGlobalRoleBody, options?: ConjoinCallOptions) =>
+      client.fetch<RevokeGlobalRoleData>(`auth/accounts/${encodePathParam(accountId)}/global-roles/revoke`, { ...options, method: 'POST', body: data, scopes: ['authAppId'], acceptsIdempotencyKey: true }),
 
-    revokeGlobalRole: (appId: string, accountId: string, data: RevokeGlobalRoleBody) =>
-      client.fetch<RevokeGlobalRoleData>(`auth/account/${appId}/account/${accountId}/global-role/revoke`, { method: 'POST', body: data }),
+    listOrganizationMembershipsCount: (accountId: string, query?: ListOrganizationMembershipsCountQuery, options?: ConjoinCallOptions) =>
+      client.fetch<ListOrganizationMembershipsCountData>(`auth/accounts/${encodePathParam(accountId)}/organizations/count`, { ...options, method: 'GET', query: query as Record<string, unknown> | undefined, scopes: ['authAppId'] }),
 
-    delete: (appId: string, accountId: string, data: DeleteBody) =>
-      client.fetch<DeleteData>(`auth/account/${appId}/account/${accountId}/delete`, { method: 'POST', body: data }),
+    export: (accountId: string, options?: ConjoinCallOptions) =>
+      client.fetch<ExportData>(`auth/accounts/${encodePathParam(accountId)}/export`, { ...options, method: 'POST', scopes: ['authAppId'], acceptsIdempotencyKey: true }),
 
-    export: (appId: string, accountId: string) =>
-      client.fetch<ExportData>(`auth/account/${appId}/account/${accountId}/export`),
-
-    setCustomAttributes: (appId: string, accountId: string, data: SetCustomAttributesBody) =>
-      client.fetch<SetCustomAttributesData>(`auth/account/${appId}/account/${accountId}/custom-attributes`, { method: 'PUT', body: data }),
-
-    merge: (appId: string, data: MergeBody) =>
-      client.fetch<MergeData>(`auth/account/${appId}/account/merge`, { method: 'POST', body: data }),
+    importPasswordHashes: (data: ImportPasswordHashesBody, options?: ConjoinCallOptions) =>
+      client.fetch<ImportPasswordHashesData>('auth/accounts/import-password-hashes', { ...options, method: 'POST', body: data, scopes: ['authAppId'], acceptsIdempotencyKey: true }),
   }
 }

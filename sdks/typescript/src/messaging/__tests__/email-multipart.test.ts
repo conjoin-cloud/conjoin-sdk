@@ -45,7 +45,7 @@ describe('messaging email requests', () => {
     const headers = init?.headers as Record<string, string>
     const body = init?.body
 
-    expect(url).toBe('https://api.conjoin.cloud/v1/messaging/email/send')
+    expect(url).toBe('https://api.conjoin.cloud/v1/messaging/email-messages/')
     expect(init?.method).toBe('POST')
     expect(body).toBeInstanceOf(FormData)
     expect((body as FormData).get('subject')).toBe('Welcome')
@@ -59,9 +59,9 @@ describe('messaging email requests', () => {
     expect(headers['Messaging-Profile-ID']).toBe('msg_profile_123')
   })
 
-  it('keeps JSON email endpoints as application/json requests', async () => {
+  it('reads one email message by its ID with a GET and no request body', async () => {
     const fetchMock = vi.mocked(fetch)
-    fetchMock.mockResolvedValueOnce(mockResponse({ success: true, data: [] }))
+    fetchMock.mockResolvedValueOnce(mockResponse({ data: { email_message_id: 'msg_123' } }))
     const client = createConjoinClient({
       apiKey: 'ck_test_123',
       apiVersion: DEFAULT_API_VERSION,
@@ -69,16 +69,16 @@ describe('messaging email requests', () => {
     })
     const messaging = createMessaging(client, { profileId: 'msg_profile_123' })
 
-    await messaging.emails.readMessages('msg_123', { status: 'sent' } as never)
+    await messaging.emails.readMessage('msg_123')
 
     expect(fetchMock).toHaveBeenCalledOnce()
     const [url, init] = fetchMock.mock.calls[0]
     const headers = init?.headers as Record<string, string>
 
-    expect(url).toBe('https://api.conjoin.cloud/v1/messaging/email/messages/msg_123')
-    expect(init?.method).toBe('POST')
-    expect(init?.body).toBe('{"status":"sent"}')
-    expect(headers['Content-Type']).toBe('application/json')
+    expect(url).toBe('https://api.conjoin.cloud/v1/messaging/email-messages/msg_123')
+    expect(init?.method).toBe('GET')
+    expect(init?.body).toBeUndefined()
+    expect(headers['Content-Type']).toBeUndefined()
     expect(headers.Authorization).toBe('Bearer ck_test_123')
     expect(headers['X-Conjoin-SDK-Version']).toBe(SDK_VERSION)
     expect(headers['X-Conjoin-API-Version']).toBe(DEFAULT_API_VERSION)

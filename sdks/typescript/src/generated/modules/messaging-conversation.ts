@@ -1,60 +1,84 @@
-import type { ConjoinClient } from '../../core/types'
+import { encodePathParam } from '../../core/path'
+import type { ConjoinCallOptions, ConjoinClient } from '../../core/types'
 import type { operations } from '../api-types'
 
-type CreateBody = operations['createConversation']['requestBody']['content']['application/json']
-type CreateData = NonNullable<operations['createConversation']['responses']['201']['content']['application/json']['data']>
-type CloneBody = operations['cloneConversation']['requestBody']['content']['application/json']
-type CloneData = NonNullable<operations['cloneConversation']['responses']['201']['content']['application/json']['data']>
-type DeleteData = NonNullable<operations['deleteConversation']['responses']['200']['content']['application/json']['data']>
-type ArchiveBody = operations['archiveConversation']['requestBody']['content']['application/json']
-type ArchiveData = NonNullable<operations['archiveConversation']['responses']['200']['content']['application/json']['data']>
-type UpdateBody = operations['updateConversation']['requestBody']['content']['application/json']
-type UpdateData = NonNullable<operations['updateConversation']['responses']['200']['content']['application/json']['data']>
-type ListBody = operations['listConversations']['requestBody']['content']['application/json']
 type ListData = NonNullable<operations['listConversations']['responses']['200']['content']['application/json']['data']>[number]
-type ReadMessagesData = NonNullable<operations['readConversationMessages']['responses']['200']['content']['application/json']['data']>[number]
+type ListQuery = NonNullable<operations['listConversations']['parameters']['query']>
+type CreateBody = NonNullable<operations['createConversation']['requestBody']>['content']['application/json']
+type CreateData = NonNullable<operations['createConversation']['responses']['201']['content']['application/json']['data']>
+type ListMessagesData = NonNullable<operations['listConversationMessages']['responses']['200']['content']['application/json']['data']>[number]
+type ListMessagesQuery = NonNullable<operations['listConversationMessages']['parameters']['query']>
+type ListRecipientsData = NonNullable<operations['listConversationRecipients']['responses']['200']['content']['application/json']['data']>[number]
+type ListRecipientsQuery = NonNullable<operations['listConversationRecipients']['parameters']['query']>
+type AddOneRecipientBody = NonNullable<operations['addOneConversationRecipient']['requestBody']>['content']['application/json']
+type AddOneRecipientData = NonNullable<operations['addOneConversationRecipient']['responses']['201']['content']['application/json']['data']>
+type ListCountData = NonNullable<operations['listConversationsCount']['responses']['200']['content']['application/json']['data']>
+type ListCountQuery = NonNullable<operations['listConversationsCount']['parameters']['query']>
+type ListMessagesCountData = NonNullable<operations['listConversationMessagesCount']['responses']['200']['content']['application/json']['data']>
+type ListMessagesCountQuery = NonNullable<operations['listConversationMessagesCount']['parameters']['query']>
+type ListRecipientsCountData = NonNullable<operations['listConversationRecipientsCount']['responses']['200']['content']['application/json']['data']>
+type ListRecipientsCountQuery = NonNullable<operations['listConversationRecipientsCount']['parameters']['query']>
+type DuplicateBody = NonNullable<operations['duplicateConversation']['requestBody']>['content']['application/json']
+type DuplicateData = NonNullable<operations['duplicateConversation']['responses']['201']['content']['application/json']['data']>
+type SendMessageBody = NonNullable<operations['sendConversationMessage']['requestBody']>['content']['application/json']
+type SendMessageData = NonNullable<operations['sendConversationMessage']['responses']['201']['content']['application/json']['data']>
+type DeleteData = NonNullable<operations['deleteConversation']['responses']['200']['content']['application/json']['data']>
+type UpdateBody = NonNullable<operations['updateConversation']['requestBody']>['content']['application/json']
+type UpdateData = NonNullable<operations['updateConversation']['responses']['200']['content']['application/json']['data']>
+type ArchiveData = NonNullable<operations['archiveConversation']['responses']['200']['content']['application/json']['data']>
 type ReadOneRecipientData = NonNullable<operations['readOneConversationRecipient']['responses']['200']['content']['application/json']['data']>
 type DeleteRecipientsData = NonNullable<operations['deleteConversationRecipients']['responses']['200']['content']['application/json']['data']>
-type ReadManyRecipientsData = NonNullable<operations['readManyConversationRecipients']['responses']['200']['content']['application/json']['data']>[number]
-type AddOneRecipientData = NonNullable<operations['addOneConversationRecipient']['responses']['200']['content']['application/json']['data']>
-type AddManyRecipientsData = NonNullable<operations['addManyConversationRecipients']['responses']['200']['content']['application/json']['data']>[number]
+type AddManyRecipientsBody = NonNullable<operations['addManyConversationRecipients']['requestBody']>['content']['application/json']
+type AddManyRecipientsData = NonNullable<operations['addManyConversationRecipients']['responses']['201']['content']['application/json']['data']>[number]
 
 export function createMessagingConversations(client: ConjoinClient) {
   return {
-    create: (data: CreateBody) =>
-      client.fetch<CreateData>('messaging/conversations/new', { method: 'POST', body: data }),
+    list: (query?: ListQuery, options?: ConjoinCallOptions) =>
+      client.fetchList<ListData>('messaging/conversations/', { ...options, method: 'GET', query: query as Record<string, unknown> | undefined, scopes: ['messagingProfileId'] }),
 
-    clone: (conversationId: string, data: CloneBody) =>
-      client.fetch<CloneData>(`messaging/conversations/clone/${conversationId}`, { method: 'POST', body: data }),
+    create: (data: CreateBody, options?: ConjoinCallOptions) =>
+      client.fetch<CreateData>('messaging/conversations/', { ...options, method: 'POST', body: data, scopes: ['messagingProfileId'], acceptsIdempotencyKey: true }),
 
-    delete: (conversationId: string) =>
-      client.fetch<DeleteData>(`messaging/conversations/wipe/${conversationId}`, { method: 'PATCH' }),
+    listMessages: (conversationId: string, query: ListMessagesQuery, options?: ConjoinCallOptions) =>
+      client.fetchList<ListMessagesData>(`messaging/conversations/${encodePathParam(conversationId)}/messages`, { ...options, method: 'GET', query: query as Record<string, unknown> | undefined, scopes: ['messagingProfileId'] }),
 
-    archive: (conversationId: string, data: ArchiveBody) =>
-      client.fetch<ArchiveData>(`messaging/conversations/archive/${conversationId}`, { method: 'PATCH', body: data }),
+    listRecipients: (conversationId: string, query?: ListRecipientsQuery, options?: ConjoinCallOptions) =>
+      client.fetchList<ListRecipientsData>(`messaging/conversations/${encodePathParam(conversationId)}/recipients`, { ...options, method: 'GET', query: query as Record<string, unknown> | undefined, scopes: ['messagingProfileId'] }),
 
-    update: (conversationId: string, data: UpdateBody) =>
-      client.fetch<UpdateData>(`messaging/conversations/${conversationId}`, { method: 'PATCH', body: data }),
+    addOneRecipient: (conversationId: string, data: AddOneRecipientBody, options?: ConjoinCallOptions) =>
+      client.fetch<AddOneRecipientData>(`messaging/conversations/${encodePathParam(conversationId)}/recipients`, { ...options, method: 'POST', body: data, scopes: ['messagingProfileId'], acceptsIdempotencyKey: true }),
 
-    list: (conversationId: string, data: ListBody) =>
-      client.fetchList<ListData>(`messaging/conversations/${conversationId}`, { method: 'POST', body: data }),
+    listCount: (query?: ListCountQuery, options?: ConjoinCallOptions) =>
+      client.fetch<ListCountData>('messaging/conversations/count', { ...options, method: 'GET', query: query as Record<string, unknown> | undefined, scopes: ['messagingProfileId'] }),
 
-    readMessages: (conversationId: string, parentMessageId: string) =>
-      client.fetchList<ReadMessagesData>(`messaging/conversations/${conversationId}/messages/${parentMessageId}`, { method: 'POST' }),
+    listMessagesCount: (conversationId: string, query: ListMessagesCountQuery, options?: ConjoinCallOptions) =>
+      client.fetch<ListMessagesCountData>(`messaging/conversations/${encodePathParam(conversationId)}/messages/count`, { ...options, method: 'GET', query: query as Record<string, unknown> | undefined, scopes: ['messagingProfileId'] }),
 
-    readOneRecipient: (conversationId: string, recipientId: string) =>
-      client.fetch<ReadOneRecipientData>(`messaging/conversations/${conversationId}/recipients/${recipientId}`),
+    listRecipientsCount: (conversationId: string, query?: ListRecipientsCountQuery, options?: ConjoinCallOptions) =>
+      client.fetch<ListRecipientsCountData>(`messaging/conversations/${encodePathParam(conversationId)}/recipients/count`, { ...options, method: 'GET', query: query as Record<string, unknown> | undefined, scopes: ['messagingProfileId'] }),
 
-    deleteRecipients: (conversationId: string, recipientId: string) =>
-      client.fetch<DeleteRecipientsData>(`messaging/conversations/${conversationId}/recipients/${recipientId}`, { method: 'DELETE' }),
+    duplicate: (conversationId: string, data: DuplicateBody, options?: ConjoinCallOptions) =>
+      client.fetch<DuplicateData>(`messaging/conversations/${encodePathParam(conversationId)}/duplicate`, { ...options, method: 'POST', body: data, scopes: ['messagingProfileId'], acceptsIdempotencyKey: true }),
 
-    readManyRecipients: (conversationId: string) =>
-      client.fetchList<ReadManyRecipientsData>(`messaging/conversations/${conversationId}/recipients`, { method: 'POST' }),
+    sendMessage: (conversationId: string, data: SendMessageBody, options?: ConjoinCallOptions) =>
+      client.fetch<SendMessageData>(`messaging/conversations/${encodePathParam(conversationId)}/send`, { ...options, method: 'POST', body: data, scopes: ['messagingProfileId'], acceptsIdempotencyKey: true }),
 
-    addOneRecipient: (conversationId: string) =>
-      client.fetch<AddOneRecipientData>(`messaging/conversations/${conversationId}/recipients/new`, { method: 'POST' }),
+    delete: (conversationId: string, options?: ConjoinCallOptions) =>
+      client.fetch<DeleteData>(`messaging/conversations/${encodePathParam(conversationId)}`, { ...options, method: 'DELETE', scopes: ['messagingProfileId'] }),
 
-    addManyRecipients: (conversationId: string) =>
-      client.fetchList<AddManyRecipientsData>(`messaging/conversations/${conversationId}/recipients/batch`, { method: 'POST' }),
+    update: (conversationId: string, data: UpdateBody, options?: ConjoinCallOptions) =>
+      client.fetch<UpdateData>(`messaging/conversations/${encodePathParam(conversationId)}`, { ...options, method: 'PATCH', body: data, scopes: ['messagingProfileId'] }),
+
+    archive: (conversationId: string, options?: ConjoinCallOptions) =>
+      client.fetch<ArchiveData>(`messaging/conversations/${encodePathParam(conversationId)}/archive`, { ...options, method: 'POST', scopes: ['messagingProfileId'], acceptsIdempotencyKey: true }),
+
+    readOneRecipient: (conversationId: string, recipientId: string, options?: ConjoinCallOptions) =>
+      client.fetch<ReadOneRecipientData>(`messaging/conversations/${encodePathParam(conversationId)}/recipients/${encodePathParam(recipientId)}`, { ...options, method: 'GET', scopes: ['messagingProfileId'] }),
+
+    deleteRecipients: (conversationId: string, recipientId: string, options?: ConjoinCallOptions) =>
+      client.fetch<DeleteRecipientsData>(`messaging/conversations/${encodePathParam(conversationId)}/recipients/${encodePathParam(recipientId)}`, { ...options, method: 'DELETE', scopes: ['messagingProfileId'] }),
+
+    addManyRecipients: (conversationId: string, data: AddManyRecipientsBody, options?: ConjoinCallOptions) =>
+      client.fetchList<AddManyRecipientsData>(`messaging/conversations/${encodePathParam(conversationId)}/add-recipients`, { ...options, method: 'POST', body: data, scopes: ['messagingProfileId'], acceptsIdempotencyKey: true }),
   }
 }

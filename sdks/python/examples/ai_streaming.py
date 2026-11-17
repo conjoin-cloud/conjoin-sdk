@@ -10,11 +10,11 @@ def main() -> None:
     model = os.environ["CONJOIN_AI_MODEL"]
 
     with Conjoin(api_key=api_key) as client:
-        response = client.ai.chat.complete(
+        completion = client.ai.chat.complete(
             model=model,
             messages=[{"role": "user", "content": "Write a concise status update."}],
         )
-        print(response.choices[0].message.content)
+        print(completion.choices[0]["message"]["content"], completion.usage)
 
         for chunk in client.ai.chat.stream(
             model=model,

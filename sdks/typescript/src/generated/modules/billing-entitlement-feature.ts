@@ -1,26 +1,36 @@
-import type { ConjoinClient } from '../../core/types'
+import { encodePathParam } from '../../core/path'
+import type { ConjoinCallOptions, ConjoinClient } from '../../core/types'
 import type { operations } from '../api-types'
 
-type CreateBody = operations['createEntitlementFeature']['requestBody']['content']['application/json']
-type CreateData = NonNullable<operations['createEntitlementFeature']['responses']['201']['content']['application/json']['data']>
 type ListData = NonNullable<operations['listEntitlementFeatures']['responses']['200']['content']['application/json']['data']>[number]
 type ListQuery = NonNullable<operations['listEntitlementFeatures']['parameters']['query']>
-type UpdateBody = operations['updateEntitlementFeature']['requestBody']['content']['application/json']
+type CreateBody = NonNullable<operations['createEntitlementFeature']['requestBody']>['content']['application/json']
+type CreateData = NonNullable<operations['createEntitlementFeature']['responses']['201']['content']['application/json']['data']>
+type ListCountData = NonNullable<operations['listEntitlementFeaturesCount']['responses']['200']['content']['application/json']['data']>
+type ListCountQuery = NonNullable<operations['listEntitlementFeaturesCount']['parameters']['query']>
+type ReadData = NonNullable<operations['readEntitlementFeature']['responses']['200']['content']['application/json']['data']>
+type UpdateBody = NonNullable<operations['updateEntitlementFeature']['requestBody']>['content']['application/json']
 type UpdateData = NonNullable<operations['updateEntitlementFeature']['responses']['200']['content']['application/json']['data']>
 type ArchiveData = NonNullable<operations['archiveEntitlementFeature']['responses']['200']['content']['application/json']['data']>
 
 export function createBillingEntitlementFeatures(client: ConjoinClient) {
   return {
-    create: (data: CreateBody) =>
-      client.fetch<CreateData>('billing/entitlement-feature/', { method: 'POST', body: data }),
+    list: (query?: ListQuery, options?: ConjoinCallOptions) =>
+      client.fetchList<ListData>('billing/entitlement-features/', { ...options, method: 'GET', query: query as Record<string, unknown> | undefined }),
 
-    list: (featureIdOrKey: string, query?: ListQuery) =>
-      client.fetchList<ListData>(`billing/entitlement-feature/${featureIdOrKey}`, { query: query as Record<string, unknown> }),
+    create: (data: CreateBody, options?: ConjoinCallOptions) =>
+      client.fetch<CreateData>('billing/entitlement-features/', { ...options, method: 'POST', body: data, acceptsIdempotencyKey: true }),
 
-    update: (featureIdOrKey: string, data: UpdateBody) =>
-      client.fetch<UpdateData>(`billing/entitlement-feature/${featureIdOrKey}`, { method: 'PUT', body: data }),
+    listCount: (query?: ListCountQuery, options?: ConjoinCallOptions) =>
+      client.fetch<ListCountData>('billing/entitlement-features/count', { ...options, method: 'GET', query: query as Record<string, unknown> | undefined }),
 
-    archive: (featureIdOrKey: string) =>
-      client.fetch<ArchiveData>(`billing/entitlement-feature/${featureIdOrKey}/archive`, { method: 'PATCH' }),
+    read: (entitlementFeatureId: string, options?: ConjoinCallOptions) =>
+      client.fetch<ReadData>(`billing/entitlement-features/${encodePathParam(entitlementFeatureId)}`, { ...options, method: 'GET' }),
+
+    update: (entitlementFeatureId: string, data: UpdateBody, options?: ConjoinCallOptions) =>
+      client.fetch<UpdateData>(`billing/entitlement-features/${encodePathParam(entitlementFeatureId)}`, { ...options, method: 'PATCH', body: data }),
+
+    archive: (entitlementFeatureId: string, options?: ConjoinCallOptions) =>
+      client.fetch<ArchiveData>(`billing/entitlement-features/${encodePathParam(entitlementFeatureId)}/archive`, { ...options, method: 'POST', acceptsIdempotencyKey: true }),
   }
 }

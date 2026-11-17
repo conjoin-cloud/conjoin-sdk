@@ -15,13 +15,15 @@ export type ConjoinContractResponseOptions = {
 
 export type ConjoinContractListOptions = ConjoinContractResponseOptions & {
   cursor?: {
-    prev?: string
-    next?: string
+    prev?: string | null
+    next?: string | null
   }
 }
 
 export type ConjoinContractErrorOptions = ConjoinContractResponseOptions & {
   code?: string
+  param?: string | null
+  details?: unknown
   errors?: Array<{
     message: string
     path: string
@@ -34,37 +36,46 @@ const jsonHeaders = (options?: ConjoinContractResponseOptions): Record<string, s
   ...options?.headers,
 })
 
-export const conjoinSuccess = <T>(data: T, options?: ConjoinContractResponseOptions): ContractResponse => ({
-  status: options?.status ?? 200,
-  headers: jsonHeaders(options),
-  body: {
-    success: true,
-    data,
-    ...(options?.message ? { message: options.message } : {}),
-    status: options?.status ?? 200,
-  },
+const successMeta = (status: number, message: string | undefined) => ({
+  type: 'SUCCESS',
+  code: status,
+  message: message ?? 'Success',
 })
 
-export const conjoinList = <T>(data: T[], options?: ConjoinContractListOptions): ContractResponse => ({
-  status: options?.status ?? 200,
-  headers: jsonHeaders(options),
-  body: {
-    success: true,
-    data,
-    ...(options?.cursor ? { cursor: options.cursor } : {}),
-    ...(options?.message ? { message: options.message } : {}),
-    status: options?.status ?? 200,
-  },
-})
+export const conjoinSuccess = <T>(data: T, options?: ConjoinContractResponseOptions): ContractResponse => {
+  const status = options?.status ?? 200
 
-export const conjoinError = (message: string, options?: ConjoinContractErrorOptions): ContractResponse => ({
-  status: options?.status ?? 500,
-  headers: jsonHeaders(options),
-  body: {
-    success: false,
-    message,
-    ...(options?.code ? { code: options.code } : {}),
-    ...(options?.errors ? { errors: options.errors } : {}),
-    status: options?.status ?? 500,
-  },
-})
+  return { status, headers: jsonHeaders(options), body: { response: successMeta(status, options?.message), data } }
+}
+
+export const conjoinList = <T>(data: T[], options?: ConjoinContractListOptions): ContractResponse => {
+  const status = options?.status ?? 200
+
+  return {
+    status,
+    headers: jsonHeaders(options),
+    body: {
+      response: successMeta(status, options?.message),
+      data,
+      cursor: { prev: options?.cursor?.prev ?? null, next: options?.cursor?.next ?? null },
+    },
+  }
+}
+
+export const conjoinError = (message: string, options?: ConjoinContractErrorOptions): ContractResponse => {
+  const status = options?.status ?? 500
+
+  return {
+    status,
+    headers: jsonHeaders(options),
+    body: {
+      response: { type: status >= 500 ? 'SERVER_ERROR' : 'CLIENT_ERROR', code: status, message },
+      data: null,
+      error: {
+        code: options?.code ?? 'contract_error',
+        param: options?.param ?? null,
+        details: options?.details ?? options?.errors ?? null,
+      },
+    },
+  }
+}

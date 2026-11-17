@@ -1,26 +1,32 @@
-import type { ConjoinClient } from '../../core/types'
+import { encodePathParam } from '../../core/path'
+import type { ConjoinCallOptions, ConjoinClient } from '../../core/types'
 import type { operations } from '../api-types'
 
-type CreateBody = operations['createEntitlementOverride']['requestBody']['content']['application/json']
-type CreateData = NonNullable<operations['createEntitlementOverride']['responses']['201']['content']['application/json']['data']>
 type ListData = NonNullable<operations['listEntitlementOverrides']['responses']['200']['content']['application/json']['data']>[number]
 type ListQuery = NonNullable<operations['listEntitlementOverrides']['parameters']['query']>
-type UpdateBody = operations['updateEntitlementOverride']['requestBody']['content']['application/json']
+type CreateBody = NonNullable<operations['createEntitlementOverride']['requestBody']>['content']['application/json']
+type CreateData = NonNullable<operations['createEntitlementOverride']['responses']['201']['content']['application/json']['data']>
+type ListCountData = NonNullable<operations['listEntitlementOverridesCount']['responses']['200']['content']['application/json']['data']>
+type ListCountQuery = NonNullable<operations['listEntitlementOverridesCount']['parameters']['query']>
+type UpdateBody = NonNullable<operations['updateEntitlementOverride']['requestBody']>['content']['application/json']
 type UpdateData = NonNullable<operations['updateEntitlementOverride']['responses']['200']['content']['application/json']['data']>
-type DeleteData = NonNullable<operations['deleteEntitlementOverride']['responses']['200']['content']['application/json']['data']>
+type DeleteResponse = operations['deleteEntitlementOverride']['responses']['200']['content']['application/json']
 
 export function createBillingEntitlementOverrides(client: ConjoinClient) {
   return {
-    create: (entityId: string, data: CreateBody) =>
-      client.fetch<CreateData>(`billing/entitlement-override/${entityId}`, { method: 'POST', body: data }),
+    list: (query?: ListQuery, options?: ConjoinCallOptions) =>
+      client.fetchList<ListData>('billing/entitlement-overrides/', { ...options, method: 'GET', query: query as Record<string, unknown> | undefined, scopes: ['billingEntityId'] }),
 
-    list: (entityId: string, query?: ListQuery) =>
-      client.fetchList<ListData>(`billing/entitlement-override/${entityId}`, { query: query as Record<string, unknown> }),
+    create: (data: CreateBody, options?: ConjoinCallOptions) =>
+      client.fetch<CreateData>('billing/entitlement-overrides/', { ...options, method: 'POST', body: data, scopes: ['billingEntityId'], acceptsIdempotencyKey: true }),
 
-    update: (entityId: string, overrideId: string, data: UpdateBody) =>
-      client.fetch<UpdateData>(`billing/entitlement-override/${entityId}/${overrideId}`, { method: 'PUT', body: data }),
+    listCount: (query?: ListCountQuery, options?: ConjoinCallOptions) =>
+      client.fetch<ListCountData>('billing/entitlement-overrides/count', { ...options, method: 'GET', query: query as Record<string, unknown> | undefined, scopes: ['billingEntityId'] }),
 
-    delete: (entityId: string, overrideId: string) =>
-      client.fetch<DeleteData>(`billing/entitlement-override/${entityId}/${overrideId}`, { method: 'DELETE' }),
+    update: (entitlementOverrideId: string, data: UpdateBody, options?: ConjoinCallOptions) =>
+      client.fetch<UpdateData>(`billing/entitlement-overrides/${encodePathParam(entitlementOverrideId)}`, { ...options, method: 'PATCH', body: data, scopes: ['billingEntityId'] }),
+
+    delete: (entitlementOverrideId: string, options?: ConjoinCallOptions) =>
+      client.fetchJson<DeleteResponse>(`billing/entitlement-overrides/${encodePathParam(entitlementOverrideId)}`, { ...options, method: 'DELETE', scopes: ['billingEntityId'] }),
   }
 }

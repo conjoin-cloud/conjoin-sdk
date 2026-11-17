@@ -1,34 +1,44 @@
-import type { ConjoinClient } from '../../core/types'
+import { encodePathParam } from '../../core/path'
+import type { ConjoinCallOptions, ConjoinClient } from '../../core/types'
 import type { operations } from '../api-types'
 
-type CreateBody = operations['createProduct']['requestBody']['content']['application/json']
-type CreateData = NonNullable<operations['createProduct']['responses']['201']['content']['application/json']['data']>
 type ListData = NonNullable<operations['listProducts']['responses']['200']['content']['application/json']['data']>[number]
 type ListQuery = NonNullable<operations['listProducts']['parameters']['query']>
-type UpdateBody = operations['updateProduct']['requestBody']['content']['application/json']
+type CreateBody = NonNullable<operations['createProduct']['requestBody']>['content']['application/json']
+type CreateData = NonNullable<operations['createProduct']['responses']['201']['content']['application/json']['data']>
+type ListCountData = NonNullable<operations['listProductsCount']['responses']['200']['content']['application/json']['data']>
+type ListCountQuery = NonNullable<operations['listProductsCount']['parameters']['query']>
+type ReadData = NonNullable<operations['readProduct']['responses']['200']['content']['application/json']['data']>
+type UpdateBody = NonNullable<operations['updateProduct']['requestBody']>['content']['application/json']
 type UpdateData = NonNullable<operations['updateProduct']['responses']['200']['content']['application/json']['data']>
-type DeleteData = NonNullable<operations['deleteProduct']['responses']['200']['content']['application/json']['data']>
+type DeleteResponse = operations['deleteProduct']['responses']['200']['content']['application/json']
 type ArchiveData = NonNullable<operations['archiveProduct']['responses']['200']['content']['application/json']['data']>
 type RestoreData = NonNullable<operations['restoreProduct']['responses']['200']['content']['application/json']['data']>
 
 export function createBillingProducts(client: ConjoinClient) {
   return {
-    create: (entityId: string, data: CreateBody) =>
-      client.fetch<CreateData>(`billing/product/${entityId}`, { method: 'POST', body: data }),
+    list: (query?: ListQuery, options?: ConjoinCallOptions) =>
+      client.fetchList<ListData>('billing/products/', { ...options, method: 'GET', query: query as Record<string, unknown> | undefined, scopes: ['billingEntityId'] }),
 
-    list: (entityId: string, referenceId: string, query?: ListQuery) =>
-      client.fetchList<ListData>(`billing/product/${entityId}/${referenceId}`, { query: query as Record<string, unknown> }),
+    create: (data: CreateBody, options?: ConjoinCallOptions) =>
+      client.fetch<CreateData>('billing/products/', { ...options, method: 'POST', body: data, scopes: ['billingEntityId'], acceptsIdempotencyKey: true }),
 
-    update: (entityId: string, referenceId: string, data: UpdateBody) =>
-      client.fetch<UpdateData>(`billing/product/${entityId}/${referenceId}`, { method: 'PUT', body: data }),
+    listCount: (query?: ListCountQuery, options?: ConjoinCallOptions) =>
+      client.fetch<ListCountData>('billing/products/count', { ...options, method: 'GET', query: query as Record<string, unknown> | undefined, scopes: ['billingEntityId'] }),
 
-    delete: (entityId: string, referenceId: string) =>
-      client.fetch<DeleteData>(`billing/product/${entityId}/${referenceId}`, { method: 'DELETE' }),
+    read: (productId: string, options?: ConjoinCallOptions) =>
+      client.fetch<ReadData>(`billing/products/${encodePathParam(productId)}`, { ...options, method: 'GET', scopes: ['billingEntityId'] }),
 
-    archive: (entityId: string, referenceId: string) =>
-      client.fetch<ArchiveData>(`billing/product/${entityId}/${referenceId}/archive`, { method: 'PATCH' }),
+    update: (productId: string, data: UpdateBody, options?: ConjoinCallOptions) =>
+      client.fetch<UpdateData>(`billing/products/${encodePathParam(productId)}`, { ...options, method: 'PATCH', body: data, scopes: ['billingEntityId'] }),
 
-    restore: (entityId: string, referenceId: string) =>
-      client.fetch<RestoreData>(`billing/product/${entityId}/${referenceId}/restore`, { method: 'PATCH' }),
+    delete: (productId: string, options?: ConjoinCallOptions) =>
+      client.fetchJson<DeleteResponse>(`billing/products/${encodePathParam(productId)}`, { ...options, method: 'DELETE', scopes: ['billingEntityId'] }),
+
+    archive: (productId: string, options?: ConjoinCallOptions) =>
+      client.fetch<ArchiveData>(`billing/products/${encodePathParam(productId)}/archive`, { ...options, method: 'POST', scopes: ['billingEntityId'], acceptsIdempotencyKey: true }),
+
+    restore: (productId: string, options?: ConjoinCallOptions) =>
+      client.fetch<RestoreData>(`billing/products/${encodePathParam(productId)}/restore`, { ...options, method: 'POST', scopes: ['billingEntityId'], acceptsIdempotencyKey: true }),
   }
 }

@@ -80,7 +80,7 @@ jobs:
   typescript:
     name: TypeScript
     needs: affected
-    if: ${{ contains(fromJSON(needs.affected.outputs.projects), 'sdk-typescript') }}
+    if: ${{ contains(fromJSON(needs.affected.outputs.projects), 'sdk-typescript') || contains(fromJSON(needs.affected.outputs.projects), 'sdk-typescript-react-core') || contains(fromJSON(needs.affected.outputs.projects), 'sdk-typescript-react') || contains(fromJSON(needs.affected.outputs.projects), 'sdk-typescript-expo') }}
     uses: ./.github/workflows/check-typescript.yml
     with:
       base: ${{ needs.affected.outputs.base }}
@@ -91,6 +91,24 @@ jobs:
     needs: affected
     if: ${{ contains(fromJSON(needs.affected.outputs.projects), 'sdk-python') }}
     uses: ./.github/workflows/check-python.yml
+    with:
+      base: ${{ needs.affected.outputs.base }}
+      head: ${{ needs.affected.outputs.head }}
+
+  go:
+    name: Go
+    needs: affected
+    if: ${{ contains(fromJSON(needs.affected.outputs.projects), 'sdk-go') }}
+    uses: ./.github/workflows/check-go.yml
+    with:
+      base: ${{ needs.affected.outputs.base }}
+      head: ${{ needs.affected.outputs.head }}
+
+  php:
+    name: PHP
+    needs: affected
+    if: ${{ contains(fromJSON(needs.affected.outputs.projects), 'sdk-php') }}
+    uses: ./.github/workflows/check-php.yml
     with:
       base: ${{ needs.affected.outputs.base }}
       head: ${{ needs.affected.outputs.head }}

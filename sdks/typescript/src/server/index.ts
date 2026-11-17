@@ -1,6 +1,7 @@
 import { createConjoinClient } from '../core/client'
 import { getConjoinRequestIdFromHeaders, type HeaderMapLike } from '../core/request-tracing'
 import type { ConjoinClient } from '../core/types'
+import { createCloudSDKs } from '../generated/frontend/cloud-sdk'
 
 export type ServerOptions = {
   apiKey: string
@@ -25,10 +26,6 @@ export type BrandingOptions = {
   baseUrl?: string
 }
 
-type SdkConfigResponse = {
-  branding: Record<string, unknown> | null
-}
-
 export async function fetchConjoinBranding(
   publishableKey: string,
   options?: BrandingOptions,
@@ -38,8 +35,8 @@ export async function fetchConjoinBranding(
     baseUrl: options?.baseUrl,
   })
 
-  const config = await client.fetch<SdkConfigResponse>('cloud/sdk-config')
-  return config.branding
+  const settings = await createCloudSDKs(client).readSdkSettings()
+  return settings.branding
 }
 
 export type {

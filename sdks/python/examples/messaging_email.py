@@ -11,9 +11,9 @@ def main() -> None:
     sender = os.environ["CONJOIN_EMAIL_FROM"]
     recipient = os.environ["CONJOIN_EMAIL_TO"]
 
-    with Conjoin(api_key=api_key) as client:
-        message = client.messaging.with_profile(profile_id).emails.send(
-            data={
+    with Conjoin(api_key=api_key, messaging_profile_id=profile_id) as client:
+        message = client.messaging.emails.send(
+            {
                 "from_": sender,
                 "to": [recipient],
                 "subject": "Hello from Conjoin",

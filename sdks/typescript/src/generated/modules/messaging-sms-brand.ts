@@ -1,30 +1,36 @@
-import type { ConjoinClient } from '../../core/types'
+import { encodePathParam } from '../../core/path'
+import type { ConjoinCallOptions, ConjoinClient } from '../../core/types'
 import type { operations } from '../api-types'
 
-type CreateSmsBrandBody = operations['createSmsBrand']['requestBody']['content']['application/json']
+type ListSmsBrandsData = NonNullable<operations['listSmsBrands']['responses']['200']['content']['application/json']['data']>[number]
+type ListSmsBrandsQuery = NonNullable<operations['listSmsBrands']['parameters']['query']>
+type CreateSmsBrandBody = NonNullable<operations['createSmsBrand']['requestBody']>['content']['application/json']
 type CreateSmsBrandData = NonNullable<operations['createSmsBrand']['responses']['201']['content']['application/json']['data']>
+type ListSmsBrandsCountData = NonNullable<operations['listSmsBrandsCount']['responses']['200']['content']['application/json']['data']>
+type ListSmsBrandsCountQuery = NonNullable<operations['listSmsBrandsCount']['parameters']['query']>
 type ReadSmsBrandData = NonNullable<operations['readSmsBrand']['responses']['200']['content']['application/json']['data']>
-type UpdateSmsBrandBody = operations['updateSmsBrand']['requestBody']['content']['application/json']
+type UpdateSmsBrandBody = NonNullable<operations['updateSmsBrand']['requestBody']>['content']['application/json']
 type UpdateSmsBrandData = NonNullable<operations['updateSmsBrand']['responses']['200']['content']['application/json']['data']>
 type DeleteSmsBrandData = NonNullable<operations['deleteSmsBrand']['responses']['200']['content']['application/json']['data']>
-type ListSmsBrandsBody = operations['listSmsBrands']['requestBody']['content']['application/json']
-type ListSmsBrandsData = NonNullable<operations['listSmsBrands']['responses']['200']['content']['application/json']['data']>[number]
 
 export function createMessagingSMSBrands(client: ConjoinClient) {
   return {
-    createSmsBrand: (data: CreateSmsBrandBody) =>
-      client.fetch<CreateSmsBrandData>('messaging/sms/brands/new', { method: 'POST', body: data }),
+    listSmsBrands: (query?: ListSmsBrandsQuery, options?: ConjoinCallOptions) =>
+      client.fetchList<ListSmsBrandsData>('messaging/sms-brands/', { ...options, method: 'GET', query: query as Record<string, unknown> | undefined, scopes: ['messagingProfileId'] }),
 
-    readSmsBrand: (brandId: string) =>
-      client.fetch<ReadSmsBrandData>(`messaging/sms/brands/${brandId}`, { method: 'POST' }),
+    createSmsBrand: (data: CreateSmsBrandBody, options?: ConjoinCallOptions) =>
+      client.fetch<CreateSmsBrandData>('messaging/sms-brands/', { ...options, method: 'POST', body: data, scopes: ['messagingProfileId'], acceptsIdempotencyKey: true }),
 
-    updateSmsBrand: (brandId: string, data: UpdateSmsBrandBody) =>
-      client.fetch<UpdateSmsBrandData>(`messaging/sms/brands/${brandId}`, { method: 'PATCH', body: data }),
+    listSmsBrandsCount: (query?: ListSmsBrandsCountQuery, options?: ConjoinCallOptions) =>
+      client.fetch<ListSmsBrandsCountData>('messaging/sms-brands/count', { ...options, method: 'GET', query: query as Record<string, unknown> | undefined, scopes: ['messagingProfileId'] }),
 
-    deleteSmsBrand: (brandId: string) =>
-      client.fetch<DeleteSmsBrandData>(`messaging/sms/brands/${brandId}`, { method: 'DELETE' }),
+    readSmsBrand: (smsBrandId: string, options?: ConjoinCallOptions) =>
+      client.fetch<ReadSmsBrandData>(`messaging/sms-brands/${encodePathParam(smsBrandId)}`, { ...options, method: 'GET', scopes: ['messagingProfileId'] }),
 
-    listSmsBrands: (data: ListSmsBrandsBody) =>
-      client.fetchList<ListSmsBrandsData>('messaging/sms/brands/', { method: 'POST', body: data }),
+    updateSmsBrand: (smsBrandId: string, data: UpdateSmsBrandBody, options?: ConjoinCallOptions) =>
+      client.fetch<UpdateSmsBrandData>(`messaging/sms-brands/${encodePathParam(smsBrandId)}`, { ...options, method: 'PATCH', body: data, scopes: ['messagingProfileId'] }),
+
+    deleteSmsBrand: (smsBrandId: string, options?: ConjoinCallOptions) =>
+      client.fetch<DeleteSmsBrandData>(`messaging/sms-brands/${encodePathParam(smsBrandId)}`, { ...options, method: 'DELETE', scopes: ['messagingProfileId'] }),
   }
 }

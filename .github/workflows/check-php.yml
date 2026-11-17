@@ -1,0 +1,61 @@
+name: Check PHP SDK
+
+on:
+  workflow_call:
+    inputs:
+      base:
+        required: true
+        type: string
+      head:
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    name: PHP ${{ matrix.php-version }}
+    runs-on: blacksmith-4vcpu-ubuntu-2404
+    strategy:
+      fail-fast: false
+      matrix:
+        php-version: [ '8.2', '8.5' ]
+    defaults:
+      run:
+        working-directory: sdks/php
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10
+        with:
+          fetch-depth: 0
+
+      - name: Setup PHP ${{ matrix.php-version }}
+        uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962
+        with:
+          php-version: ${{ matrix.php-version }}
+          extensions: curl, json
+          tools: composer:2.11.2
+          coverage: none
+
+      - name: Install PHP dependencies
+        run: composer install --no-interaction --no-progress --prefer-dist
+
+      - name: Generate PHP SDK
+        run: php codegen/generate.php
+
+      - name: Fail when generated PHP SDK code is out of date
+        run: |
+          git status --porcelain -- .
+          git diff --exit-code -- .
+          test -z "$(git status --porcelain -- .)"
+
+      - name: Lint
+        run: vendor/bin/phpcs
+
+      - name: Static analysis
+        run: vendor/bin/phpstan analyse --no-progress --memory-limit=2G
+
+      - name: Test
+        run: vendor/bin/phpunit

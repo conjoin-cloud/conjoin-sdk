@@ -13,29 +13,19 @@ vi.mock('../../server/tokens', () => ({
   verifyToken: vi.fn(),
 }))
 
-vi.mock('../../core/client', () => ({
-  createConjoinClient: vi.fn(),
-}))
-
 import { cookies, headers } from 'next/headers'
-import { createConjoinClient } from '../../core/client'
 import { verifyToken } from '../../server/tokens'
 import { auth } from '../auth'
-import { getJwksUrl, resolveConfig } from '../config'
-import { currentAccount } from '../current-account'
 
 const mockCookies = vi.mocked(cookies)
 const mockHeaders = vi.mocked(headers)
 const mockVerifyToken = vi.mocked(verifyToken)
-const mockCreateConjoinClient = vi.mocked(createConjoinClient)
-const VALID_REQUEST_ID = 'cnj_req_0198f0f7-5d0b-7b4a-8d5a-cf5693f0b2c1'
 
 describe('auth', () => {
   beforeEach(() => {
     vi.clearAllMocks()
 
-    process.env.CONJOIN_PUBLISHABLE_KEY = 'pk_test_auth.conjoin.cloud'
-    process.env.CONJOIN_SECRET_KEY = 'sk_test_secret123'
+    process.env.CONJOIN_AUTH_DOMAIN = 'auth.conjoin.cloud'
 
     mockHeaders.mockResolvedValue({
       get: vi.fn().mockReturnValue(null),
@@ -48,8 +38,7 @@ describe('auth', () => {
 
   afterEach(() => {
     vi.restoreAllMocks()
-    delete process.env.CONJOIN_PUBLISHABLE_KEY
-    delete process.env.CONJOIN_SECRET_KEY
+    delete process.env.CONJOIN_AUTH_DOMAIN
   })
 
   it('reads token from cookie and verifies', async () => {
@@ -156,246 +145,5 @@ describe('auth', () => {
     const result = await auth()
     expect(result).toBeNull()
     expect(mockVerifyToken).not.toHaveBeenCalled()
-  })
-})
-
-describe('resolveConfig', () => {
-  beforeEach(() => {
-    process.env.CONJOIN_SECRET_KEY = 'sk_test_env_key'
-    process.env.CONJOIN_PUBLISHABLE_KEY = 'pk_test_env.conjoin.cloud'
-  })
-
-  afterEach(() => {
-    delete process.env.CONJOIN_SECRET_KEY
-    delete process.env.CONJOIN_PUBLISHABLE_KEY
-  })
-
-  it('reads from environment variables by default', () => {
-    const config = resolveConfig()
-    expect(config.secretKey).toBe('sk_test_env_key')
-    expect(config.publishableKey).toBe('pk_test_env.conjoin.cloud')
-  })
-
-  it('overrides take precedence over env vars', () => {
-    const config = resolveConfig({
-      secretKey: 'sk_override',
-      publishableKey: 'pk_live_override.conjoin.cloud',
-    })
-    expect(config.secretKey).toBe('sk_override')
-    expect(config.publishableKey).toBe('pk_live_override.conjoin.cloud')
-  })
-
-  it('returns undefined for keys when env vars are not set', () => {
-    delete process.env.CONJOIN_SECRET_KEY
-    delete process.env.CONJOIN_PUBLISHABLE_KEY
-    const config = resolveConfig()
-    expect(config.secretKey).toBeUndefined()
-    expect(config.publishableKey).toBeUndefined()
-  })
-
-  it('passes through jwksUrl and authDomain overrides', () => {
-    const config = resolveConfig({
-      jwksUrl: 'https://custom.example.com/.well-known/jwks.json',
-      authDomain: 'custom.example.com',
-    })
-    expect(config.jwksUrl).toBe('https://custom.example.com/.well-known/jwks.json')
-    expect(config.authDomain).toBe('custom.example.com')
-  })
-})
-
-describe('getJwksUrl', () => {
-  it('returns explicit jwksUrl when provided', () => {
-    const url = getJwksUrl({ jwksUrl: 'https://custom.example.com/jwks' })
-    expect(url).toBe('https://custom.example.com/jwks')
-  })
-
-  it('derives URL from authDomain', () => {
-    const url = getJwksUrl({ authDomain: 'auth.myapp.com' })
-    expect(url).toBe('https://auth.myapp.com/.well-known/jwks.json')
-  })
-
-  it('derives URL from publishable key with test prefix', () => {
-    const url = getJwksUrl({ publishableKey: 'pk_test_auth.conjoin.cloud' })
-    expect(url).toBe('https://auth.conjoin.cloud/.well-known/jwks.json')
-  })
-
-  it('derives URL from publishable key with live prefix', () => {
-    const url = getJwksUrl({ publishableKey: 'pk_live_auth.myapp.com' })
-    expect(url).toBe('https://auth.myapp.com/.well-known/jwks.json')
-  })
-
-  it('prefers jwksUrl over authDomain over publishableKey', () => {
-    const url = getJwksUrl({
-      jwksUrl: 'https://explicit.com/jwks',
-      authDomain: 'domain.com',
-      publishableKey: 'pk_test_key.com',
-    })
-    expect(url).toBe('https://explicit.com/jwks')
-  })
-
-  it('prefers authDomain over publishableKey', () => {
-    const url = getJwksUrl({
-      authDomain: 'domain.com',
-      publishableKey: 'pk_test_key.com',
-    })
-    expect(url).toBe('https://domain.com/.well-known/jwks.json')
-  })
-
-  it('throws when no publishableKey, authDomain, or jwksUrl', () => {
-    expect(() => getJwksUrl({})).toThrow('requires a publishableKey, authDomain, or jwksUrl')
-  })
-
-  it('throws on invalid publishable key format', () => {
-    expect(() => getJwksUrl({ publishableKey: 'invalid_key' })).toThrow('Invalid publishable key format')
-  })
-
-  it('throws on publishable key without environment prefix', () => {
-    expect(() => getJwksUrl({ publishableKey: 'pk_auth.conjoin.cloud' })).toThrow('Invalid publishable key format')
-  })
-})
-
-describe('currentAccount', () => {
-  beforeEach(() => {
-    vi.clearAllMocks()
-
-    process.env.CONJOIN_PUBLISHABLE_KEY = 'pk_test_auth.conjoin.cloud'
-    process.env.CONJOIN_SECRET_KEY = 'sk_test_secret123'
-
-    mockHeaders.mockResolvedValue({
-      get: vi.fn().mockReturnValue(null),
-    } as never)
-
-    mockCookies.mockResolvedValue({
-      get: vi.fn().mockReturnValue(undefined),
-    } as never)
-  })
-
-  afterEach(() => {
-    vi.restoreAllMocks()
-    delete process.env.CONJOIN_PUBLISHABLE_KEY
-    delete process.env.CONJOIN_SECRET_KEY
-  })
-
-  it('returns null when not authenticated', async () => {
-    const result = await currentAccount()
-    expect(result).toBeNull()
-  })
-
-  it('fetches account when authenticated', async () => {
-    const cookieGet = vi.fn().mockImplementation((name: string) => {
-      if (name === '__conjoin_auth_at') return { value: 'valid-token' }
-      return undefined
-    })
-    mockCookies.mockResolvedValue({ get: cookieGet } as never)
-
-    mockVerifyToken.mockResolvedValueOnce({
-      payload: { sub: 'acc_123' },
-      accountId: 'acc_123',
-      sessionId: 'ses_456',
-      organizationId: null,
-      organizationRole: null,
-    })
-
-    const mockAccount = {
-      id: 'acc_123',
-      email: 'user@example.com',
-      firstName: 'Test',
-      lastName: 'User',
-      avatarUrl: null,
-      createdAt: '2026-01-01T00:00:00Z',
-      updatedAt: '2026-01-01T00:00:00Z',
-    }
-
-    const mockFetch = vi.fn().mockResolvedValue(mockAccount)
-    mockCreateConjoinClient.mockReturnValue({
-      config: {} as never,
-      fetch: mockFetch,
-      fetchWithResponse: vi.fn() as never,
-      fetchList: vi.fn() as never,
-      fetchListWithResponse: vi.fn() as never,
-      fetchRaw: vi.fn() as never,
-      withRequestTrace: vi.fn() as never,
-    })
-
-    const result = await currentAccount()
-
-    expect(result).toEqual(mockAccount)
-    expect(mockFetch).toHaveBeenCalledWith('auth/self', {
-      headers: { Authorization: 'Bearer valid-token' },
-    })
-  })
-
-  it('creates client with secretKey from config', async () => {
-    const cookieGet = vi.fn().mockImplementation((name: string) => {
-      if (name === '__conjoin_auth_at') return { value: 'valid-token' }
-      return undefined
-    })
-    mockCookies.mockResolvedValue({ get: cookieGet } as never)
-
-    mockVerifyToken.mockResolvedValueOnce({
-      payload: { sub: 'acc_123' },
-      accountId: 'acc_123',
-      sessionId: 'ses_456',
-      organizationId: null,
-      organizationRole: null,
-    })
-
-    const mockFetch = vi.fn().mockResolvedValue({ id: 'acc_123' })
-    mockCreateConjoinClient.mockReturnValue({
-      config: {} as never,
-      fetch: mockFetch,
-      fetchWithResponse: vi.fn() as never,
-      fetchList: vi.fn() as never,
-      fetchListWithResponse: vi.fn() as never,
-      fetchRaw: vi.fn() as never,
-      withRequestTrace: vi.fn() as never,
-    })
-
-    await currentAccount()
-
-    expect(mockCreateConjoinClient).toHaveBeenCalledWith({
-      apiKey: 'sk_test_secret123',
-    })
-  })
-
-  it('propagates a valid incoming Conjoin request ID when fetching the current account', async () => {
-    const headerGet = vi.fn().mockImplementation((name: string) => {
-      if (name === 'Conjoin-Request-Id') return VALID_REQUEST_ID
-      if (name === 'authorization') return null
-      return null
-    })
-    mockHeaders.mockResolvedValue({ get: headerGet } as never)
-
-    const cookieGet = vi.fn().mockImplementation((name: string) => {
-      if (name === '__conjoin_auth_at') return { value: 'valid-token' }
-      return undefined
-    })
-    mockCookies.mockResolvedValue({ get: cookieGet } as never)
-
-    mockVerifyToken.mockResolvedValueOnce({
-      payload: { sub: 'acc_123' },
-      accountId: 'acc_123',
-      sessionId: 'ses_456',
-      organizationId: null,
-      organizationRole: null,
-    })
-
-    const mockFetch = vi.fn().mockResolvedValue({ id: 'acc_123' })
-    mockCreateConjoinClient.mockReturnValue({
-      config: {} as never,
-      fetch: mockFetch,
-      fetchWithResponse: vi.fn() as never,
-      fetchList: vi.fn() as never,
-      fetchListWithResponse: vi.fn() as never,
-      fetchRaw: vi.fn() as never,
-      withRequestTrace: vi.fn() as never,
-    })
-
-    await currentAccount()
-
-    expect(mockCreateConjoinClient).toHaveBeenCalledWith({
-      apiKey: 'sk_test_secret123',
-      conjoinRequestId: VALID_REQUEST_ID,
-    })
   })
 })

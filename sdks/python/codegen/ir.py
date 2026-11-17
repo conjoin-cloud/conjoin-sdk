@@ -11,17 +11,34 @@ from codegen.naming import (
     to_pascal,
     to_snake,
 )
+from codegen.security import (
+    AuthMode,
+    DeclaredHeader,
+    read_declared_header,
+    read_portal_ticket_header,
+    resolve_auth_mode,
+)
 from codegen.spec import maybe_resolve_ref
 
-HTTP_METHODS = frozenset({"delete", "get", "patch", "post", "put"})
-AuthMode = Literal["default", "none", "scim_bearer"]
+HTTP_METHODS = ("get", "post", "put", "patch", "delete")
+METHODS_WITHOUT_BODY = frozenset({"get", "delete"})
+NO_CONTENT_STATUS = "204"
+REQUEST_ID_HEADER = "conjoin-request-id"
+IDEMPOTENCY_KEY_HEADER = "idempotency-key"
+SCOPE_HEADER_NAMES = {
+    "billing-entity-id": "billing_entity_id",
+    "messaging-profile-id": "messaging_profile_id",
+    "auth-app-id": "auth_app_id",
+}
+RESERVED_PARAMETER_NAMES = frozenset({"self", "data", "query", "request_options", "session_token"})
+
+ResponseKind = Literal["envelope", "list", "body", "empty"]
 
 
 @dataclass(frozen=True)
 class Parameter:
     name: str
     python_name: str
-    location: str
     required: bool
     schema: dict[str, Any]
 
@@ -32,21 +49,20 @@ class Operation:
     method_name: str
     http_method: str
     path: str
-    tag: str
     auth_mode: AuthMode
     request_content_type: str
-    response_content_type: str
-    success_code: str
     has_request_body: bool
-    has_data_property: bool
-    is_list_response: bool
+    request_body_required: bool
+    response_kind: ResponseKind
     path_parameters: tuple[Parameter, ...]
     query_parameters: tuple[Parameter, ...]
-    header_parameters: tuple[Parameter, ...]
     request_schema: dict[str, Any] | None
     response_schema: dict[str, Any]
     response_data_schema: dict[str, Any]
-    requires_messaging_profile: bool
+    response_item_schema: dict[str, Any] | None
+    scopes: tuple[str, ...]
+    accepts_idempotency_key: bool
+    declared_headers: tuple[DeclaredHeader, ...]
 
 
 @dataclass(frozen=True)
@@ -58,267 +74,253 @@ class ResourceGroup:
     operations: tuple[Operation, ...]
 
 
-def collect_operations(spec: dict[str, Any]) -> tuple[Operation, ...]:
-    operations: list[Operation] = []
+def collect_resource_groups(spec: dict[str, Any]) -> tuple[ResourceGroup, ...]:
     paths = spec.get("paths")
     if not isinstance(paths, dict):
-        raise ValueError("OpenAPI spec is missing paths")
+        raise ValueError("The OpenAPI document has no paths")
 
+    groups: dict[str, tuple[str, str, list[Operation]]] = {}
     for path, methods in paths.items():
         if not isinstance(methods, dict):
-            continue
-        for method, raw_operation in methods.items():
-            if method not in HTTP_METHODS or not isinstance(raw_operation, dict):
+            raise ValueError(f"{path} is not a path item object")
+        for method in HTTP_METHODS:
+            raw_operation = methods.get(method)
+            if raw_operation is None:
                 continue
-            operation_id = raw_operation.get("operationId")
-            tags = raw_operation.get("tags")
-            if not isinstance(operation_id, str) or not isinstance(tags, list) or not tags:
-                continue
-            service, resource = parse_tag(str(tags[0]))
-            if not resource:
-                continue
-            operations.append(
+            if not isinstance(raw_operation, dict):
+                raise ValueError(f"{method.upper()} {path} is not an operation object")
+            service, resource = _read_tag(raw_operation, method, str(path))
+            key = f"{service}-{to_kebab(resource)}"
+            entry = groups.setdefault(key, (service, resource, []))
+            entry[2].append(
                 _build_operation(
                     spec,
                     path=str(path),
-                    http_method=method.upper(),
+                    method=method,
                     raw_operation=raw_operation,
-                    tag=str(tags[0]),
                     service_pascal=to_pascal(service),
                     resource_pascal=to_pascal(resource),
                 )
             )
-    return tuple(operations)
 
-
-def collect_resource_groups(spec: dict[str, Any]) -> tuple[ResourceGroup, ...]:
-    group_map: dict[str, ResourceGroup] = {}
-    operation_map: dict[str, list[Operation]] = {}
-
-    paths = spec.get("paths")
-    if not isinstance(paths, dict):
-        raise ValueError("OpenAPI spec is missing paths")
-
-    for path, methods in paths.items():
-        if not isinstance(methods, dict):
-            continue
-        for method, raw_operation in methods.items():
-            if method not in HTTP_METHODS or not isinstance(raw_operation, dict):
-                continue
-            operation_id = raw_operation.get("operationId")
-            tags = raw_operation.get("tags")
-            if not isinstance(operation_id, str) or not isinstance(tags, list) or not tags:
-                continue
-            tag = str(tags[0])
-            service, resource = parse_tag(tag)
-            if not resource:
-                continue
-            service_pascal = to_pascal(service)
-            resource_pascal = to_pascal(resource)
-            group_key = f"{service}-{to_kebab(resource)}"
-            if group_key not in group_map:
-                group_map[group_key] = ResourceGroup(
-                    service=service,
-                    resource=resource,
-                    service_pascal=service_pascal,
-                    resource_pascal=resource_pascal,
-                    operations=(),
-                )
-                operation_map[group_key] = []
-            operation_map[group_key].append(
-                _build_operation(
-                    spec,
-                    path=str(path),
-                    http_method=method.upper(),
-                    raw_operation=raw_operation,
-                    tag=tag,
-                    service_pascal=service_pascal,
-                    resource_pascal=resource_pascal,
-                )
-            )
-
-    groups: list[ResourceGroup] = []
-    for key, group in group_map.items():
-        groups.append(
-            ResourceGroup(
-                service=group.service,
-                resource=group.resource,
-                service_pascal=group.service_pascal,
-                resource_pascal=group.resource_pascal,
-                operations=tuple(operation_map[key]),
-            )
+    return tuple(
+        ResourceGroup(
+            service=service,
+            resource=resource,
+            service_pascal=to_pascal(service),
+            resource_pascal=to_pascal(resource),
+            operations=tuple(operations),
         )
-    return tuple(groups)
+        for service, resource, operations in groups.values()
+    )
+
+
+def _read_tag(raw_operation: dict[str, Any], method: str, path: str) -> tuple[str, str]:
+    tags = raw_operation.get("tags")
+    tag = tags[0] if isinstance(tags, list) and tags else None
+    if not isinstance(tag, str) or not isinstance(raw_operation.get("operationId"), str):
+        raise ValueError(f"{method.upper()} {path} has no tag or operationId")
+    service, resource = parse_tag(tag)
+    if not resource:
+        raise ValueError(f"{method.upper()} {path} has the tag {tag} without a resource")
+    return service, resource
 
 
 def _build_operation(
     spec: dict[str, Any],
     *,
     path: str,
-    http_method: str,
+    method: str,
     raw_operation: dict[str, Any],
-    tag: str,
     service_pascal: str,
     resource_pascal: str,
 ) -> Operation:
-    parameters = _parameters(spec, raw_operation, path)
-    request_content_type, request_schema = _request_schema(spec, raw_operation)
-    success_code, response_content_type, response_schema = _response_schema(spec, raw_operation)
-    response_data_schema = _data_schema(response_schema)
-    has_data_property = _has_data_property(response_schema)
+    operation_id = str(raw_operation["operationId"])
+    parameters = _resolved_parameters(spec, raw_operation, operation_id)
+    scopes, declares_idempotency_key, declared_headers = _header_semantics(
+        spec, parameters, operation_id
+    )
+    auth_mode = resolve_auth_mode(raw_operation, operation_id)
+    if auth_mode == "portal_ticket":
+        declared_headers.append(read_portal_ticket_header(spec, operation_id))
+    path_parameters = _path_parameters(path, operation_id)
+    _check_argument_names(path_parameters, declared_headers, operation_id)
+    request_content_type, request_schema, has_request_body = _request_schema(spec, raw_operation)
+    if has_request_body and method in METHODS_WITHOUT_BODY:
+        raise ValueError(f"{operation_id} is a {method.upper()} that declares a request body")
+    response_kind, response_schema = _response(spec, raw_operation)
+    response_data_schema = _data_schema(spec, response_schema)
+    request_body = maybe_resolve_ref(spec, raw_operation.get("requestBody"))
 
     return Operation(
-        operation_id=str(raw_operation["operationId"]),
+        operation_id=operation_id,
         method_name=to_snake(
-            operation_id_to_method_name(
-                str(raw_operation["operationId"]),
-                service_pascal,
-                resource_pascal,
-            )
+            operation_id_to_method_name(operation_id, service_pascal, resource_pascal)
         ),
-        http_method=http_method,
+        http_method=method.upper(),
         path=path,
-        tag=tag,
-        auth_mode=_auth_mode(raw_operation),
+        auth_mode=auth_mode,
         request_content_type=request_content_type,
-        response_content_type=response_content_type,
-        success_code=success_code,
-        has_request_body=request_schema is not None,
-        has_data_property=has_data_property,
-        is_list_response=_is_list_response(response_schema),
-        path_parameters=tuple(p for p in parameters if p.location == "path"),
-        query_parameters=tuple(p for p in parameters if p.location == "query"),
-        header_parameters=tuple(p for p in parameters if p.location == "header"),
+        has_request_body=has_request_body,
+        request_body_required=(
+            isinstance(request_body, dict) and request_body.get("required") is True
+        ),
+        response_kind=response_kind,
+        path_parameters=path_parameters,
+        query_parameters=_query_parameters(spec, parameters),
         request_schema=request_schema,
         response_schema=response_schema,
         response_data_schema=response_data_schema,
-        requires_messaging_profile=any(
-            p.location == "header" and p.name.lower() == "messaging-profile-id"
-            for p in parameters
-        ),
+        response_item_schema=_item_schema(spec, response_data_schema),
+        scopes=scopes,
+        accepts_idempotency_key=method == "post" and declares_idempotency_key,
+        declared_headers=tuple(declared_headers),
     )
 
 
-def _parameters(
+def _check_argument_names(
+    path_parameters: tuple[Parameter, ...],
+    declared_headers: list[DeclaredHeader],
+    operation_id: str,
+) -> None:
+    names = [parameter.python_name for parameter in path_parameters]
+    for header in declared_headers:
+        if header.python_name in RESERVED_PARAMETER_NAMES or header.python_name in names:
+            raise ValueError(f"{operation_id} declares the header argument {header.python_name}")
+        names.append(header.python_name)
+
+
+def _resolved_parameters(
     spec: dict[str, Any],
     operation: dict[str, Any],
-    path: str,
-) -> list[Parameter]:
+    operation_id: str,
+) -> list[dict[str, Any]]:
     declared = operation.get("parameters", [])
-    declared_parameters: list[Parameter] = []
-    if isinstance(declared, list):
-        for raw_parameter in declared:
-            parameter = maybe_resolve_ref(spec, raw_parameter)
-            if not isinstance(parameter, dict):
-                continue
-            location = parameter.get("in")
-            name = parameter.get("name")
-            if not isinstance(location, str) or not isinstance(name, str):
-                continue
-            if name == "Conjoin-Request-Id":
-                continue
-            schema = maybe_resolve_ref(spec, parameter.get("schema"))
-            declared_parameters.append(
-                Parameter(
-                    name=name,
-                    python_name=to_snake(name),
-                    location=location,
-                    required=bool(parameter.get("required")),
-                    schema=schema if isinstance(schema, dict) else {},
-                )
+    if not isinstance(declared, list):
+        raise ValueError(f"{operation_id} has parameters that are not a list")
+    resolved: list[dict[str, Any]] = []
+    for raw_parameter in declared:
+        parameter = maybe_resolve_ref(spec, raw_parameter)
+        if not isinstance(parameter, dict) or not isinstance(parameter.get("name"), str):
+            raise ValueError(f"{operation_id} has a parameter without a name")
+        resolved.append(parameter)
+    return resolved
+
+
+def _header_semantics(
+    spec: dict[str, Any],
+    parameters: list[dict[str, Any]],
+    operation_id: str,
+) -> tuple[tuple[str, ...], bool, list[DeclaredHeader]]:
+    scopes: list[str] = []
+    declared_headers: list[DeclaredHeader] = []
+    declares_idempotency_key = False
+    for parameter in parameters:
+        if parameter.get("in") != "header":
+            continue
+        header_name = str(parameter["name"]).lower()
+        scope = SCOPE_HEADER_NAMES.get(header_name)
+        if scope is not None:
+            scopes.append(scope)
+        elif header_name == IDEMPOTENCY_KEY_HEADER:
+            declares_idempotency_key = True
+        elif header_name != REQUEST_ID_HEADER:
+            declared_headers.append(read_declared_header(spec, parameter, operation_id))
+    return tuple(scopes), declares_idempotency_key, declared_headers
+
+
+def _path_parameters(path: str, operation_id: str) -> tuple[Parameter, ...]:
+    parameters: list[Parameter] = []
+    for match in re.finditer(r"\{(\w+)\}", path):
+        python_name = to_snake(match.group(1))
+        if python_name in RESERVED_PARAMETER_NAMES:
+            raise ValueError(f"{operation_id} has the path parameter {python_name}")
+        if any(parameter.python_name == python_name for parameter in parameters):
+            raise ValueError(f"{operation_id} repeats the path parameter {python_name}")
+        parameters.append(
+            Parameter(
+                name=match.group(1),
+                python_name=python_name,
+                required=True,
+                schema={"type": "string"},
             )
+        )
+    return tuple(parameters)
 
-    existing_path_names = {p.name for p in declared_parameters if p.location == "path"}
-    for path_name in _extract_path_parameter_names(path):
-        if path_name not in existing_path_names:
-            declared_parameters.append(
-                Parameter(
-                    name=path_name,
-                    python_name=to_snake(path_name),
-                    location="path",
-                    required=True,
-                    schema={"type": "string"},
-                )
+
+def _query_parameters(
+    spec: dict[str, Any],
+    parameters: list[dict[str, Any]],
+) -> tuple[Parameter, ...]:
+    query: list[Parameter] = []
+    for parameter in parameters:
+        if parameter.get("in") != "query":
+            continue
+        schema = maybe_resolve_ref(spec, parameter.get("schema"))
+        query.append(
+            Parameter(
+                name=str(parameter["name"]),
+                python_name=to_snake(str(parameter["name"])),
+                required=parameter.get("required") is True,
+                schema=schema if isinstance(schema, dict) else {},
             )
-    return declared_parameters
-
-
-def _extract_path_parameter_names(path: str) -> tuple[str, ...]:
-    return tuple(match.group(1) for match in re.finditer(r"\{(\w+)\}", path))
+        )
+    return tuple(query)
 
 
 def _request_schema(
     spec: dict[str, Any],
     operation: dict[str, Any],
-) -> tuple[str, dict[str, Any] | None]:
+) -> tuple[str, dict[str, Any] | None, bool]:
     request_body = maybe_resolve_ref(spec, operation.get("requestBody"))
     if not isinstance(request_body, dict):
-        return "application/json", None
+        return "application/json", None, False
     content = request_body.get("content")
     if not isinstance(content, dict) or not content:
-        return "application/json", None
-    content_type = next(iter(content))
+        return "application/json", None, True
+    content_type = str(next(iter(content)))
     media = content.get(content_type)
-    if not isinstance(media, dict):
-        return content_type, None
-    schema = maybe_resolve_ref(spec, media.get("schema"))
-    return content_type, schema if isinstance(schema, dict) else None
+    schema = maybe_resolve_ref(spec, media.get("schema")) if isinstance(media, dict) else None
+    return content_type, schema if isinstance(schema, dict) else None, True
 
 
-def _response_schema(
+def _response(
     spec: dict[str, Any],
     operation: dict[str, Any],
-) -> tuple[str, str, dict[str, Any]]:
+) -> tuple[ResponseKind, dict[str, Any]]:
     responses = operation.get("responses")
-    if not isinstance(responses, dict):
-        return "200", "application/json", {}
+    responses = responses if isinstance(responses, dict) else {}
     success_code = next((str(code) for code in responses if str(code).startswith("2")), "200")
     response = maybe_resolve_ref(spec, responses.get(success_code))
-    if not isinstance(response, dict):
-        return success_code, "application/json", {}
-    content = response.get("content")
-    if not isinstance(content, dict) or not content:
-        return success_code, "application/json", {}
-    content_type = next(iter(content))
-    media = content.get(content_type)
-    if not isinstance(media, dict):
-        return success_code, content_type, {}
+    content = response.get("content") if isinstance(response, dict) else None
+    media = None
+    if isinstance(content, dict) and content:
+        media = content.get(next(iter(content)))
+    if not isinstance(media, dict) or success_code == NO_CONTENT_STATUS:
+        return "empty", {}
+
     schema = maybe_resolve_ref(spec, media.get("schema"))
-    return success_code, content_type, schema if isinstance(schema, dict) else {}
+    schema = schema if isinstance(schema, dict) else {}
+    properties = schema.get("properties")
+    if not isinstance(properties, dict) or "data" not in properties:
+        return "body", schema
+
+    data = properties["data"]
+    if isinstance(data, dict) and data.get("type") == "array" and "cursor" in properties:
+        return "list", schema
+    return "envelope", schema
 
 
-def _has_data_property(response_schema: dict[str, Any]) -> bool:
+def _data_schema(spec: dict[str, Any], response_schema: dict[str, Any]) -> dict[str, Any]:
     properties = response_schema.get("properties")
-    return isinstance(properties, dict) and "data" in properties
-
-
-def _data_schema(response_schema: dict[str, Any]) -> dict[str, Any]:
-    properties = response_schema.get("properties")
-    if not isinstance(properties, dict):
+    if not isinstance(properties, dict) or "data" not in properties:
         return response_schema
-    data_schema = properties.get("data")
-    if not isinstance(data_schema, dict):
-        return response_schema
-    if data_schema.get("type") == "array" and isinstance(data_schema.get("items"), dict):
-        return data_schema["items"]
-    return data_schema
+    data_schema = maybe_resolve_ref(spec, properties["data"])
+    return data_schema if isinstance(data_schema, dict) else {}
 
 
-def _is_list_response(response_schema: dict[str, Any]) -> bool:
-    properties = response_schema.get("properties")
-    if not isinstance(properties, dict):
-        return False
-    data_schema = properties.get("data")
-    return isinstance(data_schema, dict) and data_schema.get("type") == "array"
-
-
-def _auth_mode(operation: dict[str, Any]) -> AuthMode:
-    security = operation.get("security")
-    if not isinstance(security, list):
-        return "default"
-    if not security:
-        return "none"
-    for requirement in security:
-        if isinstance(requirement, dict) and "scimBearer" in requirement:
-            return "scim_bearer"
-    return "default"
+def _item_schema(spec: dict[str, Any], data_schema: dict[str, Any]) -> dict[str, Any] | None:
+    if data_schema.get("type") != "array":
+        return None
+    items = maybe_resolve_ref(spec, data_schema.get("items"))
+    return items if isinstance(items, dict) else {}

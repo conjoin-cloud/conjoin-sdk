@@ -1,141 +1,139 @@
-import { createConjoinClient } from '@conjoin-cloud/sdk'
 import {
   type BroadcastConnection,
-  type BroadcastMessage,
+  type BroadcastEvent,
+  type BroadcastPublishResult,
+  type BroadcastSubscription,
+  type BroadcastTokenSource,
   type ConnectionState,
   createBroadcastConnection,
 } from '@conjoin-cloud/sdk/relay'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useConjoinClient } from './internal/use-conjoin-client'
 
-type PresenceMember = {
-  id: string
-  name?: string
-  avatar_url?: string
-}
-
-type UseChannelOptions<TResolve extends 'conjoin-auth' | ((ids: string[]) => Promise<PresenceMember[]>) | undefined> = {
-  channelId: string
+type UseChannelOptions = {
+  channel: string
+  getConnectionToken: () => string | Promise<string>
+  authToken?: BroadcastTokenSource
   autoConnect?: boolean
-  maxMessages?: number
-  resolvePresence?: TResolve
+  maxEvents?: number
 }
 
-type UseChannelReturn<TResolve> = {
-  status: ConnectionState
-  error: Error | null
-  publish: (event: string, data: unknown) => void
-  messages: BroadcastMessage[]
-  members: TResolve extends undefined ? string[] : PresenceMember[]
-  unsubscribe: () => void
+const DEFAULT_MAX_EVENTS = 200
+const BROADCAST_PATH = '/v1/relay/broadcast'
+
+const RELAY_URL_PATTERN = /^(https?|wss?):\/\/([a-z0-9.-]+(?::[0-9]{1,5})?)(\/[^?#]*)?$/i
+const SECURE_SCHEMES: ReadonlySet<string> = new Set(['https', 'wss'])
+const SLASH_CHAR_CODE = 47
+
+function resolveBroadcastUrl(relayUrl: string | undefined): string | undefined {
+  const match = relayUrl ? RELAY_URL_PATTERN.exec(relayUrl.trim()) : null
+  if (!match) return undefined
+
+  const [, scheme = '', host = '', path = ''] = match
+  const socketScheme = SECURE_SCHEMES.has(scheme.toLowerCase()) ? 'wss' : 'ws'
+
+  return `${socketScheme}://${host}${withoutTrailingSlashes(path)}${BROADCAST_PATH}`
 }
 
-const DEFAULT_MAX_MESSAGES = 200
+function withoutTrailingSlashes(value: string): string {
+  let end = value.length
 
-export function useChannel<
-  TResolve extends 'conjoin-auth' | ((ids: string[]) => Promise<PresenceMember[]>) | undefined = undefined,
->(options: UseChannelOptions<TResolve>): UseChannelReturn<TResolve> {
-  const { channelId, autoConnect = true, maxMessages = DEFAULT_MAX_MESSAGES, resolvePresence } = options
+  while (end > 0 && value.charCodeAt(end - 1) === SLASH_CHAR_CODE) {
+    end -= 1
+  }
+
+  return value.slice(0, end)
+}
+
+const notConnectedError = () => new Error('The channel is not connected yet')
+
+export function useChannel({
+  channel,
+  getConnectionToken,
+  authToken,
+  autoConnect = true,
+  maxEvents = DEFAULT_MAX_EVENTS,
+}: UseChannelOptions) {
   const { client, sdkConfig } = useConjoinClient()
-
   const [status, setStatus] = useState<ConnectionState>('idle')
   const [error, setError] = useState<Error | null>(null)
-  const [messages, setMessages] = useState<BroadcastMessage[]>([])
-  const [memberIds, setMemberIds] = useState<string[]>([])
-  const [resolvedMembers, setResolvedMembers] = useState<PresenceMember[]>([])
+  const [events, setEvents] = useState<BroadcastEvent[]>([])
 
+  const subscriptionRef = useRef<BroadcastSubscription | null>(null)
   const connectionRef = useRef<BroadcastConnection | null>(null)
-  const maxMessagesRef = useRef(maxMessages)
-  maxMessagesRef.current = maxMessages
+  const maxEventsRef = useRef(maxEvents)
+  const tokenSourceRef = useRef(getConnectionToken)
+  const authTokenRef = useRef(authToken)
+  maxEventsRef.current = maxEvents
+  tokenSourceRef.current = getConnectionToken
+  authTokenRef.current = authToken
+
+  const broadcastUrl = useMemo(() => resolveBroadcastUrl(sdkConfig?.relay.url), [sdkConfig?.relay.url])
 
   useEffect(() => {
-    const relayUrl = sdkConfig?.relay.url
-    const relayBaseUrl = relayUrl ? relayUrl.replace(/^ws/, 'http') : client.config.baseUrl
+    if (!autoConnect) return
 
-    const relayClient =
-      relayBaseUrl !== client.config.baseUrl
-        ? createConjoinClient({
-            publishableKey: client.config.publishableKey,
-            apiKey: client.config.apiKey,
-            baseUrl: relayBaseUrl,
-          })
-        : client
-
-    const connection = createBroadcastConnection(relayClient, {
-      channelId,
+    let isCurrent = true
+    const connection = createBroadcastConnection(client, {
+      url: broadcastUrl,
+      getConnectionToken: async () => tokenSourceRef.current(),
       onStateChange: setStatus,
       onError: setError,
     })
-
     connectionRef.current = connection
 
-    const unsubAll = connection.subscribeAll((message: BroadcastMessage) => {
-      if (message.event === 'presence:join' && message.sender) {
-        const senderId = message.sender
-        setMemberIds(prev => (prev.includes(senderId) ? prev : [...prev, senderId]))
-      } else if (message.event === 'presence:leave' && message.sender) {
-        const senderId = message.sender
-        setMemberIds(prev => prev.filter(id => id !== senderId))
-      } else {
-        setMessages(prev => {
-          const limit = maxMessagesRef.current
-          const next = [...prev, message]
-          return next.length > limit ? next.slice(-limit) : next
-        })
+    const subscribeToChannel = async () => {
+      await connection.connect()
+      const subscription = await connection.subscribe(channel, { authToken: authTokenRef.current })
+
+      if (!isCurrent) {
+        await subscription.unsubscribe()
+        return
       }
+
+      subscriptionRef.current = subscription
+      setEvents([])
+      subscription.onAny(event => {
+        setEvents(previous => {
+          const next = [...previous, event]
+          return next.length > maxEventsRef.current ? next.slice(-maxEventsRef.current) : next
+        })
+      })
+    }
+
+    subscribeToChannel().catch((caught: unknown) => {
+      if (isCurrent) setError(caught instanceof Error ? caught : new Error(String(caught)))
     })
 
-    if (autoConnect) {
-      connection.connect().catch(setError)
-    }
-
     return () => {
-      unsubAll()
-      connection.disconnect()
+      isCurrent = false
+      subscriptionRef.current = null
       connectionRef.current = null
+      connection.disconnect()
     }
-  }, [client, channelId, sdkConfig?.relay.url, autoConnect])
+  }, [client, channel, broadcastUrl, autoConnect])
 
-  useEffect(() => {
-    if (!resolvePresence || memberIds.length === 0) return
+  const publish = useCallback(async (eventType: string, data: unknown): Promise<BroadcastPublishResult> => {
+    const subscription = subscriptionRef.current
+    if (subscription === null) throw notConnectedError()
 
-    if (resolvePresence === 'conjoin-auth') {
-      const authDomain = sdkConfig?.auth.domain
-      if (!authDomain) return
-
-      fetch(`https://${authDomain}/v1/auth/accounts/batch`, {
-        method: 'POST',
-        credentials: 'include',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ids: memberIds }),
-      })
-        .then(r => {
-          if (!r.ok) throw new Error('Failed to resolve presence')
-          return r.json()
-        })
-        .then(body => {
-          setResolvedMembers((body as { data: PresenceMember[] }).data)
-        })
-        .catch(() => {})
-    } else if (typeof resolvePresence === 'function') {
-      resolvePresence(memberIds)
-        .then(setResolvedMembers)
-        .catch(() => {})
-    }
-  }, [memberIds, resolvePresence, sdkConfig?.auth.domain])
-
-  const publish = useCallback((event: string, data: unknown) => {
-    connectionRef.current?.publish(event, data)
+    return subscription.publish(eventType, data)
   }, [])
 
-  const unsubscribe = useCallback(() => {
+  const history = useCallback(async (lastEventId?: string) => {
+    const subscription = subscriptionRef.current
+    if (subscription === null) throw notConnectedError()
+
+    return subscription.history({ lastEventId })
+  }, [])
+
+  const disconnect = useCallback(() => {
+    subscriptionRef.current = null
     connectionRef.current?.disconnect()
   }, [])
 
-  const members = (resolvePresence ? resolvedMembers : memberIds) as UseChannelReturn<TResolve>['members']
-
   return useMemo(
-    () => ({ status, error, publish, messages, members, unsubscribe }),
-    [status, error, publish, messages, members, unsubscribe],
+    () => ({ status, error, events, publish, history, disconnect }),
+    [status, error, events, publish, history, disconnect],
   )
 }

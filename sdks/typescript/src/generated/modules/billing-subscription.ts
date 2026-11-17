@@ -1,56 +1,71 @@
-import type { ConjoinClient } from '../../core/types'
+import { encodePathParam } from '../../core/path'
+import type { ConjoinCallOptions, ConjoinClient } from '../../core/types'
 import type { operations } from '../api-types'
 
-type CreateBody = operations['createSubscription']['requestBody']['content']['application/json']
-type CreateData = NonNullable<operations['createSubscription']['responses']['201']['content']['application/json']['data']>
 type ListData = NonNullable<operations['listSubscriptions']['responses']['200']['content']['application/json']['data']>[number]
 type ListQuery = NonNullable<operations['listSubscriptions']['parameters']['query']>
-type UpdateBody = operations['updateSubscription']['requestBody']['content']['application/json']
+type CreateBody = NonNullable<operations['createSubscription']['requestBody']>['content']['application/json']
+type CreateData = NonNullable<operations['createSubscription']['responses']['201']['content']['application/json']['data']>
+type ListCyclesData = NonNullable<operations['listSubscriptionCycles']['responses']['200']['content']['application/json']['data']>[number]
+type ListCyclesQuery = NonNullable<operations['listSubscriptionCycles']['parameters']['query']>
+type ListCountData = NonNullable<operations['listSubscriptionsCount']['responses']['200']['content']['application/json']['data']>
+type ListCountQuery = NonNullable<operations['listSubscriptionsCount']['parameters']['query']>
+type ReadData = NonNullable<operations['readSubscription']['responses']['200']['content']['application/json']['data']>
+type UpdateBody = NonNullable<operations['updateSubscription']['requestBody']>['content']['application/json']
 type UpdateData = NonNullable<operations['updateSubscription']['responses']['200']['content']['application/json']['data']>
-type UpdatePlansBody = operations['updateSubscriptionPlans']['requestBody']['content']['application/json']
-type UpdatePlansData = NonNullable<operations['updateSubscriptionPlans']['responses']['200']['content']['application/json']['data']>
-type CancelBody = operations['cancelSubscription']['requestBody']['content']['application/json']
+type CreatePlanChangeBody = NonNullable<operations['createSubscriptionPlanChange']['requestBody']>['content']['application/json']
+type CreatePlanChangeData = NonNullable<operations['createSubscriptionPlanChange']['responses']['200']['content']['application/json']['data']>
+type CancelBody = NonNullable<operations['cancelSubscription']['requestBody']>['content']['application/json']
 type CancelData = NonNullable<operations['cancelSubscription']['responses']['200']['content']['application/json']['data']>
-type PauseBody = operations['pauseSubscription']['requestBody']['content']['application/json']
+type PauseBody = NonNullable<operations['pauseSubscription']['requestBody']>['content']['application/json']
 type PauseData = NonNullable<operations['pauseSubscription']['responses']['200']['content']['application/json']['data']>
 type ResumeData = NonNullable<operations['resumeSubscription']['responses']['200']['content']['application/json']['data']>
-type RecordUsageBody = operations['recordSubscriptionUsage']['requestBody']['content']['application/json']
+type RecordUsageBody = NonNullable<operations['recordSubscriptionUsage']['requestBody']>['content']['application/json']
 type RecordUsageData = NonNullable<operations['recordSubscriptionUsage']['responses']['200']['content']['application/json']['data']>
-type ReadUsageSummaryData = NonNullable<operations['readSubscriptionUsageSummary']['responses']['200']['content']['application/json']['data']>[number]
+type ReadUsageSummaryData = NonNullable<operations['readSubscriptionUsageSummary']['responses']['200']['content']['application/json']['data']>
 type ReadUsageSummaryQuery = NonNullable<operations['readSubscriptionUsageSummary']['parameters']['query']>
-type ReadCyclesData = NonNullable<operations['readSubscriptionCycles']['responses']['200']['content']['application/json']['data']>[number]
-type ReadCyclesQuery = NonNullable<operations['readSubscriptionCycles']['parameters']['query']>
+type ListCyclesCountData = NonNullable<operations['listSubscriptionCyclesCount']['responses']['200']['content']['application/json']['data']>
+type ListCyclesCountQuery = NonNullable<operations['listSubscriptionCyclesCount']['parameters']['query']>
 
 export function createBillingSubscriptions(client: ConjoinClient) {
   return {
-    create: (entityId: string, data: CreateBody) =>
-      client.fetch<CreateData>(`billing/subscription/${entityId}/create`, { method: 'POST', body: data }),
+    list: (query?: ListQuery, options?: ConjoinCallOptions) =>
+      client.fetchList<ListData>('billing/subscriptions/', { ...options, method: 'GET', query: query as Record<string, unknown> | undefined, scopes: ['billingEntityId'] }),
 
-    list: (entityId: string, query?: ListQuery) =>
-      client.fetchList<ListData>(`billing/subscription/${entityId}`, { query: query as Record<string, unknown> }),
+    create: (data: CreateBody, options?: ConjoinCallOptions) =>
+      client.fetch<CreateData>('billing/subscriptions/', { ...options, method: 'POST', body: data, scopes: ['billingEntityId'], acceptsIdempotencyKey: true }),
 
-    update: (entityId: string, subscriptionId: string, data: UpdateBody) =>
-      client.fetch<UpdateData>(`billing/subscription/${entityId}/metadata/${subscriptionId}`, { method: 'PATCH', body: data }),
+    listCycles: (subscriptionId: string, query?: ListCyclesQuery, options?: ConjoinCallOptions) =>
+      client.fetchList<ListCyclesData>(`billing/subscriptions/${encodePathParam(subscriptionId)}/cycles`, { ...options, method: 'GET', query: query as Record<string, unknown> | undefined, scopes: ['billingEntityId'] }),
 
-    updatePlans: (entityId: string, subscriptionId: string, data: UpdatePlansBody) =>
-      client.fetch<UpdatePlansData>(`billing/subscription/${entityId}/plans/${subscriptionId}`, { method: 'PATCH', body: data }),
+    listCount: (query?: ListCountQuery, options?: ConjoinCallOptions) =>
+      client.fetch<ListCountData>('billing/subscriptions/count', { ...options, method: 'GET', query: query as Record<string, unknown> | undefined, scopes: ['billingEntityId'] }),
 
-    cancel: (entityId: string, subscriptionId: string, data: CancelBody) =>
-      client.fetch<CancelData>(`billing/subscription/${entityId}/cancel/${subscriptionId}`, { method: 'POST', body: data }),
+    read: (subscriptionId: string, options?: ConjoinCallOptions) =>
+      client.fetch<ReadData>(`billing/subscriptions/${encodePathParam(subscriptionId)}`, { ...options, method: 'GET', scopes: ['billingEntityId'] }),
 
-    pause: (entityId: string, subscriptionId: string, data: PauseBody) =>
-      client.fetch<PauseData>(`billing/subscription/${entityId}/pause/${subscriptionId}`, { method: 'POST', body: data }),
+    update: (subscriptionId: string, data: UpdateBody, options?: ConjoinCallOptions) =>
+      client.fetch<UpdateData>(`billing/subscriptions/${encodePathParam(subscriptionId)}`, { ...options, method: 'PATCH', body: data, scopes: ['billingEntityId'] }),
 
-    resume: (entityId: string, subscriptionId: string) =>
-      client.fetch<ResumeData>(`billing/subscription/${entityId}/resume/${subscriptionId}`, { method: 'POST' }),
+    createPlanChange: (subscriptionId: string, data: CreatePlanChangeBody, options?: ConjoinCallOptions) =>
+      client.fetch<CreatePlanChangeData>(`billing/subscriptions/${encodePathParam(subscriptionId)}/plan-changes`, { ...options, method: 'POST', body: data, scopes: ['billingEntityId'], acceptsIdempotencyKey: true }),
 
-    recordUsage: (entityId: string, subscriptionId: string, data: RecordUsageBody) =>
-      client.fetch<RecordUsageData>(`billing/subscription/${entityId}/usage/${subscriptionId}`, { method: 'POST', body: data }),
+    cancel: (subscriptionId: string, data: CancelBody, options?: ConjoinCallOptions) =>
+      client.fetch<CancelData>(`billing/subscriptions/${encodePathParam(subscriptionId)}/cancel`, { ...options, method: 'POST', body: data, scopes: ['billingEntityId'], acceptsIdempotencyKey: true }),
 
-    readUsageSummary: (entityId: string, query?: ReadUsageSummaryQuery) =>
-      client.fetchList<ReadUsageSummaryData>(`billing/subscription/${entityId}/usage-summary`, { query: query as Record<string, unknown> }),
+    pause: (subscriptionId: string, data: PauseBody, options?: ConjoinCallOptions) =>
+      client.fetch<PauseData>(`billing/subscriptions/${encodePathParam(subscriptionId)}/pause`, { ...options, method: 'POST', body: data, scopes: ['billingEntityId'], acceptsIdempotencyKey: true }),
 
-    readCycles: (entityId: string, subscriptionId: string, query?: ReadCyclesQuery) =>
-      client.fetchList<ReadCyclesData>(`billing/subscription/${entityId}/cycles/${subscriptionId}`, { query: query as Record<string, unknown> }),
+    resume: (subscriptionId: string, options?: ConjoinCallOptions) =>
+      client.fetch<ResumeData>(`billing/subscriptions/${encodePathParam(subscriptionId)}/resume`, { ...options, method: 'POST', scopes: ['billingEntityId'], acceptsIdempotencyKey: true }),
+
+    recordUsage: (subscriptionId: string, data: RecordUsageBody, options?: ConjoinCallOptions) =>
+      client.fetch<RecordUsageData>(`billing/subscriptions/${encodePathParam(subscriptionId)}/usage-records`, { ...options, method: 'POST', body: data, scopes: ['billingEntityId'], acceptsIdempotencyKey: true }),
+
+    readUsageSummary: (subscriptionId: string, query?: ReadUsageSummaryQuery, options?: ConjoinCallOptions) =>
+      client.fetch<ReadUsageSummaryData>(`billing/subscriptions/${encodePathParam(subscriptionId)}/usage-summaries`, { ...options, method: 'GET', query: query as Record<string, unknown> | undefined, scopes: ['billingEntityId'] }),
+
+    listCyclesCount: (subscriptionId: string, query?: ListCyclesCountQuery, options?: ConjoinCallOptions) =>
+      client.fetch<ListCyclesCountData>(`billing/subscriptions/${encodePathParam(subscriptionId)}/cycles/count`, { ...options, method: 'GET', query: query as Record<string, unknown> | undefined, scopes: ['billingEntityId'] }),
   }
 }

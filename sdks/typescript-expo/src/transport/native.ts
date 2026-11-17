@@ -1,110 +1,182 @@
-import type { AuthTransport, ConjoinAuthState } from '@conjoin-cloud/react-core'
+import {
+  AUTH_CODE_CHALLENGE_HEADER,
+  AUTH_CODE_VERIFIER_HEADER,
+  AUTH_STATE_HEADER,
+  type AuthClientHandle,
+  type AuthFlowState,
+  type AuthSessionGrant,
+  type AuthTransport,
+  CLIENT_HANDLE_HEADER,
+  type ConjoinAuthApi,
+  createAuthFlowProof,
+  createRedirectFlowRegistry,
+  encodeClientHandle,
+  isSessionRejection,
+} from '@conjoin-cloud/react-core'
+import type { ConjoinCallOptions } from '@conjoin-cloud/sdk'
+import * as v from 'valibot'
+import { loadFlowCrypto, loadSecureStore } from './native-modules'
 
-type SecureStore = {
-  getItemAsync: (key: string) => Promise<string | null>
-  setItemAsync: (key: string, value: string) => Promise<void>
-  deleteItemAsync: (key: string) => Promise<void>
-}
-
-type TokenClaims = {
-  sub: string
-  sid: string
-  org_id?: string
-  org_role?: string
-  exp: number
-}
-
-const ACCESS_TOKEN_KEY = 'conjoin_access_token'
+const LEGACY_ACCESS_TOKEN_KEY = 'conjoin_access_token'
 const REFRESH_TOKEN_KEY = 'conjoin_refresh_token'
+const CLIENT_HANDLE_KEY = 'conjoin_client_handle'
 
-let secureStore: SecureStore | null = null
+const identifier = v.pipe(v.string(), v.minLength(1), v.maxLength(256), v.regex(/^[\w.:-]+$/))
+const StoredClientHandleSchema = v.object({ client_id: identifier, reference_id: identifier })
 
-async function loadSecureStore(): Promise<SecureStore> {
-  if (secureStore) return secureStore
-  try {
-    const mod = await import('expo-secure-store')
-    secureStore = mod as unknown as SecureStore
-    return secureStore
-  } catch {
-    throw new Error(
-      'expo-secure-store is required for Conjoin Expo support. Install it with: npx expo install expo-secure-store',
-    )
-  }
+type NativeSessionTokens = Awaited<ReturnType<ConjoinAuthApi['nativeFlows']['processTokenMint']>>
+
+type NativeSession = {
+  accessToken: string | null
+  refreshToken: string | null
+  clientHandle: AuthClientHandle | null
 }
 
-function decodeTokenClaims(token: string): TokenClaims | null {
+let refreshLockTail: Promise<unknown> = Promise.resolve()
+
+function readStoredClientHandle(raw: string | null): AuthClientHandle | null {
+  if (raw === null) return null
+
   try {
-    const parts = token.split('.')
-    if (parts.length !== 3) return null
-    const payload = JSON.parse(atob(parts[1].replace(/-/g, '+').replace(/_/g, '/')))
-    if (!payload.sub || !payload.sid) return null
-    return payload as TokenClaims
+    const parsed = v.safeParse(StoredClientHandleSchema, JSON.parse(raw))
+    return parsed.success ? parsed.output : null
   } catch {
     return null
   }
 }
 
-let refreshLockPromise: Promise<unknown> | null = null
-
 export function createNativeTransport(): AuthTransport {
-  let cachedAccessToken: string | null = null
-  let cachedClaims: TokenClaims | null = null
+  const session: NativeSession = { accessToken: null, refreshToken: null, clientHandle: null }
+  let hasLoadedStore = false
+  const redirectFlows = createRedirectFlowRegistry(() => null)
+
+  async function loadStoredSession(): Promise<void> {
+    if (hasLoadedStore) return
+
+    const store = await loadSecureStore()
+    const [refreshToken, clientHandle] = await Promise.all([
+      store.getItemAsync(REFRESH_TOKEN_KEY),
+      store.getItemAsync(CLIENT_HANDLE_KEY),
+    ])
+
+    session.refreshToken = session.refreshToken ?? refreshToken
+    session.clientHandle = session.clientHandle ?? readStoredClientHandle(clientHandle)
+    hasLoadedStore = true
+  }
+
+  async function keepTokens(
+    tokens: NativeSessionTokens,
+    clientHandle: AuthClientHandle | null,
+  ): Promise<AuthSessionGrant> {
+    session.accessToken = tokens.access_token
+    session.refreshToken = tokens.refresh_token
+    session.clientHandle = clientHandle ?? session.clientHandle
+
+    const store = await loadSecureStore()
+    await Promise.all([
+      store.deleteItemAsync(LEGACY_ACCESS_TOKEN_KEY),
+      store.setItemAsync(REFRESH_TOKEN_KEY, tokens.refresh_token),
+      session.clientHandle
+        ? store.setItemAsync(CLIENT_HANDLE_KEY, JSON.stringify(session.clientHandle))
+        : store.deleteItemAsync(CLIENT_HANDLE_KEY),
+    ])
+
+    return { accountId: tokens.account_id, sessionId: tokens.session_id, ttlSeconds: tokens.expires_in }
+  }
+
+  async function forgetTokens(): Promise<void> {
+    session.accessToken = null
+    session.refreshToken = null
+    session.clientHandle = null
+
+    const store = await loadSecureStore()
+    await Promise.all([
+      store.deleteItemAsync(LEGACY_ACCESS_TOKEN_KEY),
+      store.deleteItemAsync(REFRESH_TOKEN_KEY),
+      store.deleteItemAsync(CLIENT_HANDLE_KEY),
+    ])
+  }
+
+  async function rotateTokens(api: ConjoinAuthApi): Promise<AuthSessionGrant | null> {
+    await loadStoredSession()
+
+    const refreshToken = session.refreshToken
+    if (refreshToken === null) return null
+
+    try {
+      const tokens = await api.nativeFlows.refreshSession({ refresh_token: refreshToken })
+      return await keepTokens(tokens, null)
+    } catch (error) {
+      if (!isSessionRejection(error)) throw error
+      await forgetTokens()
+      return null
+    }
+  }
 
   return {
-    readAuthState(): ConjoinAuthState {
-      if (cachedAccessToken && cachedClaims) {
-        return {
-          isLoaded: true,
-          isSignedIn: true,
-          accountId: cachedClaims.sub,
-          sessionId: cachedClaims.sid,
-          organizationId: cachedClaims.org_id ?? null,
-          organizationRole: cachedClaims.org_role ?? null,
-          accessToken: cachedAccessToken,
-        }
-      }
-      return { isLoaded: true, isSignedIn: false }
-    },
+    platform: 'native',
 
-    async storeTokens(accessToken: string, refreshToken: string) {
-      cachedAccessToken = accessToken
-      cachedClaims = decodeTokenClaims(accessToken)
-      const store = await loadSecureStore()
-      await Promise.all([
-        store.setItemAsync(ACCESS_TOKEN_KEY, accessToken),
-        store.setItemAsync(REFRESH_TOKEN_KEY, refreshToken),
-      ])
-    },
+    restoreSession: rotateTokens,
 
-    async clearTokens() {
-      cachedAccessToken = null
-      cachedClaims = null
-      const store = await loadSecureStore()
-      await Promise.all([store.deleteItemAsync(ACCESS_TOKEN_KEY), store.deleteItemAsync(REFRESH_TOKEN_KEY)])
-    },
+    refreshSession: rotateTokens,
 
-    attachAuth(headers: Record<string, string>): Record<string, string> {
-      if (cachedAccessToken) {
-        return { ...headers, Authorization: `Bearer ${cachedAccessToken}` }
-      }
-      return headers
-    },
-
-    async acquireRefreshLock<T>(fn: () => Promise<T>): Promise<T> {
-      while (refreshLockPromise) {
-        await refreshLockPromise
+    async finishFlow(api: ConjoinAuthApi, flow: AuthFlowState): Promise<AuthSessionGrant | null> {
+      if (flow.clientHandle === null) {
+        throw new Error('The sign-in finished without a client handle, so the app cannot mint a session')
       }
 
-      const promise = fn()
-      refreshLockPromise = promise
+      const tokens = await api.nativeFlows.processTokenMint({
+        headers: {
+          [CLIENT_HANDLE_HEADER]: encodeClientHandle(flow.clientHandle),
+          [AUTH_CODE_VERIFIER_HEADER]: flow.proof.codeVerifier,
+        },
+      })
 
+      return keepTokens(tokens, flow.clientHandle)
+    },
+
+    async endSession(api: ConjoinAuthApi): Promise<void> {
       try {
-        return await promise
-      } finally {
-        if (refreshLockPromise === promise) {
-          refreshLockPromise = null
+        await loadStoredSession()
+        const clientHandle = session.clientHandle
+        if (clientHandle !== null) {
+          await api.nativeFlows.processLogout({ headers: { [CLIENT_HANDLE_HEADER]: encodeClientHandle(clientHandle) } })
         }
+      } catch (error) {
+        if (!isSessionRejection(error)) throw error
+      } finally {
+        await forgetTokens()
       }
     },
+
+    sessionCallOptions(): ConjoinCallOptions {
+      return {}
+    },
+
+    readSessionToken: () => session.accessToken ?? undefined,
+
+    flowCallOptions(flow: AuthFlowState): ConjoinCallOptions {
+      return {
+        headers: {
+          [AUTH_STATE_HEADER]: flow.proof.state,
+          [AUTH_CODE_CHALLENGE_HEADER]: flow.proof.codeChallenge,
+          ...(flow.clientHandle ? { [CLIENT_HANDLE_HEADER]: encodeClientHandle(flow.clientHandle) } : {}),
+        },
+      }
+    },
+
+    createFlowProof: async () => createAuthFlowProof(await loadFlowCrypto()),
+
+    saveRedirectFlow: redirectFlows.save,
+
+    takeRedirectFlow: redirectFlows.take,
+
+    acquireRefreshLock<T>(fn: () => Promise<T>): Promise<T> {
+      const run = refreshLockTail.then(fn, fn)
+      refreshLockTail = run.catch(() => undefined)
+      return run
+    },
+
+    readAccessToken: () => session.accessToken,
   }
 }

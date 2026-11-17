@@ -3,25 +3,15 @@ from __future__ import annotations
 import os
 
 from conjoin_cloud import Conjoin
-from conjoin_cloud.generated._models import AuthAccountListQuery
 
 
 def main() -> None:
     api_key = os.environ["CONJOIN_API_KEY"]
+    app_id = os.environ["CONJOIN_AUTH_APP_ID"]
 
-    with Conjoin(api_key=api_key) as client:
-        query: AuthAccountListQuery = {"limit": 100}
-
-        while True:
-            page = client.auth.accounts.list(query=query)
-
-            for account in page.data:
-                print(account.account_id)
-
-            if page.cursor is None or page.cursor.next is None:
-                break
-
-            query = {"limit": 100, "cursor": {"next": page.cursor.next}}
+    with Conjoin(api_key=api_key, auth_app_id=app_id) as client:
+        for account in client.auth.accounts.list().iter_all():
+            print(account.account_id)
 
 
 if __name__ == "__main__":

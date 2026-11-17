@@ -1,0 +1,154 @@
+import { createServer, type IncomingMessage, type ServerResponse } from 'node:http'
+import type { AddressInfo } from 'node:net'
+
+export type ServerBehaviour = { kind: 'answer' } | { kind: 'drop-after-store' }
+
+export type ReceivedAttempt = {
+  method: string
+  path: string
+  headers: Record<string, string | undefined>
+  body: string
+}
+
+export type StoredCustomer = {
+  customer_id: string
+  email: string
+}
+
+export type UnreliableServer = {
+  baseUrl: string
+  attempts: ReceivedAttempt[]
+  storedCustomers: () => StoredCustomer[]
+  queue: (...behaviours: ServerBehaviour[]) => void
+  stop: () => Promise<void>
+}
+
+const LOOPBACK_HOST = '127.0.0.1'
+const MAX_BODY_BYTES = 1_048_576
+const CUSTOMERS_PATH = '/v1/billing/customers/'
+
+const success = (status: number, data: unknown) => ({
+  response: { type: 'SUCCESS', code: status, message: 'Success' },
+  data,
+})
+
+const readBody = async (request: IncomingMessage): Promise<string> => {
+  const chunks: Buffer[] = []
+  let total = 0
+
+  for await (const chunk of request) {
+    const buffer = Buffer.isBuffer(chunk) ? chunk : Buffer.from(String(chunk))
+    total += buffer.byteLength
+    if (total > MAX_BODY_BYTES) throw new Error('The request body exceeded 1 MiB')
+    chunks.push(buffer)
+  }
+
+  return Buffer.concat(chunks).toString('utf8')
+}
+
+const writeJson = (response: ServerResponse, status: number, body: unknown) => {
+  const text = JSON.stringify(body)
+  response.writeHead(status, {
+    'content-type': 'application/json',
+    'content-length': Buffer.byteLength(text),
+  })
+  response.end(text)
+}
+
+const isAddressInfo = (address: string | AddressInfo | null): address is AddressInfo =>
+  typeof address === 'object' && address !== null && 'port' in address
+
+const flattenHeaders = (request: IncomingMessage): Record<string, string | undefined> =>
+  Object.fromEntries(
+    Object.entries(request.headers).map(([name, value]) => [name, Array.isArray(value) ? value.join(', ') : value]),
+  )
+
+export const startUnreliableServer = async (): Promise<UnreliableServer> => {
+  const attempts: ReceivedAttempt[] = []
+  const behaviours: ServerBehaviour[] = []
+  const customersByKey = new Map<string, { body: string; customer: StoredCustomer }>()
+  const customers: StoredCustomer[] = []
+
+  const storeCustomer = (attempt: ReceivedAttempt): { status: number; customer?: StoredCustomer } => {
+    const key = attempt.headers['idempotency-key']
+    const previous = key === undefined ? undefined : customersByKey.get(key)
+
+    if (previous !== undefined) {
+      return previous.body === attempt.body ? { status: 200, customer: previous.customer } : { status: 422 }
+    }
+
+    const parsed: unknown = JSON.parse(attempt.body)
+    const email = parsed && typeof parsed === 'object' && 'email' in parsed ? String(parsed.email) : ''
+    const customer = { customer_id: `cus_${customers.length + 1}`, email }
+
+    customers.push(customer)
+    if (key !== undefined) customersByKey.set(key, { body: attempt.body, customer })
+
+    return { status: 201, customer }
+  }
+
+  const isCustomerCreate = (attempt: ReceivedAttempt): boolean =>
+    attempt.method === 'POST' && attempt.path === CUSTOMERS_PATH
+
+  const handle = async (request: IncomingMessage, response: ServerResponse): Promise<void> => {
+    const url = new URL(request.url ?? '/', `http://${LOOPBACK_HOST}`)
+    const attempt: ReceivedAttempt = {
+      method: (request.method ?? 'GET').toUpperCase(),
+      path: url.pathname,
+      headers: flattenHeaders(request),
+      body: await readBody(request),
+    }
+    attempts.push(attempt)
+
+    const behaviour = behaviours.shift() ?? { kind: 'answer' }
+
+    if (behaviour.kind === 'drop-after-store') {
+      if (isCustomerCreate(attempt)) storeCustomer(attempt)
+      request.socket.destroy()
+      return
+    }
+
+    if (isCustomerCreate(attempt)) {
+      const stored = storeCustomer(attempt)
+      writeJson(response, stored.status, stored.customer ? success(stored.status, stored.customer) : { data: null })
+      return
+    }
+
+    writeJson(response, 200, success(200, { path: attempt.path, method: attempt.method }))
+  }
+
+  const server = createServer((request, response) => {
+    handle(request, response).catch(() => {
+      if (!response.headersSent) writeJson(response, 400, { data: null })
+    })
+  })
+
+  await new Promise<void>((resolve, reject) => {
+    server.once('error', reject)
+    server.listen(0, LOOPBACK_HOST, () => {
+      server.off('error', reject)
+      resolve()
+    })
+  })
+
+  const address = server.address()
+
+  if (!isAddressInfo(address)) {
+    server.close()
+    throw new Error('The unreliable server did not bind to a TCP address')
+  }
+
+  return {
+    baseUrl: `http://${LOOPBACK_HOST}:${address.port}`,
+    attempts,
+    storedCustomers: () => [...customers],
+    queue: (...next) => {
+      behaviours.push(...next)
+    },
+    stop: () =>
+      new Promise((resolve, reject) => {
+        server.closeAllConnections()
+        server.close(error => (error ? reject(error) : resolve()))
+      }),
+  }
+}
