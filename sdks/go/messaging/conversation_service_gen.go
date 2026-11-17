@@ -104,7 +104,6 @@ func (s *ConversationsService) List(ctx context.Context, body *ListConversations
 		BodyRequired:          true,
 		Scopes:                []conjoin.ScopeName{conjoin.ScopeMessagingProfile},
 		AcceptsIdempotencyKey: true,
-		Cursor:                conjoin.CursorInBody,
 	}, opts...)
 }
 
@@ -117,7 +116,6 @@ func (s *ConversationsService) ReadMessages(ctx context.Context, conversationID 
 		BodyRequired:          true,
 		Scopes:                []conjoin.ScopeName{conjoin.ScopeMessagingProfile},
 		AcceptsIdempotencyKey: true,
-		Cursor:                conjoin.CursorInBody,
 	}, opts...)
 }
 
@@ -156,7 +154,6 @@ func (s *ConversationsService) ReadManyRecipients(ctx context.Context, conversat
 		BodyRequired:          true,
 		Scopes:                []conjoin.ScopeName{conjoin.ScopeMessagingProfile},
 		AcceptsIdempotencyKey: true,
-		Cursor:                conjoin.CursorInBody,
 	}, opts...)
 }
 
@@ -185,6 +182,5 @@ func (s *ConversationsService) AddManyRecipients(ctx context.Context, conversati
 		BodyRequired:          true,
 		Scopes:                []conjoin.ScopeName{conjoin.ScopeMessagingProfile},
 		AcceptsIdempotencyKey: true,
-		Cursor:                conjoin.CursorNotAccepted,
 	}, opts...)
 }

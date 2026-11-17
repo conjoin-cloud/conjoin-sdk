@@ -84,7 +84,6 @@ class MessagingVerificationsResource:
             request_options=request_options,
             scopes=('messaging_profile_id',),
             accepts_idempotency_key=True,
-            cursor_location='body',
         )
 
 
@@ -153,5 +152,4 @@ class AsyncMessagingVerificationsResource:
             request_options=request_options,
             scopes=('messaging_profile_id',),
             accepts_idempotency_key=True,
-            cursor_location='body',
         )

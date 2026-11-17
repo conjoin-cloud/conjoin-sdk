@@ -76,7 +76,6 @@ func (s *ContactsService) List(ctx context.Context, body *ListContactsRequest, o
 		BodyRequired:          true,
 		Scopes:                []conjoin.ScopeName{conjoin.ScopeMessagingProfile},
 		AcceptsIdempotencyKey: true,
-		Cursor:                conjoin.CursorInBody,
 	}, opts...)
 }
 

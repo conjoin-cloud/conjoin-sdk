@@ -22,7 +22,6 @@ final class OperationInfo
         public readonly bool $acceptsIdempotencyKey,
         public readonly AuthKind $auth,
         public readonly array $declaredHeaders = [],
-        public readonly CursorKind $cursor = CursorKind::NotAccepted,
     ) {
     }
 }

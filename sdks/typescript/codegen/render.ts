@@ -127,7 +127,6 @@ function methodSource(op: OperationInfo, methodName: string): string {
   if (op.hasQueryParams) fields.push('query: query as Record<string, unknown> | undefined')
   if (op.scopes.length > 0) fields.push(`scopes: [${op.scopes.map(scope => `'${scope}'`).join(', ')}]`)
   if (op.acceptsIdempotencyKey) fields.push('acceptsIdempotencyKey: true')
-  if (op.responseKind === 'list' && op.cursorLocation !== 'query') fields.push(`cursorLocation: '${op.cursorLocation}'`)
   if (op.declaredHeaders.length > 0) {
     fields.push(`declaredHeaders: { rules: ${headerRulesName(methodName)}, values: headers }`)
   }

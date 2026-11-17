@@ -99,10 +99,6 @@ final class ClassRenderer
         if ($operation->responseKind === ResponseKind::ListPage) {
             $imports->add('ConjoinCloud\\Pagination\\ListPage');
         }
-
-        if ($operation->responseKind === ResponseKind::ListPage && $operation->cursor !== CursorKind::Query) {
-            $imports->add('ConjoinCloud\\CursorLocation');
-        }
     }
 
     private static function method(string $name, OperationInfo $operation): string
@@ -289,10 +285,6 @@ final class ClassRenderer
 
         if ($operation->acceptsIdempotencyKey) {
             $fields .= self::field('acceptsIdempotencyKey: true');
-        }
-
-        if ($operation->responseKind === ResponseKind::ListPage && $operation->cursor !== CursorKind::Query) {
-            $fields .= self::field('cursor: CursorLocation::' . $operation->cursor->name);
         }
 
         if ($operation->auth === AuthKind::None || $operation->auth === AuthKind::PortalTicket) {

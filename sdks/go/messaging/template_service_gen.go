@@ -33,7 +33,6 @@ func (s *TemplatesService) ListMessage(ctx context.Context, body *ListMessageTem
 		BodyRequired:          true,
 		Scopes:                []conjoin.ScopeName{conjoin.ScopeMessagingProfile},
 		AcceptsIdempotencyKey: true,
-		Cursor:                conjoin.CursorInBody,
 	}, opts...)
 }
 

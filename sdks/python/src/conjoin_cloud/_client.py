@@ -16,7 +16,6 @@ from conjoin_cloud._config import (
 )
 from conjoin_cloud._declared_headers import DeclaredHeader
 from conjoin_cloud._errors import ConjoinConfigurationError
-from conjoin_cloud._list_cursor import CursorLocation, next_page_request
 from conjoin_cloud._models import Page
 from conjoin_cloud._request_options import AuthOverride, DeclaredAuth, RequestOptions
 from conjoin_cloud._request_tracing import resolve_conjoin_request_id
@@ -100,7 +99,6 @@ class Conjoin(SyncGeneratedResourcesMixin):
         default_auth: AuthOverride | DeclaredAuth | None = None,
         declared_headers: Sequence[DeclaredHeader] = (),
         unwrap_data: bool = True,
-        cursor_location: CursorLocation = "query",
     ) -> T: ...
 
     @overload
@@ -119,7 +117,6 @@ class Conjoin(SyncGeneratedResourcesMixin):
         default_auth: AuthOverride | DeclaredAuth | None = None,
         declared_headers: Sequence[DeclaredHeader] = (),
         unwrap_data: bool = True,
-        cursor_location: CursorLocation = "query",
     ) -> Any: ...
 
     def request(
@@ -137,7 +134,6 @@ class Conjoin(SyncGeneratedResourcesMixin):
         default_auth: AuthOverride | DeclaredAuth | None = None,
         declared_headers: Sequence[DeclaredHeader] = (),
         unwrap_data: bool = True,
-        cursor_location: CursorLocation = "query",
     ) -> Any:
         call = prepare_call(
             self.config,
@@ -160,7 +156,7 @@ class Conjoin(SyncGeneratedResourcesMixin):
             unwrap_data=unwrap_data,
         )
 
-        if isinstance(data, Page) and cursor_location != "none":
+        if isinstance(data, Page):
             data._fetch_next = self._next_page_fetcher(
                 method,
                 path,
@@ -172,7 +168,6 @@ class Conjoin(SyncGeneratedResourcesMixin):
                 accepts_idempotency_key=accepts_idempotency_key,
                 default_auth=default_auth,
                 declared_headers=declared_headers,
-                cursor_location=cursor_location,
             )
 
         if with_response:
@@ -192,29 +187,19 @@ class Conjoin(SyncGeneratedResourcesMixin):
         accepts_idempotency_key: bool,
         default_auth: AuthOverride | DeclaredAuth | None,
         declared_headers: Sequence[DeclaredHeader],
-        cursor_location: CursorLocation,
     ) -> Callable[[str], Any]:
         def fetch_next(next_cursor: str) -> Any:
-            next_request = next_page_request(
-                cursor_location,
-                next_cursor,
-                query=query,
-                body=body,
-                request_options=request_options,
-                accepts_idempotency_key=accepts_idempotency_key,
-            )
             return self.request(
                 method,
                 path,
-                query=next_request.query,
-                body=next_request.body,
+                query={**(query or {}), "cursor": {"next": next_cursor}},
+                body=body,
                 cast_to=cast_to,
-                request_options=next_request.request_options,
+                request_options=request_options,
                 scopes=scopes,
                 accepts_idempotency_key=accepts_idempotency_key,
                 default_auth=default_auth,
                 declared_headers=declared_headers,
-                cursor_location=cursor_location,
             )
 
         return fetch_next

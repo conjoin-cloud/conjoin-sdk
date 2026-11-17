@@ -100,10 +100,7 @@ export type RequestOptions = Omit<ConjoinCallOptions, 'auth'> & {
   scopes?: readonly ConjoinScopeName[]
   acceptsIdempotencyKey?: boolean
   declaredHeaders?: ConjoinDeclaredHeaders
-  cursorLocation?: ConjoinCursorLocation
 }
-
-export type ConjoinCursorLocation = 'query' | 'body' | 'none'
 
 export type Cursor = {
   prev: string | null

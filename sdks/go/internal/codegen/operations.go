@@ -35,7 +35,6 @@ type operation struct {
 	acceptsIdempotencyKey bool
 	auth                  string
 	headers               []declaredHeader
-	cursor                string
 	methodName            string
 }
 
@@ -217,9 +216,6 @@ func (d *document) collectGroups() ([]*resourceGroup, error) {
 			if err := d.readResponse(op, built); err != nil {
 				return nil, err
 			}
-			if err := d.readCursorLocation(built); err != nil {
-				return nil, err
-			}
 
 			key := service + "/" + resource
 			group, exists := byKey[key]
@@ -232,33 +228,6 @@ func (d *document) collectGroups() ([]*resourceGroup, error) {
 		}
 	}
 	return groups, nil
-}
-
-func (d *document) readCursorLocation(built *operation) error {
-	if built.kind != responseList {
-		return nil
-	}
-	inBody := false
-	if built.body != nil && !built.multipart {
-		schema, err := d.resolve(built.body)
-		if err != nil {
-			return err
-		}
-		inBody = schema.object("properties").has("cursor")
-	}
-	inQuery := false
-	for _, parameter := range built.query {
-		inQuery = inQuery || parameter.name == "cursor"
-	}
-	switch {
-	case inBody && inQuery:
-		return fmt.Errorf("%s declares a cursor in both its query and its body", built.id)
-	case inBody:
-		built.cursor = "conjoin.CursorInBody"
-	case !inQuery:
-		built.cursor = "conjoin.CursorNotAccepted"
-	}
-	return nil
 }
 
 func firstString(values []any) (string, bool) {

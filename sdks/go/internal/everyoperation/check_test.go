@@ -1,10 +1,7 @@
 package everyoperation
 
 import (
-	"bytes"
-	"context"
 	"encoding/json"
-	"net/url"
 	"reflect"
 	"strings"
 	"testing"
@@ -92,64 +89,6 @@ func checkOperation(t *testing.T, server *contractServer, sampler *sampler, meth
 	}
 	if len(results) == 2 {
 		checkResult(t, results[0].Interface(), operation)
-		checkNextPage(t, server, results[0], operation, body, request)
-	}
-}
-
-func checkNextPage(t *testing.T, server *contractServer, page reflect.Value, operation *documentOperation, body any, first recordedRequest) {
-	t.Helper()
-	sample, _ := operation.successBody.(jsonObject)
-	cursor, isList := sample["cursor"].(jsonObject)
-	if !isList {
-		return
-	}
-	next, _ := cursor["next"].(string)
-	if next == "" {
-		t.Fatalf("the sampled list response of %s holds no next cursor", operation.key)
-	}
-	hasNext := page.MethodByName("HasNextPage").Call(nil)[0].Bool()
-	if !operation.cursorBody && !operation.cursorQuery {
-		if hasNext {
-			t.Fatalf("%s takes no cursor, yet its page offers a next page", operation.key)
-		}
-		return
-	}
-	results := page.MethodByName("NextPage").Call([]reflect.Value{reflect.ValueOf(context.Background())})
-	if err, _ := results[1].Interface().(error); err != nil {
-		t.Fatalf("the next page failed: %v", err)
-	}
-	requests, unmatched := server.take()
-	if len(requests) != 1 || len(unmatched) != 0 || requests[0].operation != operation {
-		t.Fatalf("the next page reached %d requests and %v undocumented routes", len(requests), unmatched)
-	}
-	second := requests[0]
-	if operation.cursorQuery {
-		want := url.Values{}
-		for key, values := range first.query {
-			want[key] = values
-		}
-		want.Set("cursor[next]", next)
-		if second.query.Encode() != want.Encode() || !bytes.Equal(second.body, first.body) {
-			t.Fatalf("the next page sent the query %s and the body %q, want the query %s", second.query.Encode(), second.body, want.Encode())
-		}
-		return
-	}
-	wantBody := jsonObject{}
-	if object, ok := body.(jsonObject); ok {
-		for key, value := range object {
-			wantBody[key] = value
-		}
-	}
-	wantBody["cursor"] = jsonObject{"next": next}
-	var received any
-	if err := json.Unmarshal(second.body, &received); err != nil || !jsonEqual(t, received, wantBody) {
-		t.Fatalf("the next page sent the body %q, want %s", second.body, mustJSON(t, wantBody))
-	}
-	if second.query.Encode() != first.query.Encode() {
-		t.Fatalf("the next page sent the query %s, want %s", second.query.Encode(), first.query.Encode())
-	}
-	if key := first.header.Get("Idempotency-Key"); key != "" && second.header.Get("Idempotency-Key") == key {
-		t.Fatalf("the next page reused the Idempotency-Key %q of the first page", key)
 	}
 }
 

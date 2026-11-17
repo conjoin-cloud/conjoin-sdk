@@ -73,7 +73,6 @@ class MessagingPhoneNumbersResource:
             cast_to=Page[MessagingPhoneNumberListAvailableItem],
             request_options=request_options,
             scopes=('messaging_profile_id',),
-            cursor_location='none',
         )
 
     def list(
@@ -159,7 +158,6 @@ class AsyncMessagingPhoneNumbersResource:
             cast_to=AsyncPage[MessagingPhoneNumberListAvailableItem],
             request_options=request_options,
             scopes=('messaging_profile_id',),
-            cursor_location='none',
         )
 
     async def list(

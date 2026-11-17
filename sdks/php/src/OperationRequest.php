@@ -24,7 +24,6 @@ final class OperationRequest
         #[\SensitiveParameter] public readonly ?string $bearerToken = null,
         #[\SensitiveParameter] array $declaredHeaders = [],
         #[\SensitiveParameter] public readonly ?Credential $sessionToken = null,
-        public readonly CursorLocation $cursor = CursorLocation::Query,
     ) {
         foreach ($scopes as $scope) {
             if (!$scope instanceof Scope) {
@@ -44,21 +43,11 @@ final class OperationRequest
 
     public function withQuery(?array $query): self
     {
-        return $this->copy($query, $this->body);
-    }
-
-    public function withBody(?array $body): self
-    {
-        return $this->copy($this->query, $body);
-    }
-
-    private function copy(?array $query, ?array $body): self
-    {
         return new self(
             $this->method,
             $this->path,
             $query,
-            $body,
+            $this->body,
             $this->bodyType,
             $this->scopes,
             $this->acceptsIdempotencyKey,
@@ -66,7 +55,6 @@ final class OperationRequest
             $this->bearerToken,
             $this->declaredHeaders,
             $this->sessionToken,
-            $this->cursor,
         );
     }
 

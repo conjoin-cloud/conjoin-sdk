@@ -222,63 +222,6 @@ final class EveryOperationTest extends TestCase
         self::assertStringNotContainsString(self::PORTAL_TICKET, $attempt->query, $method->label);
         self::checkBody($attempt, $bodyType, $data, $method->label);
         self::checkResult($result, $body, $document->schemaProperties($schema), $method->label);
-
-        if ($result instanceof ListPage) {
-            self::checkNextPage($server, $document, $operation, $result, $data, $method->label);
-        }
-    }
-
-    private static function checkNextPage(
-        ServerProcess $server,
-        DocumentOperations $document,
-        array $operation,
-        ListPage $page,
-        ?array $data,
-        string $label,
-    ): void {
-        $next = $page->cursor->next;
-
-        if ($next === null) {
-            self::fail($label . ' sampled a list response without a next cursor');
-        }
-
-        $bodyProperties = $document->schemaProperties($document->requestBodySchema($operation));
-        $bodyTakesCursor = $bodyProperties !== null && array_key_exists('cursor', $bodyProperties);
-        $queryTakesCursor = false;
-
-        foreach ($document->parameters($operation, 'query') as $parameter) {
-            $queryTakesCursor = $queryTakesCursor || (is_array($parameter) && ($parameter['name'] ?? null) === 'cursor');
-        }
-
-        if (!$bodyTakesCursor && !$queryTakesCursor) {
-            self::assertFalse($page->hasNextPage(), $label . ' takes no cursor, yet its page offers a next page');
-
-            return;
-        }
-
-        $page->nextPage();
-
-        self::assertSame(2, $server->attemptCount(), $label);
-        $first = $server->attempt(0);
-        $second = $server->attempt(1);
-        self::assertSame($first->method, $second->method, $label);
-        self::assertSame($first->pathTemplate, $second->pathTemplate, $label);
-
-        if ($queryTakesCursor) {
-            self::assertEquals(array_merge($first->queryValues(), ['cursor' => ['next' => $next]]), $second->queryValues(), $label);
-            self::assertSame($first->body, $second->body, $label);
-
-            return;
-        }
-
-        self::assertEquals(self::roundTrip(array_merge($data ?? [], ['cursor' => ['next' => $next]])), $second->jsonBody(), $label);
-        self::assertSame($first->query, $second->query, $label);
-        $firstKey = $first->header('idempotency-key');
-
-        if ($firstKey !== null) {
-            self::assertMatchesRegularExpression(self::SERVER_IDEMPOTENCY_KEY_PATTERN, (string) $second->header('idempotency-key'), $label);
-            self::assertNotSame($firstKey, $second->header('idempotency-key'), $label);
-        }
     }
 
     private static function checkHeaders(Attempt $attempt, DocumentOperations $document, array $operation, string $httpMethod, string $label): void

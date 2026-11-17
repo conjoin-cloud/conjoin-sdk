@@ -81,7 +81,6 @@ class MessagingContactPropertiesResource:
             request_options=request_options,
             scopes=('messaging_profile_id',),
             accepts_idempotency_key=True,
-            cursor_location='body',
         )
 
     def delete_many(
@@ -98,7 +97,6 @@ class MessagingContactPropertiesResource:
             request_options=request_options,
             scopes=('messaging_profile_id',),
             accepts_idempotency_key=True,
-            cursor_location='none',
         )
 
 
@@ -164,7 +162,6 @@ class AsyncMessagingContactPropertiesResource:
             request_options=request_options,
             scopes=('messaging_profile_id',),
             accepts_idempotency_key=True,
-            cursor_location='body',
         )
 
     async def delete_many(
@@ -181,5 +178,4 @@ class AsyncMessagingContactPropertiesResource:
             request_options=request_options,
             scopes=('messaging_profile_id',),
             accepts_idempotency_key=True,
-            cursor_location='none',
         )

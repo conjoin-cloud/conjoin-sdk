@@ -30,8 +30,6 @@ type documentOperation struct {
 	bodySchema   any
 	queryParams  []jsonObject
 	headerParams []jsonObject
-	cursorQuery  bool
-	cursorBody   bool
 	requestIDRef *regexp.Regexp
 }
 
@@ -124,7 +122,6 @@ func (d *openAPIDocument) describe(t *testing.T, method, template string, operat
 			}
 		case "query":
 			described.queryParams = append(described.queryParams, parameter)
-			described.cursorQuery = described.cursorQuery || name == "cursor"
 		}
 	}
 	if described.requestIDRef == nil {
@@ -144,8 +141,6 @@ func (d *openAPIDocument) describe(t *testing.T, method, template string, operat
 		for contentType, media := range content {
 			described.hasBody, described.bodyType, described.bodySchema = true, contentType, d.resolve(media)["schema"]
 		}
-		properties, _ := d.resolve(described.bodySchema)["properties"].(jsonObject)
-		_, described.cursorBody = properties["cursor"]
 	}
 
 	responses, _ := operation["responses"].(jsonObject)

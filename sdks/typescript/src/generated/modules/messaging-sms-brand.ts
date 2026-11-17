@@ -26,6 +26,6 @@ export function createMessagingSMSBrands(client: ConjoinClient) {
       client.fetch<DeleteSmsBrandData>(`messaging/sms/brands/${encodePathParam(brandId)}`, { ...options, method: 'DELETE', scopes: ['messagingProfileId'] }),
 
     listSmsBrands: (data: ListSmsBrandsBody, options?: ConjoinCallOptions) =>
-      client.fetchList<ListSmsBrandsData>('messaging/sms/brands/retrieve', { ...options, method: 'POST', body: data, scopes: ['messagingProfileId'], acceptsIdempotencyKey: true, cursorLocation: 'body' }),
+      client.fetchList<ListSmsBrandsData>('messaging/sms/brands/retrieve', { ...options, method: 'POST', body: data, scopes: ['messagingProfileId'], acceptsIdempotencyKey: true }),
   }
 }

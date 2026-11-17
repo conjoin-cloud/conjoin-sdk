@@ -33,7 +33,7 @@ export function createMessagingContacts(client: ConjoinClient) {
       client.fetch<DeleteData>(`messaging/contacts/${encodePathParam(contactId)}`, { ...options, method: 'DELETE', scopes: ['messagingProfileId'] }),
 
     list: (data: ListBody, options?: ConjoinCallOptions) =>
-      client.fetchList<ListData>('messaging/contacts/retrieve', { ...options, method: 'POST', body: data, scopes: ['messagingProfileId'], acceptsIdempotencyKey: true, cursorLocation: 'body' }),
+      client.fetchList<ListData>('messaging/contacts/retrieve', { ...options, method: 'POST', body: data, scopes: ['messagingProfileId'], acceptsIdempotencyKey: true }),
 
     addProperties: (contactId: string, data: AddPropertiesBody, options?: ConjoinCallOptions) =>
       client.fetch<AddPropertiesData>(`messaging/contacts/${encodePathParam(contactId)}/properties`, { ...options, method: 'PUT', body: data, scopes: ['messagingProfileId'] }),
