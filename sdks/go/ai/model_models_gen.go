@@ -2,19 +2,14 @@ package ai
 
 import conjoin "github.com/conjoin-cloud/conjoin-sdk/sdks/go"
 
-type ListModelsQueryQuery struct {
-	Vendor           *string `json:"vendor,omitzero"`
-	PlanAvailability *string `json:"plan_availability,omitzero"`
-	IsActive         *bool   `json:"is_active,omitzero"`
-	TextInput        *bool   `json:"text_input,omitzero"`
-	ImageInput       *bool   `json:"image_input,omitzero"`
-}
-
 type ListModelsQuery struct {
-	Cursor *ListByokConfigsQueryCursor `json:"cursor,omitzero"`
-	Sort   map[string]string           `json:"sort,omitzero"`
-	Limit  any                         `json:"limit,omitzero"`
-	Query  *ListModelsQueryQuery       `json:"query,omitzero"`
+	Vendor           *string                     `json:"vendor,omitzero"`
+	PlanAvailability *string                     `json:"plan_availability,omitzero"`
+	TextInput        any                         `json:"text_input,omitzero"`
+	ImageInput       any                         `json:"image_input,omitzero"`
+	Cursor           *ListByokConfigsQueryCursor `json:"cursor,omitzero"`
+	Sort             map[string]string           `json:"sort,omitzero"`
+	Limit            any                         `json:"limit,omitzero"`
 }
 
 type ListModelsItemPricing struct {
@@ -37,7 +32,11 @@ type ListModelsItem struct {
 	ReleaseDate      conjoin.Nullable[string] `json:"release_date,omitzero"`
 	DeprecationDate  conjoin.Nullable[string] `json:"deprecation_date,omitzero"`
 	DateCreated      string                   `json:"date_created"`
-	DateUpdated      string                   `json:"date_updated"`
+	DateUpdated      *string                  `json:"date_updated"`
 }
+
+type ListModelsCountQuery = ListModelsQuery
+
+type ListModelsCountResponse = ListByokConfigsCountResponse
 
 type ReadModelResponse = ListModelsItem

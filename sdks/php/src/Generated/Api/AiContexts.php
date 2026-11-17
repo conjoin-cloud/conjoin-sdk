@@ -21,7 +21,7 @@ final class AiContexts
     {
         return $this->client->sendList(new OperationRequest(
             method: HttpMethod::Get,
-            path: 'ai/context/indexes',
+            path: 'ai/context-indexes/',
             query: $query,
         ), $options);
     }
@@ -30,53 +30,71 @@ final class AiContexts
     {
         return $this->client->send(new OperationRequest(
             method: HttpMethod::Post,
-            path: 'ai/context/indexes',
+            path: 'ai/context-indexes/',
             body: $data,
             acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
-    public function readIndex(string $indexId, ?CallOptions $options = null): array
+    public function listIndexesCount(?array $query = null, ?CallOptions $options = null): array
     {
         return $this->client->send(new OperationRequest(
             method: HttpMethod::Get,
-            path: 'ai/context/indexes/' . PathSegment::encode($indexId),
+            path: 'ai/context-indexes/count',
+            query: $query,
         ), $options)->dataArray();
     }
 
-    public function deleteIndex(string $indexId, ?CallOptions $options = null): array
+    public function readIndex(string $contextIndexId, ?CallOptions $options = null): array
+    {
+        return $this->client->send(new OperationRequest(
+            method: HttpMethod::Get,
+            path: 'ai/context-indexes/' . PathSegment::encode($contextIndexId),
+        ), $options)->dataArray();
+    }
+
+    public function deleteIndex(string $contextIndexId, ?CallOptions $options = null): array
     {
         return $this->client->send(new OperationRequest(
             method: HttpMethod::Delete,
-            path: 'ai/context/indexes/' . PathSegment::encode($indexId),
+            path: 'ai/context-indexes/' . PathSegment::encode($contextIndexId),
         ), $options)->dataArray();
     }
 
-    public function syncIndex(string $indexId, ?CallOptions $options = null): array
+    public function syncIndex(string $contextIndexId, ?CallOptions $options = null): array
     {
         return $this->client->send(new OperationRequest(
             method: HttpMethod::Post,
-            path: 'ai/context/indexes/' . PathSegment::encode($indexId) . '/sync',
+            path: 'ai/context-indexes/' . PathSegment::encode($contextIndexId) . '/sync',
             acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
-    public function query(array $data, ?CallOptions $options = null): array
+    public function listQueries(?array $query = null, ?CallOptions $options = null): ListPage
+    {
+        return $this->client->sendList(new OperationRequest(
+            method: HttpMethod::Get,
+            path: 'ai/context-queries/',
+            query: $query,
+        ), $options);
+    }
+
+    public function createQuery(array $data, ?CallOptions $options = null): array
     {
         return $this->client->send(new OperationRequest(
             method: HttpMethod::Post,
-            path: 'ai/context/query',
+            path: 'ai/context-queries/',
             body: $data,
             acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
-    public function listQueryLogs(?array $query = null, ?CallOptions $options = null): ListPage
+    public function listQueriesCount(?array $query = null, ?CallOptions $options = null): array
     {
-        return $this->client->sendList(new OperationRequest(
+        return $this->client->send(new OperationRequest(
             method: HttpMethod::Get,
-            path: 'ai/context/query-logs',
+            path: 'ai/context-queries/count',
             query: $query,
-        ), $options);
+        ), $options)->dataArray();
     }
 }

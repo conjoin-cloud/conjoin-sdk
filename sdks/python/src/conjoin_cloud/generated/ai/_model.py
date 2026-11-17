@@ -7,6 +7,8 @@ from conjoin_cloud._models import AsyncPage, Page
 from conjoin_cloud._request_options import RequestOptions
 from conjoin_cloud._url import encode_path_param
 from conjoin_cloud.generated._models import (
+    AiModelListCountQuery,
+    AiModelListCountResponse,
     AiModelListItem,
     AiModelListQuery,
     AiModelReadResponse,
@@ -28,9 +30,23 @@ class AiModelsResource:
     ) -> Page[AiModelListItem]:
         return self._client.request(
             'GET',
-            'ai/model/models',
+            'ai/models/',
             query=query,
             cast_to=Page[AiModelListItem],
+            request_options=request_options,
+        )
+
+    def list_count(
+        self,
+        query: AiModelListCountQuery | None = None,
+        *,
+        request_options: RequestOptions | Mapping[str, Any] | None = None,
+    ) -> AiModelListCountResponse:
+        return self._client.request(
+            'GET',
+            'ai/models/count',
+            query=query,
+            cast_to=AiModelListCountResponse,
             request_options=request_options,
         )
 
@@ -42,7 +58,7 @@ class AiModelsResource:
     ) -> AiModelReadResponse:
         return self._client.request(
             'GET',
-            f'ai/model/models/{encode_path_param(model_id)}',
+            f'ai/models/{encode_path_param(model_id)}',
             cast_to=AiModelReadResponse,
             request_options=request_options,
         )
@@ -60,9 +76,23 @@ class AsyncAiModelsResource:
     ) -> AsyncPage[AiModelListItem]:
         return await self._client.request(
             'GET',
-            'ai/model/models',
+            'ai/models/',
             query=query,
             cast_to=AsyncPage[AiModelListItem],
+            request_options=request_options,
+        )
+
+    async def list_count(
+        self,
+        query: AiModelListCountQuery | None = None,
+        *,
+        request_options: RequestOptions | Mapping[str, Any] | None = None,
+    ) -> AiModelListCountResponse:
+        return await self._client.request(
+            'GET',
+            'ai/models/count',
+            query=query,
+            cast_to=AiModelListCountResponse,
             request_options=request_options,
         )
 
@@ -74,7 +104,7 @@ class AsyncAiModelsResource:
     ) -> AiModelReadResponse:
         return await self._client.request(
             'GET',
-            f'ai/model/models/{encode_path_param(model_id)}',
+            f'ai/models/{encode_path_param(model_id)}',
             cast_to=AiModelReadResponse,
             request_options=request_options,
         )

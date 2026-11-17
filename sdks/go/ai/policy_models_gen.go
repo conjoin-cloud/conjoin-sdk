@@ -2,41 +2,113 @@ package ai
 
 import conjoin "github.com/conjoin-cloud/conjoin-sdk/sdks/go"
 
-type CheckPolicyRequestContext struct {
+type CreatePolicyCheckRequestContext struct {
 	Model     *string `json:"model,omitzero"`
 	RequestID *string `json:"request_id,omitzero"`
 }
 
-type CheckPolicyRequest struct {
-	Content   string                     `json:"content"`
-	Direction string                     `json:"direction"`
-	Context   *CheckPolicyRequestContext `json:"context,omitzero"`
+type CreatePolicyCheckRequest struct {
+	Content   string                           `json:"content"`
+	Direction string                           `json:"direction"`
+	Context   *CreatePolicyCheckRequestContext `json:"context,omitzero"`
 }
 
-type CheckPolicyResponseMatchedRulesItemDetectionsItemPosition struct {
+type CreatePolicyCheckResponseMatchedRulesItemDetectionsItemPosition struct {
 	Start float64 `json:"start"`
 	End   float64 `json:"end"`
 }
 
-type CheckPolicyResponseMatchedRulesItemDetectionsItem struct {
-	Type       string                                                    `json:"type"`
-	Value      string                                                    `json:"value"`
-	Position   CheckPolicyResponseMatchedRulesItemDetectionsItemPosition `json:"position"`
-	Confidence float64                                                   `json:"confidence"`
+type CreatePolicyCheckResponseMatchedRulesItemDetectionsItem struct {
+	Type       string                                                          `json:"type"`
+	Value      string                                                          `json:"value"`
+	Position   CreatePolicyCheckResponseMatchedRulesItemDetectionsItemPosition `json:"position"`
+	Confidence float64                                                         `json:"confidence"`
 }
 
-type CheckPolicyResponseMatchedRulesItem struct {
-	RuleID     string                                              `json:"rule_id"`
-	RuleType   string                                              `json:"rule_type"`
-	Action     string                                              `json:"action"`
-	Detections []CheckPolicyResponseMatchedRulesItemDetectionsItem `json:"detections"`
+type CreatePolicyCheckResponseMatchedRulesItem struct {
+	RuleID     string                                                    `json:"rule_id"`
+	RuleType   string                                                    `json:"rule_type"`
+	Action     string                                                    `json:"action"`
+	Detections []CreatePolicyCheckResponseMatchedRulesItemDetectionsItem `json:"detections"`
 }
 
-type CheckPolicyResponse struct {
-	Allowed            bool                                  `json:"allowed"`
-	ActionTaken        string                                `json:"action_taken"`
-	MatchedRules       []CheckPolicyResponseMatchedRulesItem `json:"matched_rules"`
-	TransformedContent conjoin.Nullable[string]              `json:"transformed_content,omitzero"`
+type CreatePolicyCheckResponse struct {
+	Allowed            bool                                        `json:"allowed"`
+	ActionTaken        string                                      `json:"action_taken"`
+	MatchedRules       []CreatePolicyCheckResponseMatchedRulesItem `json:"matched_rules"`
+	TransformedContent conjoin.Nullable[string]                    `json:"transformed_content,omitzero"`
+}
+
+type ListPolicyLogsQuery struct {
+	RuleID      *string                          `json:"rule_id,omitzero"`
+	RuleType    *string                          `json:"rule_type,omitzero"`
+	ActionTaken *string                          `json:"action_taken,omitzero"`
+	Severity    *string                          `json:"severity,omitzero"`
+	Direction   *string                          `json:"direction,omitzero"`
+	LoggedAt    *ListByokConfigsQueryDateCreated `json:"logged_at,omitzero"`
+	Cursor      *ListByokConfigsQueryCursor      `json:"cursor,omitzero"`
+	Sort        map[string]string                `json:"sort,omitzero"`
+	Limit       any                              `json:"limit,omitzero"`
+}
+
+type ListPolicyLogsItem struct {
+	LogID            string                                                    `json:"log_id"`
+	ConjoinAccountID string                                                    `json:"conjoin_account_id"`
+	ConjoinProjectID string                                                    `json:"conjoin_project_id"`
+	LiveMode         bool                                                      `json:"live_mode"`
+	RequestID        string                                                    `json:"request_id"`
+	RuleID           string                                                    `json:"rule_id"`
+	RuleType         string                                                    `json:"rule_type"`
+	ActionTaken      string                                                    `json:"action_taken"`
+	Direction        string                                                    `json:"direction"`
+	Detections       []CreatePolicyCheckResponseMatchedRulesItemDetectionsItem `json:"detections"`
+	Severity         string                                                    `json:"severity"`
+	LoggedAt         string                                                    `json:"logged_at"`
+	DateCreated      string                                                    `json:"date_created"`
+}
+
+type ListPolicyLogsCountQuery = ListPolicyLogsQuery
+
+type ListPolicyLogsCountResponse = ListByokConfigsCountResponse
+
+type ListPolicyRulesQuery struct {
+	RuleType    *string                          `json:"rule_type,omitzero"`
+	Status      *string                          `json:"status,omitzero"`
+	IsActive    any                              `json:"is_active,omitzero"`
+	ReferenceID *string                          `json:"reference_id,omitzero"`
+	DateCreated *ListByokConfigsQueryDateCreated `json:"date_created,omitzero"`
+	Cursor      *ListByokConfigsQueryCursor      `json:"cursor,omitzero"`
+	Sort        map[string]string                `json:"sort,omitzero"`
+	Limit       any                              `json:"limit,omitzero"`
+}
+
+type ListPolicyRulesItemConfig struct {
+	Patterns            []string `json:"patterns"`
+	PiiTypes            []string `json:"pii_types"`
+	Topics              []string `json:"topics"`
+	Regex               []string `json:"regex"`
+	ReplacementTemplate string   `json:"replacement_template"`
+}
+
+type ListPolicyRulesItem struct {
+	RuleID           string                    `json:"rule_id"`
+	ConjoinAccountID string                    `json:"conjoin_account_id"`
+	ConjoinProjectID string                    `json:"conjoin_project_id"`
+	LiveMode         bool                      `json:"live_mode"`
+	ReferenceID      *string                   `json:"reference_id"`
+	Name             string                    `json:"name"`
+	RuleType         string                    `json:"rule_type"`
+	Direction        string                    `json:"direction"`
+	Action           string                    `json:"action"`
+	Priority         float64                   `json:"priority"`
+	Config           ListPolicyRulesItemConfig `json:"config"`
+	IsActive         bool                      `json:"is_active"`
+	Status           string                    `json:"status"`
+	Description      conjoin.Nullable[string]  `json:"description,omitzero"`
+	Metadata         map[string]any            `json:"metadata"`
+	DateCreated      string                    `json:"date_created"`
+	DateUpdated      *string                   `json:"date_updated"`
+	DateDeleted      conjoin.Nullable[string]  `json:"date_deleted,omitzero"`
 }
 
 type CreatePolicyRuleRequestConfig struct {
@@ -59,44 +131,13 @@ type CreatePolicyRuleRequest struct {
 	Metadata    map[string]any                `json:"metadata,omitzero"`
 }
 
-type CreatePolicyRuleResponse struct {
-	RuleID           string                        `json:"rule_id"`
-	ConjoinAccountID string                        `json:"conjoin_account_id"`
-	ConjoinProjectID string                        `json:"conjoin_project_id"`
-	LiveMode         bool                          `json:"live_mode"`
-	ReferenceID      *string                       `json:"reference_id"`
-	Name             string                        `json:"name"`
-	RuleType         string                        `json:"rule_type"`
-	Direction        string                        `json:"direction"`
-	Action           string                        `json:"action"`
-	Priority         float64                       `json:"priority"`
-	Config           CreatePolicyRuleRequestConfig `json:"config"`
-	IsActive         bool                          `json:"is_active"`
-	Status           string                        `json:"status"`
-	Description      conjoin.Nullable[string]      `json:"description,omitzero"`
-	Metadata         map[string]any                `json:"metadata"`
-	DateCreated      string                        `json:"date_created"`
-	DateUpdated      string                        `json:"date_updated"`
-	DateDeleted      conjoin.Nullable[string]      `json:"date_deleted,omitzero"`
-}
+type CreatePolicyRuleResponse = ListPolicyRulesItem
 
-type ListPolicyRulesQueryQuery struct {
-	RuleType    *string                               `json:"rule_type,omitzero"`
-	Status      *string                               `json:"status,omitzero"`
-	IsActive    *bool                                 `json:"is_active,omitzero"`
-	DateCreated *ListByokConfigsQueryQueryDateCreated `json:"date_created,omitzero"`
-}
+type ListPolicyRulesCountQuery = ListPolicyRulesQuery
 
-type ListPolicyRulesQuery struct {
-	Cursor *ListByokConfigsQueryCursor `json:"cursor,omitzero"`
-	Sort   map[string]string           `json:"sort,omitzero"`
-	Limit  any                         `json:"limit,omitzero"`
-	Query  *ListPolicyRulesQueryQuery  `json:"query,omitzero"`
-}
+type ListPolicyRulesCountResponse = ListByokConfigsCountResponse
 
-type ListPolicyRulesItem = CreatePolicyRuleResponse
-
-type ReadPolicyRuleResponse = CreatePolicyRuleResponse
+type ReadPolicyRuleResponse = ListPolicyRulesItem
 
 type UpdatePolicyRuleRequest struct {
 	Name        *string                        `json:"name,omitzero"`
@@ -110,37 +151,6 @@ type UpdatePolicyRuleRequest struct {
 	Metadata    map[string]any                 `json:"metadata,omitzero"`
 }
 
-type UpdatePolicyRuleResponse = CreatePolicyRuleResponse
+type UpdatePolicyRuleResponse = ListPolicyRulesItem
 
-type DeletePolicyRuleResponse = CreatePolicyRuleResponse
-
-type ListPolicyLogsQueryQuery struct {
-	RuleType    *string                               `json:"rule_type,omitzero"`
-	ActionTaken *string                               `json:"action_taken,omitzero"`
-	Severity    *string                               `json:"severity,omitzero"`
-	Direction   *string                               `json:"direction,omitzero"`
-	LoggedAt    *ListByokConfigsQueryQueryDateCreated `json:"logged_at,omitzero"`
-}
-
-type ListPolicyLogsQuery struct {
-	Cursor *ListByokConfigsQueryCursor `json:"cursor,omitzero"`
-	Sort   map[string]string           `json:"sort,omitzero"`
-	Limit  any                         `json:"limit,omitzero"`
-	Query  *ListPolicyLogsQueryQuery   `json:"query,omitzero"`
-}
-
-type ListPolicyLogsItem struct {
-	LogID            string                                              `json:"log_id"`
-	ConjoinAccountID string                                              `json:"conjoin_account_id"`
-	ConjoinProjectID string                                              `json:"conjoin_project_id"`
-	LiveMode         bool                                                `json:"live_mode"`
-	RequestID        string                                              `json:"request_id"`
-	RuleID           string                                              `json:"rule_id"`
-	RuleType         string                                              `json:"rule_type"`
-	ActionTaken      string                                              `json:"action_taken"`
-	Direction        string                                              `json:"direction"`
-	Detections       []CheckPolicyResponseMatchedRulesItemDetectionsItem `json:"detections"`
-	Severity         string                                              `json:"severity"`
-	LoggedAt         string                                              `json:"logged_at"`
-	DateCreated      string                                              `json:"date_created"`
-}
+type DeletePolicyRuleResponse = ListPolicyRulesItem

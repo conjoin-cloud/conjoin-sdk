@@ -24,14 +24,14 @@ final class AiInferences
             path: 'ai/inference/chat/completions',
             body: $data,
             acceptsIdempotencyKey: true,
-        ), $options)->dataArray();
+        ), $options)->bodyArray();
     }
 
     public function createAiMultiModel(array $data, ?CallOptions $options = null): array
     {
         return $this->client->send(new OperationRequest(
             method: HttpMethod::Post,
-            path: 'ai/inference/multi-model',
+            path: 'ai/multi-model-inferences/',
             body: $data,
             acceptsIdempotencyKey: true,
         ), $options)->dataArray();
@@ -41,7 +41,7 @@ final class AiInferences
     {
         return $this->client->send(new OperationRequest(
             method: HttpMethod::Post,
-            path: 'ai/inference/best-of-n',
+            path: 'ai/best-of-n-inferences/',
             body: $data,
             acceptsIdempotencyKey: true,
         ), $options)->dataArray();
@@ -51,16 +51,25 @@ final class AiInferences
     {
         return $this->client->sendList(new OperationRequest(
             method: HttpMethod::Get,
-            path: 'ai/inference/requests',
+            path: 'ai/inference-requests/',
             query: $query,
         ), $options);
     }
 
-    public function readRequest(string $requestId, ?CallOptions $options = null): array
+    public function listRequestsCount(?array $query = null, ?CallOptions $options = null): array
     {
         return $this->client->send(new OperationRequest(
             method: HttpMethod::Get,
-            path: 'ai/inference/requests/' . PathSegment::encode($requestId),
+            path: 'ai/inference-requests/count',
+            query: $query,
+        ), $options)->dataArray();
+    }
+
+    public function readRequest(string $inferenceRequestId, ?CallOptions $options = null): array
+    {
+        return $this->client->send(new OperationRequest(
+            method: HttpMethod::Get,
+            path: 'ai/inference-requests/' . PathSegment::encode($inferenceRequestId),
         ), $options)->dataArray();
     }
 }

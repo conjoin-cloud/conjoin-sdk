@@ -21,16 +21,25 @@ final class AiModels
     {
         return $this->client->sendList(new OperationRequest(
             method: HttpMethod::Get,
-            path: 'ai/model/models',
+            path: 'ai/models/',
             query: $query,
         ), $options);
+    }
+
+    public function listCount(?array $query = null, ?CallOptions $options = null): array
+    {
+        return $this->client->send(new OperationRequest(
+            method: HttpMethod::Get,
+            path: 'ai/models/count',
+            query: $query,
+        ), $options)->dataArray();
     }
 
     public function read(string $modelId, ?CallOptions $options = null): array
     {
         return $this->client->send(new OperationRequest(
             method: HttpMethod::Get,
-            path: 'ai/model/models/' . PathSegment::encode($modelId),
+            path: 'ai/models/' . PathSegment::encode($modelId),
         ), $options)->dataArray();
     }
 }

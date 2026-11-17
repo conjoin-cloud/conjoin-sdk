@@ -14,7 +14,7 @@ def main() -> None:
             model=model,
             messages=[{"role": "user", "content": "Write a concise status update."}],
         )
-        print(completion.status, completion.token_usage)
+        print(completion.choices[0]["message"]["content"], completion.usage)
 
         for chunk in client.ai.chat.stream(
             model=model,

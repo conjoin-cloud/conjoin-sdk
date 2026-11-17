@@ -48,6 +48,10 @@ class AiBYOKDeleteByokConfigResponse(ConjoinModel):
     status: str
 
 
+class AiBYOKListByokConfigsCountResponse(ConjoinModel):
+    count: int
+
+
 class AiBYOKListByokConfigsItem(ConjoinModel):
     allowed_models: Sequence[str]
     byok_config_id: str
@@ -118,6 +122,7 @@ class AiContextCreateIndexResponse(ConjoinModel):
     conjoin_account_id: str
     conjoin_project_id: str
     date_created: str
+    date_deleted: str | None = None
     date_updated: str
     description: str | None = None
     document_count: float
@@ -134,12 +139,21 @@ class AiContextCreateIndexResponse(ConjoinModel):
     status: str
     sync_status: str
     total_size_bytes: float
+
+
+class AiContextCreateQueryResponse(ConjoinModel):
+    latency_ms: float
+    modes_used: Sequence[str]
+    query_id: str
+    results: Sequence[dict[str, Any]]
+    total_results: float
 
 
 class AiContextDeleteIndexResponse(ConjoinModel):
     conjoin_account_id: str
     conjoin_project_id: str
     date_created: str
+    date_deleted: str | None = None
     date_updated: str
     description: str | None = None
     document_count: float
@@ -156,12 +170,17 @@ class AiContextDeleteIndexResponse(ConjoinModel):
     status: str
     sync_status: str
     total_size_bytes: float
+
+
+class AiContextListIndexesCountResponse(ConjoinModel):
+    count: int
 
 
 class AiContextListIndexesItem(ConjoinModel):
     conjoin_account_id: str
     conjoin_project_id: str
     date_created: str
+    date_deleted: str | None = None
     date_updated: str
     description: str | None = None
     document_count: float
@@ -180,7 +199,11 @@ class AiContextListIndexesItem(ConjoinModel):
     total_size_bytes: float
 
 
-class AiContextListQueryLogsItem(ConjoinModel):
+class AiContextListQueriesCountResponse(ConjoinModel):
+    count: int
+
+
+class AiContextListQueriesItem(ConjoinModel):
     agentic_reads_count: float
     conjoin_account_id: str
     conjoin_project_id: str
@@ -197,18 +220,11 @@ class AiContextListQueryLogsItem(ConjoinModel):
     vector_results_count: float
 
 
-class AiContextQueryResponse(ConjoinModel):
-    latency_ms: float
-    modes_used: Sequence[str]
-    query_id: str
-    results: Sequence[dict[str, Any]]
-    total_results: float
-
-
 class AiContextReadIndexResponse(ConjoinModel):
     conjoin_account_id: str
     conjoin_project_id: str
     date_created: str
+    date_deleted: str | None = None
     date_updated: str
     description: str | None = None
     document_count: float
@@ -231,6 +247,7 @@ class AiContextSyncIndexResponse(ConjoinModel):
     conjoin_account_id: str
     conjoin_project_id: str
     date_created: str
+    date_deleted: str | None = None
     date_updated: str
     description: str | None = None
     document_count: float
@@ -250,69 +267,40 @@ class AiContextSyncIndexResponse(ConjoinModel):
 
 
 class AiInferenceCreateAiBestOfNResponse(ConjoinModel):
-    conjoin_account_id: str
-    conjoin_project_id: str
-    conjoin_request_id: str
-    context_used: bool
+    candidates: Sequence[dict[str, Any]]
     cost_usd: float
-    date_created: str
-    date_updated: str
-    is_byok: bool
     latency_ms: float
-    live_mode: bool
     model: str
-    policy_applied: bool
-    provider: str
+    n: float
     request_id: str
     request_type: str
-    status: str
-    streaming_enabled: bool
+    selected: dict[str, Any]
     token_usage: dict[str, Any]
-    trace_source: str | None = None
 
 
 class AiInferenceCreateAiMultiModelResponse(ConjoinModel):
-    conjoin_account_id: str
-    conjoin_project_id: str
-    conjoin_request_id: str
-    context_used: bool
     cost_usd: float
-    date_created: str
-    date_updated: str
-    is_byok: bool
     latency_ms: float
-    live_mode: bool
-    model: str
-    policy_applied: bool
-    provider: str
+    models: Sequence[str]
     request_id: str
     request_type: str
-    status: str
-    streaming_enabled: bool
+    results: Sequence[dict[str, Any]]
+    synthesis: dict[str, Any] | None
     token_usage: dict[str, Any]
-    trace_source: str | None = None
 
 
 class AiInferenceCreateChatCompletionResponse(ConjoinModel):
-    conjoin_account_id: str
-    conjoin_project_id: str
-    conjoin_request_id: str
-    context_used: bool
-    cost_usd: float
-    date_created: str
-    date_updated: str
-    is_byok: bool
-    latency_ms: float
-    live_mode: bool
+    conjoin: dict[str, Any] = Field(..., alias='_conjoin')
+    choices: Sequence[dict[str, Any]]
+    created: float
+    id: str
     model: str
-    policy_applied: bool
-    provider: str
-    request_id: str
-    request_type: str
-    status: str
-    streaming_enabled: bool
-    token_usage: dict[str, Any]
-    trace_source: str | None = None
+    object: Any
+    usage: dict[str, Any]
+
+
+class AiInferenceListRequestsCountResponse(ConjoinModel):
+    count: int
 
 
 class AiInferenceListRequestsItem(ConjoinModel):
@@ -359,11 +347,15 @@ class AiInferenceReadRequestResponse(ConjoinModel):
     trace_source: str | None = None
 
 
+class AiModelListCountResponse(ConjoinModel):
+    count: int
+
+
 class AiModelListItem(ConjoinModel):
     capabilities: dict[str, Any]
     context_window: float
     date_created: str
-    date_updated: str
+    date_updated: str | None
     deprecation_date: str | None = None
     display_name: str
     is_active: bool
@@ -379,7 +371,7 @@ class AiModelReadResponse(ConjoinModel):
     capabilities: dict[str, Any]
     context_window: float
     date_created: str
-    date_updated: str
+    date_updated: str | None
     deprecation_date: str | None = None
     display_name: str
     is_active: bool
@@ -391,7 +383,7 @@ class AiModelReadResponse(ConjoinModel):
     vendor: str
 
 
-class AiPolicyCheckResponse(ConjoinModel):
+class AiPolicyCreateCheckResponse(ConjoinModel):
     action_taken: str
     allowed: bool
     matched_rules: Sequence[dict[str, Any]]
@@ -405,7 +397,7 @@ class AiPolicyCreateRuleResponse(ConjoinModel):
     conjoin_project_id: str
     date_created: str
     date_deleted: str | None = None
-    date_updated: str
+    date_updated: str | None
     description: str | None = None
     direction: str
     is_active: bool
@@ -426,7 +418,7 @@ class AiPolicyDeleteRuleResponse(ConjoinModel):
     conjoin_project_id: str
     date_created: str
     date_deleted: str | None = None
-    date_updated: str
+    date_updated: str | None
     description: str | None = None
     direction: str
     is_active: bool
@@ -438,6 +430,10 @@ class AiPolicyDeleteRuleResponse(ConjoinModel):
     rule_id: str
     rule_type: str
     status: str
+
+
+class AiPolicyListLogsCountResponse(ConjoinModel):
+    count: int
 
 
 class AiPolicyListLogsItem(ConjoinModel):
@@ -456,6 +452,10 @@ class AiPolicyListLogsItem(ConjoinModel):
     severity: str
 
 
+class AiPolicyListRulesCountResponse(ConjoinModel):
+    count: int
+
+
 class AiPolicyListRulesItem(ConjoinModel):
     action: str
     config: dict[str, Any]
@@ -463,7 +463,7 @@ class AiPolicyListRulesItem(ConjoinModel):
     conjoin_project_id: str
     date_created: str
     date_deleted: str | None = None
-    date_updated: str
+    date_updated: str | None
     description: str | None = None
     direction: str
     is_active: bool
@@ -484,7 +484,7 @@ class AiPolicyReadRuleResponse(ConjoinModel):
     conjoin_project_id: str
     date_created: str
     date_deleted: str | None = None
-    date_updated: str
+    date_updated: str | None
     description: str | None = None
     direction: str
     is_active: bool
@@ -505,7 +505,7 @@ class AiPolicyUpdateRuleResponse(ConjoinModel):
     conjoin_project_id: str
     date_created: str
     date_deleted: str | None = None
-    date_updated: str
+    date_updated: str | None
     description: str | None = None
     direction: str
     is_active: bool
@@ -517,6 +517,10 @@ class AiPolicyUpdateRuleResponse(ConjoinModel):
     rule_id: str
     rule_type: str
     status: str
+
+
+class AiUsageListRecordsCountResponse(ConjoinModel):
+    count: int
 
 
 class AiUsageListRecordsItem(ConjoinModel):
@@ -544,6 +548,7 @@ class AiUsageListRecordsItem(ConjoinModel):
 class AiUsageReadSummaryResponse(ConjoinModel):
     billing_period: str
     breakdown_by_model: Sequence[dict[str, Any]]
+    breakdown_by_provider: Sequence[dict[str, Any]]
     breakdown_by_type: Sequence[dict[str, Any]]
     total_cost_usd: float
     total_requests: float
@@ -9923,11 +9928,26 @@ class AiBYOKCreateByokConfigRequest(_AiBYOKCreateByokConfigRequestRequired, tota
     reference_id: str | None
 
 
-class AiBYOKListByokConfigsQuery(TypedDict, total=False):
+class AiBYOKListByokConfigsCountQuery(TypedDict, total=False):
+    provider: str
+    status: str
+    is_enabled: Any
+    reference_id: str
+    date_created: dict[str, Any]
     cursor: dict[str, Any]
     sort: dict[str, str]
     limit: Any
-    query: dict[str, Any]
+
+
+class AiBYOKListByokConfigsQuery(TypedDict, total=False):
+    provider: str
+    status: str
+    is_enabled: Any
+    reference_id: str
+    date_created: dict[str, Any]
+    cursor: dict[str, Any]
+    sort: dict[str, str]
+    limit: Any
 
 
 class AiBYOKUpdateByokConfigRequest(TypedDict, total=False):
@@ -9954,40 +9974,65 @@ class AiContextCreateIndexRequest(_AiContextCreateIndexRequestRequired, total=Fa
     reference_id: str | None
 
 
-class AiContextListIndexesQuery(TypedDict, total=False):
-    cursor: dict[str, Any]
-    sort: dict[str, str]
-    limit: Any
-    query: dict[str, Any]
-
-
-class AiContextListQueryLogsQuery(TypedDict, total=False):
-    cursor: dict[str, Any]
-    sort: dict[str, str]
-    limit: Any
-    query: dict[str, Any]
-
-
-class _AiContextQueryRequestRequired(TypedDict):
+class _AiContextCreateQueryRequestRequired(TypedDict):
     index_ids: Sequence[str]
     query: str
 
 
-class AiContextQueryRequest(_AiContextQueryRequestRequired, total=False):
-    filters: dict[str, Any]
+class AiContextCreateQueryRequest(_AiContextCreateQueryRequestRequired, total=False):
     limit: int
     modes: Sequence[str]
     user_id: str
 
 
+class AiContextListIndexesCountQuery(TypedDict, total=False):
+    status: str
+    sync_status: str
+    source_type: str
+    reference_id: str
+    date_created: dict[str, Any]
+    cursor: dict[str, Any]
+    sort: dict[str, str]
+    limit: Any
+
+
+class AiContextListIndexesQuery(TypedDict, total=False):
+    status: str
+    sync_status: str
+    source_type: str
+    reference_id: str
+    date_created: dict[str, Any]
+    cursor: dict[str, Any]
+    sort: dict[str, str]
+    limit: Any
+
+
+class AiContextListQueriesCountQuery(TypedDict, total=False):
+    user_id: str
+    queried_at: dict[str, Any]
+    date_created: dict[str, Any]
+    cursor: dict[str, Any]
+    sort: dict[str, str]
+    limit: Any
+
+
+class AiContextListQueriesQuery(TypedDict, total=False):
+    user_id: str
+    queried_at: dict[str, Any]
+    date_created: dict[str, Any]
+    cursor: dict[str, Any]
+    sort: dict[str, str]
+    limit: Any
+
+
 class _AiInferenceCreateAiBestOfNRequestRequired(TypedDict):
     messages: Sequence[dict[str, Any]]
     model: str
-    n: float
+    n: int
 
 
 class AiInferenceCreateAiBestOfNRequest(_AiInferenceCreateAiBestOfNRequestRequired, total=False):
-    max_tokens: float
+    max_tokens: int
     selection_criteria: str
     temperature: float
 
@@ -10002,7 +10047,7 @@ class AiInferenceCreateAiMultiModelRequest(
     total=False,
 ):
     judge_model: str
-    max_tokens: float
+    max_tokens: int
     synthesize: bool
     temperature: float
 
@@ -10017,7 +10062,7 @@ class AiInferenceCreateChatCompletionRequest(
     total=False,
 ):
     context: dict[str, Any]
-    max_tokens: float
+    max_tokens: int
     metadata: dict[str, Any]
     response_format: dict[str, Any]
     stop: Sequence[str]
@@ -10027,26 +10072,56 @@ class AiInferenceCreateChatCompletionRequest(
     top_p: float
 
 
-class AiInferenceListRequestsQuery(TypedDict, total=False):
+class AiInferenceListRequestsCountQuery(TypedDict, total=False):
+    model: str
+    status: str
+    request_type: str
+    conjoin_request_id: str
+    trace_source: str
+    date_created: dict[str, Any]
     cursor: dict[str, Any]
     sort: dict[str, str]
     limit: Any
-    query: dict[str, Any]
+
+
+class AiInferenceListRequestsQuery(TypedDict, total=False):
+    model: str
+    status: str
+    request_type: str
+    conjoin_request_id: str
+    trace_source: str
+    date_created: dict[str, Any]
+    cursor: dict[str, Any]
+    sort: dict[str, str]
+    limit: Any
+
+
+class AiModelListCountQuery(TypedDict, total=False):
+    vendor: str
+    plan_availability: str
+    text_input: Any
+    image_input: Any
+    cursor: dict[str, Any]
+    sort: dict[str, str]
+    limit: Any
 
 
 class AiModelListQuery(TypedDict, total=False):
+    vendor: str
+    plan_availability: str
+    text_input: Any
+    image_input: Any
     cursor: dict[str, Any]
     sort: dict[str, str]
     limit: Any
-    query: dict[str, Any]
 
 
-class _AiPolicyCheckRequestRequired(TypedDict):
+class _AiPolicyCreateCheckRequestRequired(TypedDict):
     content: str
     direction: str
 
 
-class AiPolicyCheckRequest(_AiPolicyCheckRequestRequired, total=False):
+class AiPolicyCreateCheckRequest(_AiPolicyCreateCheckRequestRequired, total=False):
     context: dict[str, Any]
 
 
@@ -10065,18 +10140,50 @@ class AiPolicyCreateRuleRequest(_AiPolicyCreateRuleRequestRequired, total=False)
     reference_id: str | None
 
 
-class AiPolicyListLogsQuery(TypedDict, total=False):
+class AiPolicyListLogsCountQuery(TypedDict, total=False):
+    rule_id: str
+    rule_type: str
+    action_taken: str
+    severity: str
+    direction: str
+    logged_at: dict[str, Any]
     cursor: dict[str, Any]
     sort: dict[str, str]
     limit: Any
-    query: dict[str, Any]
+
+
+class AiPolicyListLogsQuery(TypedDict, total=False):
+    rule_id: str
+    rule_type: str
+    action_taken: str
+    severity: str
+    direction: str
+    logged_at: dict[str, Any]
+    cursor: dict[str, Any]
+    sort: dict[str, str]
+    limit: Any
+
+
+class AiPolicyListRulesCountQuery(TypedDict, total=False):
+    rule_type: str
+    status: str
+    is_active: Any
+    reference_id: str
+    date_created: dict[str, Any]
+    cursor: dict[str, Any]
+    sort: dict[str, str]
+    limit: Any
 
 
 class AiPolicyListRulesQuery(TypedDict, total=False):
+    rule_type: str
+    status: str
+    is_active: Any
+    reference_id: str
+    date_created: dict[str, Any]
     cursor: dict[str, Any]
     sort: dict[str, str]
     limit: Any
-    query: dict[str, Any]
 
 
 class AiPolicyUpdateRuleRequest(TypedDict, total=False):
@@ -10091,11 +10198,34 @@ class AiPolicyUpdateRuleRequest(TypedDict, total=False):
     status: str
 
 
-class AiUsageListRecordsQuery(TypedDict, total=False):
+class AiUsageListRecordsCountQuery(TypedDict, total=False):
+    record_type: str
+    model: str
+    provider: str
+    billing_period: str
+    is_billable: Any
+    conjoin_request_id: str
+    trace_source: str
+    recorded_at: dict[str, Any]
+    date_created: dict[str, Any]
     cursor: dict[str, Any]
     sort: dict[str, str]
     limit: Any
-    query: dict[str, Any]
+
+
+class AiUsageListRecordsQuery(TypedDict, total=False):
+    record_type: str
+    model: str
+    provider: str
+    billing_period: str
+    is_billable: Any
+    conjoin_request_id: str
+    trace_source: str
+    recorded_at: dict[str, Any]
+    date_created: dict[str, Any]
+    cursor: dict[str, Any]
+    sort: dict[str, str]
+    limit: Any
 
 
 class AiUsageReadSummaryQuery(TypedDict, total=False):

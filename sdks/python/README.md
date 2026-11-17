@@ -198,7 +198,7 @@ The generated storage calls, such as `client.storage.objects.list(...)`, stay av
 
 ## AI Chat
 
-Call `client.ai.chat.complete(...)` for a non-streaming chat completion. It returns the inference record that the API stores:
+Call `client.ai.chat.complete(...)` for a non-streaming chat completion. It returns the completion in the OpenAI format, with `choices`, `usage`, and a `conjoin` field that holds the cost, the latency, and whether your own provider key served the call:
 
 ```python
 completion = client.ai.chat.complete(
@@ -206,7 +206,7 @@ completion = client.ai.chat.complete(
     messages=[{'role': 'user', 'content': 'Write a concise account update.'}],
 )
 
-print(completion.status, completion.token_usage)
+print(completion.choices[0]['message']['content'], completion.usage)
 ```
 
 Call `client.ai.chat.stream(...)` for typed SSE chunks:
