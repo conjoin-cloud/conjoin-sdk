@@ -144,7 +144,6 @@ class MessagingConversationsResource:
             request_options=request_options,
             scopes=('messaging_profile_id',),
             accepts_idempotency_key=True,
-            cursor_location='body',
         )
 
     def read_messages(
@@ -166,7 +165,6 @@ class MessagingConversationsResource:
             request_options=request_options,
             scopes=('messaging_profile_id',),
             accepts_idempotency_key=True,
-            cursor_location='body',
         )
 
     def read_one_recipient(
@@ -220,7 +218,6 @@ class MessagingConversationsResource:
             request_options=request_options,
             scopes=('messaging_profile_id',),
             accepts_idempotency_key=True,
-            cursor_location='body',
         )
 
     def add_one_recipient(
@@ -255,7 +252,6 @@ class MessagingConversationsResource:
             request_options=request_options,
             scopes=('messaging_profile_id',),
             accepts_idempotency_key=True,
-            cursor_location='none',
         )
 
 
@@ -370,7 +366,6 @@ class AsyncMessagingConversationsResource:
             request_options=request_options,
             scopes=('messaging_profile_id',),
             accepts_idempotency_key=True,
-            cursor_location='body',
         )
 
     async def read_messages(
@@ -392,7 +387,6 @@ class AsyncMessagingConversationsResource:
             request_options=request_options,
             scopes=('messaging_profile_id',),
             accepts_idempotency_key=True,
-            cursor_location='body',
         )
 
     async def read_one_recipient(
@@ -446,7 +440,6 @@ class AsyncMessagingConversationsResource:
             request_options=request_options,
             scopes=('messaging_profile_id',),
             accepts_idempotency_key=True,
-            cursor_location='body',
         )
 
     async def add_one_recipient(
@@ -481,5 +474,4 @@ class AsyncMessagingConversationsResource:
             request_options=request_options,
             scopes=('messaging_profile_id',),
             accepts_idempotency_key=True,
-            cursor_location='none',
         )

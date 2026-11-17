@@ -47,7 +47,6 @@ class MessagingChannelAnalyticsResource:
             request_options=request_options,
             scopes=('messaging_profile_id',),
             accepts_idempotency_key=True,
-            cursor_location='body',
         )
 
     def generate_summaries(
@@ -187,7 +186,6 @@ class AsyncMessagingChannelAnalyticsResource:
             request_options=request_options,
             scopes=('messaging_profile_id',),
             accepts_idempotency_key=True,
-            cursor_location='body',
         )
 
     async def generate_summaries(

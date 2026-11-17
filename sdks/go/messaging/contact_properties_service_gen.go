@@ -59,7 +59,6 @@ func (s *ContactPropertiesService) List(ctx context.Context, body *ListContactPr
 		BodyRequired:          true,
 		Scopes:                []conjoin.ScopeName{conjoin.ScopeMessagingProfile},
 		AcceptsIdempotencyKey: true,
-		Cursor:                conjoin.CursorInBody,
 	}, opts...)
 }
 
@@ -71,6 +70,5 @@ func (s *ContactPropertiesService) DeleteMany(ctx context.Context, body *DeleteM
 		BodyRequired:          true,
 		Scopes:                []conjoin.ScopeName{conjoin.ScopeMessagingProfile},
 		AcceptsIdempotencyKey: true,
-		Cursor:                conjoin.CursorNotAccepted,
 	}, opts...)
 }

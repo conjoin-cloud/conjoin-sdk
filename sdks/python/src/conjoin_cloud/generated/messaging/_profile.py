@@ -187,7 +187,6 @@ class MessagingProfilesResource:
             cast_to=Page[MessagingProfileListItem],
             request_options=request_options,
             accepts_idempotency_key=True,
-            cursor_location='body',
         )
 
 
@@ -348,5 +347,4 @@ class AsyncMessagingProfilesResource:
             cast_to=AsyncPage[MessagingProfileListItem],
             request_options=request_options,
             accepts_idempotency_key=True,
-            cursor_location='body',
         )

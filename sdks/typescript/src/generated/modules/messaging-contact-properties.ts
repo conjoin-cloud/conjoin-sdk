@@ -23,9 +23,9 @@ export function createMessagingContactProperties(client: ConjoinClient) {
       client.fetch<DeleteContactPropertyData>(`messaging/contacts/properties/${encodePathParam(propertyId)}`, { ...options, method: 'DELETE', scopes: ['messagingProfileId'] }),
 
     list: (data: ListBody, options?: ConjoinCallOptions) =>
-      client.fetchList<ListData>('messaging/contacts/properties/retrieve', { ...options, method: 'POST', body: data, scopes: ['messagingProfileId'], acceptsIdempotencyKey: true, cursorLocation: 'body' }),
+      client.fetchList<ListData>('messaging/contacts/properties/retrieve', { ...options, method: 'POST', body: data, scopes: ['messagingProfileId'], acceptsIdempotencyKey: true }),
 
     deleteMany: (data: DeleteManyBody, options?: ConjoinCallOptions) =>
-      client.fetchList<DeleteManyData>('messaging/contacts/properties/remove', { ...options, method: 'POST', body: data, scopes: ['messagingProfileId'], acceptsIdempotencyKey: true, cursorLocation: 'none' }),
+      client.fetchList<DeleteManyData>('messaging/contacts/properties/remove', { ...options, method: 'POST', body: data, scopes: ['messagingProfileId'], acceptsIdempotencyKey: true }),
   }
 }

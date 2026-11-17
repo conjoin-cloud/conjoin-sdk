@@ -45,7 +45,6 @@ func (s *PhoneNumbersService) ListAvailable(ctx context.Context, query *ListAvai
 		Path:   "messaging/phone-numbers/available",
 		Query:  query,
 		Scopes: []conjoin.ScopeName{conjoin.ScopeMessagingProfile},
-		Cursor: conjoin.CursorNotAccepted,
 	}, opts...)
 }
 

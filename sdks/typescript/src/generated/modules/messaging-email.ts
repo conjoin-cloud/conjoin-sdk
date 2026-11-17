@@ -15,7 +15,7 @@ export function createMessagingEmails(client: ConjoinClient) {
       client.fetch<SendData>('messaging/email/send', { ...options, method: 'POST', body: data, contentType: 'multipart/form-data', scopes: ['messagingProfileId'], acceptsIdempotencyKey: true }),
 
     readMessages: (messageId: string, data: ReadMessagesBody, options?: ConjoinCallOptions) =>
-      client.fetchList<ReadMessagesData>(`messaging/email/messages/${encodePathParam(messageId)}`, { ...options, method: 'POST', body: data, scopes: ['messagingProfileId'], acceptsIdempotencyKey: true, cursorLocation: 'body' }),
+      client.fetchList<ReadMessagesData>(`messaging/email/messages/${encodePathParam(messageId)}`, { ...options, method: 'POST', body: data, scopes: ['messagingProfileId'], acceptsIdempotencyKey: true }),
 
     generateSummary: (data: GenerateSummaryBody, options?: ConjoinCallOptions) =>
       client.fetch<GenerateSummaryData>('messaging/email/summary', { ...options, method: 'POST', body: data, scopes: ['messagingProfileId'], acceptsIdempotencyKey: true }),

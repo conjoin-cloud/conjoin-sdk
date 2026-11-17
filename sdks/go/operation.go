@@ -38,14 +38,6 @@ const (
 	ResponseEmpty
 )
 
-type CursorLocation int
-
-const (
-	CursorInQuery CursorLocation = iota
-	CursorInBody
-	CursorNotAccepted
-)
-
 type Operation struct {
 	Method                string
 	Path                  string
@@ -61,7 +53,6 @@ type Operation struct {
 	AcceptsIdempotencyKey bool
 	Auth                  AuthMode
 	Response              ResponseShape
-	Cursor                CursorLocation
 }
 
 func (s Scope) header(name ScopeName) (string, string, bool) {

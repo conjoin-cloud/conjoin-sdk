@@ -19,7 +19,7 @@ export function createMessagingTemplates(client: ConjoinClient) {
       client.fetch<CreateMessageData>('messaging/templates/', { ...options, method: 'POST', body: data, scopes: ['messagingProfileId'], acceptsIdempotencyKey: true }),
 
     listMessage: (data: ListMessageBody, options?: ConjoinCallOptions) =>
-      client.fetchList<ListMessageData>('messaging/templates/retrieve', { ...options, method: 'POST', body: data, scopes: ['messagingProfileId'], acceptsIdempotencyKey: true, cursorLocation: 'body' }),
+      client.fetchList<ListMessageData>('messaging/templates/retrieve', { ...options, method: 'POST', body: data, scopes: ['messagingProfileId'], acceptsIdempotencyKey: true }),
 
     readMessage: (templateId: string, options?: ConjoinCallOptions) =>
       client.fetch<ReadMessageData>(`messaging/templates/${encodePathParam(templateId)}`, { ...options, method: 'GET', scopes: ['messagingProfileId'] }),

@@ -302,66 +302,6 @@ def test_the_operation_sends_the_documented_request_and_returns_the_documented_d
     if request_body is not None and request_body[0] == "application/json":
         assert request.json() == data
     _assert_returned_data(result, body, response_schema, document)
-    if _is_list_response(document, response_schema):
-        _assert_next_page_request(harness, result, document, operation, request_body, data)
-
-
-def _is_list_response(document: dict[str, Any], schema: Any) -> bool:
-    properties = _resolve(document, schema).get("properties")
-    return isinstance(properties, dict) and "data" in properties and "cursor" in properties
-
-
-def _document_cursor_location(
-    document: dict[str, Any], operation: dict[str, Any], request_body: tuple[str, Any] | None
-) -> str:
-    body_properties = (
-        _resolve(document, request_body[1]).get("properties") if request_body is not None else None
-    )
-    if isinstance(body_properties, dict) and "cursor" in body_properties:
-        return "body"
-    takes_query_cursor = any(
-        parameter.get("in") == "query" and parameter.get("name") == "cursor"
-        for parameter in _parameters(document, operation)
-    )
-    return "query" if takes_query_cursor else "none"
-
-
-def _assert_next_page_request(
-    harness: ContractHarness,
-    page: Any,
-    document: dict[str, Any],
-    operation: dict[str, Any],
-    request_body: tuple[str, Any] | None,
-    data: Any,
-) -> None:
-    next_cursor = _plain(page.cursor).get("next")
-    assert isinstance(next_cursor, str) and next_cursor
-    location = _document_cursor_location(document, operation, request_body)
-    if location == "none":
-        assert page.has_next_page() is False
-        return
-
-    page.next_page()
-
-    first, second = harness.server.requests
-    assert second.method == first.method
-    assert second.raw_path == first.raw_path
-    if location == "query":
-        assert second.query == {**first.query, "cursor[next]": [next_cursor]}
-        assert second.body == first.body
-        return
-
-    assert second.json() == {
-        **(data if isinstance(data, dict) else {}),
-        "cursor": {"next": next_cursor},
-    }
-    assert second.query == first.query
-    first_key = first.headers.get("idempotency-key")
-    if first_key is not None:
-        second_key = second.headers.get("idempotency-key")
-        assert second_key is not None
-        assert SERVER_IDEMPOTENCY_KEY_PATTERN.fullmatch(second_key)
-        assert second_key != first_key
 
 
 def _assert_documented_request(

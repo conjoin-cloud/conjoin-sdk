@@ -46,10 +46,10 @@ export function createMessagingConversations(client: ConjoinClient) {
       client.fetch<ArchiveData>(`messaging/conversations/${encodePathParam(conversationId)}/archive`, { ...options, method: 'PATCH', scopes: ['messagingProfileId'] }),
 
     list: (data: ListBody, options?: ConjoinCallOptions) =>
-      client.fetchList<ListData>('messaging/conversations/retrieve', { ...options, method: 'POST', body: data, scopes: ['messagingProfileId'], acceptsIdempotencyKey: true, cursorLocation: 'body' }),
+      client.fetchList<ListData>('messaging/conversations/retrieve', { ...options, method: 'POST', body: data, scopes: ['messagingProfileId'], acceptsIdempotencyKey: true }),
 
     readMessages: (conversationId: string, parentMessageId: string, data: ReadMessagesBody, options?: ConjoinCallOptions) =>
-      client.fetchList<ReadMessagesData>(`messaging/conversations/${encodePathParam(conversationId)}/messages/${encodePathParam(parentMessageId)}`, { ...options, method: 'POST', body: data, scopes: ['messagingProfileId'], acceptsIdempotencyKey: true, cursorLocation: 'body' }),
+      client.fetchList<ReadMessagesData>(`messaging/conversations/${encodePathParam(conversationId)}/messages/${encodePathParam(parentMessageId)}`, { ...options, method: 'POST', body: data, scopes: ['messagingProfileId'], acceptsIdempotencyKey: true }),
 
     readOneRecipient: (conversationId: string, recipientId: string, options?: ConjoinCallOptions) =>
       client.fetch<ReadOneRecipientData>(`messaging/conversations/${encodePathParam(conversationId)}/recipients/${encodePathParam(recipientId)}`, { ...options, method: 'GET', scopes: ['messagingProfileId'] }),
@@ -58,12 +58,12 @@ export function createMessagingConversations(client: ConjoinClient) {
       client.fetch<DeleteRecipientsData>(`messaging/conversations/${encodePathParam(conversationId)}/recipients/${encodePathParam(recipientId)}`, { ...options, method: 'DELETE', scopes: ['messagingProfileId'] }),
 
     readManyRecipients: (conversationId: string, data: ReadManyRecipientsBody, options?: ConjoinCallOptions) =>
-      client.fetchList<ReadManyRecipientsData>(`messaging/conversations/${encodePathParam(conversationId)}/recipients/retrieve`, { ...options, method: 'POST', body: data, scopes: ['messagingProfileId'], acceptsIdempotencyKey: true, cursorLocation: 'body' }),
+      client.fetchList<ReadManyRecipientsData>(`messaging/conversations/${encodePathParam(conversationId)}/recipients/retrieve`, { ...options, method: 'POST', body: data, scopes: ['messagingProfileId'], acceptsIdempotencyKey: true }),
 
     addOneRecipient: (conversationId: string, data: AddOneRecipientBody, options?: ConjoinCallOptions) =>
       client.fetch<AddOneRecipientData>(`messaging/conversations/${encodePathParam(conversationId)}/recipients`, { ...options, method: 'POST', body: data, scopes: ['messagingProfileId'], acceptsIdempotencyKey: true }),
 
     addManyRecipients: (conversationId: string, data: AddManyRecipientsBody, options?: ConjoinCallOptions) =>
-      client.fetchList<AddManyRecipientsData>(`messaging/conversations/${encodePathParam(conversationId)}/recipients/batch`, { ...options, method: 'POST', body: data, scopes: ['messagingProfileId'], acceptsIdempotencyKey: true, cursorLocation: 'none' }),
+      client.fetchList<AddManyRecipientsData>(`messaging/conversations/${encodePathParam(conversationId)}/recipients/batch`, { ...options, method: 'POST', body: data, scopes: ['messagingProfileId'], acceptsIdempotencyKey: true }),
   }
 }

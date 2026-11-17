@@ -6,7 +6,6 @@ namespace ConjoinCloud\Generated\Api;
 
 use ConjoinCloud\CallOptions;
 use ConjoinCloud\ConjoinClient;
-use ConjoinCloud\CursorLocation;
 use ConjoinCloud\HttpMethod;
 use ConjoinCloud\Internal\Request\PathSegment;
 use ConjoinCloud\OperationRequest;
@@ -67,7 +66,6 @@ final class MessagingContacts
             body: $data,
             scopes: [Scope::MessagingProfileId],
             acceptsIdempotencyKey: true,
-            cursor: CursorLocation::Body,
         ), $options);
     }
 

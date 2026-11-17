@@ -152,8 +152,6 @@ def _call_arguments(entry: MethodEntry, *, is_async: bool) -> list[str]:
         arguments.append(f"scopes=({scopes})")
     if operation.accepts_idempotency_key:
         arguments.append("accepts_idempotency_key=True")
-    if operation.response_kind == "list" and operation.cursor_location != "query":
-        arguments.append(f"cursor_location={operation.cursor_location!r}")
     if operation.auth_mode in ("none", "portal_ticket"):
         arguments.append("default_auth=AUTH_NONE")
     elif operation.auth_mode == "scim_bearer":
