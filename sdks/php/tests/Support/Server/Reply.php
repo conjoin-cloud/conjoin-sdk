@@ -10,14 +10,13 @@ final class Reply
 
     private function __construct(
         public readonly bool $drop,
-        public readonly float $delaySeconds,
         public readonly string $bytes,
     ) {
     }
 
     public static function drop(): self
     {
-        return new self(true, 0.0, '');
+        return new self(true, '');
     }
 
     public static function json(int $status, mixed $body, array $headers = []): self
@@ -31,14 +30,10 @@ final class Reply
 
         if ($status !== self::NO_CONTENT_STATUS) {
             $lines[] = 'Content-Type: application/json';
-            $declaredLength = $headers['content-length'] ?? null;
-            $lines[] = sprintf('Content-Length: %s', is_string($declaredLength) ? $declaredLength : strlen($body));
+            $lines[] = sprintf('Content-Length: %d', strlen($body));
         }
 
         foreach ($headers as $name => $value) {
-            if ($name === 'content-length') {
-                continue;
-            }
             if (is_string($name) && is_string($value)) {
                 $lines[] = sprintf('%s: %s', $name, $value);
             }
@@ -46,11 +41,6 @@ final class Reply
 
         $payload = $status === self::NO_CONTENT_STATUS ? '' : $body;
 
-        return new self(false, 0.0, implode("\r\n", $lines) . "\r\n\r\n" . $payload);
-    }
-
-    public function delayed(float $seconds): self
-    {
-        return new self($this->drop, $seconds, $this->bytes);
+        return new self(false, implode("\r\n", $lines) . "\r\n\r\n" . $payload);
     }
 }

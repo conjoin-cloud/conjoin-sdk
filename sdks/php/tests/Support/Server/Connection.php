@@ -20,15 +20,10 @@ final class Connection
 
     private bool $requestTaken = false;
 
-    private ?float $writeAt = null;
+    private bool $isReplyScheduled = false;
 
     public function __construct(public readonly mixed $socket)
     {
-    }
-
-    public function hasRequest(): bool
-    {
-        return $this->requestTaken;
     }
 
     public function receive(string $bytes): ?ReceivedRequest
@@ -47,17 +42,12 @@ final class Connection
         $this->requestTaken = true;
         $this->inbound = '';
         $this->outbound = $reply->bytes;
-        $this->writeAt = microtime(true) + $reply->delaySeconds;
+        $this->isReplyScheduled = true;
     }
 
-    public function wantsWrite(float $now): bool
+    public function wantsWrite(): bool
     {
-        return $this->writeAt !== null && $now >= $this->writeAt;
-    }
-
-    public function secondsUntilWrite(float $now): ?float
-    {
-        return $this->writeAt === null ? null : max(0.0, $this->writeAt - $now);
+        return $this->isReplyScheduled;
     }
 
     public function pendingBytes(): string
@@ -125,7 +115,6 @@ final class Connection
             $queryStart === false ? '' : substr($target, $queryStart + 1),
             $headers,
             substr($this->inbound, $bodyStart, $length),
-            microtime(true),
         );
     }
 

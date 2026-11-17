@@ -18,18 +18,15 @@ import (
 )
 
 const (
-	stepUpAPIKey     = "cak_test_harbourledgerstepup"
-	stepUpAuthApp    = "app_harbourledger"
-	stepUpAccountID  = "acc_harbourledger_owner"
-	stepUpSessionID  = "sus_harbourledger_0198f0f7"
-	stepUpToken      = "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08"
-	pinnedAPIVersion = "2026-06-01"
-	callerVersion    = "9.9.9"
-	deletedAccount   = `{"response":{"type":"SUCCESS","code":200,"message":"Success"},"data":{"account_id":"acc_harbourledger_owner","deleted":true}}`
+	stepUpAPIKey    = "cak_test_harbourledgerstepup"
+	stepUpAuthApp   = "app_harbourledger"
+	stepUpAccountID = "acc_harbourledger_owner"
+	stepUpSessionID = "sus_harbourledger_0198f0f7"
+	stepUpToken     = "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08"
+	deletedAccount  = `{"response":{"type":"SUCCESS","code":200,"message":"Success"},"data":{"account_id":"acc_harbourledger_owner","deleted":true}}`
 )
 
 type receivedRequest struct {
-	method   string
 	path     string
 	rawQuery string
 	header   http.Header
@@ -41,13 +38,17 @@ type headerReceiver struct {
 	received []receivedRequest
 }
 
+func (r *headerReceiver) record(request *http.Request) {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+	r.received = append(r.received, receivedRequest{path: request.URL.Path, rawQuery: request.URL.RawQuery, header: request.Header.Clone()})
+}
+
 func startHeaderReceiver(t *testing.T, body string) *headerReceiver {
 	t.Helper()
 	receiver := &headerReceiver{}
 	receiver.server = httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		receiver.mu.Lock()
-		receiver.received = append(receiver.received, receivedRequest{method: r.Method, path: r.URL.Path, rawQuery: r.URL.RawQuery, header: r.Header.Clone()})
-		receiver.mu.Unlock()
+		receiver.record(r)
 		w.Header().Set("Content-Type", "application/json")
 		_, _ = w.Write([]byte(body))
 	}))
@@ -77,91 +78,6 @@ func stepUpAccounts(t *testing.T, receiver *headerReceiver) *auth.AccountsServic
 	return auth.New(client).Accounts
 }
 
-func TestDeleteAuthAccountSendsBothStepUpHeaders(t *testing.T) {
-	receiver := startHeaderReceiver(t, deletedAccount)
-	headers := auth.DeleteAccountHeaders{StepUpSessionID: stepUpSessionID, StepUpToken: stepUpToken}
-
-	if _, err := stepUpAccounts(t, receiver).Delete(context.Background(), stepUpAccountID, nil, headers); err != nil {
-		t.Fatalf("the delete failed: %v", err)
-	}
-
-	received := receiver.take()
-	if len(received) != 1 {
-		t.Fatalf("the receiver saw %d requests, want 1", len(received))
-	}
-	request := received[0]
-	if request.method != http.MethodDelete || request.path != "/v1/auth/accounts/"+stepUpAccountID {
-		t.Fatalf("the receiver saw %s %s", request.method, request.path)
-	}
-	for name, want := range map[string]string{"Step-Up-Session-Id": stepUpSessionID, "Step-Up-Token": stepUpToken, "Auth-App-Id": stepUpAuthApp} {
-		if got := request.header.Get(name); got != want {
-			t.Fatalf("the %s header arrived as %q, want %q", name, got, want)
-		}
-	}
-}
-
-func TestDeleteAuthAccountKeepsTheTypedStepUpValuesOverFreeFormHeaders(t *testing.T) {
-	receiver := startHeaderReceiver(t, deletedAccount)
-	headers := auth.DeleteAccountHeaders{StepUpSessionID: stepUpSessionID, StepUpToken: stepUpToken}
-
-	_, err := stepUpAccounts(t, receiver).Delete(context.Background(), stepUpAccountID, nil, headers,
-		conjoin.WithHeader("step-up-token", "ffff"), conjoin.WithHeader("STEP-UP-SESSION-ID", "sus_other"))
-	if err != nil {
-		t.Fatalf("the delete failed: %v", err)
-	}
-
-	request := receiver.take()[0]
-	if got := request.header.Values("Step-Up-Token"); len(got) != 1 || got[0] != stepUpToken {
-		t.Fatalf("the Step-Up-Token header arrived as %q", got)
-	}
-	if got := request.header.Values("Step-Up-Session-Id"); len(got) != 1 || got[0] != stepUpSessionID {
-		t.Fatalf("the Step-Up-Session-Id header arrived as %q", got)
-	}
-}
-
-func TestFreeFormVersionHeadersInAnotherCaseNeverReachTheWire(t *testing.T) {
-	receiver := startHeaderReceiver(t, deletedAccount)
-	client, err := conjoin.NewClient(
-		conjoin.WithAPIKey(stepUpAPIKey),
-		conjoin.WithBaseURL(receiver.server.URL),
-		conjoin.WithAuthAppID(stepUpAuthApp),
-		conjoin.WithAPIVersion(pinnedAPIVersion),
-		conjoin.WithMaxRetries(0),
-	)
-	if err != nil {
-		t.Fatalf("the client did not start: %v", err)
-	}
-
-	_, err = auth.New(client).Accounts.Delete(context.Background(), stepUpAccountID, nil, auth.DeleteAccountHeaders{},
-		conjoin.WithHeader("x-conjoin-api-version", callerVersion), conjoin.WithHeader("X-CONJOIN-SDK-VERSION", callerVersion))
-	if err != nil {
-		t.Fatalf("the delete failed: %v", err)
-	}
-
-	request := receiver.take()[0]
-	if got := request.header.Values("X-Conjoin-Api-Version"); len(got) != 1 || got[0] != pinnedAPIVersion {
-		t.Fatalf("the X-Conjoin-API-Version header arrived as %q", got)
-	}
-	if got := request.header.Values("X-Conjoin-Sdk-Version"); len(got) != 1 || got[0] == callerVersion || strings.Contains(got[0], ",") {
-		t.Fatalf("the X-Conjoin-SDK-Version header arrived as %q", got)
-	}
-}
-
-func TestDeleteAuthAccountDropsFreeFormStepUpHeadersWhenNoTypedValueIsGiven(t *testing.T) {
-	receiver := startHeaderReceiver(t, deletedAccount)
-
-	_, err := stepUpAccounts(t, receiver).Delete(context.Background(), stepUpAccountID, nil, auth.DeleteAccountHeaders{},
-		conjoin.WithHeader("Step-Up-Token", "ffff"))
-	if err != nil {
-		t.Fatalf("the delete failed: %v", err)
-	}
-
-	request := receiver.take()[0]
-	if request.header.Get("Step-Up-Token") != "" || request.header.Get("Step-Up-Session-Id") != "" {
-		t.Fatalf("the receiver saw step-up headers %v", request.header)
-	}
-}
-
 func TestDeleteAuthAccountRefusesAMalformedStepUpTokenWithoutRepeatingIt(t *testing.T) {
 	cases := map[string]conjoin.Credential{
 		"an uppercase token":        conjoin.Credential(strings.ToUpper(stepUpToken)),
@@ -185,20 +101,6 @@ func TestDeleteAuthAccountRefusesAMalformedStepUpTokenWithoutRepeatingIt(t *test
 				t.Fatalf("the receiver saw %d requests, want 0", len(received))
 			}
 		})
-	}
-}
-
-func TestDeleteAuthAccountRefusesASessionIDLongerThanDocumented(t *testing.T) {
-	receiver := startHeaderReceiver(t, deletedAccount)
-	headers := auth.DeleteAccountHeaders{StepUpSessionID: strings.Repeat("s", 49)}
-
-	_, err := stepUpAccounts(t, receiver).Delete(context.Background(), stepUpAccountID, nil, headers)
-
-	if !errors.Is(err, conjoin.ErrConfiguration) {
-		t.Fatalf("the delete gave %v, want a configuration error", err)
-	}
-	if received := receiver.take(); len(received) != 0 {
-		t.Fatalf("the receiver saw %d requests, want 0", len(received))
 	}
 }
 

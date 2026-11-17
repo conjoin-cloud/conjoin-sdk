@@ -6,7 +6,6 @@ import (
 	"io"
 	"net/http"
 	"net/http/httptest"
-	"net/url"
 	"sync"
 	"testing"
 	"time"
@@ -15,11 +14,9 @@ import (
 )
 
 const (
-	testAPIKey          = "cak_test_harbourledgertransport"
-	customersPath       = "/v1/billing/customers/"
-	maxTestBodyBytes    = 1 << 20
-	callerRequestID     = "cnj_req_0198f0f7-5d0b-7b4a-8d5a-cf5693f0b2c1"
-	requestIDExpression = `^cnj_req_[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$`
+	testAPIKey       = "cak_test_harbourledgertransport"
+	customersPath    = "/v1/billing/customers/"
+	maxTestBodyBytes = 1 << 20
 )
 
 type behaviourKind int
@@ -28,26 +25,19 @@ const (
 	answer behaviourKind = iota
 	dropBeforeStore
 	dropAfterStore
-	slowAnswer
-	slowAfterStore
 	statusAnswer
 )
 
 type behaviour struct {
 	kind   behaviourKind
-	delay  time.Duration
 	status int
-	header map[string]string
-	body   any
 }
 
 type receivedAttempt struct {
-	method     string
-	path       string
-	query      url.Values
-	header     http.Header
-	body       string
-	receivedAt time.Time
+	method string
+	path   string
+	header http.Header
+	body   string
 }
 
 type storedCustomer struct {
@@ -68,7 +58,6 @@ type unreliableServer struct {
 	behaviours []behaviour
 	customers  []storedCustomer
 	byKey      map[string]keyedCustomer
-	pages      func(cursor string) ([]string, string)
 }
 
 func startUnreliableServer(t *testing.T) *unreliableServer {
@@ -104,12 +93,6 @@ func (s *unreliableServer) queue(next ...behaviour) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	s.behaviours = append(s.behaviours, next...)
-}
-
-func (s *unreliableServer) servePages(source func(cursor string) ([]string, string)) {
-	s.mu.Lock()
-	defer s.mu.Unlock()
-	s.pages = source
 }
 
 func (s *unreliableServer) recorded() []receivedAttempt {
@@ -152,10 +135,7 @@ func successBody(status int, data any) map[string]any {
 	return map[string]any{"response": map[string]any{"type": "SUCCESS", "code": status, "message": "Success"}, "data": data}
 }
 
-func writeJSON(w http.ResponseWriter, status int, body any, header map[string]string) {
-	for name, value := range header {
-		w.Header().Set(name, value)
-	}
+func writeJSON(w http.ResponseWriter, status int, body any) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(status)
 	_ = json.NewEncoder(w).Encode(body)
@@ -180,44 +160,19 @@ func (s *unreliableServer) answer(w http.ResponseWriter, attempt receivedAttempt
 		if customer != nil {
 			data = customer
 		}
-		writeJSON(w, status, successBody(status, data), nil)
+		writeJSON(w, status, successBody(status, data))
 		return
 	}
-	s.mu.Lock()
-	pages := s.pages
-	s.mu.Unlock()
-	if pages != nil && attempt.method == http.MethodGet {
-		data, next := pages(attempt.query.Get("cursor[next]"))
-		body := successBody(http.StatusOK, data)
-		var nextCursor any
-		if next != "" {
-			nextCursor = next
-		}
-		body["cursor"] = map[string]any{"prev": nil, "next": nextCursor}
-		writeJSON(w, http.StatusOK, body, nil)
-		return
-	}
-	writeJSON(w, http.StatusOK, successBody(http.StatusOK, map[string]string{"method": attempt.method, "path": attempt.path, "body": attempt.body}), nil)
-}
-
-func waitOrHangUp(r *http.Request, delay time.Duration) bool {
-	timer := time.NewTimer(delay)
-	defer timer.Stop()
-	select {
-	case <-r.Context().Done():
-		return false
-	case <-timer.C:
-		return true
-	}
+	writeJSON(w, http.StatusOK, successBody(http.StatusOK, map[string]string{"method": attempt.method, "path": attempt.path, "body": attempt.body}))
 }
 
 func (s *unreliableServer) handle(w http.ResponseWriter, r *http.Request) {
 	raw, err := io.ReadAll(io.LimitReader(r.Body, maxTestBodyBytes))
 	if err != nil {
-		writeJSON(w, http.StatusBadRequest, map[string]any{"data": nil}, nil)
+		writeJSON(w, http.StatusBadRequest, map[string]any{"data": nil})
 		return
 	}
-	attempt := receivedAttempt{method: r.Method, path: r.URL.Path, query: r.URL.Query(), header: r.Header.Clone(), body: string(raw), receivedAt: time.Now()}
+	attempt := receivedAttempt{method: r.Method, path: r.URL.Path, header: r.Header.Clone(), body: string(raw)}
 
 	s.mu.Lock()
 	s.attempts = append(s.attempts, attempt)
@@ -227,32 +182,16 @@ func (s *unreliableServer) handle(w http.ResponseWriter, r *http.Request) {
 	}
 	s.mu.Unlock()
 
-	isCreate := attempt.method == http.MethodPost && attempt.path == customersPath
 	switch next.kind {
 	case dropBeforeStore:
 		dropConnection(w)
 	case dropAfterStore:
-		if isCreate {
+		if attempt.method == http.MethodPost && attempt.path == customersPath {
 			s.store(attempt)
 		}
 		dropConnection(w)
-	case slowAnswer:
-		if waitOrHangUp(r, next.delay) {
-			s.answer(w, attempt)
-		}
-	case slowAfterStore:
-		if isCreate {
-			s.store(attempt)
-		}
-		if waitOrHangUp(r, next.delay) {
-			s.answer(w, attempt)
-		}
 	case statusAnswer:
-		body := next.body
-		if body == nil {
-			body = map[string]any{"data": nil}
-		}
-		writeJSON(w, next.status, body, next.header)
+		writeJSON(w, next.status, map[string]any{"data": nil})
 	default:
 		s.answer(w, attempt)
 	}

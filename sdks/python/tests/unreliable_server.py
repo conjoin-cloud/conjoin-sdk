@@ -3,8 +3,7 @@ from __future__ import annotations
 import json
 import threading
 from collections import deque
-from collections.abc import Callable
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import Any
 
 from local_http import LocalHttpServer, ReceivedRequest, Reply, json_reply
@@ -18,49 +17,15 @@ class Answer:
 
 
 @dataclass(frozen=True)
-class DropBeforeStore:
-    pass
-
-
-@dataclass(frozen=True)
 class DropAfterStore:
     pass
 
 
-@dataclass(frozen=True)
-class Slow:
-    delay_seconds: float
-
-
-@dataclass(frozen=True)
-class Status:
-    status: int
-    body: Any = None
-    headers: dict[str, str] = field(default_factory=dict)
-
-
-Behaviour = Answer | DropBeforeStore | DropAfterStore | Slow | Status
-PageSource = Callable[[str | None], tuple[list[Any], str | None]]
+Behaviour = Answer | DropAfterStore
 
 
 def success(status: int, data: Any) -> dict[str, Any]:
     return {"response": {"type": "SUCCESS", "code": status, "message": "Success"}, "data": data}
-
-
-def error_body(status: int) -> dict[str, Any]:
-    return {
-        "response": {
-            "type": "SERVER_ERROR" if status >= 500 else "CLIENT_ERROR",
-            "code": status,
-            "message": "The ledger refused it",
-        },
-        "data": None,
-        "error": {
-            "code": "ledger_locked",
-            "param": "email",
-            "details": [{"message": "is locked", "path": "body.email"}],
-        },
-    }
 
 
 class UnreliableServer:
@@ -69,7 +34,6 @@ class UnreliableServer:
         self._behaviours: deque[Behaviour] = deque()
         self._customers: list[dict[str, str]] = []
         self._customers_by_key: dict[str, tuple[bytes, dict[str, str]]] = {}
-        self._page_source: PageSource | None = None
         self._http = LocalHttpServer(self._handle)
 
     @property
@@ -88,10 +52,6 @@ class UnreliableServer:
         with self._lock:
             self._behaviours.extend(behaviours)
 
-    def serve_pages(self, source: PageSource) -> None:
-        with self._lock:
-            self._page_source = source
-
     def stop(self) -> None:
         self._http.stop()
 
@@ -99,35 +59,18 @@ class UnreliableServer:
         with self._lock:
             return self._behaviours.popleft() if self._behaviours else Answer()
 
-    def _handle(self, request: ReceivedRequest, stopping: threading.Event) -> Reply | None:
+    def _handle(self, request: ReceivedRequest, _stopping: threading.Event) -> Reply | None:
         behaviour = self._next_behaviour()
-        if isinstance(behaviour, DropBeforeStore):
-            return None
         if isinstance(behaviour, DropAfterStore):
             if _is_customer_create(request):
                 self._store_customer(request)
             return None
-        if isinstance(behaviour, Slow):
-            if stopping.wait(behaviour.delay_seconds):
-                return None
-            return self._answer(request)
-        if isinstance(behaviour, Status):
-            body = behaviour.body if behaviour.body is not None else {"data": None}
-            return json_reply(behaviour.status, body, behaviour.headers)
         return self._answer(request)
 
     def _answer(self, request: ReceivedRequest) -> Reply:
         if _is_customer_create(request):
             status, customer = self._store_customer(request)
             return json_reply(status, success(status, customer) if customer else {"data": None})
-
-        with self._lock:
-            page_source = self._page_source
-        if page_source is not None and request.method == "GET":
-            cursor_values = request.query.get("cursor[next]")
-            data, next_cursor = page_source(cursor_values[0] if cursor_values else None)
-            cursor = {"prev": None, "next": next_cursor}
-            return json_reply(200, {**success(200, data), "cursor": cursor})
 
         return json_reply(200, success(200, {"path": request.path, "method": request.method}))
 

@@ -76,19 +76,9 @@ final class ServerProcess
         $this->control('queue', array_map(static fn (Behaviour $behaviour): array => $behaviour->toArray(), $behaviours));
     }
 
-    public function servePages(array $pages): void
-    {
-        $this->control('pages', (object) $pages);
-    }
-
     public function register(string $method, string $template, int $status, bool $hasBody, mixed $body): void
     {
         $this->control('contract', ['method' => $method, 'template' => $template, 'status' => $status, 'hasBody' => $hasBody, 'body' => $body]);
-    }
-
-    public function reset(): void
-    {
-        $this->control('reset', null);
     }
 
     public function attempts(): array
@@ -124,37 +114,6 @@ final class ServerProcess
         }
 
         return $values;
-    }
-
-    public function methods(): array
-    {
-        $methods = [];
-
-        foreach ($this->attempts() as $attempt) {
-            $methods[] = $attempt instanceof Attempt ? $attempt->method : null;
-        }
-
-        return $methods;
-    }
-
-    public function gapsSeconds(): array
-    {
-        $gaps = [];
-        $previous = null;
-
-        foreach ($this->attempts() as $attempt) {
-            if (!$attempt instanceof Attempt) {
-                continue;
-            }
-
-            if ($previous !== null) {
-                $gaps[] = $attempt->receivedAt - $previous;
-            }
-
-            $previous = $attempt->receivedAt;
-        }
-
-        return $gaps;
     }
 
     public function customers(): array

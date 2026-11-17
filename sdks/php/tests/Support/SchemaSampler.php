@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace ConjoinCloud\Tests\Integration\EveryOperation;
+namespace ConjoinCloud\Tests\Support;
 
 use ConjoinCloud\UploadFile;
 use stdClass;

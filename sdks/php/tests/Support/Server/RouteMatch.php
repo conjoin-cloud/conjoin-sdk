@@ -8,7 +8,6 @@ final class RouteMatch
 {
     public function __construct(
         public readonly string $template,
-        public readonly array $params,
         public readonly int $literalSegments,
     ) {
     }

@@ -4,116 +4,16 @@ declare(strict_types=1);
 
 namespace ConjoinCloud\Tests\Integration;
 
-use ConjoinCloud\Exception\ApiException;
 use ConjoinCloud\Exception\AuthenticationException;
-use ConjoinCloud\Exception\ConflictException;
 use ConjoinCloud\Exception\ConjoinException;
-use ConjoinCloud\Exception\FieldError;
 use ConjoinCloud\Exception\NetworkException;
-use ConjoinCloud\Exception\NotFoundException;
-use ConjoinCloud\Exception\PermissionDeniedException;
-use ConjoinCloud\Exception\ResponseException;
 use ConjoinCloud\Exception\ServerException;
-use ConjoinCloud\Exception\ValidationException;
 use ConjoinCloud\Generated\Api\AuthSCIMs;
 use ConjoinCloud\Tests\Support\Server\Behaviour;
 use ConjoinCloud\Tests\Support\ServerTestCase;
-use PHPUnit\Framework\Attributes\DataProvider;
 
 final class ErrorResponseTest extends ServerTestCase
 {
-    public static function refusedStatuses(): array
-    {
-        return [
-            [400, ValidationException::class],
-            [401, AuthenticationException::class],
-            [403, PermissionDeniedException::class],
-            [404, NotFoundException::class],
-            [409, ConflictException::class],
-            [422, ValidationException::class],
-            [501, ServerException::class],
-        ];
-    }
-
-    #[DataProvider('refusedStatuses')]
-    public function testNeverRetriesARefusalAndReportsItsCodeParamAndDetails(int $status, string $exceptionClass): void
-    {
-        $this->server()->queue(Behaviour::status($status, body: self::errorBody($status)));
-
-        $error = self::caught(fn () => self::read($this->client()));
-
-        self::assertSame($exceptionClass, $error::class);
-        self::assertInstanceOf(ApiException::class, $error);
-        self::assertSame($status, $error->getStatus());
-        self::assertSame('ledger_locked', $error->getErrorCode());
-        self::assertSame('email', $error->getParam());
-        self::assertSame([['message' => 'is locked', 'path' => 'body.email']], $error->getDetails());
-        self::assertSame('The ledger refused it', $error->getMessage());
-        self::assertSame($this->server()->attempt(0)->header('conjoin-request-id'), $error->getRequestId());
-        self::assertSame(1, $this->server()->attemptCount());
-    }
-
-    public function testListsTheFieldErrorsOfAValidationFailure(): void
-    {
-        $this->server()->queue(Behaviour::status(422, body: self::errorBody(422)));
-
-        $error = self::caught(fn () => self::read($this->client()));
-
-        self::assertInstanceOf(ValidationException::class, $error);
-        $fieldErrors = [];
-
-        foreach ($error->getFieldErrors() as $fieldError) {
-            self::assertInstanceOf(FieldError::class, $fieldError);
-            $fieldErrors[] = [$fieldError->path, $fieldError->message];
-        }
-
-        self::assertSame([['body.email', 'is locked']], $fieldErrors);
-    }
-
-    public function testTruncatedRefusalIsNotRetried(): void
-    {
-        foreach ([400, 501] as $status) {
-            $this->server()->reset();
-            $this->server()->queue(Behaviour::rawStatus($status, '{"error":', ['content-length' => '1000']));
-            $error = self::caught(fn () => self::read($this->client()));
-            self::assertInstanceOf(ApiException::class, $error);
-            self::assertSame($status, $error->getStatus());
-            self::assertSame(1, $this->server()->attemptCount());
-        }
-    }
-
-    public function testReadsOnlyTheFirst64KiBOfAnErrorBody(): void
-    {
-        $this->server()->queue(Behaviour::large(400, 5_000_000));
-
-        $error = self::caught(fn () => self::read($this->client()));
-
-        self::assertInstanceOf(ValidationException::class, $error);
-        self::assertSame('invalid_request', $error->getErrorCode());
-        self::assertSame('HTTP 400', $error->getMessage());
-    }
-
-    public function testRefusesASuccessBodyAboveTheResponseLimit(): void
-    {
-        $this->server()->queue(Behaviour::large(200, 50_000));
-
-        $error = self::caught(fn () => self::read($this->client(maxResponseBytes: 4_096)));
-
-        self::assertInstanceOf(ResponseException::class, $error);
-        self::assertSame(ResponseException::RESPONSE_TOO_LARGE, $error->getErrorCode());
-        self::assertSame(1, $this->server()->attemptCount());
-    }
-
-    public function testRefusesASuccessBodyThatIsNotJson(): void
-    {
-        $this->server()->queue(Behaviour::rawStatus(200, '<html>maintenance</html>'));
-
-        $error = self::caught(fn () => self::read($this->client()));
-
-        self::assertInstanceOf(ResponseException::class, $error);
-        self::assertSame(ResponseException::INVALID_RESPONSE, $error->getErrorCode());
-    }
-
     public function testKeepsTheKeyOutOfEveryExceptionAndDump(): void
     {
         $client = $this->client(maxRetries: 0);

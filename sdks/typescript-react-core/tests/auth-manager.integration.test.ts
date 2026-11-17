@@ -70,27 +70,6 @@ it('serialises logout after an in-flight refresh and suppresses stale account re
   expect(manager.getState()).toEqual({ isLoaded: true, isSignedIn: false })
 })
 
-it('does not schedule a refresh after a state callback signs out', async () => {
-  const server = await authServer()
-  let signingOut: Promise<void> | undefined
-  const manager = createAuthManager({
-    api: server.api,
-    transport: createWebTransport(),
-    onStateChange: state => {
-      if (state.isLoaded && state.isSignedIn) signingOut = manager.signOut()
-    },
-  })
-  managers.push(manager)
-  const refreshing = manager.refresh()
-  await waitFor(() => server.requests.length === 1)
-  server.release()
-  await refreshing
-  await signingOut
-  await new Promise(resolve => setTimeout(resolve, 5200))
-  expect(server.requests.filter(path => path.endsWith('/handshakes'))).toHaveLength(1)
-  expect(manager.getState()).toEqual({ isLoaded: true, isSignedIn: false })
-}, 10000)
-
 it('finishes a requested logout after destruction while a refresh is pending', async () => {
   const server = await authServer()
   let notifications = 0

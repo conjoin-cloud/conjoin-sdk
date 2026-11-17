@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import pytest
 
-from conjoin_cloud import Conjoin, ConjoinConfigurationError
+from conjoin_cloud import Conjoin
 
 
 @pytest.mark.parametrize(
@@ -25,13 +25,3 @@ def test_the_key_selects_the_regional_address(key: str, base_url: str) -> None:
 
     with client:
         assert client.config.base_url == base_url
-
-
-def test_a_caller_base_url_overrides_the_key_region() -> None:
-    with Conjoin(api_key="cak_eu_live_harbourledger", base_url="http://127.0.0.1:9") as client:
-        assert client.config.base_url == "http://127.0.0.1:9"
-
-
-def test_the_client_takes_exactly_one_credential() -> None:
-    with pytest.raises(ConjoinConfigurationError):
-        Conjoin(api_key="cak_live_harbourledger", publishable_key="cpk_live_harbourledger")

@@ -1,21 +1,13 @@
 import { createServer, type IncomingMessage, type ServerResponse } from 'node:http'
 import type { AddressInfo } from 'node:net'
 
-export type ServerBehaviour =
-  | { kind: 'answer' }
-  | { kind: 'drop-before-store' }
-  | { kind: 'drop-after-store' }
-  | { kind: 'drop-during-response'; status?: number; delayMs?: number }
-  | { kind: 'slow'; delayMs: number }
-  | { kind: 'status'; status: number; headers?: Record<string, string>; body?: unknown }
+export type ServerBehaviour = { kind: 'answer' } | { kind: 'drop-after-store' }
 
 export type ReceivedAttempt = {
   method: string
   path: string
-  query: URLSearchParams
   headers: Record<string, string | undefined>
   body: string
-  receivedAt: number
 }
 
 export type StoredCustomer = {
@@ -23,14 +15,11 @@ export type StoredCustomer = {
   email: string
 }
 
-export type ListPageSource = (cursor: string | null) => { data: unknown[]; next: string | null }
-
 export type UnreliableServer = {
   baseUrl: string
   attempts: ReceivedAttempt[]
   storedCustomers: () => StoredCustomer[]
   queue: (...behaviours: ServerBehaviour[]) => void
-  servePages: (source: ListPageSource) => void
   stop: () => Promise<void>
 }
 
@@ -57,12 +46,11 @@ const readBody = async (request: IncomingMessage): Promise<string> => {
   return Buffer.concat(chunks).toString('utf8')
 }
 
-const writeJson = (response: ServerResponse, status: number, body: unknown, headers: Record<string, string> = {}) => {
+const writeJson = (response: ServerResponse, status: number, body: unknown) => {
   const text = JSON.stringify(body)
   response.writeHead(status, {
     'content-type': 'application/json',
     'content-length': Buffer.byteLength(text),
-    ...headers,
   })
   response.end(text)
 }
@@ -80,7 +68,6 @@ export const startUnreliableServer = async (): Promise<UnreliableServer> => {
   const behaviours: ServerBehaviour[] = []
   const customersByKey = new Map<string, { body: string; customer: StoredCustomer }>()
   const customers: StoredCustomer[] = []
-  let pageSource: ListPageSource | undefined
 
   const storeCustomer = (attempt: ReceivedAttempt): { status: number; customer?: StoredCustomer } => {
     const key = attempt.headers['idempotency-key']
@@ -100,67 +87,34 @@ export const startUnreliableServer = async (): Promise<UnreliableServer> => {
     return { status: 201, customer }
   }
 
-  const answer = (response: ServerResponse, attempt: ReceivedAttempt): void => {
-    if (attempt.method === 'POST' && attempt.path === CUSTOMERS_PATH) {
-      const stored = storeCustomer(attempt)
-      writeJson(response, stored.status, stored.customer ? success(stored.status, stored.customer) : { data: null })
-      return
-    }
-
-    if (pageSource !== undefined && attempt.method === 'GET') {
-      const page = pageSource(attempt.query.get('cursor[next]'))
-      writeJson(response, 200, { ...success(200, page.data), cursor: { prev: null, next: page.next } })
-      return
-    }
-
-    writeJson(response, 200, success(200, { path: attempt.path, method: attempt.method }))
-  }
+  const isCustomerCreate = (attempt: ReceivedAttempt): boolean =>
+    attempt.method === 'POST' && attempt.path === CUSTOMERS_PATH
 
   const handle = async (request: IncomingMessage, response: ServerResponse): Promise<void> => {
     const url = new URL(request.url ?? '/', `http://${LOOPBACK_HOST}`)
     const attempt: ReceivedAttempt = {
       method: (request.method ?? 'GET').toUpperCase(),
       path: url.pathname,
-      query: url.searchParams,
       headers: flattenHeaders(request),
       body: await readBody(request),
-      receivedAt: Date.now(),
     }
     attempts.push(attempt)
 
     const behaviour = behaviours.shift() ?? { kind: 'answer' }
 
-    if (behaviour.kind === 'drop-before-store') {
-      request.socket.destroy()
-      return
-    }
-
     if (behaviour.kind === 'drop-after-store') {
-      if (attempt.method === 'POST' && attempt.path === CUSTOMERS_PATH) storeCustomer(attempt)
+      if (isCustomerCreate(attempt)) storeCustomer(attempt)
       request.socket.destroy()
       return
     }
 
-    if (behaviour.kind === 'drop-during-response') {
-      if (attempt.method === 'POST' && attempt.path === CUSTOMERS_PATH) storeCustomer(attempt)
-      response.writeHead(behaviour.status ?? 200, { 'content-type': 'application/json', 'content-length': '1000' })
-      response.write('{"data":')
-      setTimeout(() => response.destroy(), behaviour.delayMs ?? 20)
+    if (isCustomerCreate(attempt)) {
+      const stored = storeCustomer(attempt)
+      writeJson(response, stored.status, stored.customer ? success(stored.status, stored.customer) : { data: null })
       return
     }
 
-    if (behaviour.kind === 'slow') {
-      await new Promise(resolve => setTimeout(resolve, behaviour.delayMs))
-      if (!response.destroyed) answer(response, attempt)
-      return
-    }
-
-    if (behaviour.kind === 'status') {
-      writeJson(response, behaviour.status, behaviour.body ?? { data: null }, behaviour.headers)
-      return
-    }
-
-    answer(response, attempt)
+    writeJson(response, 200, success(200, { path: attempt.path, method: attempt.method }))
   }
 
   const server = createServer((request, response) => {
@@ -190,9 +144,6 @@ export const startUnreliableServer = async (): Promise<UnreliableServer> => {
     storedCustomers: () => [...customers],
     queue: (...next) => {
       behaviours.push(...next)
-    },
-    servePages: source => {
-      pageSource = source
     },
     stop: () =>
       new Promise((resolve, reject) => {

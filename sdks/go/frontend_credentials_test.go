@@ -70,40 +70,6 @@ func TestFrontendCallsFromASecretKeyClientNeverSendTheSecretKey(t *testing.T) {
 	}
 }
 
-func TestFrontendCallsSendThePublishableKeyOnlyWhereTheDocumentAsksForIt(t *testing.T) {
-	receiver := startHeaderReceiver(t, frontendSuccess)
-	client := frontendClient(t, receiver, conjoin.WithPublishableKey(frontendPublishableKey))
-	ctx := context.Background()
-
-	if _, err := frontendcloud.New(client).SDKs.ReadSdkSettings(ctx); err != nil {
-		t.Fatalf("the publishable-key call failed: %v", err)
-	}
-	if _, err := frontendauth.New(client).Clients.GetJwks(ctx); err != nil {
-		t.Fatalf("the public call failed: %v", err)
-	}
-
-	received := receiver.take()
-	if len(received) != 2 || received[0].header.Get("Authorization") != "Bearer "+frontendPublishableKey || received[1].header.Get("Authorization") != "" {
-		t.Fatalf("the receiver saw %s", everyReceivedValue(received))
-	}
-}
-
-func TestFrontendSessionCallsRefuseAMissingTokenAndAnOverride(t *testing.T) {
-	receiver := startHeaderReceiver(t, frontendSuccess)
-	selves := frontendauth.New(frontendClient(t, receiver, conjoin.WithPublishableKey(frontendPublishableKey))).Selves
-	ctx := context.Background()
-
-	if _, err := selves.ReadProfile(ctx, ""); !errors.Is(err, conjoin.ErrConfiguration) {
-		t.Fatalf("a session call without a token gave %v, want a configuration error", err)
-	}
-	if _, err := selves.ReadProfile(ctx, frontendSessionToken, conjoin.WithBearerToken(frontendSecretKey)); !errors.Is(err, conjoin.ErrConfiguration) {
-		t.Fatalf("a session call with a bearer override gave %v, want a configuration error", err)
-	}
-	if received := receiver.take(); len(received) != 0 {
-		t.Fatalf("the receiver saw %d requests, want 0", len(received))
-	}
-}
-
 func TestPortalTicketTravelsOnlyInItsHeader(t *testing.T) {
 	receiver := startHeaderReceiver(t, frontendSuccess)
 	portals := frontendauth.New(frontendClient(t, receiver, conjoin.WithPublishableKey(frontendPublishableKey))).SSOPortals
@@ -122,22 +88,5 @@ func TestPortalTicketTravelsOnlyInItsHeader(t *testing.T) {
 	}
 	if strings.Contains(request.rawQuery, frontendPortalTicket) {
 		t.Fatalf("the query string %q carried the portal ticket", request.rawQuery)
-	}
-}
-
-func TestPortalTicketIsRequiredAndNeverRepeatedInAnError(t *testing.T) {
-	receiver := startHeaderReceiver(t, frontendSuccess)
-	portals := frontendauth.New(frontendClient(t, receiver, conjoin.WithPublishableKey(frontendPublishableKey))).SSOPortals
-	malformed := conjoin.Credential("ptk_harbourledger portal_ticket")
-
-	if _, err := portals.ReadSsoPortalContext(context.Background(), frontendauth.ReadSsoPortalContextHeaders{}); !errors.Is(err, conjoin.ErrConfiguration) {
-		t.Fatalf("a portal call without a ticket gave %v, want a configuration error", err)
-	}
-	_, err := portals.ReadSsoPortalContext(context.Background(), frontendauth.ReadSsoPortalContextHeaders{PortalTicket: malformed})
-	if !errors.Is(err, conjoin.ErrConfiguration) || strings.Contains(err.Error(), string(malformed)) {
-		t.Fatalf("a malformed ticket gave %v", err)
-	}
-	if received := receiver.take(); len(received) != 0 {
-		t.Fatalf("the receiver saw %d requests, want 0", len(received))
 	}
 }

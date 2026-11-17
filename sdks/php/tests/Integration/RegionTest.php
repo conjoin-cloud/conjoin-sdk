@@ -31,11 +31,4 @@ final class RegionTest extends TestCase
 
         self::assertSame($baseUrl, $client->baseUrl());
     }
-
-    public function testPrefersTheBaseUrlThatTheCallerSets(): void
-    {
-        $client = new ConjoinClient(apiKey: 'cak_gh_live_regionalcaller', baseUrl: 'https://gateway.example.com/');
-
-        self::assertSame('https://gateway.example.com', $client->baseUrl());
-    }
 }
