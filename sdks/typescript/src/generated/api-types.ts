@@ -6150,41 +6150,24 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/v1/messaging/email/analytics/": {
+    "/v1/messaging/analytics/": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get?: never;
+        /** List message analytics */
+        get: operations["listChannelAnalytics"];
         put?: never;
-        /** Fetch message analytics */
-        post: operations["listChannelAnalytics"];
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/v1/messaging/email/analytics/channels/{channel_id}/generate": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Generate message analytics summary */
-        post: operations["generateChannelAnalyticsSummaries"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/v1/messaging/email/analytics/messages/{message_id}/channels/{channel_id}/reports": {
+    "/v1/messaging/analytics-reports/": {
         parameters: {
             query?: never;
             header?: never;
@@ -6201,7 +6184,44 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/v1/messaging/email/analytics/{analytics_id}/opens": {
+    "/v1/messaging/analytics/count": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Count message analytics
+         * @description Returns how many records match the filters that the list route accepts.
+         */
+        get: operations["listChannelAnalyticsCount"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/messaging/analytics/stats": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Summarise message analytics for one channel */
+        get: operations["generateChannelAnalyticsSummaries"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/messaging/analytics/{analytics_id}/opens": {
         parameters: {
             query?: never;
             header?: never;
@@ -6210,15 +6230,15 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
         /** Increment channel analytics opens */
-        patch: operations["incrementChannelAnalyticsOpens"];
+        post: operations["incrementChannelAnalyticsOpens"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
         trace?: never;
     };
-    "/v1/messaging/email/analytics/{analytics_id}/clicks": {
+    "/v1/messaging/analytics/{analytics_id}/clicks": {
         parameters: {
             query?: never;
             header?: never;
@@ -6227,15 +6247,15 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
         /** Increment channel analytics clicks */
-        patch: operations["incrementChannelAnalyticsClicks"];
+        post: operations["incrementChannelAnalyticsClicks"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
         trace?: never;
     };
-    "/v1/messaging/email/analytics/{analytics_id}/deliveries": {
+    "/v1/messaging/analytics/{analytics_id}/deliveries": {
         parameters: {
             query?: never;
             header?: never;
@@ -6244,15 +6264,15 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
         /** Increment channel analytics deliveries */
-        patch: operations["incrementChannelAnalyticsDeliveries"];
+        post: operations["incrementChannelAnalyticsDeliveries"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
         trace?: never;
     };
-    "/v1/messaging/email/analytics/{analytics_id}/subscribes": {
+    "/v1/messaging/analytics/{analytics_id}/subscribes": {
         parameters: {
             query?: never;
             header?: never;
@@ -6261,15 +6281,15 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
         /** Increment channel analytics subscribes */
-        patch: operations["incrementChannelAnalyticsSubscribes"];
+        post: operations["incrementChannelAnalyticsSubscribes"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
         trace?: never;
     };
-    "/v1/messaging/email/analytics/{analytics_id}/unsubscribes": {
+    "/v1/messaging/analytics/{analytics_id}/unsubscribes": {
         parameters: {
             query?: never;
             header?: never;
@@ -6278,12 +6298,68 @@ export interface paths {
         };
         get?: never;
         put?: never;
+        /** Increment channel analytics unsubscribes */
+        post: operations["incrementChannelAnalyticsUnsubscribes"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/messaging/contact-properties/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List contact properties */
+        get: operations["listContactProperties"];
+        put?: never;
+        /** Create a contact property */
+        post: operations["createContactProperty"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/messaging/contact-properties/count": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Count contact properties
+         * @description Returns how many records match the filters that the list route accepts.
+         */
+        get: operations["listContactPropertiesCount"];
+        put?: never;
         post?: never;
         delete?: never;
         options?: never;
         head?: never;
-        /** Increment channel analytics unsubscribes */
-        patch: operations["incrementChannelAnalyticsUnsubscribes"];
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/messaging/contact-properties/{contact_property_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Fetch one contact property */
+        get: operations["fetchOneContactProperty"];
+        put?: never;
+        post?: never;
+        /** Delete a contact property */
+        delete: operations["deleteContactProperty"];
+        options?: never;
+        head?: never;
+        patch?: never;
         trace?: never;
     };
     "/v1/messaging/contacts/": {
@@ -6293,10 +6369,31 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get?: never;
+        /** List contacts */
+        get: operations["listContacts"];
         put?: never;
         /** Create a contact */
         post: operations["createContact"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/messaging/contacts/count": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Count contacts
+         * @description Returns how many records match the filters that the list route accepts.
+         */
+        get: operations["listContactsCount"];
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -6312,12 +6409,12 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post?: never;
+        /** Suppress messages for a contact */
+        post: operations["suppressContactMessages"];
         delete?: never;
         options?: never;
         head?: never;
-        /** Suppress messages for a contact */
-        patch: operations["suppressContactMessages"];
+        patch?: never;
         trace?: never;
     };
     "/v1/messaging/contacts/{contact_id}": {
@@ -6338,92 +6435,6 @@ export interface paths {
         patch: operations["updateContact"];
         trace?: never;
     };
-    "/v1/messaging/contacts/retrieve": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** List contacts */
-        post: operations["listContacts"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/v1/messaging/contacts/properties": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Create a contact property */
-        post: operations["createContactProperty"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/v1/messaging/contacts/properties/{property_id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Fetch one contact property */
-        get: operations["fetchOneContactProperty"];
-        put?: never;
-        post?: never;
-        /** Delete a contact property */
-        delete: operations["deleteContactProperty"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/v1/messaging/contacts/properties/retrieve": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** List contact properties */
-        post: operations["listContactProperties"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/v1/messaging/contacts/properties/remove": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Delete contact properties */
-        post: operations["deleteManyContactProperties"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/v1/messaging/contacts/{contact_id}/properties": {
         parameters: {
             query?: never;
@@ -6432,17 +6443,16 @@ export interface paths {
             cookie?: never;
         };
         get?: never;
+        put?: never;
         /** Add properties to a contact */
-        put: operations["addContactProperties"];
-        post?: never;
+        post: operations["addContactProperties"];
         delete?: never;
         options?: never;
         head?: never;
-        /** Update a contact property value */
-        patch: operations["updateContactProperty"];
+        patch?: never;
         trace?: never;
     };
-    "/v1/messaging/contacts/{contact_id}/properties/remove": {
+    "/v1/messaging/contacts/{contact_id}/properties/{property_id}": {
         parameters: {
             query?: never;
             header?: never;
@@ -6451,12 +6461,13 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Delete properties from a contact */
-        post: operations["deleteContactProperties"];
-        delete?: never;
+        post?: never;
+        /** Remove a property value from a contact */
+        delete: operations["deleteContactPropertyValue"];
         options?: never;
         head?: never;
-        patch?: never;
+        /** Update a contact property value */
+        patch: operations["updateContactProperty"];
         trace?: never;
     };
     "/v1/messaging/conversations/": {
@@ -6466,7 +6477,8 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get?: never;
+        /** List conversations */
+        get: operations["listConversations"];
         put?: never;
         /** Create a conversation */
         post: operations["createConversation"];
@@ -6476,7 +6488,102 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/v1/messaging/conversations/{conversation_id}/clone": {
+    "/v1/messaging/conversations/{conversation_id}/messages": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List conversation messages */
+        get: operations["listConversationMessages"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/messaging/conversations/{conversation_id}/recipients": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List conversation recipients */
+        get: operations["listConversationRecipients"];
+        put?: never;
+        /** Add one conversation recipient */
+        post: operations["addOneConversationRecipient"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/messaging/conversations/count": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Count conversations
+         * @description Returns how many records match the filters that the list route accepts.
+         */
+        get: operations["listConversationsCount"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/messaging/conversations/{conversation_id}/messages/count": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Count conversation messages
+         * @description Returns how many records match the filters that the list route accepts.
+         */
+        get: operations["listConversationMessagesCount"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/messaging/conversations/{conversation_id}/recipients/count": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Count conversation recipients
+         * @description Returns how many records match the filters that the list route accepts.
+         */
+        get: operations["listConversationRecipientsCount"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/messaging/conversations/{conversation_id}/duplicate": {
         parameters: {
             query?: never;
             header?: never;
@@ -6485,8 +6592,8 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Clone a conversation */
-        post: operations["cloneConversation"];
+        /** Duplicate a conversation */
+        post: operations["duplicateConversation"];
         delete?: never;
         options?: never;
         head?: never;
@@ -6537,42 +6644,8 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
         /** Archive a conversation */
-        patch: operations["archiveConversation"];
-        trace?: never;
-    };
-    "/v1/messaging/conversations/retrieve": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** List conversations */
-        post: operations["listConversations"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/v1/messaging/conversations/{conversation_id}/messages/{parent_message_id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Retrieve conversation messages */
-        post: operations["readConversationMessages"];
+        post: operations["archiveConversation"];
         delete?: never;
         options?: never;
         head?: never;
@@ -6597,41 +6670,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/v1/messaging/conversations/{conversation_id}/recipients/retrieve": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Retrieve many conversation recipients */
-        post: operations["readManyConversationRecipients"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/v1/messaging/conversations/{conversation_id}/recipients": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Add one conversation recipient */
-        post: operations["addOneConversationRecipient"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/v1/messaging/conversations/{conversation_id}/recipients/batch": {
+    "/v1/messaging/conversations/{conversation_id}/add-recipients": {
         parameters: {
             query?: never;
             header?: never;
@@ -6648,14 +6687,15 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/v1/messaging/email/send": {
+    "/v1/messaging/email-messages/": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get?: never;
+        /** List email messages */
+        get: operations["listEmailMessages"];
         put?: never;
         /** Send an email message */
         post: operations["sendEmail"];
@@ -6665,24 +6705,44 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/v1/messaging/email/messages/{message_id}": {
+    "/v1/messaging/email-messages/count": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get?: never;
+        /**
+         * Count email messages
+         * @description Returns how many records match the filters that the list route accepts.
+         */
+        get: operations["listEmailMessagesCount"];
         put?: never;
-        /** Retrieve email messages */
-        post: operations["readEmailMessages"];
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/v1/messaging/email/summary": {
+    "/v1/messaging/email-messages/{email_message_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Fetch one email message */
+        get: operations["readEmailMessage"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/messaging/email-message-previews/": {
         parameters: {
             query?: never;
             header?: never;
@@ -6691,7 +6751,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Generate an email message cost summary */
+        /** Preview the cost of an email message */
         post: operations["generateEmailSummary"];
         delete?: never;
         options?: never;
@@ -6699,14 +6759,15 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/v1/messaging/email/sender-pools/": {
+    "/v1/messaging/email-sender-pools/": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get?: never;
+        /** List email sender pools */
+        get: operations["listManyEmailSenderPools"];
         put?: never;
         /** Create an email sender pool */
         post: operations["createEmailSenderPool"];
@@ -6716,7 +6777,27 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/v1/messaging/email/sender-pools/{pool_id}/senders": {
+    "/v1/messaging/email-sender-pools/count": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Count email sender pools
+         * @description Returns how many records match the filters that the list route accepts.
+         */
+        get: operations["listManyEmailSenderPoolsCount"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/messaging/email-sender-pools/{email_sender_pool_id}/senders": {
         parameters: {
             query?: never;
             header?: never;
@@ -6733,7 +6814,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/v1/messaging/email/sender-pools/{pool_id}": {
+    "/v1/messaging/email-sender-pools/{email_sender_pool_id}": {
         parameters: {
             query?: never;
             header?: never;
@@ -6751,66 +6832,15 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/v1/messaging/email/senders/{sender_id}/verify": {
+    "/v1/messaging/email-senders/": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get?: never;
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        /** Verify an email sender */
-        patch: operations["verifyEmailSender"];
-        trace?: never;
-    };
-    "/v1/messaging/email/senders/retrieve": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Fetch many email senders */
-        post: operations["listManyEmailSenders"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/v1/messaging/email/senders/{sender_id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Fetch one email sender */
-        get: operations["listOneEmailSender"];
-        put?: never;
-        post?: never;
-        /** Delete one email sender */
-        delete: operations["deleteEmailSender"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/v1/messaging/email/senders/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
+        /** List email senders */
+        get: operations["listManyEmailSenders"];
         put?: never;
         /** Create a new email sender */
         post: operations["createEmailSender"];
@@ -6820,7 +6850,45 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/v1/messaging/email/senders/{sender_id}/enable": {
+    "/v1/messaging/email-senders/count": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Count email senders
+         * @description Returns how many records match the filters that the list route accepts.
+         */
+        get: operations["listManyEmailSendersCount"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/messaging/email-senders/{email_sender_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Fetch one email sender */
+        get: operations["readEmailSender"];
+        put?: never;
+        post?: never;
+        /** Delete one email sender */
+        delete: operations["deleteEmailSender"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/messaging/email-senders/{email_sender_id}/verify": {
         parameters: {
             query?: never;
             header?: never;
@@ -6829,15 +6897,32 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post?: never;
+        /** Verify an email sender */
+        post: operations["verifyEmailSender"];
         delete?: never;
         options?: never;
         head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/messaging/email-senders/{email_sender_id}/enable": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
         /** Enable one email sender */
-        patch: operations["enableEmailSender"];
+        post: operations["enableEmailSender"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
         trace?: never;
     };
-    "/v1/messaging/email/senders/{sender_id}/disable": {
+    "/v1/messaging/email-senders/{email_sender_id}/disable": {
         parameters: {
             query?: never;
             header?: never;
@@ -6846,15 +6931,15 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
         /** Disable one email sender */
-        patch: operations["disableEmailSender"];
+        post: operations["disableEmailSender"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
         trace?: never;
     };
-    "/v1/messaging/email/senders/transfers/{sender_id}/{project_id}": {
+    "/v1/messaging/email-senders/{email_sender_id}/transfer": {
         parameters: {
             query?: never;
             header?: never;
@@ -6863,15 +6948,15 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post?: never;
+        /** Transfer one email sender to another project */
+        post: operations["transferEmailSender"];
         delete?: never;
         options?: never;
         head?: never;
-        /** Transfer one email sender to another project */
-        patch: operations["transferEmailSender"];
+        patch?: never;
         trace?: never;
     };
-    "/v1/messaging/multisend/send": {
+    "/v1/messaging/broadcasts/": {
         parameters: {
             query?: never;
             header?: never;
@@ -6888,7 +6973,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/v1/messaging/multisend/{message_id}": {
+    "/v1/messaging/broadcasts/{broadcast_id}": {
         parameters: {
             query?: never;
             header?: never;
@@ -6897,57 +6982,6 @@ export interface paths {
         };
         /** Retrieve a multisend message */
         get: operations["readMultisend"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/v1/messaging/phone-numbers/{phone_number}/provision": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Provision a phone number */
-        post: operations["purchasePhoneNumber"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/v1/messaging/phone-numbers/transfer/{phone_number}/project/{project_id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        /** Transfer a phone number to another project */
-        patch: operations["updatePhoneNumber"];
-        trace?: never;
-    };
-    "/v1/messaging/phone-numbers/available": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** List available phone numbers for purchase */
-        get: operations["listAvailablePhoneNumbers"];
         put?: never;
         post?: never;
         delete?: never;
@@ -6966,6 +7000,27 @@ export interface paths {
         /** List provisioned phone numbers */
         get: operations["listPhoneNumbers"];
         put?: never;
+        /** Provision a phone number */
+        post: operations["purchasePhoneNumber"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/messaging/phone-numbers/count": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Count provisioned phone numbers
+         * @description Returns how many records match the filters that the list route accepts.
+         */
+        get: operations["listPhoneNumbersCount"];
+        put?: never;
         post?: never;
         delete?: never;
         options?: never;
@@ -6973,7 +7028,24 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/v1/messaging/phone-numbers/{phone_number}/release": {
+    "/v1/messaging/phone-numbers/{phone_number_id}/transfer": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Transfer a phone number to another project */
+        post: operations["transferPhoneNumber"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/messaging/phone-numbers/{phone_number_id}/release": {
         parameters: {
             query?: never;
             header?: never;
@@ -6990,6 +7062,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/messaging/available-phone-numbers/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List available phone numbers for purchase */
+        get: operations["listAvailablePhoneNumbers"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/messaging/profiles/": {
         parameters: {
             query?: never;
@@ -6997,10 +7086,31 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get?: never;
+        /** List messaging profiles */
+        get: operations["listMessagingProfiles"];
         put?: never;
         /** Create a messaging profile */
         post: operations["createMessagingProfile"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/messaging/profiles/count": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Count messaging profiles
+         * @description Returns how many records match the filters that the list route accepts.
+         */
+        get: operations["listMessagingProfilesCount"];
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -7016,12 +7126,12 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post?: never;
+        /** Enable a messaging profile */
+        post: operations["enableMessagingProfile"];
         delete?: never;
         options?: never;
         head?: never;
-        /** Enable a messaging profile */
-        patch: operations["enableMessagingProfile"];
+        patch?: never;
         trace?: never;
     };
     "/v1/messaging/profiles/{profile_id}/disable": {
@@ -7033,12 +7143,46 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post?: never;
+        /** Disable a messaging profile */
+        post: operations["disableMessagingProfile"];
         delete?: never;
         options?: never;
         head?: never;
-        /** Disable a messaging profile */
-        patch: operations["disableMessagingProfile"];
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/messaging/profiles/{profile_id}/enable-channels": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Turn on channels of a messaging profile */
+        post: operations["enableMessagingProfileChannels"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/messaging/profiles/{profile_id}/disable-channels": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Turn off channels of a messaging profile */
+        post: operations["disableMessagingProfileChannels"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
         trace?: never;
     };
     "/v1/messaging/profiles/{profile_id}/close": {
@@ -7050,12 +7194,12 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post?: never;
+        /** Close a messaging profile */
+        post: operations["closeMessagingProfile"];
         delete?: never;
         options?: never;
         head?: never;
-        /** Close a messaging profile */
-        patch: operations["closeMessagingProfile"];
+        patch?: never;
         trace?: never;
     };
     "/v1/messaging/profiles/{profile_id}": {
@@ -7077,82 +7221,15 @@ export interface paths {
         patch: operations["updateMessagingProfile"];
         trace?: never;
     };
-    "/v1/messaging/profiles/{profile_id}/emails-config": {
+    "/v1/messaging/sms-brands/": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get?: never;
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        /** Update a messaging profile email configuration */
-        patch: operations["updateMessagingProfileEmailConfig"];
-        trace?: never;
-    };
-    "/v1/messaging/profiles/{profile_id}/multisend-config": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        /** Update a messaging profile multisend configuration */
-        patch: operations["updateMessagingProfileMultisendConfig"];
-        trace?: never;
-    };
-    "/v1/messaging/profiles/{profile_id}/verifications-config": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        /** Update a messaging profile verifications configuration */
-        patch: operations["updateMessagingProfileVerificationsConfig"];
-        trace?: never;
-    };
-    "/v1/messaging/profiles/retrieve": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** List messaging profiles */
-        post: operations["listMessagingProfiles"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/v1/messaging/sms/brands/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
+        /** List SMS brands */
+        get: operations["listSmsBrands"];
         put?: never;
         /** Register an SMS brand */
         post: operations["createSmsBrand"];
@@ -7162,7 +7239,27 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/v1/messaging/sms/brands/{brand_id}": {
+    "/v1/messaging/sms-brands/count": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Count SMS brands
+         * @description Returns how many records match the filters that the list route accepts.
+         */
+        get: operations["listSmsBrandsCount"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/messaging/sms-brands/{sms_brand_id}": {
         parameters: {
             query?: never;
             header?: never;
@@ -7181,31 +7278,15 @@ export interface paths {
         patch: operations["updateSmsBrand"];
         trace?: never;
     };
-    "/v1/messaging/sms/brands/retrieve": {
+    "/v1/messaging/sms-campaigns/": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get?: never;
-        put?: never;
-        /** List SMS brands */
-        post: operations["listSmsBrands"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/v1/messaging/sms/campaigns/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
+        /** List SMS campaigns */
+        get: operations["listSmsCampaigns"];
         put?: never;
         /** Create an SMS campaign */
         post: operations["createSmsCampaign"];
@@ -7215,7 +7296,27 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/v1/messaging/sms/campaigns/{campaign_id}": {
+    "/v1/messaging/sms-campaigns/count": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Count SMS campaigns
+         * @description Returns how many records match the filters that the list route accepts.
+         */
+        get: operations["listSmsCampaignsCount"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/messaging/sms-campaigns/{sms_campaign_id}": {
         parameters: {
             query?: never;
             header?: never;
@@ -7234,31 +7335,15 @@ export interface paths {
         patch: operations["updateSmsCampaign"];
         trace?: never;
     };
-    "/v1/messaging/sms/campaigns/retrieve": {
+    "/v1/messaging/sms-messages/": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get?: never;
-        put?: never;
-        /** List SMS campaigns */
-        post: operations["listSmsCampaigns"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/v1/messaging/sms/send": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
+        /** List SMS messages */
+        get: operations["listSmsMessages"];
         put?: never;
         /** Send an SMS message */
         post: operations["sendSms"];
@@ -7268,24 +7353,44 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/v1/messaging/sms/messages/{message_id}": {
+    "/v1/messaging/sms-messages/count": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get?: never;
+        /**
+         * Count SMS messages
+         * @description Returns how many records match the filters that the list route accepts.
+         */
+        get: operations["listSmsMessagesCount"];
         put?: never;
-        /** Retrieve SMS messages */
-        post: operations["readSmsMessages"];
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/v1/messaging/sms/summary": {
+    "/v1/messaging/sms-messages/{sms_message_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Fetch one SMS message */
+        get: operations["readSmsMessage"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/messaging/sms-message-previews/": {
         parameters: {
             query?: never;
             header?: never;
@@ -7294,7 +7399,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Generate an SMS message cost summary */
+        /** Preview the cost of an SMS message */
         post: operations["generateSmsSummary"];
         delete?: never;
         options?: never;
@@ -7302,14 +7407,15 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/v1/messaging/sms/sender-pools/": {
+    "/v1/messaging/sms-sender-pools/": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get?: never;
+        /** List SMS sender pools */
+        get: operations["listManySmsSenderPools"];
         put?: never;
         /** Create an SMS sender pool */
         post: operations["createSmsSenderPool"];
@@ -7319,7 +7425,27 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/v1/messaging/sms/sender-pools/{pool_id}/senders": {
+    "/v1/messaging/sms-sender-pools/count": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Count SMS sender pools
+         * @description Returns how many records match the filters that the list route accepts.
+         */
+        get: operations["listManySmsSenderPoolsCount"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/messaging/sms-sender-pools/{sms_sender_pool_id}/senders": {
         parameters: {
             query?: never;
             header?: never;
@@ -7336,7 +7462,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/v1/messaging/sms/sender-pools/{pool_id}": {
+    "/v1/messaging/sms-sender-pools/{sms_sender_pool_id}": {
         parameters: {
             query?: never;
             header?: never;
@@ -7354,14 +7480,15 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/v1/messaging/sms/senders/": {
+    "/v1/messaging/sms-senders/": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get?: never;
+        /** List SMS senders */
+        get: operations["listManySmsSenders"];
         put?: never;
         /** Register an SMS sender */
         post: operations["createSmsSender"];
@@ -7371,41 +7498,27 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/v1/messaging/sms/senders/{sender_id}/enable": {
+    "/v1/messaging/sms-senders/count": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get?: never;
+        /**
+         * Count SMS senders
+         * @description Returns how many records match the filters that the list route accepts.
+         */
+        get: operations["listManySmsSendersCount"];
         put?: never;
         post?: never;
         delete?: never;
         options?: never;
         head?: never;
-        /** Enable an SMS sender */
-        patch: operations["enableSmsSender"];
+        patch?: never;
         trace?: never;
     };
-    "/v1/messaging/sms/senders/{sender_id}/disable": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        /** Disable an SMS sender */
-        patch: operations["disableSmsSender"];
-        trace?: never;
-    };
-    "/v1/messaging/sms/senders/{sender_id}": {
+    "/v1/messaging/sms-senders/{sms_sender_id}": {
         parameters: {
             query?: never;
             header?: never;
@@ -7413,7 +7526,7 @@ export interface paths {
             cookie?: never;
         };
         /** Retrieve an SMS sender */
-        get: operations["listSmsSender"];
+        get: operations["readSmsSender"];
         put?: never;
         post?: never;
         /** Delete an SMS sender */
@@ -7424,7 +7537,7 @@ export interface paths {
         patch: operations["updateOneSmsSender"];
         trace?: never;
     };
-    "/v1/messaging/sms/senders/transfers/{sender_id}/{project_id}": {
+    "/v1/messaging/sms-senders/{sms_sender_id}/enable": {
         parameters: {
             query?: never;
             header?: never;
@@ -7433,12 +7546,46 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post?: never;
+        /** Enable an SMS sender */
+        post: operations["enableSmsSender"];
         delete?: never;
         options?: never;
         head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/messaging/sms-senders/{sms_sender_id}/disable": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Disable an SMS sender */
+        post: operations["disableSmsSender"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/messaging/sms-senders/{sms_sender_id}/transfer": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
         /** Transfer one SMS sender to another project */
-        patch: operations["transferSmsSender"];
+        post: operations["transferSmsSender"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
         trace?: never;
     };
     "/v1/messaging/templates/": {
@@ -7448,7 +7595,8 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get?: never;
+        /** List message templates */
+        get: operations["listMessageTemplates"];
         put?: never;
         /** Create a message template */
         post: operations["createMessageTemplate"];
@@ -7458,17 +7606,20 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/v1/messaging/templates/retrieve": {
+    "/v1/messaging/templates/count": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get?: never;
+        /**
+         * Count message templates
+         * @description Returns how many records match the filters that the list route accepts.
+         */
+        get: operations["listMessageTemplatesCount"];
         put?: never;
-        /** List message templates */
-        post: operations["listMessageTemplates"];
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -7494,34 +7645,38 @@ export interface paths {
         patch: operations["updateMessageTemplate"];
         trace?: never;
     };
-    "/v1/messaging/templates/wipe": {
+    "/v1/messaging/verifications/": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get?: never;
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        /** Delete multiple message templates */
-        patch: operations["deleteMessageTemplates"];
-        trace?: never;
-    };
-    "/v1/messaging/verifications/send": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
+        /** List verification messages */
+        get: operations["listVerificationMessages"];
         put?: never;
         /** Send a verification message */
         post: operations["createVerification"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/messaging/verifications/count": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Count verification messages
+         * @description Returns how many records match the filters that the list route accepts.
+         */
+        get: operations["listVerificationMessagesCount"];
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -7545,7 +7700,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/v1/messaging/verifications/resend/{verification_id}": {
+    "/v1/messaging/verifications/{verification_id}/resend": {
         parameters: {
             query?: never;
             header?: never;
@@ -7554,25 +7709,8 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
         /** Resend a verification message */
-        patch: operations["resendVerification"];
-        trace?: never;
-    };
-    "/v1/messaging/verifications/messages": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** List verification messages */
-        post: operations["listVerificationMessages"];
+        post: operations["resendVerification"];
         delete?: never;
         options?: never;
         head?: never;
@@ -75562,76 +75700,121 @@ export interface operations {
     };
     listChannelAnalytics: {
         parameters: {
-            query?: never;
+            query?: {
+                reference_id?: string | {
+                    /** @example string */
+                    not_equals?: string;
+                    has_length?: number;
+                    has_any?: string[];
+                    has_none?: string[];
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                message_request_id?: string | {
+                    /** @example string */
+                    not_equals?: string;
+                    has_length?: number;
+                    has_any?: string[];
+                    has_none?: string[];
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                conversation_id?: string | {
+                    /** @example string */
+                    not_equals?: string;
+                    has_length?: number;
+                    has_any?: string[];
+                    has_none?: string[];
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                channel_id?: ("sms" | "email") | {
+                    /** @enum {string} */
+                    not_equals?: "sms" | "email";
+                    has_length?: number;
+                    has_any?: ("sms" | "email")[];
+                    has_none?: ("sms" | "email")[];
+                    /** @enum {string} */
+                    gt?: "sms" | "email";
+                    /** @enum {string} */
+                    lt?: "sms" | "email";
+                    /** @enum {string} */
+                    gte?: "sms" | "email";
+                    /** @enum {string} */
+                    lte?: "sms" | "email";
+                };
+                date_created?: {
+                    /** @example string */
+                    equals?: string;
+                    /** @example string */
+                    not_equals?: string;
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                date_updated?: {
+                    /** @example string */
+                    equals?: string;
+                    /** @example string */
+                    not_equals?: string;
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                cursor?: {
+                    /** @example string */
+                    prev?: string;
+                    /** @example string */
+                    next?: string;
+                };
+                sort?: {
+                    [key: string]: "asc" | "desc";
+                };
+                limit?: string | number;
+            };
             header: {
                 /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
                 "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
-                /** @description A key that makes a retry of this request safe. A retry with the same key and the same request returns the first reply with the `Idempotent-Replayed: true` header and changes nothing. The same key with a different request answers 422, and a key whose first request is still being processed answers 409. The server keeps each key for 24 hours. An empty value counts as no key, so the server processes that request once for each time it arrives. */
-                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 /** @description Messaging profile identifier */
                 "Messaging-Profile-ID": string;
             };
             path?: never;
             cookie?: never;
         };
-        requestBody: {
-            content: {
-                "application/json": {
-                    cursor?: {
-                        /** @example string */
-                        prev?: string;
-                        /** @example string */
-                        next?: string;
-                    };
-                    filter?: {
-                        [key: string]: false;
-                    };
-                    /** @default {} */
-                    query?: {
-                        message_request_id?: string | {
-                            /** @example string */
-                            not_equals?: string;
-                            has_length?: number;
-                            has_any?: string[];
-                            has_none?: string[];
-                            /** @example string */
-                            gt?: string;
-                            /** @example string */
-                            lt?: string;
-                            /** @example string */
-                            gte?: string;
-                            /** @example string */
-                            lte?: string;
-                        };
-                        date_created?: {
-                            /** @example string */
-                            equals?: string;
-                            /** @example string */
-                            not_equals?: string;
-                            /** @example string */
-                            gt?: string;
-                            /** @example string */
-                            lt?: string;
-                            /** @example string */
-                            gte?: string;
-                            /** @example string */
-                            lte?: string;
-                        };
-                    };
-                    sort?: {
-                        [key: string]: "asc" | "desc";
-                    };
-                    /** @default 50 */
-                    limit?: string | number;
-                };
-            };
-        };
+        requestBody?: never;
         responses: {
             /** @description Successful response */
             200: {
                 headers: {
                     "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    "Idempotent-Replayed": components["headers"]["IdempotentReplayed"];
                     [name: string]: unknown;
                 };
                 content: {
@@ -75727,248 +75910,8 @@ export interface operations {
                     };
                 };
             };
-            /** @description The first request with this Idempotency-Key is still being processed, stopped before it finished, or finished with a reply that cannot be replayed */
-            409: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description This Idempotency-Key was already used with a different request */
-            422: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
             /** @description Internal server error */
             500: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiServerErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description The server could not check the Idempotency-Key and did not process the request */
-            503: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiServerErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-        };
-    };
-    generateChannelAnalyticsSummaries: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
-                "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
-                /** @description A key that makes a retry of this request safe. A retry with the same key and the same request returns the first reply with the `Idempotent-Replayed: true` header and changes nothing. The same key with a different request answers 422, and a key whose first request is still being processed answers 409. The server keeps each key for 24 hours. An empty value counts as no key, so the server processes that request once for each time it arrives. */
-                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
-                /** @description Messaging profile identifier */
-                "Messaging-Profile-ID": string;
-            };
-            path: {
-                channel_id: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": {
-                    /** @enum {string} */
-                    duration: "1d" | "1w" | "1m" | "1y" | "6m";
-                };
-            };
-        };
-        responses: {
-            /** @description Successful response */
-            200: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    "Idempotent-Replayed": components["headers"]["IdempotentReplayed"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response?: components["schemas"]["ApiSuccessResponseMeta"];
-                        data?: {
-                            /** @enum {string} */
-                            channel_id: "sms" | "email";
-                            /** @enum {string} */
-                            duration: "1d" | "1w" | "1m" | "1y" | "6m";
-                            label: string;
-                            period_start: string;
-                            period_end: string;
-                            total_message_count: number;
-                            opens: {
-                                total: number;
-                                unique: number;
-                                rate: number;
-                            };
-                            clicks: {
-                                total: number;
-                                unique: number;
-                                rate: number;
-                            };
-                            deliveries: {
-                                total: number;
-                                rate: number;
-                            };
-                            failures: {
-                                total: number;
-                                rate: number;
-                            };
-                            rejections: {
-                                total: number;
-                                rate: number;
-                            };
-                            complaints: {
-                                total: number;
-                                rate: number;
-                            };
-                            bounces: {
-                                total: number;
-                                rate: number;
-                            };
-                            subscribes: {
-                                total: number;
-                                rate: number;
-                            };
-                            unsubscribes: {
-                                total: number;
-                                rate: number;
-                            };
-                            periods: {
-                                label: string;
-                                period_start: string;
-                                total_message_count: number;
-                                total_deliveries: number;
-                                total_failures: number;
-                                total_rejections: number;
-                                total_complaints: number;
-                                total_bounces: number;
-                                total_opens: number;
-                                total_clicks: number;
-                            }[];
-                        };
-                    };
-                };
-            };
-            /** @description Validation error or bad request */
-            400: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description Unauthorized - missing or invalid API key */
-            401: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description The resource does not exist in the scope of the request */
-            404: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description The first request with this Idempotency-Key is still being processed, stopped before it finished, or finished with a reply that cannot be replayed */
-            409: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description This Idempotency-Key was already used with a different request */
-            422: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description Internal server error */
-            500: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiServerErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description The server could not check the Idempotency-Key and did not process the request */
-            503: {
                 headers: {
                     "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
                     [name: string]: unknown;
@@ -75994,15 +75937,16 @@ export interface operations {
                 /** @description Messaging profile identifier */
                 "Messaging-Profile-ID": string;
             };
-            path: {
-                message_id: string;
-                channel_id: string;
-            };
+            path?: never;
             cookie?: never;
         };
         requestBody: {
             content: {
                 "application/json": {
+                    /** @example string */
+                    message_request_id: string;
+                    /** @enum {string} */
+                    channel_id: "sms" | "email";
                     /** @enum {string} */
                     duration: "1d" | "1w" | "1m" | "1y" | "6m";
                     /**
@@ -76186,12 +76130,347 @@ export interface operations {
             };
         };
     };
+    listChannelAnalyticsCount: {
+        parameters: {
+            query?: {
+                reference_id?: string | {
+                    /** @example string */
+                    not_equals?: string;
+                    has_length?: number;
+                    has_any?: string[];
+                    has_none?: string[];
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                message_request_id?: string | {
+                    /** @example string */
+                    not_equals?: string;
+                    has_length?: number;
+                    has_any?: string[];
+                    has_none?: string[];
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                conversation_id?: string | {
+                    /** @example string */
+                    not_equals?: string;
+                    has_length?: number;
+                    has_any?: string[];
+                    has_none?: string[];
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                channel_id?: ("sms" | "email") | {
+                    /** @enum {string} */
+                    not_equals?: "sms" | "email";
+                    has_length?: number;
+                    has_any?: ("sms" | "email")[];
+                    has_none?: ("sms" | "email")[];
+                    /** @enum {string} */
+                    gt?: "sms" | "email";
+                    /** @enum {string} */
+                    lt?: "sms" | "email";
+                    /** @enum {string} */
+                    gte?: "sms" | "email";
+                    /** @enum {string} */
+                    lte?: "sms" | "email";
+                };
+                date_created?: {
+                    /** @example string */
+                    equals?: string;
+                    /** @example string */
+                    not_equals?: string;
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                date_updated?: {
+                    /** @example string */
+                    equals?: string;
+                    /** @example string */
+                    not_equals?: string;
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                cursor?: {
+                    /** @example string */
+                    prev?: string;
+                    /** @example string */
+                    next?: string;
+                };
+                sort?: {
+                    [key: string]: "asc" | "desc";
+                };
+                limit?: string | number;
+            };
+            header: {
+                /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
+                "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
+                /** @description Messaging profile identifier */
+                "Messaging-Profile-ID": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful response */
+            200: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response?: components["schemas"]["ApiSuccessResponseMeta"];
+                        data?: {
+                            count: number;
+                        };
+                    };
+                };
+            };
+            /** @description Validation error or bad request */
+            400: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Unauthorized - missing or invalid API key */
+            401: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description The resource does not exist in the scope of the request */
+            404: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiServerErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+        };
+    };
+    generateChannelAnalyticsSummaries: {
+        parameters: {
+            query: {
+                channel_id: "sms" | "email";
+                duration: "1d" | "1w" | "1m" | "1y" | "6m";
+            };
+            header: {
+                /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
+                "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
+                /** @description Messaging profile identifier */
+                "Messaging-Profile-ID": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful response */
+            200: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response?: components["schemas"]["ApiSuccessResponseMeta"];
+                        data?: {
+                            /** @enum {string} */
+                            channel_id: "sms" | "email";
+                            /** @enum {string} */
+                            duration: "1d" | "1w" | "1m" | "1y" | "6m";
+                            label: string;
+                            period_start: string;
+                            period_end: string;
+                            total_message_count: number;
+                            opens: {
+                                total: number;
+                                unique: number;
+                                rate: number;
+                            };
+                            clicks: {
+                                total: number;
+                                unique: number;
+                                rate: number;
+                            };
+                            deliveries: {
+                                total: number;
+                                rate: number;
+                            };
+                            failures: {
+                                total: number;
+                                rate: number;
+                            };
+                            rejections: {
+                                total: number;
+                                rate: number;
+                            };
+                            complaints: {
+                                total: number;
+                                rate: number;
+                            };
+                            bounces: {
+                                total: number;
+                                rate: number;
+                            };
+                            subscribes: {
+                                total: number;
+                                rate: number;
+                            };
+                            unsubscribes: {
+                                total: number;
+                                rate: number;
+                            };
+                            periods: {
+                                label: string;
+                                period_start: string;
+                                total_message_count: number;
+                                total_deliveries: number;
+                                total_failures: number;
+                                total_rejections: number;
+                                total_complaints: number;
+                                total_bounces: number;
+                                total_opens: number;
+                                total_clicks: number;
+                            }[];
+                        };
+                    };
+                };
+            };
+            /** @description Validation error or bad request */
+            400: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Unauthorized - missing or invalid API key */
+            401: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description The resource does not exist in the scope of the request */
+            404: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiServerErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+        };
+    };
     incrementChannelAnalyticsOpens: {
         parameters: {
             query?: never;
             header: {
                 /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
                 "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
+                /** @description A key that makes a retry of this request safe. A retry with the same key and the same request returns the first reply with the `Idempotent-Replayed: true` header and changes nothing. The same key with a different request answers 422, and a key whose first request is still being processed answers 409. The server keeps each key for 24 hours. An empty value counts as no key, so the server processes that request once for each time it arrives. */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 /** @description Messaging profile identifier */
                 "Messaging-Profile-ID": string;
             };
@@ -76213,6 +76492,7 @@ export interface operations {
             200: {
                 headers: {
                     "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    "Idempotent-Replayed": components["headers"]["IdempotentReplayed"];
                     [name: string]: unknown;
                 };
                 content: {
@@ -76307,8 +76587,50 @@ export interface operations {
                     };
                 };
             };
+            /** @description The first request with this Idempotency-Key is still being processed, stopped before it finished, or finished with a reply that cannot be replayed */
+            409: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description This Idempotency-Key was already used with a different request */
+            422: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
             /** @description Internal server error */
             500: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiServerErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description The server could not check the Idempotency-Key and did not process the request */
+            503: {
                 headers: {
                     "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
                     [name: string]: unknown;
@@ -76329,6 +76651,8 @@ export interface operations {
             header: {
                 /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
                 "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
+                /** @description A key that makes a retry of this request safe. A retry with the same key and the same request returns the first reply with the `Idempotent-Replayed: true` header and changes nothing. The same key with a different request answers 422, and a key whose first request is still being processed answers 409. The server keeps each key for 24 hours. An empty value counts as no key, so the server processes that request once for each time it arrives. */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 /** @description Messaging profile identifier */
                 "Messaging-Profile-ID": string;
             };
@@ -76350,6 +76674,7 @@ export interface operations {
             200: {
                 headers: {
                     "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    "Idempotent-Replayed": components["headers"]["IdempotentReplayed"];
                     [name: string]: unknown;
                 };
                 content: {
@@ -76444,8 +76769,50 @@ export interface operations {
                     };
                 };
             };
+            /** @description The first request with this Idempotency-Key is still being processed, stopped before it finished, or finished with a reply that cannot be replayed */
+            409: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description This Idempotency-Key was already used with a different request */
+            422: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
             /** @description Internal server error */
             500: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiServerErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description The server could not check the Idempotency-Key and did not process the request */
+            503: {
                 headers: {
                     "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
                     [name: string]: unknown;
@@ -76466,6 +76833,8 @@ export interface operations {
             header: {
                 /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
                 "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
+                /** @description A key that makes a retry of this request safe. A retry with the same key and the same request returns the first reply with the `Idempotent-Replayed: true` header and changes nothing. The same key with a different request answers 422, and a key whose first request is still being processed answers 409. The server keeps each key for 24 hours. An empty value counts as no key, so the server processes that request once for each time it arrives. */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 /** @description Messaging profile identifier */
                 "Messaging-Profile-ID": string;
             };
@@ -76486,6 +76855,7 @@ export interface operations {
             200: {
                 headers: {
                     "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    "Idempotent-Replayed": components["headers"]["IdempotentReplayed"];
                     [name: string]: unknown;
                 };
                 content: {
@@ -76580,8 +76950,50 @@ export interface operations {
                     };
                 };
             };
+            /** @description The first request with this Idempotency-Key is still being processed, stopped before it finished, or finished with a reply that cannot be replayed */
+            409: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description This Idempotency-Key was already used with a different request */
+            422: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
             /** @description Internal server error */
             500: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiServerErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description The server could not check the Idempotency-Key and did not process the request */
+            503: {
                 headers: {
                     "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
                     [name: string]: unknown;
@@ -76602,6 +77014,8 @@ export interface operations {
             header: {
                 /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
                 "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
+                /** @description A key that makes a retry of this request safe. A retry with the same key and the same request returns the first reply with the `Idempotent-Replayed: true` header and changes nothing. The same key with a different request answers 422, and a key whose first request is still being processed answers 409. The server keeps each key for 24 hours. An empty value counts as no key, so the server processes that request once for each time it arrives. */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 /** @description Messaging profile identifier */
                 "Messaging-Profile-ID": string;
             };
@@ -76622,6 +77036,7 @@ export interface operations {
             200: {
                 headers: {
                     "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    "Idempotent-Replayed": components["headers"]["IdempotentReplayed"];
                     [name: string]: unknown;
                 };
                 content: {
@@ -76716,8 +77131,50 @@ export interface operations {
                     };
                 };
             };
+            /** @description The first request with this Idempotency-Key is still being processed, stopped before it finished, or finished with a reply that cannot be replayed */
+            409: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description This Idempotency-Key was already used with a different request */
+            422: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
             /** @description Internal server error */
             500: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiServerErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description The server could not check the Idempotency-Key and did not process the request */
+            503: {
                 headers: {
                     "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
                     [name: string]: unknown;
@@ -76738,6 +77195,8 @@ export interface operations {
             header: {
                 /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
                 "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
+                /** @description A key that makes a retry of this request safe. A retry with the same key and the same request returns the first reply with the `Idempotent-Replayed: true` header and changes nothing. The same key with a different request answers 422, and a key whose first request is still being processed answers 409. The server keeps each key for 24 hours. An empty value counts as no key, so the server processes that request once for each time it arrives. */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 /** @description Messaging profile identifier */
                 "Messaging-Profile-ID": string;
             };
@@ -76758,6 +77217,7 @@ export interface operations {
             200: {
                 headers: {
                     "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    "Idempotent-Replayed": components["headers"]["IdempotentReplayed"];
                     [name: string]: unknown;
                 };
                 content: {
@@ -76807,6 +77267,983 @@ export interface operations {
                             date_updated: string;
                             date_deleted?: string | null;
                         };
+                    };
+                };
+            };
+            /** @description Validation error or bad request */
+            400: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Unauthorized - missing or invalid API key */
+            401: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description The resource does not exist in the scope of the request */
+            404: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description The first request with this Idempotency-Key is still being processed, stopped before it finished, or finished with a reply that cannot be replayed */
+            409: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description This Idempotency-Key was already used with a different request */
+            422: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiServerErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description The server could not check the Idempotency-Key and did not process the request */
+            503: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiServerErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+        };
+    };
+    listContactProperties: {
+        parameters: {
+            query?: {
+                reference_id?: string | {
+                    /** @example string */
+                    not_equals?: string;
+                    has_length?: number;
+                    has_any?: string[];
+                    has_none?: string[];
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                property_id?: string | {
+                    /** @example string */
+                    not_equals?: string;
+                    has_length?: number;
+                    has_any?: string[];
+                    has_none?: string[];
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                key?: string | {
+                    /** @example string */
+                    not_equals?: string;
+                    has_length?: number;
+                    has_any?: string[];
+                    has_none?: string[];
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                date_created?: {
+                    /** @example string */
+                    equals?: string;
+                    /** @example string */
+                    not_equals?: string;
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                cursor?: {
+                    /** @example string */
+                    prev?: string;
+                    /** @example string */
+                    next?: string;
+                };
+                sort?: {
+                    [key: string]: "asc" | "desc";
+                };
+                limit?: string | number;
+            };
+            header: {
+                /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
+                "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
+                /** @description Messaging profile identifier */
+                "Messaging-Profile-ID": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful response */
+            200: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response?: components["schemas"]["ApiSuccessResponseMeta"];
+                        data?: {
+                            property_id: string;
+                            profile_id: string;
+                            conjoin_account_id: string;
+                            conjoin_project_id: string;
+                            live_mode: boolean;
+                            key: string;
+                            type: string;
+                            default_value: string | number | boolean;
+                            date_created: string;
+                            date_updated: string;
+                        }[];
+                        cursor?: components["schemas"]["PaginationCursor"];
+                    };
+                };
+            };
+            /** @description Validation error or bad request */
+            400: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Unauthorized - missing or invalid API key */
+            401: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description The resource does not exist in the scope of the request */
+            404: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiServerErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+        };
+    };
+    createContactProperty: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
+                "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
+                /** @description A key that makes a retry of this request safe. A retry with the same key and the same request returns the first reply with the `Idempotent-Replayed: true` header and changes nothing. The same key with a different request answers 422, and a key whose first request is still being processed answers 409. The server keeps each key for 24 hours. An empty value counts as no key, so the server processes that request once for each time it arrives. */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                /** @description Messaging profile identifier */
+                "Messaging-Profile-ID": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @example string */
+                    key: string;
+                } & Omit<{
+                    /** @constant */
+                    type: "string";
+                    /** @example string */
+                    default_value: string;
+                } | {
+                    /** @constant */
+                    type: "number";
+                    default_value: number;
+                } | {
+                    /** @constant */
+                    type: "boolean";
+                    default_value: boolean;
+                }, "type">;
+            };
+        };
+        responses: {
+            /** @description Successful response */
+            201: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    "Idempotent-Replayed": components["headers"]["IdempotentReplayed"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response?: components["schemas"]["ApiSuccessResponseMeta"];
+                        data?: {
+                            property_id: string;
+                            profile_id: string;
+                            conjoin_account_id: string;
+                            conjoin_project_id: string;
+                            live_mode: boolean;
+                            key: string;
+                            type: string;
+                            default_value: string | number | boolean;
+                            date_created: string;
+                            date_updated: string;
+                        };
+                    };
+                };
+            };
+            /** @description Validation error or bad request */
+            400: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Unauthorized - missing or invalid API key */
+            401: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description The resource does not exist in the scope of the request */
+            404: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description The first request with this Idempotency-Key is still being processed, stopped before it finished, or finished with a reply that cannot be replayed */
+            409: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description This Idempotency-Key was already used with a different request */
+            422: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiServerErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description The server could not check the Idempotency-Key and did not process the request */
+            503: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiServerErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+        };
+    };
+    listContactPropertiesCount: {
+        parameters: {
+            query?: {
+                reference_id?: string | {
+                    /** @example string */
+                    not_equals?: string;
+                    has_length?: number;
+                    has_any?: string[];
+                    has_none?: string[];
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                property_id?: string | {
+                    /** @example string */
+                    not_equals?: string;
+                    has_length?: number;
+                    has_any?: string[];
+                    has_none?: string[];
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                key?: string | {
+                    /** @example string */
+                    not_equals?: string;
+                    has_length?: number;
+                    has_any?: string[];
+                    has_none?: string[];
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                date_created?: {
+                    /** @example string */
+                    equals?: string;
+                    /** @example string */
+                    not_equals?: string;
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                cursor?: {
+                    /** @example string */
+                    prev?: string;
+                    /** @example string */
+                    next?: string;
+                };
+                sort?: {
+                    [key: string]: "asc" | "desc";
+                };
+                limit?: string | number;
+            };
+            header: {
+                /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
+                "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
+                /** @description Messaging profile identifier */
+                "Messaging-Profile-ID": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful response */
+            200: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response?: components["schemas"]["ApiSuccessResponseMeta"];
+                        data?: {
+                            count: number;
+                        };
+                    };
+                };
+            };
+            /** @description Validation error or bad request */
+            400: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Unauthorized - missing or invalid API key */
+            401: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description The resource does not exist in the scope of the request */
+            404: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiServerErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+        };
+    };
+    fetchOneContactProperty: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
+                "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
+                /** @description Messaging profile identifier */
+                "Messaging-Profile-ID": string;
+            };
+            path: {
+                contact_property_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful response */
+            200: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response?: components["schemas"]["ApiSuccessResponseMeta"];
+                        data?: {
+                            property_id: string;
+                            profile_id: string;
+                            conjoin_account_id: string;
+                            conjoin_project_id: string;
+                            live_mode: boolean;
+                            key: string;
+                            type: string;
+                            default_value: string | number | boolean;
+                            date_created: string;
+                            date_updated: string;
+                        };
+                    };
+                };
+            };
+            /** @description Validation error or bad request */
+            400: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Unauthorized - missing or invalid API key */
+            401: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description The resource does not exist in the scope of the request */
+            404: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiServerErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+        };
+    };
+    deleteContactProperty: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
+                "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
+                /** @description Messaging profile identifier */
+                "Messaging-Profile-ID": string;
+            };
+            path: {
+                contact_property_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful response */
+            200: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response?: components["schemas"]["ApiSuccessResponseMeta"];
+                        data?: {
+                            property_id: string;
+                            profile_id: string;
+                            conjoin_account_id: string;
+                            conjoin_project_id: string;
+                            live_mode: boolean;
+                            key: string;
+                            type: string;
+                            default_value: string | number | boolean;
+                            date_created: string;
+                            date_updated: string;
+                        };
+                    };
+                };
+            };
+            /** @description Validation error or bad request */
+            400: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Unauthorized - missing or invalid API key */
+            401: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description The resource does not exist in the scope of the request */
+            404: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiServerErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+        };
+    };
+    listContacts: {
+        parameters: {
+            query?: {
+                contact_id?: string | {
+                    /** @example string */
+                    not_equals?: string;
+                    has_length?: number;
+                    has_any?: string[];
+                    has_none?: string[];
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                reference_id?: string | {
+                    /** @example string */
+                    not_equals?: string;
+                    has_length?: number;
+                    has_any?: string[];
+                    has_none?: string[];
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                first_name?: string | {
+                    /** @example string */
+                    not_equals?: string;
+                    has_length?: number;
+                    has_any?: string[];
+                    has_none?: string[];
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                last_name?: string | {
+                    /** @example string */
+                    not_equals?: string;
+                    has_length?: number;
+                    has_any?: string[];
+                    has_none?: string[];
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                email?: string | {
+                    /**
+                     * Format: email
+                     * @example user@example.com
+                     */
+                    not_equals?: string;
+                    has_length?: number;
+                    has_any?: string[];
+                    has_none?: string[];
+                    /**
+                     * Format: email
+                     * @example user@example.com
+                     */
+                    gt?: string;
+                    /**
+                     * Format: email
+                     * @example user@example.com
+                     */
+                    lt?: string;
+                    /**
+                     * Format: email
+                     * @example user@example.com
+                     */
+                    gte?: string;
+                    /**
+                     * Format: email
+                     * @example user@example.com
+                     */
+                    lte?: string;
+                };
+                phone_number?: string | {
+                    /** @description Phone number in E.164 format */
+                    not_equals?: string;
+                    has_length?: number;
+                    has_any?: string[];
+                    has_none?: string[];
+                    /** @description Phone number in E.164 format */
+                    gt?: string;
+                    /** @description Phone number in E.164 format */
+                    lt?: string;
+                    /** @description Phone number in E.164 format */
+                    gte?: string;
+                    /** @description Phone number in E.164 format */
+                    lte?: string;
+                };
+                date_created?: {
+                    /** @example string */
+                    equals?: string;
+                    /** @example string */
+                    not_equals?: string;
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                date_deleted?: {
+                    /** @example string */
+                    equals?: string;
+                    /** @example string */
+                    not_equals?: string;
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                search?: string;
+                cursor?: {
+                    /** @example string */
+                    prev?: string;
+                    /** @example string */
+                    next?: string;
+                };
+                sort?: {
+                    [key: string]: "asc" | "desc";
+                };
+                limit?: string | number;
+            };
+            header: {
+                /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
+                "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
+                /** @description Messaging profile identifier */
+                "Messaging-Profile-ID": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful response */
+            200: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response?: components["schemas"]["ApiSuccessResponseMeta"];
+                        data?: {
+                            contact_id: string;
+                            profile_id: string;
+                            conjoin_account_id: string;
+                            conjoin_project_id: string;
+                            live_mode: boolean;
+                            reference_id?: string | null;
+                            first_name?: string | null;
+                            last_name?: string | null;
+                            email?: string | null;
+                            phone_number?: unknown | null;
+                            preferred_channels?: string[];
+                            quiet_hours?: {
+                                starts_at: string;
+                                ends_at: string;
+                            } | null;
+                            timezone?: string | null;
+                            properties?: {
+                                [key: string]: unknown;
+                            };
+                            date_created: string;
+                            date_updated: string;
+                            date_deleted?: string | null;
+                        }[];
+                        cursor?: components["schemas"]["PaginationCursor"];
                     };
                 };
             };
@@ -77064,12 +78501,246 @@ export interface operations {
             };
         };
     };
+    listContactsCount: {
+        parameters: {
+            query?: {
+                contact_id?: string | {
+                    /** @example string */
+                    not_equals?: string;
+                    has_length?: number;
+                    has_any?: string[];
+                    has_none?: string[];
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                reference_id?: string | {
+                    /** @example string */
+                    not_equals?: string;
+                    has_length?: number;
+                    has_any?: string[];
+                    has_none?: string[];
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                first_name?: string | {
+                    /** @example string */
+                    not_equals?: string;
+                    has_length?: number;
+                    has_any?: string[];
+                    has_none?: string[];
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                last_name?: string | {
+                    /** @example string */
+                    not_equals?: string;
+                    has_length?: number;
+                    has_any?: string[];
+                    has_none?: string[];
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                email?: string | {
+                    /**
+                     * Format: email
+                     * @example user@example.com
+                     */
+                    not_equals?: string;
+                    has_length?: number;
+                    has_any?: string[];
+                    has_none?: string[];
+                    /**
+                     * Format: email
+                     * @example user@example.com
+                     */
+                    gt?: string;
+                    /**
+                     * Format: email
+                     * @example user@example.com
+                     */
+                    lt?: string;
+                    /**
+                     * Format: email
+                     * @example user@example.com
+                     */
+                    gte?: string;
+                    /**
+                     * Format: email
+                     * @example user@example.com
+                     */
+                    lte?: string;
+                };
+                phone_number?: string | {
+                    /** @description Phone number in E.164 format */
+                    not_equals?: string;
+                    has_length?: number;
+                    has_any?: string[];
+                    has_none?: string[];
+                    /** @description Phone number in E.164 format */
+                    gt?: string;
+                    /** @description Phone number in E.164 format */
+                    lt?: string;
+                    /** @description Phone number in E.164 format */
+                    gte?: string;
+                    /** @description Phone number in E.164 format */
+                    lte?: string;
+                };
+                date_created?: {
+                    /** @example string */
+                    equals?: string;
+                    /** @example string */
+                    not_equals?: string;
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                date_deleted?: {
+                    /** @example string */
+                    equals?: string;
+                    /** @example string */
+                    not_equals?: string;
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                search?: string;
+                cursor?: {
+                    /** @example string */
+                    prev?: string;
+                    /** @example string */
+                    next?: string;
+                };
+                sort?: {
+                    [key: string]: "asc" | "desc";
+                };
+                limit?: string | number;
+            };
+            header: {
+                /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
+                "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
+                /** @description Messaging profile identifier */
+                "Messaging-Profile-ID": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful response */
+            200: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response?: components["schemas"]["ApiSuccessResponseMeta"];
+                        data?: {
+                            count: number;
+                        };
+                    };
+                };
+            };
+            /** @description Validation error or bad request */
+            400: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Unauthorized - missing or invalid API key */
+            401: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description The resource does not exist in the scope of the request */
+            404: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiServerErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+        };
+    };
     suppressContactMessages: {
         parameters: {
             query?: never;
             header: {
                 /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
                 "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
+                /** @description A key that makes a retry of this request safe. A retry with the same key and the same request returns the first reply with the `Idempotent-Replayed: true` header and changes nothing. The same key with a different request answers 422, and a key whose first request is still being processed answers 409. The server keeps each key for 24 hours. An empty value counts as no key, so the server processes that request once for each time it arrives. */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 /** @description Messaging profile identifier */
                 "Messaging-Profile-ID": string;
             };
@@ -77090,6 +78761,7 @@ export interface operations {
             200: {
                 headers: {
                     "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    "Idempotent-Replayed": components["headers"]["IdempotentReplayed"];
                     [name: string]: unknown;
                 };
                 content: {
@@ -77164,8 +78836,50 @@ export interface operations {
                     };
                 };
             };
+            /** @description The first request with this Idempotency-Key is still being processed, stopped before it finished, or finished with a reply that cannot be replayed */
+            409: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description This Idempotency-Key was already used with a different request */
+            422: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
             /** @description Internal server error */
             500: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiServerErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description The server could not check the Idempotency-Key and did not process the request */
+            503: {
                 headers: {
                     "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
                     [name: string]: unknown;
@@ -77437,7 +79151,7 @@ export interface operations {
             };
         };
     };
-    listContacts: {
+    addContactProperties: {
         parameters: {
             query?: never;
             header: {
@@ -77448,150 +79162,17 @@ export interface operations {
                 /** @description Messaging profile identifier */
                 "Messaging-Profile-ID": string;
             };
-            path?: never;
+            path: {
+                contact_id: string;
+            };
             cookie?: never;
         };
         requestBody: {
             content: {
                 "application/json": {
-                    cursor?: {
-                        /** @example string */
-                        prev?: string;
-                        /** @example string */
-                        next?: string;
+                    properties: {
+                        [key: string]: string | number | boolean;
                     };
-                    filter?: {
-                        [key: string]: false;
-                    };
-                    /** @default {} */
-                    query?: {
-                        contact_id?: string | {
-                            /** @example string */
-                            not_equals?: string;
-                            has_length?: number;
-                            has_any?: string[];
-                            has_none?: string[];
-                            /** @example string */
-                            gt?: string;
-                            /** @example string */
-                            lt?: string;
-                            /** @example string */
-                            gte?: string;
-                            /** @example string */
-                            lte?: string;
-                        };
-                        reference_id?: string | {
-                            not_equals?: string;
-                            has_length?: number;
-                            has_any?: string[];
-                            has_none?: string[];
-                            gt?: string;
-                            lt?: string;
-                            gte?: string;
-                            lte?: string;
-                        };
-                        first_name?: string | {
-                            not_equals?: string;
-                            has_length?: number;
-                            has_any?: string[];
-                            has_none?: string[];
-                            gt?: string;
-                            lt?: string;
-                            gte?: string;
-                            lte?: string;
-                        };
-                        last_name?: string | {
-                            not_equals?: string;
-                            has_length?: number;
-                            has_any?: string[];
-                            has_none?: string[];
-                            gt?: string;
-                            lt?: string;
-                            gte?: string;
-                            lte?: string;
-                        };
-                        email?: string | {
-                            /**
-                             * Format: email
-                             * @example user@example.com
-                             */
-                            not_equals?: string;
-                            has_length?: number;
-                            has_any?: string[];
-                            has_none?: string[];
-                            /**
-                             * Format: email
-                             * @example user@example.com
-                             */
-                            gt?: string;
-                            /**
-                             * Format: email
-                             * @example user@example.com
-                             */
-                            lt?: string;
-                            /**
-                             * Format: email
-                             * @example user@example.com
-                             */
-                            gte?: string;
-                            /**
-                             * Format: email
-                             * @example user@example.com
-                             */
-                            lte?: string;
-                        };
-                        phone_number?: string | {
-                            /** @description Phone number in E.164 format */
-                            not_equals?: string;
-                            has_length?: number;
-                            has_any?: string[];
-                            has_none?: string[];
-                            /** @description Phone number in E.164 format */
-                            gt?: string;
-                            /** @description Phone number in E.164 format */
-                            lt?: string;
-                            /** @description Phone number in E.164 format */
-                            gte?: string;
-                            /** @description Phone number in E.164 format */
-                            lte?: string;
-                        };
-                        date_created?: {
-                            /** @example string */
-                            equals?: string;
-                            /** @example string */
-                            not_equals?: string;
-                            /** @example string */
-                            gt?: string;
-                            /** @example string */
-                            lt?: string;
-                            /** @example string */
-                            gte?: string;
-                            /** @example string */
-                            lte?: string;
-                        };
-                        date_deleted?: {
-                            /** @example string */
-                            equals?: string;
-                            /** @example string */
-                            not_equals?: string;
-                            /** @example string */
-                            gt?: string;
-                            /** @example string */
-                            lt?: string;
-                            /** @example string */
-                            gte?: string;
-                            /** @example string */
-                            lte?: string;
-                        };
-                    };
-                    search?: {
-                        keyword: string;
-                    };
-                    sort?: {
-                        [key: string]: "asc" | "desc";
-                    };
-                    /** @default 50 */
-                    limit?: string | number;
                 };
             };
         };
@@ -77629,168 +79210,6 @@ export interface operations {
                             date_created: string;
                             date_updated: string;
                             date_deleted?: string | null;
-                        }[];
-                        cursor?: components["schemas"]["PaginationCursor"];
-                    };
-                };
-            };
-            /** @description Validation error or bad request */
-            400: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description Unauthorized - missing or invalid API key */
-            401: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description The resource does not exist in the scope of the request */
-            404: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description The first request with this Idempotency-Key is still being processed, stopped before it finished, or finished with a reply that cannot be replayed */
-            409: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description This Idempotency-Key was already used with a different request */
-            422: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description Internal server error */
-            500: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiServerErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description The server could not check the Idempotency-Key and did not process the request */
-            503: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiServerErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-        };
-    };
-    createContactProperty: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
-                "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
-                /** @description A key that makes a retry of this request safe. A retry with the same key and the same request returns the first reply with the `Idempotent-Replayed: true` header and changes nothing. The same key with a different request answers 422, and a key whose first request is still being processed answers 409. The server keeps each key for 24 hours. An empty value counts as no key, so the server processes that request once for each time it arrives. */
-                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
-                /** @description Messaging profile identifier */
-                "Messaging-Profile-ID": string;
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": {
-                    /** @example string */
-                    key: string;
-                } & Omit<{
-                    /** @constant */
-                    type: "string";
-                    /** @example string */
-                    default_value: string;
-                } | {
-                    /** @constant */
-                    type: "number";
-                    default_value: number;
-                } | {
-                    /** @constant */
-                    type: "boolean";
-                    default_value: boolean;
-                }, "type">;
-            };
-        };
-        responses: {
-            /** @description Successful response */
-            201: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    "Idempotent-Replayed": components["headers"]["IdempotentReplayed"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response?: components["schemas"]["ApiSuccessResponseMeta"];
-                        data?: {
-                            property_id: string;
-                            profile_id: string;
-                            conjoin_account_id: string;
-                            conjoin_project_id: string;
-                            live_mode: boolean;
-                            key: string;
-                            type: string;
-                            default_value: string | number | boolean;
-                            date_created: string;
-                            date_updated: string;
                         };
                     };
                 };
@@ -77895,562 +79314,7 @@ export interface operations {
             };
         };
     };
-    fetchOneContactProperty: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
-                "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
-                /** @description Messaging profile identifier */
-                "Messaging-Profile-ID": string;
-            };
-            path: {
-                property_id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful response */
-            200: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response?: components["schemas"]["ApiSuccessResponseMeta"];
-                        data?: {
-                            property_id: string;
-                            profile_id: string;
-                            conjoin_account_id: string;
-                            conjoin_project_id: string;
-                            live_mode: boolean;
-                            key: string;
-                            type: string;
-                            default_value: string | number | boolean;
-                            date_created: string;
-                            date_updated: string;
-                        };
-                    };
-                };
-            };
-            /** @description Validation error or bad request */
-            400: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description Unauthorized - missing or invalid API key */
-            401: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description The resource does not exist in the scope of the request */
-            404: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description Internal server error */
-            500: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiServerErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-        };
-    };
-    deleteContactProperty: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
-                "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
-                /** @description Messaging profile identifier */
-                "Messaging-Profile-ID": string;
-            };
-            path: {
-                property_id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful response */
-            200: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response?: components["schemas"]["ApiSuccessResponseMeta"];
-                        data?: {
-                            property_id: string;
-                            profile_id: string;
-                            conjoin_account_id: string;
-                            conjoin_project_id: string;
-                            live_mode: boolean;
-                            key: string;
-                            type: string;
-                            default_value: string | number | boolean;
-                            date_created: string;
-                            date_updated: string;
-                        };
-                    };
-                };
-            };
-            /** @description Validation error or bad request */
-            400: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description Unauthorized - missing or invalid API key */
-            401: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description The resource does not exist in the scope of the request */
-            404: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description Internal server error */
-            500: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiServerErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-        };
-    };
-    listContactProperties: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
-                "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
-                /** @description A key that makes a retry of this request safe. A retry with the same key and the same request returns the first reply with the `Idempotent-Replayed: true` header and changes nothing. The same key with a different request answers 422, and a key whose first request is still being processed answers 409. The server keeps each key for 24 hours. An empty value counts as no key, so the server processes that request once for each time it arrives. */
-                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
-                /** @description Messaging profile identifier */
-                "Messaging-Profile-ID": string;
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": {
-                    cursor?: {
-                        /** @example string */
-                        prev?: string;
-                        /** @example string */
-                        next?: string;
-                    };
-                    /** @default {} */
-                    query?: {
-                        property_id?: string | {
-                            /** @example string */
-                            not_equals?: string;
-                            has_length?: number;
-                            has_any?: string[];
-                            has_none?: string[];
-                            /** @example string */
-                            gt?: string;
-                            /** @example string */
-                            lt?: string;
-                            /** @example string */
-                            gte?: string;
-                            /** @example string */
-                            lte?: string;
-                        };
-                        key?: string | {
-                            /** @example string */
-                            not_equals?: string;
-                            has_length?: number;
-                            has_any?: string[];
-                            has_none?: string[];
-                            /** @example string */
-                            gt?: string;
-                            /** @example string */
-                            lt?: string;
-                            /** @example string */
-                            gte?: string;
-                            /** @example string */
-                            lte?: string;
-                        };
-                        date_created?: {
-                            /** @example string */
-                            equals?: string;
-                            /** @example string */
-                            not_equals?: string;
-                            /** @example string */
-                            gt?: string;
-                            /** @example string */
-                            lt?: string;
-                            /** @example string */
-                            gte?: string;
-                            /** @example string */
-                            lte?: string;
-                        };
-                    };
-                    sort?: {
-                        [key: string]: "asc" | "desc";
-                    };
-                    /** @default 50 */
-                    limit?: string | number;
-                };
-            };
-        };
-        responses: {
-            /** @description Successful response */
-            200: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    "Idempotent-Replayed": components["headers"]["IdempotentReplayed"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response?: components["schemas"]["ApiSuccessResponseMeta"];
-                        data?: {
-                            property_id: string;
-                            profile_id: string;
-                            conjoin_account_id: string;
-                            conjoin_project_id: string;
-                            live_mode: boolean;
-                            key: string;
-                            type: string;
-                            default_value: string | number | boolean;
-                            date_created: string;
-                            date_updated: string;
-                        }[];
-                        cursor?: components["schemas"]["PaginationCursor"];
-                    };
-                };
-            };
-            /** @description Validation error or bad request */
-            400: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description Unauthorized - missing or invalid API key */
-            401: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description The resource does not exist in the scope of the request */
-            404: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description The first request with this Idempotency-Key is still being processed, stopped before it finished, or finished with a reply that cannot be replayed */
-            409: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description This Idempotency-Key was already used with a different request */
-            422: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description Internal server error */
-            500: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiServerErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description The server could not check the Idempotency-Key and did not process the request */
-            503: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiServerErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-        };
-    };
-    deleteManyContactProperties: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
-                "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
-                /** @description A key that makes a retry of this request safe. A retry with the same key and the same request returns the first reply with the `Idempotent-Replayed: true` header and changes nothing. The same key with a different request answers 422, and a key whose first request is still being processed answers 409. The server keeps each key for 24 hours. An empty value counts as no key, so the server processes that request once for each time it arrives. */
-                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
-                /** @description Messaging profile identifier */
-                "Messaging-Profile-ID": string;
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": {
-                    /** @constant */
-                    type: "key";
-                    keys: string[];
-                } | {
-                    /** @constant */
-                    type: "property_id";
-                    property_ids: string[];
-                };
-            };
-        };
-        responses: {
-            /** @description Successful response */
-            200: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    "Idempotent-Replayed": components["headers"]["IdempotentReplayed"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response?: components["schemas"]["ApiSuccessResponseMeta"];
-                        data?: {
-                            property_id: string;
-                            profile_id: string;
-                            conjoin_account_id: string;
-                            conjoin_project_id: string;
-                            live_mode: boolean;
-                            key: string;
-                            type: string;
-                            default_value: string | number | boolean;
-                            date_created: string;
-                            date_updated: string;
-                        }[];
-                        cursor?: components["schemas"]["PaginationCursor"];
-                    };
-                };
-            };
-            /** @description Validation error or bad request */
-            400: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description Unauthorized - missing or invalid API key */
-            401: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description The resource does not exist in the scope of the request */
-            404: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description The first request with this Idempotency-Key is still being processed, stopped before it finished, or finished with a reply that cannot be replayed */
-            409: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description This Idempotency-Key was already used with a different request */
-            422: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description Internal server error */
-            500: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiServerErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description The server could not check the Idempotency-Key and did not process the request */
-            503: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiServerErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-        };
-    };
-    addContactProperties: {
+    deleteContactPropertyValue: {
         parameters: {
             query?: never;
             header: {
@@ -78461,18 +79325,11 @@ export interface operations {
             };
             path: {
                 contact_id: string;
+                property_id: string;
             };
             cookie?: never;
         };
-        requestBody: {
-            content: {
-                "application/json": {
-                    properties: {
-                        [key: string]: string | number | boolean;
-                    };
-                };
-            };
-        };
+        requestBody?: never;
         responses: {
             /** @description Successful response */
             200: {
@@ -78579,14 +79436,13 @@ export interface operations {
             };
             path: {
                 contact_id: string;
+                property_id: string;
             };
             cookie?: never;
         };
         requestBody: {
             content: {
                 "application/json": {
-                    /** @example string */
-                    key: string;
                     value: string | number | boolean;
                 };
             };
@@ -78686,64 +79542,141 @@ export interface operations {
             };
         };
     };
-    deleteContactProperties: {
+    listConversations: {
         parameters: {
-            query?: never;
+            query?: {
+                conversation_id?: string | {
+                    /** @example string */
+                    not_equals?: string;
+                    has_length?: number;
+                    has_any?: string[];
+                    has_none?: string[];
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                reference_id?: string | {
+                    /** @example string */
+                    not_equals?: string;
+                    has_length?: number;
+                    has_any?: string[];
+                    has_none?: string[];
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                title?: string | {
+                    /** @example string */
+                    not_equals?: string;
+                    has_length?: number;
+                    has_any?: string[];
+                    has_none?: string[];
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                accepts_replies?: boolean | ("true" | "false");
+                date_created?: {
+                    /** @example string */
+                    equals?: string;
+                    /** @example string */
+                    not_equals?: string;
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                date_archived?: {
+                    /** @example string */
+                    equals?: string;
+                    /** @example string */
+                    not_equals?: string;
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                search?: string;
+                cursor?: {
+                    /** @example string */
+                    prev?: string;
+                    /** @example string */
+                    next?: string;
+                };
+                sort?: {
+                    [key: string]: "asc" | "desc";
+                };
+                limit?: string | number;
+            };
             header: {
                 /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
                 "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
-                /** @description A key that makes a retry of this request safe. A retry with the same key and the same request returns the first reply with the `Idempotent-Replayed: true` header and changes nothing. The same key with a different request answers 422, and a key whose first request is still being processed answers 409. The server keeps each key for 24 hours. An empty value counts as no key, so the server processes that request once for each time it arrives. */
-                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 /** @description Messaging profile identifier */
                 "Messaging-Profile-ID": string;
             };
-            path: {
-                contact_id: string;
-            };
+            path?: never;
             cookie?: never;
         };
-        requestBody: {
-            content: {
-                "application/json": {
-                    keys: string[];
-                };
-            };
-        };
+        requestBody?: never;
         responses: {
             /** @description Successful response */
             200: {
                 headers: {
                     "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    "Idempotent-Replayed": components["headers"]["IdempotentReplayed"];
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
                         response?: components["schemas"]["ApiSuccessResponseMeta"];
                         data?: {
-                            contact_id: string;
+                            conversation_id: string;
                             profile_id: string;
                             conjoin_account_id: string;
                             conjoin_project_id: string;
                             live_mode: boolean;
                             reference_id?: string | null;
-                            first_name?: string | null;
-                            last_name?: string | null;
-                            email?: string | null;
-                            phone_number?: unknown | null;
-                            preferred_channels?: string[];
-                            quiet_hours?: {
-                                starts_at: string;
-                                ends_at: string;
-                            } | null;
-                            timezone?: string | null;
-                            properties?: {
+                            title: string;
+                            description?: string;
+                            message_channels: {
                                 [key: string]: unknown;
                             };
+                            senders?: {
+                                [key: string]: unknown;
+                            } | null;
+                            accepts_replies: boolean;
+                            total_recipients: number;
+                            placeholders?: {
+                                [key: string]: unknown;
+                            } | null;
+                            date_archived?: string | null;
                             date_created: string;
                             date_updated: string;
                             date_deleted?: string | null;
-                        };
+                        }[];
+                        cursor?: components["schemas"]["PaginationCursor"];
                     };
                 };
             };
@@ -78789,50 +79722,8 @@ export interface operations {
                     };
                 };
             };
-            /** @description The first request with this Idempotency-Key is still being processed, stopped before it finished, or finished with a reply that cannot be replayed */
-            409: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description This Idempotency-Key was already used with a different request */
-            422: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
             /** @description Internal server error */
             500: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiServerErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description The server could not check the Idempotency-Key and did not process the request */
-            503: {
                 headers: {
                     "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
                     [name: string]: unknown;
@@ -79086,7 +79977,956 @@ export interface operations {
             };
         };
     };
-    cloneConversation: {
+    listConversationMessages: {
+        parameters: {
+            query: {
+                parent_message_id?: string;
+                reference_id?: string | {
+                    /** @example string */
+                    not_equals?: string;
+                    has_length?: number;
+                    has_any?: string[];
+                    has_none?: string[];
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                search?: string;
+                channel: "sms" | "email";
+                cursor?: {
+                    /** @example string */
+                    prev?: string;
+                    /** @example string */
+                    next?: string;
+                };
+                sort?: {
+                    [key: string]: "asc" | "desc";
+                };
+                limit?: string | number;
+            };
+            header: {
+                /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
+                "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
+                /** @description Messaging profile identifier */
+                "Messaging-Profile-ID": string;
+            };
+            path: {
+                conversation_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful response */
+            200: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response?: components["schemas"]["ApiSuccessResponseMeta"];
+                        data?: ({
+                            message_id: string;
+                            profile_id: string;
+                            conjoin_account_id: string;
+                            conjoin_project_id: string;
+                            live_mode: boolean;
+                            reference_id?: string | null;
+                            conversation_id?: string | null;
+                            parent_message_id?: string | null;
+                            type: string;
+                            reply_to?: string | null;
+                            default_placeholders?: {
+                                [key: string]: unknown;
+                            };
+                            sent_at: string;
+                            body: string;
+                            truncate_message: boolean;
+                            send_at?: string | null;
+                            status: string;
+                            date_created: string;
+                            date_updated: string;
+                            date_deleted?: string | null;
+                            reply_count: number;
+                        } | {
+                            message_id: string;
+                            profile_id: string;
+                            conjoin_account_id: string;
+                            conjoin_project_id: string;
+                            live_mode: boolean;
+                            reference_id?: string | null;
+                            conversation_id?: string | null;
+                            parent_message_id?: string | null;
+                            type: string;
+                            from: string;
+                            subject: string;
+                            body: string;
+                            cc?: string[];
+                            bcc?: string[];
+                            reply_to?: string | null;
+                            attachments?: {
+                                [key: string]: unknown;
+                            }[];
+                            tracking?: {
+                                [key: string]: unknown;
+                            };
+                            send_at?: string | null;
+                            sent_at: string;
+                            accepts_replies: boolean;
+                            status: string;
+                            date_created: string;
+                            date_updated: string;
+                            date_deleted?: string | null;
+                            reply_count: number;
+                        })[];
+                        cursor?: components["schemas"]["PaginationCursor"];
+                    };
+                };
+            };
+            /** @description Validation error or bad request */
+            400: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Unauthorized - missing or invalid API key */
+            401: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description The resource does not exist in the scope of the request */
+            404: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiServerErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+        };
+    };
+    listConversationRecipients: {
+        parameters: {
+            query?: {
+                reference_id?: string | {
+                    /** @example string */
+                    not_equals?: string;
+                    has_length?: number;
+                    has_any?: string[];
+                    has_none?: string[];
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                contact_id?: string | {
+                    /** @example string */
+                    not_equals?: string;
+                    has_length?: number;
+                    has_any?: string[];
+                    has_none?: string[];
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                date_created?: {
+                    /** @example string */
+                    equals?: string;
+                    /** @example string */
+                    not_equals?: string;
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                cursor?: {
+                    /** @example string */
+                    prev?: string;
+                    /** @example string */
+                    next?: string;
+                };
+                sort?: {
+                    [key: string]: "asc" | "desc";
+                };
+                limit?: string | number;
+            };
+            header: {
+                /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
+                "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
+                /** @description Messaging profile identifier */
+                "Messaging-Profile-ID": string;
+            };
+            path: {
+                conversation_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful response */
+            200: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response?: components["schemas"]["ApiSuccessResponseMeta"];
+                        data?: {
+                            profile_id: string;
+                            conjoin_account_id: string;
+                            conjoin_project_id: string;
+                            live_mode: boolean;
+                            reference_id?: string | null;
+                            contact_id: string;
+                            conversation_id: string;
+                            recipient_id: string;
+                            date_archived?: string | null;
+                            date_created: string;
+                            date_updated: string;
+                            date_deleted?: string | null;
+                        }[];
+                        cursor?: components["schemas"]["PaginationCursor"];
+                    };
+                };
+            };
+            /** @description Validation error or bad request */
+            400: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Unauthorized - missing or invalid API key */
+            401: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description The resource does not exist in the scope of the request */
+            404: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiServerErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+        };
+    };
+    addOneConversationRecipient: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
+                "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
+                /** @description A key that makes a retry of this request safe. A retry with the same key and the same request returns the first reply with the `Idempotent-Replayed: true` header and changes nothing. The same key with a different request answers 422, and a key whose first request is still being processed answers 409. The server keeps each key for 24 hours. An empty value counts as no key, so the server processes that request once for each time it arrives. */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                /** @description Messaging profile identifier */
+                "Messaging-Profile-ID": string;
+            };
+            path: {
+                conversation_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @example string */
+                    reference_id?: string;
+                    /** @example string */
+                    first_name?: string;
+                    /** @example string */
+                    last_name?: string;
+                    /**
+                     * Format: email
+                     * @example user@example.com
+                     */
+                    email?: string;
+                    phone_number?: string | {
+                        /** @example string */
+                        country_iso: string;
+                        country_calling_code?: string | null;
+                        carrier_code?: string | null;
+                        /** @description Phone number in E.164 format */
+                        international_number: string;
+                        /** @description Phone number in E.164 format */
+                        national_number: string;
+                    };
+                    preferred_channels?: ("sms" | "email" | "mms" | "rcs" | "ussd" | "verification" | "multisend" | "voice" | "live-chat" | "push-notifications" | "whatsapp-business" | "instagram-business" | "apple-business")[];
+                    quiet_hours?: {
+                        /**
+                         * Format: date-time
+                         * @example 2024-01-15T09:30:00Z
+                         */
+                        starts_at: string;
+                        /**
+                         * Format: date-time
+                         * @example 2024-01-15T09:30:00Z
+                         */
+                        ends_at: string;
+                    };
+                    /** @default {} */
+                    properties?: {
+                        [key: string]: string | number | boolean;
+                    };
+                };
+            };
+        };
+        responses: {
+            /** @description Successful response */
+            201: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    "Idempotent-Replayed": components["headers"]["IdempotentReplayed"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response?: components["schemas"]["ApiSuccessResponseMeta"];
+                        data?: {
+                            profile_id: string;
+                            conjoin_account_id: string;
+                            conjoin_project_id: string;
+                            live_mode: boolean;
+                            reference_id?: string | null;
+                            contact_id: string;
+                            conversation_id: string;
+                            recipient_id: string;
+                            date_archived?: string | null;
+                            date_created: string;
+                            date_updated: string;
+                            date_deleted?: string | null;
+                        };
+                    };
+                };
+            };
+            /** @description Validation error or bad request */
+            400: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Unauthorized - missing or invalid API key */
+            401: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description The resource does not exist in the scope of the request */
+            404: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description The first request with this Idempotency-Key is still being processed, stopped before it finished, or finished with a reply that cannot be replayed */
+            409: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description This Idempotency-Key was already used with a different request */
+            422: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiServerErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description The server could not check the Idempotency-Key and did not process the request */
+            503: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiServerErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+        };
+    };
+    listConversationsCount: {
+        parameters: {
+            query?: {
+                conversation_id?: string | {
+                    /** @example string */
+                    not_equals?: string;
+                    has_length?: number;
+                    has_any?: string[];
+                    has_none?: string[];
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                reference_id?: string | {
+                    /** @example string */
+                    not_equals?: string;
+                    has_length?: number;
+                    has_any?: string[];
+                    has_none?: string[];
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                title?: string | {
+                    /** @example string */
+                    not_equals?: string;
+                    has_length?: number;
+                    has_any?: string[];
+                    has_none?: string[];
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                accepts_replies?: boolean | ("true" | "false");
+                date_created?: {
+                    /** @example string */
+                    equals?: string;
+                    /** @example string */
+                    not_equals?: string;
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                date_archived?: {
+                    /** @example string */
+                    equals?: string;
+                    /** @example string */
+                    not_equals?: string;
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                search?: string;
+                cursor?: {
+                    /** @example string */
+                    prev?: string;
+                    /** @example string */
+                    next?: string;
+                };
+                sort?: {
+                    [key: string]: "asc" | "desc";
+                };
+                limit?: string | number;
+            };
+            header: {
+                /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
+                "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
+                /** @description Messaging profile identifier */
+                "Messaging-Profile-ID": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful response */
+            200: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response?: components["schemas"]["ApiSuccessResponseMeta"];
+                        data?: {
+                            count: number;
+                        };
+                    };
+                };
+            };
+            /** @description Validation error or bad request */
+            400: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Unauthorized - missing or invalid API key */
+            401: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description The resource does not exist in the scope of the request */
+            404: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiServerErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+        };
+    };
+    listConversationMessagesCount: {
+        parameters: {
+            query: {
+                parent_message_id?: string;
+                reference_id?: string | {
+                    /** @example string */
+                    not_equals?: string;
+                    has_length?: number;
+                    has_any?: string[];
+                    has_none?: string[];
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                search?: string;
+                channel: "sms" | "email";
+                cursor?: {
+                    /** @example string */
+                    prev?: string;
+                    /** @example string */
+                    next?: string;
+                };
+                sort?: {
+                    [key: string]: "asc" | "desc";
+                };
+                limit?: string | number;
+            };
+            header: {
+                /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
+                "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
+                /** @description Messaging profile identifier */
+                "Messaging-Profile-ID": string;
+            };
+            path: {
+                conversation_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful response */
+            200: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response?: components["schemas"]["ApiSuccessResponseMeta"];
+                        data?: {
+                            count: number;
+                        };
+                    };
+                };
+            };
+            /** @description Validation error or bad request */
+            400: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Unauthorized - missing or invalid API key */
+            401: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description The resource does not exist in the scope of the request */
+            404: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiServerErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+        };
+    };
+    listConversationRecipientsCount: {
+        parameters: {
+            query?: {
+                reference_id?: string | {
+                    /** @example string */
+                    not_equals?: string;
+                    has_length?: number;
+                    has_any?: string[];
+                    has_none?: string[];
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                contact_id?: string | {
+                    /** @example string */
+                    not_equals?: string;
+                    has_length?: number;
+                    has_any?: string[];
+                    has_none?: string[];
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                date_created?: {
+                    /** @example string */
+                    equals?: string;
+                    /** @example string */
+                    not_equals?: string;
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                cursor?: {
+                    /** @example string */
+                    prev?: string;
+                    /** @example string */
+                    next?: string;
+                };
+                sort?: {
+                    [key: string]: "asc" | "desc";
+                };
+                limit?: string | number;
+            };
+            header: {
+                /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
+                "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
+                /** @description Messaging profile identifier */
+                "Messaging-Profile-ID": string;
+            };
+            path: {
+                conversation_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful response */
+            200: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response?: components["schemas"]["ApiSuccessResponseMeta"];
+                        data?: {
+                            count: number;
+                        };
+                    };
+                };
+            };
+            /** @description Validation error or bad request */
+            400: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Unauthorized - missing or invalid API key */
+            401: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description The resource does not exist in the scope of the request */
+            404: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiServerErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+        };
+    };
+    duplicateConversation: {
         parameters: {
             query?: never;
             header: {
@@ -79718,6 +81558,8 @@ export interface operations {
             header: {
                 /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
                 "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
+                /** @description A key that makes a retry of this request safe. A retry with the same key and the same request returns the first reply with the `Idempotent-Replayed: true` header and changes nothing. The same key with a different request answers 422, and a key whose first request is still being processed answers 409. The server keeps each key for 24 hours. An empty value counts as no key, so the server processes that request once for each time it arrives. */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 /** @description Messaging profile identifier */
                 "Messaging-Profile-ID": string;
             };
@@ -79732,216 +81574,6 @@ export interface operations {
             200: {
                 headers: {
                     "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response?: components["schemas"]["ApiSuccessResponseMeta"];
-                        data?: {
-                            conversation_id: string;
-                            profile_id: string;
-                            conjoin_account_id: string;
-                            conjoin_project_id: string;
-                            live_mode: boolean;
-                            reference_id?: string | null;
-                            title: string;
-                            description?: string;
-                            message_channels: {
-                                [key: string]: unknown;
-                            };
-                            senders?: {
-                                [key: string]: unknown;
-                            } | null;
-                            accepts_replies: boolean;
-                            total_recipients: number;
-                            placeholders?: {
-                                [key: string]: unknown;
-                            } | null;
-                            date_archived?: string | null;
-                            date_created: string;
-                            date_updated: string;
-                            date_deleted?: string | null;
-                        };
-                    };
-                };
-            };
-            /** @description Validation error or bad request */
-            400: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description Unauthorized - missing or invalid API key */
-            401: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description The resource does not exist in the scope of the request */
-            404: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description Internal server error */
-            500: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiServerErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-        };
-    };
-    listConversations: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
-                "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
-                /** @description A key that makes a retry of this request safe. A retry with the same key and the same request returns the first reply with the `Idempotent-Replayed: true` header and changes nothing. The same key with a different request answers 422, and a key whose first request is still being processed answers 409. The server keeps each key for 24 hours. An empty value counts as no key, so the server processes that request once for each time it arrives. */
-                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
-                /** @description Messaging profile identifier */
-                "Messaging-Profile-ID": string;
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": {
-                    cursor?: {
-                        /** @example string */
-                        prev?: string;
-                        /** @example string */
-                        next?: string;
-                    };
-                    filter?: {
-                        [key: string]: false;
-                    };
-                    /** @default {} */
-                    query?: {
-                        conversation_id?: string | {
-                            /** @example string */
-                            not_equals?: string;
-                            has_length?: number;
-                            has_any?: string[];
-                            has_none?: string[];
-                            /** @example string */
-                            gt?: string;
-                            /** @example string */
-                            lt?: string;
-                            /** @example string */
-                            gte?: string;
-                            /** @example string */
-                            lte?: string;
-                        };
-                        reference_id?: string | {
-                            /** @example string */
-                            not_equals?: string;
-                            has_length?: number;
-                            has_any?: string[];
-                            has_none?: string[];
-                            /** @example string */
-                            gt?: string;
-                            /** @example string */
-                            lt?: string;
-                            /** @example string */
-                            gte?: string;
-                            /** @example string */
-                            lte?: string;
-                        };
-                        title?: string | {
-                            /** @example string */
-                            not_equals?: string;
-                            has_length?: number;
-                            has_any?: string[];
-                            has_none?: string[];
-                            /** @example string */
-                            gt?: string;
-                            /** @example string */
-                            lt?: string;
-                            /** @example string */
-                            gte?: string;
-                            /** @example string */
-                            lte?: string;
-                        };
-                        accepts_replies?: boolean;
-                        date_created?: {
-                            /** @example string */
-                            equals?: string;
-                            /** @example string */
-                            not_equals?: string;
-                            /** @example string */
-                            gt?: string;
-                            /** @example string */
-                            lt?: string;
-                            /** @example string */
-                            gte?: string;
-                            /** @example string */
-                            lte?: string;
-                        };
-                        date_archived?: {
-                            /** @example string */
-                            equals?: string;
-                            /** @example string */
-                            not_equals?: string;
-                            /** @example string */
-                            gt?: string;
-                            /** @example string */
-                            lt?: string;
-                            /** @example string */
-                            gte?: string;
-                            /** @example string */
-                            lte?: string;
-                        };
-                    };
-                    search?: {
-                        keyword: string;
-                    };
-                    sort?: {
-                        [key: string]: "asc" | "desc";
-                    };
-                    /** @default 50 */
-                    limit?: string | number;
-                };
-            };
-        };
-        responses: {
-            /** @description Successful response */
-            200: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
                     "Idempotent-Replayed": components["headers"]["IdempotentReplayed"];
                     [name: string]: unknown;
                 };
@@ -79972,216 +81604,7 @@ export interface operations {
                             date_created: string;
                             date_updated: string;
                             date_deleted?: string | null;
-                        }[];
-                        cursor?: components["schemas"]["PaginationCursor"];
-                    };
-                };
-            };
-            /** @description Validation error or bad request */
-            400: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description Unauthorized - missing or invalid API key */
-            401: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description The resource does not exist in the scope of the request */
-            404: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description The first request with this Idempotency-Key is still being processed, stopped before it finished, or finished with a reply that cannot be replayed */
-            409: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description This Idempotency-Key was already used with a different request */
-            422: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description Internal server error */
-            500: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiServerErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description The server could not check the Idempotency-Key and did not process the request */
-            503: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiServerErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-        };
-    };
-    readConversationMessages: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
-                "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
-                /** @description A key that makes a retry of this request safe. A retry with the same key and the same request returns the first reply with the `Idempotent-Replayed: true` header and changes nothing. The same key with a different request answers 422, and a key whose first request is still being processed answers 409. The server keeps each key for 24 hours. An empty value counts as no key, so the server processes that request once for each time it arrives. */
-                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
-                /** @description Messaging profile identifier */
-                "Messaging-Profile-ID": string;
-            };
-            path: {
-                conversation_id: string;
-                parent_message_id: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": {
-                    /** @enum {string} */
-                    channel: "sms" | "email";
-                    cursor?: {
-                        /** @example string */
-                        prev?: string;
-                        /** @example string */
-                        next?: string;
-                    };
-                    search?: {
-                        keyword: string;
-                    };
-                    sort?: {
-                        [key: string]: "asc" | "desc";
-                    };
-                    /** @default 50 */
-                    limit?: string | number;
-                };
-            };
-        };
-        responses: {
-            /** @description Successful response */
-            200: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    "Idempotent-Replayed": components["headers"]["IdempotentReplayed"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response?: components["schemas"]["ApiSuccessResponseMeta"];
-                        data?: ({
-                            message_id: string;
-                            profile_id: string;
-                            conjoin_account_id: string;
-                            conjoin_project_id: string;
-                            live_mode: boolean;
-                            reference_id?: string | null;
-                            conversation_id?: string | null;
-                            parent_message_id?: string | null;
-                            type: string;
-                            reply_to?: string | null;
-                            default_placeholders?: {
-                                [key: string]: unknown;
-                            };
-                            sent_at: string;
-                            body: string;
-                            truncate_message: boolean;
-                            send_at?: string | null;
-                            status: string;
-                            date_created: string;
-                            date_updated: string;
-                            date_deleted?: string | null;
-                            reply_count: number;
-                        } | {
-                            message_id: string;
-                            profile_id: string;
-                            conjoin_account_id: string;
-                            conjoin_project_id: string;
-                            live_mode: boolean;
-                            reference_id?: string | null;
-                            conversation_id?: string | null;
-                            parent_message_id?: string | null;
-                            type: string;
-                            from: string;
-                            subject: string;
-                            body: string;
-                            cc?: string[];
-                            bcc?: string[];
-                            reply_to?: string | null;
-                            attachments?: {
-                                [key: string]: unknown;
-                            }[];
-                            tracking?: {
-                                [key: string]: unknown;
-                            };
-                            send_at?: string | null;
-                            sent_at: string;
-                            accepts_replies: boolean;
-                            status: string;
-                            date_created: string;
-                            date_updated: string;
-                            date_deleted?: string | null;
-                            reply_count: number;
-                        })[];
-                        cursor?: components["schemas"]["PaginationCursor"];
+                        };
                     };
                 };
             };
@@ -80487,356 +81910,6 @@ export interface operations {
             };
         };
     };
-    readManyConversationRecipients: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
-                "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
-                /** @description A key that makes a retry of this request safe. A retry with the same key and the same request returns the first reply with the `Idempotent-Replayed: true` header and changes nothing. The same key with a different request answers 422, and a key whose first request is still being processed answers 409. The server keeps each key for 24 hours. An empty value counts as no key, so the server processes that request once for each time it arrives. */
-                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
-                /** @description Messaging profile identifier */
-                "Messaging-Profile-ID": string;
-            };
-            path: {
-                conversation_id: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": {
-                    cursor?: {
-                        /** @example string */
-                        prev?: string;
-                        /** @example string */
-                        next?: string;
-                    };
-                    sort?: {
-                        [key: string]: "asc" | "desc";
-                    };
-                    /** @default 50 */
-                    limit?: string | number;
-                };
-            };
-        };
-        responses: {
-            /** @description Successful response */
-            200: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    "Idempotent-Replayed": components["headers"]["IdempotentReplayed"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response?: components["schemas"]["ApiSuccessResponseMeta"];
-                        data?: {
-                            profile_id: string;
-                            conjoin_account_id: string;
-                            conjoin_project_id: string;
-                            live_mode: boolean;
-                            reference_id?: string | null;
-                            contact_id: string;
-                            conversation_id: string;
-                            recipient_id: string;
-                            date_archived?: string | null;
-                            date_created: string;
-                            date_updated: string;
-                            date_deleted?: string | null;
-                        }[];
-                        cursor?: components["schemas"]["PaginationCursor"];
-                    };
-                };
-            };
-            /** @description Validation error or bad request */
-            400: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description Unauthorized - missing or invalid API key */
-            401: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description The resource does not exist in the scope of the request */
-            404: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description The first request with this Idempotency-Key is still being processed, stopped before it finished, or finished with a reply that cannot be replayed */
-            409: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description This Idempotency-Key was already used with a different request */
-            422: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description Internal server error */
-            500: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiServerErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description The server could not check the Idempotency-Key and did not process the request */
-            503: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiServerErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-        };
-    };
-    addOneConversationRecipient: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
-                "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
-                /** @description A key that makes a retry of this request safe. A retry with the same key and the same request returns the first reply with the `Idempotent-Replayed: true` header and changes nothing. The same key with a different request answers 422, and a key whose first request is still being processed answers 409. The server keeps each key for 24 hours. An empty value counts as no key, so the server processes that request once for each time it arrives. */
-                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
-                /** @description Messaging profile identifier */
-                "Messaging-Profile-ID": string;
-            };
-            path: {
-                conversation_id: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": {
-                    /** @example string */
-                    reference_id?: string;
-                    /** @example string */
-                    first_name?: string;
-                    /** @example string */
-                    last_name?: string;
-                    /**
-                     * Format: email
-                     * @example user@example.com
-                     */
-                    email?: string;
-                    phone_number?: string | {
-                        /** @example string */
-                        country_iso: string;
-                        country_calling_code?: string | null;
-                        carrier_code?: string | null;
-                        /** @description Phone number in E.164 format */
-                        international_number: string;
-                        /** @description Phone number in E.164 format */
-                        national_number: string;
-                    };
-                    preferred_channels?: ("sms" | "email" | "mms" | "rcs" | "ussd" | "verification" | "multisend" | "voice" | "live-chat" | "push-notifications" | "whatsapp-business" | "instagram-business" | "apple-business")[];
-                    quiet_hours?: {
-                        /**
-                         * Format: date-time
-                         * @example 2024-01-15T09:30:00Z
-                         */
-                        starts_at: string;
-                        /**
-                         * Format: date-time
-                         * @example 2024-01-15T09:30:00Z
-                         */
-                        ends_at: string;
-                    };
-                    /** @default {} */
-                    properties?: {
-                        [key: string]: string | number | boolean;
-                    };
-                };
-            };
-        };
-        responses: {
-            /** @description Successful response */
-            201: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    "Idempotent-Replayed": components["headers"]["IdempotentReplayed"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response?: components["schemas"]["ApiSuccessResponseMeta"];
-                        data?: {
-                            profile_id: string;
-                            conjoin_account_id: string;
-                            conjoin_project_id: string;
-                            live_mode: boolean;
-                            reference_id?: string | null;
-                            contact_id: string;
-                            conversation_id: string;
-                            recipient_id: string;
-                            date_archived?: string | null;
-                            date_created: string;
-                            date_updated: string;
-                            date_deleted?: string | null;
-                        };
-                    };
-                };
-            };
-            /** @description Validation error or bad request */
-            400: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description Unauthorized - missing or invalid API key */
-            401: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description The resource does not exist in the scope of the request */
-            404: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description The first request with this Idempotency-Key is still being processed, stopped before it finished, or finished with a reply that cannot be replayed */
-            409: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description This Idempotency-Key was already used with a different request */
-            422: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description Internal server error */
-            500: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiServerErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description The server could not check the Idempotency-Key and did not process the request */
-            503: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiServerErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-        };
-    };
     addManyConversationRecipients: {
         parameters: {
             query?: never;
@@ -81014,6 +82087,340 @@ export interface operations {
             };
             /** @description The server could not check the Idempotency-Key and did not process the request */
             503: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiServerErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+        };
+    };
+    listEmailMessages: {
+        parameters: {
+            query?: {
+                conversation_id?: string | {
+                    /** @example string */
+                    not_equals?: string;
+                    has_length?: number;
+                    has_any?: string[];
+                    has_none?: string[];
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                broadcast_id?: string | {
+                    /** @example string */
+                    not_equals?: string;
+                    has_length?: number;
+                    has_any?: string[];
+                    has_none?: string[];
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                request_id?: string | {
+                    /** @example string */
+                    not_equals?: string;
+                    has_length?: number;
+                    has_any?: string[];
+                    has_none?: string[];
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                message_id?: string | {
+                    /** @example string */
+                    not_equals?: string;
+                    has_length?: number;
+                    has_any?: string[];
+                    has_none?: string[];
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                subject?: string | {
+                    /** @example string */
+                    not_equals?: string;
+                    has_length?: number;
+                    has_any?: string[];
+                    has_none?: string[];
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                recipient_id?: string | {
+                    /** @example string */
+                    not_equals?: string;
+                    has_length?: number;
+                    has_any?: string[];
+                    has_none?: string[];
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                reference_id?: string | {
+                    /** @example string */
+                    not_equals?: string;
+                    has_length?: number;
+                    has_any?: string[];
+                    has_none?: string[];
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                name?: string | {
+                    /** @example string */
+                    not_equals?: string;
+                    has_length?: number;
+                    has_any?: string[];
+                    has_none?: string[];
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                send_at?: {
+                    /** @example string */
+                    equals?: string;
+                    /** @example string */
+                    not_equals?: string;
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                sent_at?: {
+                    /** @example string */
+                    equals?: string;
+                    /** @example string */
+                    not_equals?: string;
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                date_created?: {
+                    /** @example string */
+                    equals?: string;
+                    /** @example string */
+                    not_equals?: string;
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                email?: string | {
+                    /**
+                     * Format: email
+                     * @example user@example.com
+                     */
+                    not_equals?: string;
+                    has_length?: number;
+                    has_any?: string[];
+                    has_none?: string[];
+                    /**
+                     * Format: email
+                     * @example user@example.com
+                     */
+                    gt?: string;
+                    /**
+                     * Format: email
+                     * @example user@example.com
+                     */
+                    lt?: string;
+                    /**
+                     * Format: email
+                     * @example user@example.com
+                     */
+                    gte?: string;
+                    /**
+                     * Format: email
+                     * @example user@example.com
+                     */
+                    lte?: string;
+                };
+                status?: ("invalid_recipient" | "insufficient_balance" | "invalid_auth" | "invalid_message_body" | "rate_limits_reached" | "unknown" | "accepted" | "sent" | "processing" | "in_transit" | "delivered" | "received" | "complained" | "bounced" | "failed" | "rejected" | "queued" | "scheduled" | "cancelled" | "expired" | "delayed") | {
+                    /** @enum {string} */
+                    not_equals?: "invalid_recipient" | "insufficient_balance" | "invalid_auth" | "invalid_message_body" | "rate_limits_reached" | "unknown" | "accepted" | "sent" | "processing" | "in_transit" | "delivered" | "received" | "complained" | "bounced" | "failed" | "rejected" | "queued" | "scheduled" | "cancelled" | "expired" | "delayed";
+                    has_length?: number;
+                    has_any?: ("invalid_recipient" | "insufficient_balance" | "invalid_auth" | "invalid_message_body" | "rate_limits_reached" | "unknown" | "accepted" | "sent" | "processing" | "in_transit" | "delivered" | "received" | "complained" | "bounced" | "failed" | "rejected" | "queued" | "scheduled" | "cancelled" | "expired" | "delayed")[];
+                    has_none?: ("invalid_recipient" | "insufficient_balance" | "invalid_auth" | "invalid_message_body" | "rate_limits_reached" | "unknown" | "accepted" | "sent" | "processing" | "in_transit" | "delivered" | "received" | "complained" | "bounced" | "failed" | "rejected" | "queued" | "scheduled" | "cancelled" | "expired" | "delayed")[];
+                    /** @enum {string} */
+                    gt?: "invalid_recipient" | "insufficient_balance" | "invalid_auth" | "invalid_message_body" | "rate_limits_reached" | "unknown" | "accepted" | "sent" | "processing" | "in_transit" | "delivered" | "received" | "complained" | "bounced" | "failed" | "rejected" | "queued" | "scheduled" | "cancelled" | "expired" | "delayed";
+                    /** @enum {string} */
+                    lt?: "invalid_recipient" | "insufficient_balance" | "invalid_auth" | "invalid_message_body" | "rate_limits_reached" | "unknown" | "accepted" | "sent" | "processing" | "in_transit" | "delivered" | "received" | "complained" | "bounced" | "failed" | "rejected" | "queued" | "scheduled" | "cancelled" | "expired" | "delayed";
+                    /** @enum {string} */
+                    gte?: "invalid_recipient" | "insufficient_balance" | "invalid_auth" | "invalid_message_body" | "rate_limits_reached" | "unknown" | "accepted" | "sent" | "processing" | "in_transit" | "delivered" | "received" | "complained" | "bounced" | "failed" | "rejected" | "queued" | "scheduled" | "cancelled" | "expired" | "delayed";
+                    /** @enum {string} */
+                    lte?: "invalid_recipient" | "insufficient_balance" | "invalid_auth" | "invalid_message_body" | "rate_limits_reached" | "unknown" | "accepted" | "sent" | "processing" | "in_transit" | "delivered" | "received" | "complained" | "bounced" | "failed" | "rejected" | "queued" | "scheduled" | "cancelled" | "expired" | "delayed";
+                };
+                search?: string;
+                cursor?: {
+                    /** @example string */
+                    prev?: string;
+                    /** @example string */
+                    next?: string;
+                };
+                sort?: {
+                    [key: string]: "asc" | "desc";
+                };
+                limit?: string | number;
+            };
+            header: {
+                /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
+                "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
+                /** @description Messaging profile identifier */
+                "Messaging-Profile-ID": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful response */
+            200: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response?: components["schemas"]["ApiSuccessResponseMeta"];
+                        data?: {
+                            message_id: string;
+                            profile_id: string;
+                            conjoin_account_id: string;
+                            conjoin_project_id: string;
+                            live_mode: boolean;
+                            reference_id?: string | null;
+                            conversation_id?: string | null;
+                            parent_message_id?: string | null;
+                            type: string;
+                            from: string;
+                            subject: string;
+                            body: string;
+                            cc?: string[];
+                            bcc?: string[];
+                            reply_to?: string | null;
+                            attachments?: {
+                                [key: string]: unknown;
+                            }[];
+                            tracking?: {
+                                [key: string]: unknown;
+                            };
+                            send_at?: string | null;
+                            sent_at: string;
+                            accepts_replies: boolean;
+                            status: string;
+                            date_created: string;
+                            date_updated: string;
+                            date_deleted?: string | null;
+                        }[];
+                        cursor?: components["schemas"]["PaginationCursor"];
+                    };
+                };
+            };
+            /** @description Validation error or bad request */
+            400: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Unauthorized - missing or invalid API key */
+            401: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description The resource does not exist in the scope of the request */
+            404: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Internal server error */
+            500: {
                 headers: {
                     "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
                     [name: string]: unknown;
@@ -81252,251 +82659,251 @@ export interface operations {
             };
         };
     };
-    readEmailMessages: {
+    listEmailMessagesCount: {
         parameters: {
-            query?: never;
+            query?: {
+                conversation_id?: string | {
+                    /** @example string */
+                    not_equals?: string;
+                    has_length?: number;
+                    has_any?: string[];
+                    has_none?: string[];
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                broadcast_id?: string | {
+                    /** @example string */
+                    not_equals?: string;
+                    has_length?: number;
+                    has_any?: string[];
+                    has_none?: string[];
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                request_id?: string | {
+                    /** @example string */
+                    not_equals?: string;
+                    has_length?: number;
+                    has_any?: string[];
+                    has_none?: string[];
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                message_id?: string | {
+                    /** @example string */
+                    not_equals?: string;
+                    has_length?: number;
+                    has_any?: string[];
+                    has_none?: string[];
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                subject?: string | {
+                    /** @example string */
+                    not_equals?: string;
+                    has_length?: number;
+                    has_any?: string[];
+                    has_none?: string[];
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                recipient_id?: string | {
+                    /** @example string */
+                    not_equals?: string;
+                    has_length?: number;
+                    has_any?: string[];
+                    has_none?: string[];
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                reference_id?: string | {
+                    /** @example string */
+                    not_equals?: string;
+                    has_length?: number;
+                    has_any?: string[];
+                    has_none?: string[];
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                name?: string | {
+                    /** @example string */
+                    not_equals?: string;
+                    has_length?: number;
+                    has_any?: string[];
+                    has_none?: string[];
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                send_at?: {
+                    /** @example string */
+                    equals?: string;
+                    /** @example string */
+                    not_equals?: string;
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                sent_at?: {
+                    /** @example string */
+                    equals?: string;
+                    /** @example string */
+                    not_equals?: string;
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                date_created?: {
+                    /** @example string */
+                    equals?: string;
+                    /** @example string */
+                    not_equals?: string;
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                email?: string | {
+                    /**
+                     * Format: email
+                     * @example user@example.com
+                     */
+                    not_equals?: string;
+                    has_length?: number;
+                    has_any?: string[];
+                    has_none?: string[];
+                    /**
+                     * Format: email
+                     * @example user@example.com
+                     */
+                    gt?: string;
+                    /**
+                     * Format: email
+                     * @example user@example.com
+                     */
+                    lt?: string;
+                    /**
+                     * Format: email
+                     * @example user@example.com
+                     */
+                    gte?: string;
+                    /**
+                     * Format: email
+                     * @example user@example.com
+                     */
+                    lte?: string;
+                };
+                status?: ("invalid_recipient" | "insufficient_balance" | "invalid_auth" | "invalid_message_body" | "rate_limits_reached" | "unknown" | "accepted" | "sent" | "processing" | "in_transit" | "delivered" | "received" | "complained" | "bounced" | "failed" | "rejected" | "queued" | "scheduled" | "cancelled" | "expired" | "delayed") | {
+                    /** @enum {string} */
+                    not_equals?: "invalid_recipient" | "insufficient_balance" | "invalid_auth" | "invalid_message_body" | "rate_limits_reached" | "unknown" | "accepted" | "sent" | "processing" | "in_transit" | "delivered" | "received" | "complained" | "bounced" | "failed" | "rejected" | "queued" | "scheduled" | "cancelled" | "expired" | "delayed";
+                    has_length?: number;
+                    has_any?: ("invalid_recipient" | "insufficient_balance" | "invalid_auth" | "invalid_message_body" | "rate_limits_reached" | "unknown" | "accepted" | "sent" | "processing" | "in_transit" | "delivered" | "received" | "complained" | "bounced" | "failed" | "rejected" | "queued" | "scheduled" | "cancelled" | "expired" | "delayed")[];
+                    has_none?: ("invalid_recipient" | "insufficient_balance" | "invalid_auth" | "invalid_message_body" | "rate_limits_reached" | "unknown" | "accepted" | "sent" | "processing" | "in_transit" | "delivered" | "received" | "complained" | "bounced" | "failed" | "rejected" | "queued" | "scheduled" | "cancelled" | "expired" | "delayed")[];
+                    /** @enum {string} */
+                    gt?: "invalid_recipient" | "insufficient_balance" | "invalid_auth" | "invalid_message_body" | "rate_limits_reached" | "unknown" | "accepted" | "sent" | "processing" | "in_transit" | "delivered" | "received" | "complained" | "bounced" | "failed" | "rejected" | "queued" | "scheduled" | "cancelled" | "expired" | "delayed";
+                    /** @enum {string} */
+                    lt?: "invalid_recipient" | "insufficient_balance" | "invalid_auth" | "invalid_message_body" | "rate_limits_reached" | "unknown" | "accepted" | "sent" | "processing" | "in_transit" | "delivered" | "received" | "complained" | "bounced" | "failed" | "rejected" | "queued" | "scheduled" | "cancelled" | "expired" | "delayed";
+                    /** @enum {string} */
+                    gte?: "invalid_recipient" | "insufficient_balance" | "invalid_auth" | "invalid_message_body" | "rate_limits_reached" | "unknown" | "accepted" | "sent" | "processing" | "in_transit" | "delivered" | "received" | "complained" | "bounced" | "failed" | "rejected" | "queued" | "scheduled" | "cancelled" | "expired" | "delayed";
+                    /** @enum {string} */
+                    lte?: "invalid_recipient" | "insufficient_balance" | "invalid_auth" | "invalid_message_body" | "rate_limits_reached" | "unknown" | "accepted" | "sent" | "processing" | "in_transit" | "delivered" | "received" | "complained" | "bounced" | "failed" | "rejected" | "queued" | "scheduled" | "cancelled" | "expired" | "delayed";
+                };
+                search?: string;
+                cursor?: {
+                    /** @example string */
+                    prev?: string;
+                    /** @example string */
+                    next?: string;
+                };
+                sort?: {
+                    [key: string]: "asc" | "desc";
+                };
+                limit?: string | number;
+            };
             header: {
                 /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
                 "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
-                /** @description A key that makes a retry of this request safe. A retry with the same key and the same request returns the first reply with the `Idempotent-Replayed: true` header and changes nothing. The same key with a different request answers 422, and a key whose first request is still being processed answers 409. The server keeps each key for 24 hours. An empty value counts as no key, so the server processes that request once for each time it arrives. */
-                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 /** @description Messaging profile identifier */
                 "Messaging-Profile-ID": string;
             };
-            path: {
-                message_id: string;
-            };
+            path?: never;
             cookie?: never;
         };
-        requestBody: {
-            content: {
-                "application/json": {
-                    cursor?: {
-                        /** @example string */
-                        prev?: string;
-                        /** @example string */
-                        next?: string;
-                    };
-                    /** @default {} */
-                    query?: {
-                        conversation_id?: string | {
-                            /** @example string */
-                            not_equals?: string;
-                            has_length?: number;
-                            has_any?: string[];
-                            has_none?: string[];
-                            /** @example string */
-                            gt?: string;
-                            /** @example string */
-                            lt?: string;
-                            /** @example string */
-                            gte?: string;
-                            /** @example string */
-                            lte?: string;
-                        };
-                        broadcast_id?: string | {
-                            /** @example string */
-                            not_equals?: string;
-                            has_length?: number;
-                            has_any?: string[];
-                            has_none?: string[];
-                            /** @example string */
-                            gt?: string;
-                            /** @example string */
-                            lt?: string;
-                            /** @example string */
-                            gte?: string;
-                            /** @example string */
-                            lte?: string;
-                        };
-                        request_id?: string | {
-                            /** @example string */
-                            not_equals?: string;
-                            has_length?: number;
-                            has_any?: string[];
-                            has_none?: string[];
-                            /** @example string */
-                            gt?: string;
-                            /** @example string */
-                            lt?: string;
-                            /** @example string */
-                            gte?: string;
-                            /** @example string */
-                            lte?: string;
-                        };
-                        message_id?: string | {
-                            /** @example string */
-                            not_equals?: string;
-                            has_length?: number;
-                            has_any?: string[];
-                            has_none?: string[];
-                            /** @example string */
-                            gt?: string;
-                            /** @example string */
-                            lt?: string;
-                            /** @example string */
-                            gte?: string;
-                            /** @example string */
-                            lte?: string;
-                        };
-                        subject?: string | {
-                            /** @example string */
-                            not_equals?: string;
-                            has_length?: number;
-                            has_any?: string[];
-                            has_none?: string[];
-                            /** @example string */
-                            gt?: string;
-                            /** @example string */
-                            lt?: string;
-                            /** @example string */
-                            gte?: string;
-                            /** @example string */
-                            lte?: string;
-                        };
-                        recipient_id?: string | {
-                            /** @example string */
-                            not_equals?: string;
-                            has_length?: number;
-                            has_any?: string[];
-                            has_none?: string[];
-                            /** @example string */
-                            gt?: string;
-                            /** @example string */
-                            lt?: string;
-                            /** @example string */
-                            gte?: string;
-                            /** @example string */
-                            lte?: string;
-                        };
-                        name?: string | {
-                            /** @example string */
-                            not_equals?: string;
-                            has_length?: number;
-                            has_any?: string[];
-                            has_none?: string[];
-                            /** @example string */
-                            gt?: string;
-                            /** @example string */
-                            lt?: string;
-                            /** @example string */
-                            gte?: string;
-                            /** @example string */
-                            lte?: string;
-                        };
-                        send_at?: {
-                            /** @example string */
-                            equals?: string;
-                            /** @example string */
-                            not_equals?: string;
-                            /** @example string */
-                            gt?: string;
-                            /** @example string */
-                            lt?: string;
-                            /** @example string */
-                            gte?: string;
-                            /** @example string */
-                            lte?: string;
-                        };
-                        email?: string | {
-                            /**
-                             * Format: email
-                             * @example user@example.com
-                             */
-                            not_equals?: string;
-                            has_length?: number;
-                            has_any?: string[];
-                            has_none?: string[];
-                            /**
-                             * Format: email
-                             * @example user@example.com
-                             */
-                            gt?: string;
-                            /**
-                             * Format: email
-                             * @example user@example.com
-                             */
-                            lt?: string;
-                            /**
-                             * Format: email
-                             * @example user@example.com
-                             */
-                            gte?: string;
-                            /**
-                             * Format: email
-                             * @example user@example.com
-                             */
-                            lte?: string;
-                        };
-                        status?: ("invalid_recipient" | "insufficient_balance" | "invalid_auth" | "invalid_message_body" | "rate_limits_reached" | "unknown" | "accepted" | "sent" | "processing" | "in_transit" | "delivered" | "received" | "complained" | "bounced" | "failed" | "rejected" | "queued" | "scheduled" | "cancelled" | "expired" | "delayed") | {
-                            /** @enum {string} */
-                            not_equals?: "invalid_recipient" | "insufficient_balance" | "invalid_auth" | "invalid_message_body" | "rate_limits_reached" | "unknown" | "accepted" | "sent" | "processing" | "in_transit" | "delivered" | "received" | "complained" | "bounced" | "failed" | "rejected" | "queued" | "scheduled" | "cancelled" | "expired" | "delayed";
-                            has_length?: number;
-                            has_any?: ("invalid_recipient" | "insufficient_balance" | "invalid_auth" | "invalid_message_body" | "rate_limits_reached" | "unknown" | "accepted" | "sent" | "processing" | "in_transit" | "delivered" | "received" | "complained" | "bounced" | "failed" | "rejected" | "queued" | "scheduled" | "cancelled" | "expired" | "delayed")[];
-                            has_none?: ("invalid_recipient" | "insufficient_balance" | "invalid_auth" | "invalid_message_body" | "rate_limits_reached" | "unknown" | "accepted" | "sent" | "processing" | "in_transit" | "delivered" | "received" | "complained" | "bounced" | "failed" | "rejected" | "queued" | "scheduled" | "cancelled" | "expired" | "delayed")[];
-                            /** @enum {string} */
-                            gt?: "invalid_recipient" | "insufficient_balance" | "invalid_auth" | "invalid_message_body" | "rate_limits_reached" | "unknown" | "accepted" | "sent" | "processing" | "in_transit" | "delivered" | "received" | "complained" | "bounced" | "failed" | "rejected" | "queued" | "scheduled" | "cancelled" | "expired" | "delayed";
-                            /** @enum {string} */
-                            lt?: "invalid_recipient" | "insufficient_balance" | "invalid_auth" | "invalid_message_body" | "rate_limits_reached" | "unknown" | "accepted" | "sent" | "processing" | "in_transit" | "delivered" | "received" | "complained" | "bounced" | "failed" | "rejected" | "queued" | "scheduled" | "cancelled" | "expired" | "delayed";
-                            /** @enum {string} */
-                            gte?: "invalid_recipient" | "insufficient_balance" | "invalid_auth" | "invalid_message_body" | "rate_limits_reached" | "unknown" | "accepted" | "sent" | "processing" | "in_transit" | "delivered" | "received" | "complained" | "bounced" | "failed" | "rejected" | "queued" | "scheduled" | "cancelled" | "expired" | "delayed";
-                            /** @enum {string} */
-                            lte?: "invalid_recipient" | "insufficient_balance" | "invalid_auth" | "invalid_message_body" | "rate_limits_reached" | "unknown" | "accepted" | "sent" | "processing" | "in_transit" | "delivered" | "received" | "complained" | "bounced" | "failed" | "rejected" | "queued" | "scheduled" | "cancelled" | "expired" | "delayed";
-                        };
-                    };
-                    search?: {
-                        keyword: string;
-                    };
-                    sort?: {
-                        [key: string]: "asc" | "desc";
-                    };
-                    /** @default 50 */
-                    limit?: string | number;
-                };
-            };
-        };
+        requestBody?: never;
         responses: {
             /** @description Successful response */
             200: {
                 headers: {
                     "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    "Idempotent-Replayed": components["headers"]["IdempotentReplayed"];
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
                         response?: components["schemas"]["ApiSuccessResponseMeta"];
                         data?: {
-                            message_id: string;
-                            profile_id: string;
-                            conjoin_account_id: string;
-                            conjoin_project_id: string;
-                            live_mode: boolean;
-                            reference_id?: string | null;
-                            conversation_id?: string | null;
-                            parent_message_id?: string | null;
-                            type: string;
-                            from: string;
-                            subject: string;
-                            body: string;
-                            cc?: string[];
-                            bcc?: string[];
-                            reply_to?: string | null;
-                            attachments?: {
-                                [key: string]: unknown;
-                            }[];
-                            tracking?: {
-                                [key: string]: unknown;
-                            };
-                            send_at?: string | null;
-                            sent_at: string;
-                            accepts_replies: boolean;
-                            status: string;
-                            date_created: string;
-                            date_updated: string;
-                            date_deleted?: string | null;
-                        }[];
-                        cursor?: components["schemas"]["PaginationCursor"];
+                            count: number;
+                        };
                     };
                 };
             };
@@ -81542,34 +82949,6 @@ export interface operations {
                     };
                 };
             };
-            /** @description The first request with this Idempotency-Key is still being processed, stopped before it finished, or finished with a reply that cannot be replayed */
-            409: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description This Idempotency-Key was already used with a different request */
-            422: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
             /** @description Internal server error */
             500: {
                 headers: {
@@ -81584,8 +82963,110 @@ export interface operations {
                     };
                 };
             };
-            /** @description The server could not check the Idempotency-Key and did not process the request */
-            503: {
+        };
+    };
+    readEmailMessage: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
+                "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
+                /** @description Messaging profile identifier */
+                "Messaging-Profile-ID": string;
+            };
+            path: {
+                email_message_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful response */
+            200: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response?: components["schemas"]["ApiSuccessResponseMeta"];
+                        data?: {
+                            message_id: string;
+                            profile_id: string;
+                            conjoin_account_id: string;
+                            conjoin_project_id: string;
+                            live_mode: boolean;
+                            reference_id?: string | null;
+                            conversation_id?: string | null;
+                            parent_message_id?: string | null;
+                            type: string;
+                            from: string;
+                            subject: string;
+                            body: string;
+                            cc?: string[];
+                            bcc?: string[];
+                            reply_to?: string | null;
+                            attachments?: {
+                                [key: string]: unknown;
+                            }[];
+                            tracking?: {
+                                [key: string]: unknown;
+                            };
+                            send_at?: string | null;
+                            sent_at: string;
+                            accepts_replies: boolean;
+                            status: string;
+                            date_created: string;
+                            date_updated: string;
+                            date_deleted?: string | null;
+                        };
+                    };
+                };
+            };
+            /** @description Validation error or bad request */
+            400: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Unauthorized - missing or invalid API key */
+            401: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description The resource does not exist in the scope of the request */
+            404: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Internal server error */
+            500: {
                 headers: {
                     "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
                     [name: string]: unknown;
@@ -81759,6 +83240,176 @@ export interface operations {
             };
         };
     };
+    listManyEmailSenderPools: {
+        parameters: {
+            query?: {
+                pool_id?: string | {
+                    /** @example string */
+                    not_equals?: string;
+                    has_length?: number;
+                    has_any?: string[];
+                    has_none?: string[];
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                reference_id?: string | {
+                    /** @example string */
+                    not_equals?: string;
+                    has_length?: number;
+                    has_any?: string[];
+                    has_none?: string[];
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                capability?: ("email_messages" | "verification_messages") | {
+                    /** @enum {string} */
+                    not_equals?: "email_messages" | "verification_messages";
+                    has_length?: number;
+                    has_any?: ("email_messages" | "verification_messages")[];
+                    has_none?: ("email_messages" | "verification_messages")[];
+                    /** @enum {string} */
+                    gt?: "email_messages" | "verification_messages";
+                    /** @enum {string} */
+                    lt?: "email_messages" | "verification_messages";
+                    /** @enum {string} */
+                    gte?: "email_messages" | "verification_messages";
+                    /** @enum {string} */
+                    lte?: "email_messages" | "verification_messages";
+                };
+                date_created?: {
+                    /** @example string */
+                    equals?: string;
+                    /** @example string */
+                    not_equals?: string;
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                cursor?: {
+                    /** @example string */
+                    prev?: string;
+                    /** @example string */
+                    next?: string;
+                };
+                sort?: {
+                    [key: string]: "asc" | "desc";
+                };
+                limit?: string | number;
+            };
+            header: {
+                /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
+                "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
+                /** @description Messaging profile identifier */
+                "Messaging-Profile-ID": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful response */
+            200: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response?: components["schemas"]["ApiSuccessResponseMeta"];
+                        data?: {
+                            pool_id: string;
+                            reference_id?: string | null;
+                            profile_id: string;
+                            conjoin_account_id: string;
+                            conjoin_project_id: string;
+                            live_mode: boolean;
+                            title: string;
+                            description?: string | null;
+                            capability: string;
+                            senders: string[];
+                            date_created: string;
+                            date_updated: string;
+                            date_deleted?: string | null;
+                        }[];
+                        cursor?: components["schemas"]["PaginationCursor"];
+                    };
+                };
+            };
+            /** @description Validation error or bad request */
+            400: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Unauthorized - missing or invalid API key */
+            401: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description The resource does not exist in the scope of the request */
+            404: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiServerErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+        };
+    };
     createEmailSenderPool: {
         parameters: {
             query?: never;
@@ -81776,6 +83427,8 @@ export interface operations {
         requestBody: {
             content: {
                 "application/json": {
+                    /** @example string */
+                    reference_id?: string;
                     /** @example string */
                     title: string;
                     /** @example string */
@@ -81799,6 +83452,7 @@ export interface operations {
                         response?: components["schemas"]["ApiSuccessResponseMeta"];
                         data?: {
                             pool_id: string;
+                            reference_id?: string | null;
                             profile_id: string;
                             conjoin_account_id: string;
                             conjoin_project_id: string;
@@ -81914,6 +83568,163 @@ export interface operations {
             };
         };
     };
+    listManyEmailSenderPoolsCount: {
+        parameters: {
+            query?: {
+                pool_id?: string | {
+                    /** @example string */
+                    not_equals?: string;
+                    has_length?: number;
+                    has_any?: string[];
+                    has_none?: string[];
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                reference_id?: string | {
+                    /** @example string */
+                    not_equals?: string;
+                    has_length?: number;
+                    has_any?: string[];
+                    has_none?: string[];
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                capability?: ("email_messages" | "verification_messages") | {
+                    /** @enum {string} */
+                    not_equals?: "email_messages" | "verification_messages";
+                    has_length?: number;
+                    has_any?: ("email_messages" | "verification_messages")[];
+                    has_none?: ("email_messages" | "verification_messages")[];
+                    /** @enum {string} */
+                    gt?: "email_messages" | "verification_messages";
+                    /** @enum {string} */
+                    lt?: "email_messages" | "verification_messages";
+                    /** @enum {string} */
+                    gte?: "email_messages" | "verification_messages";
+                    /** @enum {string} */
+                    lte?: "email_messages" | "verification_messages";
+                };
+                date_created?: {
+                    /** @example string */
+                    equals?: string;
+                    /** @example string */
+                    not_equals?: string;
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                cursor?: {
+                    /** @example string */
+                    prev?: string;
+                    /** @example string */
+                    next?: string;
+                };
+                sort?: {
+                    [key: string]: "asc" | "desc";
+                };
+                limit?: string | number;
+            };
+            header: {
+                /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
+                "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
+                /** @description Messaging profile identifier */
+                "Messaging-Profile-ID": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful response */
+            200: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response?: components["schemas"]["ApiSuccessResponseMeta"];
+                        data?: {
+                            count: number;
+                        };
+                    };
+                };
+            };
+            /** @description Validation error or bad request */
+            400: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Unauthorized - missing or invalid API key */
+            401: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description The resource does not exist in the scope of the request */
+            404: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiServerErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+        };
+    };
     addEmailSendersToPool: {
         parameters: {
             query?: never;
@@ -81926,7 +83737,7 @@ export interface operations {
                 "Messaging-Profile-ID": string;
             };
             path: {
-                pool_id: string;
+                email_sender_pool_id: string;
             };
             cookie?: never;
         };
@@ -81950,6 +83761,7 @@ export interface operations {
                         response?: components["schemas"]["ApiSuccessResponseMeta"];
                         data?: {
                             pool_id: string;
+                            reference_id?: string | null;
                             profile_id: string;
                             conjoin_account_id: string;
                             conjoin_project_id: string;
@@ -82075,7 +83887,7 @@ export interface operations {
                 "Messaging-Profile-ID": string;
             };
             path: {
-                pool_id: string;
+                email_sender_pool_id: string;
             };
             cookie?: never;
         };
@@ -82092,6 +83904,7 @@ export interface operations {
                         response?: components["schemas"]["ApiSuccessResponseMeta"];
                         data?: {
                             pool_id: string;
+                            reference_id?: string | null;
                             profile_id: string;
                             conjoin_account_id: string;
                             conjoin_project_id: string;
@@ -82175,7 +83988,7 @@ export interface operations {
                 "Messaging-Profile-ID": string;
             };
             path: {
-                pool_id: string;
+                email_sender_pool_id: string;
             };
             cookie?: never;
         };
@@ -82192,6 +84005,7 @@ export interface operations {
                         response?: components["schemas"]["ApiSuccessResponseMeta"];
                         data?: {
                             pool_id: string;
+                            reference_id?: string | null;
                             profile_id: string;
                             conjoin_account_id: string;
                             conjoin_project_id: string;
@@ -82265,18 +84079,90 @@ export interface operations {
             };
         };
     };
-    verifyEmailSender: {
+    listManyEmailSenders: {
         parameters: {
-            query?: never;
+            query?: {
+                sender_id?: string | {
+                    /** @example string */
+                    not_equals?: string;
+                    has_length?: number;
+                    has_any?: string[];
+                    has_none?: string[];
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                reference_id?: string | {
+                    /** @example string */
+                    not_equals?: string;
+                    has_length?: number;
+                    has_any?: string[];
+                    has_none?: string[];
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                sender?: string;
+                is_default_sender?: boolean | ("true" | "false");
+                is_test_sender?: boolean | ("true" | "false");
+                status?: ("transfering" | "active" | "disabled" | "verifying" | "unverified" | "available" | "incompliant") | {
+                    /** @enum {string} */
+                    not_equals?: "transfering" | "active" | "disabled" | "verifying" | "unverified" | "available" | "incompliant";
+                    has_length?: number;
+                    has_any?: ("transfering" | "active" | "disabled" | "verifying" | "unverified" | "available" | "incompliant")[];
+                    has_none?: ("transfering" | "active" | "disabled" | "verifying" | "unverified" | "available" | "incompliant")[];
+                    /** @enum {string} */
+                    gt?: "transfering" | "active" | "disabled" | "verifying" | "unverified" | "available" | "incompliant";
+                    /** @enum {string} */
+                    lt?: "transfering" | "active" | "disabled" | "verifying" | "unverified" | "available" | "incompliant";
+                    /** @enum {string} */
+                    gte?: "transfering" | "active" | "disabled" | "verifying" | "unverified" | "available" | "incompliant";
+                    /** @enum {string} */
+                    lte?: "transfering" | "active" | "disabled" | "verifying" | "unverified" | "available" | "incompliant";
+                };
+                date_created?: {
+                    /** @example string */
+                    equals?: string;
+                    /** @example string */
+                    not_equals?: string;
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                search?: string;
+                cursor?: {
+                    /** @example string */
+                    prev?: string;
+                    /** @example string */
+                    next?: string;
+                };
+                sort?: {
+                    [key: string]: "asc" | "desc";
+                };
+                limit?: string | number;
+            };
             header: {
                 /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
                 "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
                 /** @description Messaging profile identifier */
                 "Messaging-Profile-ID": string;
             };
-            path: {
-                sender_id: string;
-            };
+            path?: never;
             cookie?: never;
         };
         requestBody?: never;
@@ -82285,184 +84171,6 @@ export interface operations {
             200: {
                 headers: {
                     "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response?: components["schemas"]["ApiSuccessResponseMeta"];
-                        data?: {
-                            sender_id: string;
-                            profile_id: string;
-                            conjoin_account_id: string;
-                            conjoin_project_id: string;
-                            live_mode: boolean;
-                            reference_id?: string | null;
-                            sender: string;
-                            capability: string;
-                            sender_type: string;
-                            tracking_details?: {
-                                [key: string]: unknown;
-                            };
-                            is_default_sender?: boolean;
-                            is_test_sender?: boolean;
-                            dns_records?: {
-                                [key: string]: unknown;
-                            }[];
-                            message_quotas: {
-                                messages_per_second: number;
-                            };
-                            queue_details?: {
-                                queue_id: string;
-                                name: string;
-                                rate_limit_per_minute: number;
-                                max_concurrent_deliveries: number;
-                            } | null;
-                            submitted_at: string;
-                            provisioned_at?: string | null;
-                            status: string;
-                            date_created: string;
-                            date_updated: string;
-                            date_deleted?: string | null;
-                        };
-                    };
-                };
-            };
-            /** @description Validation error or bad request */
-            400: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description Unauthorized - missing or invalid API key */
-            401: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description The resource does not exist in the scope of the request */
-            404: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description Internal server error */
-            500: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiServerErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-        };
-    };
-    listManyEmailSenders: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
-                "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
-                /** @description A key that makes a retry of this request safe. A retry with the same key and the same request returns the first reply with the `Idempotent-Replayed: true` header and changes nothing. The same key with a different request answers 422, and a key whose first request is still being processed answers 409. The server keeps each key for 24 hours. An empty value counts as no key, so the server processes that request once for each time it arrives. */
-                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
-                /** @description Messaging profile identifier */
-                "Messaging-Profile-ID": string;
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": {
-                    cursor?: {
-                        /** @example string */
-                        prev?: string;
-                        /** @example string */
-                        next?: string;
-                    };
-                    filter?: {
-                        [key: string]: false;
-                    };
-                    /** @default {} */
-                    query?: {
-                        sender_id?: string | {
-                            /** @example string */
-                            not_equals?: string;
-                            has_length?: number;
-                            has_any?: string[];
-                            has_none?: string[];
-                            /** @example string */
-                            gt?: string;
-                            /** @example string */
-                            lt?: string;
-                            /** @example string */
-                            gte?: string;
-                            /** @example string */
-                            lte?: string;
-                        };
-                        is_default_sender?: boolean;
-                        is_test_sender?: boolean;
-                        status?: ("transfering" | "active" | "disabled" | "verifying" | "unverified" | "available" | "incompliant") | {
-                            /** @enum {string} */
-                            not_equals?: "transfering" | "active" | "disabled" | "verifying" | "unverified" | "available" | "incompliant";
-                            has_length?: number;
-                            has_any?: ("transfering" | "active" | "disabled" | "verifying" | "unverified" | "available" | "incompliant")[];
-                            has_none?: ("transfering" | "active" | "disabled" | "verifying" | "unverified" | "available" | "incompliant")[];
-                            /** @enum {string} */
-                            gt?: "transfering" | "active" | "disabled" | "verifying" | "unverified" | "available" | "incompliant";
-                            /** @enum {string} */
-                            lt?: "transfering" | "active" | "disabled" | "verifying" | "unverified" | "available" | "incompliant";
-                            /** @enum {string} */
-                            gte?: "transfering" | "active" | "disabled" | "verifying" | "unverified" | "available" | "incompliant";
-                            /** @enum {string} */
-                            lte?: "transfering" | "active" | "disabled" | "verifying" | "unverified" | "available" | "incompliant";
-                        };
-                    };
-                    search?: {
-                        keyword: string;
-                    };
-                    sort?: {
-                        [key: string]: "asc" | "desc";
-                    };
-                    /** @default 50 */
-                    limit?: string | number;
-                };
-            };
-        };
-        responses: {
-            /** @description Successful response */
-            200: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    "Idempotent-Replayed": components["headers"]["IdempotentReplayed"];
                     [name: string]: unknown;
                 };
                 content: {
@@ -82503,288 +84211,6 @@ export interface operations {
                             date_deleted?: string | null;
                         }[];
                         cursor?: components["schemas"]["PaginationCursor"];
-                    };
-                };
-            };
-            /** @description Validation error or bad request */
-            400: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description Unauthorized - missing or invalid API key */
-            401: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description The resource does not exist in the scope of the request */
-            404: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description The first request with this Idempotency-Key is still being processed, stopped before it finished, or finished with a reply that cannot be replayed */
-            409: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description This Idempotency-Key was already used with a different request */
-            422: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description Internal server error */
-            500: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiServerErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description The server could not check the Idempotency-Key and did not process the request */
-            503: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiServerErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-        };
-    };
-    listOneEmailSender: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
-                "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
-                /** @description Messaging profile identifier */
-                "Messaging-Profile-ID": string;
-            };
-            path: {
-                sender_id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful response */
-            200: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response?: components["schemas"]["ApiSuccessResponseMeta"];
-                        data?: {
-                            sender_id: string;
-                            profile_id: string;
-                            conjoin_account_id: string;
-                            conjoin_project_id: string;
-                            live_mode: boolean;
-                            reference_id?: string | null;
-                            sender: string;
-                            capability: string;
-                            sender_type: string;
-                            tracking_details?: {
-                                [key: string]: unknown;
-                            };
-                            is_default_sender?: boolean;
-                            is_test_sender?: boolean;
-                            dns_records?: {
-                                [key: string]: unknown;
-                            }[];
-                            message_quotas: {
-                                messages_per_second: number;
-                            };
-                            queue_details?: {
-                                queue_id: string;
-                                name: string;
-                                rate_limit_per_minute: number;
-                                max_concurrent_deliveries: number;
-                            } | null;
-                            submitted_at: string;
-                            provisioned_at?: string | null;
-                            status: string;
-                            date_created: string;
-                            date_updated: string;
-                            date_deleted?: string | null;
-                        };
-                    };
-                };
-            };
-            /** @description Validation error or bad request */
-            400: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description Unauthorized - missing or invalid API key */
-            401: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description The resource does not exist in the scope of the request */
-            404: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description Internal server error */
-            500: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiServerErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-        };
-    };
-    deleteEmailSender: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
-                "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
-                /** @description Messaging profile identifier */
-                "Messaging-Profile-ID": string;
-            };
-            path: {
-                sender_id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful response */
-            200: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response?: components["schemas"]["ApiSuccessResponseMeta"];
-                        data?: {
-                            sender_id: string;
-                            profile_id: string;
-                            conjoin_account_id: string;
-                            conjoin_project_id: string;
-                            live_mode: boolean;
-                            reference_id?: string | null;
-                            sender: string;
-                            capability: string;
-                            sender_type: string;
-                            tracking_details?: {
-                                [key: string]: unknown;
-                            };
-                            is_default_sender?: boolean;
-                            is_test_sender?: boolean;
-                            dns_records?: {
-                                [key: string]: unknown;
-                            }[];
-                            message_quotas: {
-                                messages_per_second: number;
-                            };
-                            queue_details?: {
-                                queue_id: string;
-                                name: string;
-                                rate_limit_per_minute: number;
-                                max_concurrent_deliveries: number;
-                            } | null;
-                            submitted_at: string;
-                            provisioned_at?: string | null;
-                            status: string;
-                            date_created: string;
-                            date_updated: string;
-                            date_deleted?: string | null;
-                        };
                     };
                 };
             };
@@ -82904,6 +84330,8 @@ export interface operations {
                      */
                     sender: string;
                 }, "sender_type"> & {
+                    /** @example string */
+                    reference_id?: string;
                     /** @enum {string} */
                     capability: "email_messages" | "verification_messages";
                     /** @default false */
@@ -83061,7 +84489,168 @@ export interface operations {
             };
         };
     };
-    enableEmailSender: {
+    listManyEmailSendersCount: {
+        parameters: {
+            query?: {
+                sender_id?: string | {
+                    /** @example string */
+                    not_equals?: string;
+                    has_length?: number;
+                    has_any?: string[];
+                    has_none?: string[];
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                reference_id?: string | {
+                    /** @example string */
+                    not_equals?: string;
+                    has_length?: number;
+                    has_any?: string[];
+                    has_none?: string[];
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                sender?: string;
+                is_default_sender?: boolean | ("true" | "false");
+                is_test_sender?: boolean | ("true" | "false");
+                status?: ("transfering" | "active" | "disabled" | "verifying" | "unverified" | "available" | "incompliant") | {
+                    /** @enum {string} */
+                    not_equals?: "transfering" | "active" | "disabled" | "verifying" | "unverified" | "available" | "incompliant";
+                    has_length?: number;
+                    has_any?: ("transfering" | "active" | "disabled" | "verifying" | "unverified" | "available" | "incompliant")[];
+                    has_none?: ("transfering" | "active" | "disabled" | "verifying" | "unverified" | "available" | "incompliant")[];
+                    /** @enum {string} */
+                    gt?: "transfering" | "active" | "disabled" | "verifying" | "unverified" | "available" | "incompliant";
+                    /** @enum {string} */
+                    lt?: "transfering" | "active" | "disabled" | "verifying" | "unverified" | "available" | "incompliant";
+                    /** @enum {string} */
+                    gte?: "transfering" | "active" | "disabled" | "verifying" | "unverified" | "available" | "incompliant";
+                    /** @enum {string} */
+                    lte?: "transfering" | "active" | "disabled" | "verifying" | "unverified" | "available" | "incompliant";
+                };
+                date_created?: {
+                    /** @example string */
+                    equals?: string;
+                    /** @example string */
+                    not_equals?: string;
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                search?: string;
+                cursor?: {
+                    /** @example string */
+                    prev?: string;
+                    /** @example string */
+                    next?: string;
+                };
+                sort?: {
+                    [key: string]: "asc" | "desc";
+                };
+                limit?: string | number;
+            };
+            header: {
+                /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
+                "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
+                /** @description Messaging profile identifier */
+                "Messaging-Profile-ID": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful response */
+            200: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response?: components["schemas"]["ApiSuccessResponseMeta"];
+                        data?: {
+                            count: number;
+                        };
+                    };
+                };
+            };
+            /** @description Validation error or bad request */
+            400: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Unauthorized - missing or invalid API key */
+            401: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description The resource does not exist in the scope of the request */
+            404: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiServerErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+        };
+    };
+    readEmailSender: {
         parameters: {
             query?: never;
             header: {
@@ -83071,7 +84660,7 @@ export interface operations {
                 "Messaging-Profile-ID": string;
             };
             path: {
-                sender_id: string;
+                email_sender_id: string;
             };
             cookie?: never;
         };
@@ -83167,6 +84756,456 @@ export interface operations {
             };
             /** @description Internal server error */
             500: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiServerErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+        };
+    };
+    deleteEmailSender: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
+                "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
+                /** @description Messaging profile identifier */
+                "Messaging-Profile-ID": string;
+            };
+            path: {
+                email_sender_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful response */
+            200: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response?: components["schemas"]["ApiSuccessResponseMeta"];
+                        data?: {
+                            sender_id: string;
+                            profile_id: string;
+                            conjoin_account_id: string;
+                            conjoin_project_id: string;
+                            live_mode: boolean;
+                            reference_id?: string | null;
+                            sender: string;
+                            capability: string;
+                            sender_type: string;
+                            tracking_details?: {
+                                [key: string]: unknown;
+                            };
+                            is_default_sender?: boolean;
+                            is_test_sender?: boolean;
+                            dns_records?: {
+                                [key: string]: unknown;
+                            }[];
+                            message_quotas: {
+                                messages_per_second: number;
+                            };
+                            queue_details?: {
+                                queue_id: string;
+                                name: string;
+                                rate_limit_per_minute: number;
+                                max_concurrent_deliveries: number;
+                            } | null;
+                            submitted_at: string;
+                            provisioned_at?: string | null;
+                            status: string;
+                            date_created: string;
+                            date_updated: string;
+                            date_deleted?: string | null;
+                        };
+                    };
+                };
+            };
+            /** @description Validation error or bad request */
+            400: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Unauthorized - missing or invalid API key */
+            401: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description The resource does not exist in the scope of the request */
+            404: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiServerErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+        };
+    };
+    verifyEmailSender: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
+                "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
+                /** @description A key that makes a retry of this request safe. A retry with the same key and the same request returns the first reply with the `Idempotent-Replayed: true` header and changes nothing. The same key with a different request answers 422, and a key whose first request is still being processed answers 409. The server keeps each key for 24 hours. An empty value counts as no key, so the server processes that request once for each time it arrives. */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                /** @description Messaging profile identifier */
+                "Messaging-Profile-ID": string;
+            };
+            path: {
+                email_sender_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful response */
+            200: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    "Idempotent-Replayed": components["headers"]["IdempotentReplayed"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response?: components["schemas"]["ApiSuccessResponseMeta"];
+                        data?: {
+                            sender_id: string;
+                            profile_id: string;
+                            conjoin_account_id: string;
+                            conjoin_project_id: string;
+                            live_mode: boolean;
+                            reference_id?: string | null;
+                            sender: string;
+                            capability: string;
+                            sender_type: string;
+                            tracking_details?: {
+                                [key: string]: unknown;
+                            };
+                            is_default_sender?: boolean;
+                            is_test_sender?: boolean;
+                            dns_records?: {
+                                [key: string]: unknown;
+                            }[];
+                            message_quotas: {
+                                messages_per_second: number;
+                            };
+                            queue_details?: {
+                                queue_id: string;
+                                name: string;
+                                rate_limit_per_minute: number;
+                                max_concurrent_deliveries: number;
+                            } | null;
+                            submitted_at: string;
+                            provisioned_at?: string | null;
+                            status: string;
+                            date_created: string;
+                            date_updated: string;
+                            date_deleted?: string | null;
+                        };
+                    };
+                };
+            };
+            /** @description Validation error or bad request */
+            400: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Unauthorized - missing or invalid API key */
+            401: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description The resource does not exist in the scope of the request */
+            404: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description The first request with this Idempotency-Key is still being processed, stopped before it finished, or finished with a reply that cannot be replayed */
+            409: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description This Idempotency-Key was already used with a different request */
+            422: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiServerErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description The server could not check the Idempotency-Key and did not process the request */
+            503: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiServerErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+        };
+    };
+    enableEmailSender: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
+                "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
+                /** @description A key that makes a retry of this request safe. A retry with the same key and the same request returns the first reply with the `Idempotent-Replayed: true` header and changes nothing. The same key with a different request answers 422, and a key whose first request is still being processed answers 409. The server keeps each key for 24 hours. An empty value counts as no key, so the server processes that request once for each time it arrives. */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                /** @description Messaging profile identifier */
+                "Messaging-Profile-ID": string;
+            };
+            path: {
+                email_sender_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful response */
+            200: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    "Idempotent-Replayed": components["headers"]["IdempotentReplayed"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response?: components["schemas"]["ApiSuccessResponseMeta"];
+                        data?: {
+                            sender_id: string;
+                            profile_id: string;
+                            conjoin_account_id: string;
+                            conjoin_project_id: string;
+                            live_mode: boolean;
+                            reference_id?: string | null;
+                            sender: string;
+                            capability: string;
+                            sender_type: string;
+                            tracking_details?: {
+                                [key: string]: unknown;
+                            };
+                            is_default_sender?: boolean;
+                            is_test_sender?: boolean;
+                            dns_records?: {
+                                [key: string]: unknown;
+                            }[];
+                            message_quotas: {
+                                messages_per_second: number;
+                            };
+                            queue_details?: {
+                                queue_id: string;
+                                name: string;
+                                rate_limit_per_minute: number;
+                                max_concurrent_deliveries: number;
+                            } | null;
+                            submitted_at: string;
+                            provisioned_at?: string | null;
+                            status: string;
+                            date_created: string;
+                            date_updated: string;
+                            date_deleted?: string | null;
+                        };
+                    };
+                };
+            };
+            /** @description Validation error or bad request */
+            400: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Unauthorized - missing or invalid API key */
+            401: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description The resource does not exist in the scope of the request */
+            404: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description The first request with this Idempotency-Key is still being processed, stopped before it finished, or finished with a reply that cannot be replayed */
+            409: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description This Idempotency-Key was already used with a different request */
+            422: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiServerErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description The server could not check the Idempotency-Key and did not process the request */
+            503: {
                 headers: {
                     "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
                     [name: string]: unknown;
@@ -83187,11 +85226,13 @@ export interface operations {
             header: {
                 /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
                 "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
+                /** @description A key that makes a retry of this request safe. A retry with the same key and the same request returns the first reply with the `Idempotent-Replayed: true` header and changes nothing. The same key with a different request answers 422, and a key whose first request is still being processed answers 409. The server keeps each key for 24 hours. An empty value counts as no key, so the server processes that request once for each time it arrives. */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 /** @description Messaging profile identifier */
                 "Messaging-Profile-ID": string;
             };
             path: {
-                sender_id: string;
+                email_sender_id: string;
             };
             cookie?: never;
         };
@@ -83201,6 +85242,7 @@ export interface operations {
             200: {
                 headers: {
                     "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    "Idempotent-Replayed": components["headers"]["IdempotentReplayed"];
                     [name: string]: unknown;
                 };
                 content: {
@@ -83273,6 +85315,34 @@ export interface operations {
             };
             /** @description The resource does not exist in the scope of the request */
             404: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description The first request with this Idempotency-Key is still being processed, stopped before it finished, or finished with a reply that cannot be replayed */
+            409: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description This Idempotency-Key was already used with a different request */
+            422: {
                 headers: {
                     "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
                     [name: string]: unknown;
@@ -83299,6 +85369,20 @@ export interface operations {
                     };
                 };
             };
+            /** @description The server could not check the Idempotency-Key and did not process the request */
+            503: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiServerErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
         };
     };
     transferEmailSender: {
@@ -83307,21 +85391,30 @@ export interface operations {
             header: {
                 /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
                 "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
+                /** @description A key that makes a retry of this request safe. A retry with the same key and the same request returns the first reply with the `Idempotent-Replayed: true` header and changes nothing. The same key with a different request answers 422, and a key whose first request is still being processed answers 409. The server keeps each key for 24 hours. An empty value counts as no key, so the server processes that request once for each time it arrives. */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 /** @description Messaging profile identifier */
                 "Messaging-Profile-ID": string;
             };
             path: {
-                sender_id: string;
-                project_id: string;
+                email_sender_id: string;
             };
             cookie?: never;
         };
-        requestBody?: never;
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @example string */
+                    project_id: string;
+                };
+            };
+        };
         responses: {
             /** @description Successful response */
             200: {
                 headers: {
                     "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    "Idempotent-Replayed": components["headers"]["IdempotentReplayed"];
                     [name: string]: unknown;
                 };
                 content: {
@@ -83406,8 +85499,50 @@ export interface operations {
                     };
                 };
             };
+            /** @description The first request with this Idempotency-Key is still being processed, stopped before it finished, or finished with a reply that cannot be replayed */
+            409: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description This Idempotency-Key was already used with a different request */
+            422: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
             /** @description Internal server error */
             500: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiServerErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description The server could not check the Idempotency-Key and did not process the request */
+            503: {
                 headers: {
                     "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
                     [name: string]: unknown;
@@ -83679,7 +85814,7 @@ export interface operations {
                 "Messaging-Profile-ID": string;
             };
             path: {
-                message_id: string;
+                broadcast_id: string;
             };
             cookie?: never;
         };
@@ -83777,6 +85912,194 @@ export interface operations {
             };
         };
     };
+    listPhoneNumbers: {
+        parameters: {
+            query?: {
+                reference_id?: string | {
+                    /** @example string */
+                    not_equals?: string;
+                    has_length?: number;
+                    has_any?: string[];
+                    has_none?: string[];
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                phone_number_id?: string | {
+                    /** @example string */
+                    not_equals?: string;
+                    has_length?: number;
+                    has_any?: string[];
+                    has_none?: string[];
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                type?: ("local" | "mobile" | "toll_free" | "virtual_long_number" | "10_dlc" | "long_code" | "short_code" | "short_code_ussd" | "sim_hosting" | "virtual_sim_hosting" | "virtual_long_number_call_trigger" | "whatsapp" | "viber" | "viber_voice" | "facebook" | "rcs" | "telegram" | "kakao_sangdam") | {
+                    /** @enum {string} */
+                    not_equals?: "local" | "mobile" | "toll_free" | "virtual_long_number" | "10_dlc" | "long_code" | "short_code" | "short_code_ussd" | "sim_hosting" | "virtual_sim_hosting" | "virtual_long_number_call_trigger" | "whatsapp" | "viber" | "viber_voice" | "facebook" | "rcs" | "telegram" | "kakao_sangdam";
+                    has_length?: number;
+                    has_any?: ("local" | "mobile" | "toll_free" | "virtual_long_number" | "10_dlc" | "long_code" | "short_code" | "short_code_ussd" | "sim_hosting" | "virtual_sim_hosting" | "virtual_long_number_call_trigger" | "whatsapp" | "viber" | "viber_voice" | "facebook" | "rcs" | "telegram" | "kakao_sangdam")[];
+                    has_none?: ("local" | "mobile" | "toll_free" | "virtual_long_number" | "10_dlc" | "long_code" | "short_code" | "short_code_ussd" | "sim_hosting" | "virtual_sim_hosting" | "virtual_long_number_call_trigger" | "whatsapp" | "viber" | "viber_voice" | "facebook" | "rcs" | "telegram" | "kakao_sangdam")[];
+                    /** @enum {string} */
+                    gt?: "local" | "mobile" | "toll_free" | "virtual_long_number" | "10_dlc" | "long_code" | "short_code" | "short_code_ussd" | "sim_hosting" | "virtual_sim_hosting" | "virtual_long_number_call_trigger" | "whatsapp" | "viber" | "viber_voice" | "facebook" | "rcs" | "telegram" | "kakao_sangdam";
+                    /** @enum {string} */
+                    lt?: "local" | "mobile" | "toll_free" | "virtual_long_number" | "10_dlc" | "long_code" | "short_code" | "short_code_ussd" | "sim_hosting" | "virtual_sim_hosting" | "virtual_long_number_call_trigger" | "whatsapp" | "viber" | "viber_voice" | "facebook" | "rcs" | "telegram" | "kakao_sangdam";
+                    /** @enum {string} */
+                    gte?: "local" | "mobile" | "toll_free" | "virtual_long_number" | "10_dlc" | "long_code" | "short_code" | "short_code_ussd" | "sim_hosting" | "virtual_sim_hosting" | "virtual_long_number_call_trigger" | "whatsapp" | "viber" | "viber_voice" | "facebook" | "rcs" | "telegram" | "kakao_sangdam";
+                    /** @enum {string} */
+                    lte?: "local" | "mobile" | "toll_free" | "virtual_long_number" | "10_dlc" | "long_code" | "short_code" | "short_code_ussd" | "sim_hosting" | "virtual_sim_hosting" | "virtual_long_number_call_trigger" | "whatsapp" | "viber" | "viber_voice" | "facebook" | "rcs" | "telegram" | "kakao_sangdam";
+                };
+                phone_number?: string;
+                region_code?: string | {
+                    /** @example string */
+                    not_equals?: string;
+                    has_length?: number;
+                    has_any?: string[];
+                    has_none?: string[];
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                search?: string;
+                cursor?: {
+                    /** @example string */
+                    prev?: string;
+                    /** @example string */
+                    next?: string;
+                };
+                sort?: {
+                    [key: string]: "asc" | "desc";
+                };
+                limit?: string | number;
+            };
+            header: {
+                /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
+                "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
+                /** @description Messaging profile identifier */
+                "Messaging-Profile-ID": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful response */
+            200: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response?: components["schemas"]["ApiSuccessResponseMeta"];
+                        data?: {
+                            phone_number_id: string;
+                            profile_id: string;
+                            conjoin_account_id: string;
+                            conjoin_project_id: string;
+                            live_mode: boolean;
+                            reference_id?: string | null;
+                            type: string;
+                            phone_number: string;
+                            country_iso_code: string;
+                            region_code: string;
+                            title: string;
+                            description?: string;
+                            price?: {
+                                amount: string;
+                                currency_code: string;
+                            };
+                            recurring_charge?: {
+                                [key: string]: unknown;
+                            };
+                            features?: {
+                                [key: string]: unknown;
+                            };
+                            provisioned_at?: string | null;
+                            expires_at?: string | null;
+                            status: string;
+                            date_created: string;
+                            date_updated: string;
+                            date_deleted?: string | null;
+                        }[];
+                        cursor?: components["schemas"]["PaginationCursor"];
+                    };
+                };
+            };
+            /** @description Validation error or bad request */
+            400: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Unauthorized - missing or invalid API key */
+            401: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description The resource does not exist in the scope of the request */
+            404: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiServerErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+        };
+    };
     purchasePhoneNumber: {
         parameters: {
             query?: never;
@@ -83788,14 +86111,16 @@ export interface operations {
                 /** @description Messaging profile identifier */
                 "Messaging-Profile-ID": string;
             };
-            path: {
-                phone_number: string;
-            };
+            path?: never;
             cookie?: never;
         };
         requestBody: {
             content: {
                 "application/json": {
+                    /** @example string */
+                    reference_id?: string;
+                    /** @description Phone number in E.164 format */
+                    phone_number: string;
                     /** @enum {string} */
                     type: "local" | "mobile" | "toll_free";
                     /** @example string */
@@ -83977,19 +86302,89 @@ export interface operations {
             };
         };
     };
-    updatePhoneNumber: {
+    listPhoneNumbersCount: {
         parameters: {
-            query?: never;
+            query?: {
+                reference_id?: string | {
+                    /** @example string */
+                    not_equals?: string;
+                    has_length?: number;
+                    has_any?: string[];
+                    has_none?: string[];
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                phone_number_id?: string | {
+                    /** @example string */
+                    not_equals?: string;
+                    has_length?: number;
+                    has_any?: string[];
+                    has_none?: string[];
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                type?: ("local" | "mobile" | "toll_free" | "virtual_long_number" | "10_dlc" | "long_code" | "short_code" | "short_code_ussd" | "sim_hosting" | "virtual_sim_hosting" | "virtual_long_number_call_trigger" | "whatsapp" | "viber" | "viber_voice" | "facebook" | "rcs" | "telegram" | "kakao_sangdam") | {
+                    /** @enum {string} */
+                    not_equals?: "local" | "mobile" | "toll_free" | "virtual_long_number" | "10_dlc" | "long_code" | "short_code" | "short_code_ussd" | "sim_hosting" | "virtual_sim_hosting" | "virtual_long_number_call_trigger" | "whatsapp" | "viber" | "viber_voice" | "facebook" | "rcs" | "telegram" | "kakao_sangdam";
+                    has_length?: number;
+                    has_any?: ("local" | "mobile" | "toll_free" | "virtual_long_number" | "10_dlc" | "long_code" | "short_code" | "short_code_ussd" | "sim_hosting" | "virtual_sim_hosting" | "virtual_long_number_call_trigger" | "whatsapp" | "viber" | "viber_voice" | "facebook" | "rcs" | "telegram" | "kakao_sangdam")[];
+                    has_none?: ("local" | "mobile" | "toll_free" | "virtual_long_number" | "10_dlc" | "long_code" | "short_code" | "short_code_ussd" | "sim_hosting" | "virtual_sim_hosting" | "virtual_long_number_call_trigger" | "whatsapp" | "viber" | "viber_voice" | "facebook" | "rcs" | "telegram" | "kakao_sangdam")[];
+                    /** @enum {string} */
+                    gt?: "local" | "mobile" | "toll_free" | "virtual_long_number" | "10_dlc" | "long_code" | "short_code" | "short_code_ussd" | "sim_hosting" | "virtual_sim_hosting" | "virtual_long_number_call_trigger" | "whatsapp" | "viber" | "viber_voice" | "facebook" | "rcs" | "telegram" | "kakao_sangdam";
+                    /** @enum {string} */
+                    lt?: "local" | "mobile" | "toll_free" | "virtual_long_number" | "10_dlc" | "long_code" | "short_code" | "short_code_ussd" | "sim_hosting" | "virtual_sim_hosting" | "virtual_long_number_call_trigger" | "whatsapp" | "viber" | "viber_voice" | "facebook" | "rcs" | "telegram" | "kakao_sangdam";
+                    /** @enum {string} */
+                    gte?: "local" | "mobile" | "toll_free" | "virtual_long_number" | "10_dlc" | "long_code" | "short_code" | "short_code_ussd" | "sim_hosting" | "virtual_sim_hosting" | "virtual_long_number_call_trigger" | "whatsapp" | "viber" | "viber_voice" | "facebook" | "rcs" | "telegram" | "kakao_sangdam";
+                    /** @enum {string} */
+                    lte?: "local" | "mobile" | "toll_free" | "virtual_long_number" | "10_dlc" | "long_code" | "short_code" | "short_code_ussd" | "sim_hosting" | "virtual_sim_hosting" | "virtual_long_number_call_trigger" | "whatsapp" | "viber" | "viber_voice" | "facebook" | "rcs" | "telegram" | "kakao_sangdam";
+                };
+                phone_number?: string;
+                region_code?: string | {
+                    /** @example string */
+                    not_equals?: string;
+                    has_length?: number;
+                    has_any?: string[];
+                    has_none?: string[];
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                search?: string;
+                cursor?: {
+                    /** @example string */
+                    prev?: string;
+                    /** @example string */
+                    next?: string;
+                };
+                sort?: {
+                    [key: string]: "asc" | "desc";
+                };
+                limit?: string | number;
+            };
             header: {
                 /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
                 "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
                 /** @description Messaging profile identifier */
                 "Messaging-Profile-ID": string;
             };
-            path: {
-                phone_number: string;
-                project_id: string;
-            };
+            path?: never;
             cookie?: never;
         };
         requestBody?: never;
@@ -83998,6 +86393,105 @@ export interface operations {
             200: {
                 headers: {
                     "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response?: components["schemas"]["ApiSuccessResponseMeta"];
+                        data?: {
+                            count: number;
+                        };
+                    };
+                };
+            };
+            /** @description Validation error or bad request */
+            400: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Unauthorized - missing or invalid API key */
+            401: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description The resource does not exist in the scope of the request */
+            404: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiServerErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+        };
+    };
+    transferPhoneNumber: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
+                "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
+                /** @description A key that makes a retry of this request safe. A retry with the same key and the same request returns the first reply with the `Idempotent-Replayed: true` header and changes nothing. The same key with a different request answers 422, and a key whose first request is still being processed answers 409. The server keeps each key for 24 hours. An empty value counts as no key, so the server processes that request once for each time it arrives. */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                /** @description Messaging profile identifier */
+                "Messaging-Profile-ID": string;
+            };
+            path: {
+                phone_number_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @example string */
+                    project_id: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Successful response */
+            200: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    "Idempotent-Replayed": components["headers"]["IdempotentReplayed"];
                     [name: string]: unknown;
                 };
                 content: {
@@ -84078,86 +86572,8 @@ export interface operations {
                     };
                 };
             };
-            /** @description Internal server error */
-            500: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiServerErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-        };
-    };
-    listAvailablePhoneNumbers: {
-        parameters: {
-            query?: {
-                query?: {
-                    /**
-                     * @default local
-                     * @enum {string}
-                     */
-                    type?: "local" | "mobile" | "toll_free";
-                    /**
-                     * @default US
-                     * @example string
-                     */
-                    region_code?: string;
-                };
-                limit?: string | number;
-            };
-            header: {
-                /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
-                "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
-                /** @description Messaging profile identifier */
-                "Messaging-Profile-ID": string;
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful response */
-            200: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response?: components["schemas"]["ApiSuccessResponseMeta"];
-                        data?: {
-                            type: string;
-                            phone_number: string;
-                            country_iso_code: string;
-                            capabilities: {
-                                sms?: boolean;
-                                mms?: boolean;
-                                voice?: boolean;
-                            };
-                            price: {
-                                amount: string;
-                                currency_code: string;
-                            };
-                            recurring_charge: {
-                                amount: string;
-                                currency_code: string;
-                                duration_type: string;
-                                duration_quantity: number;
-                            };
-                            requires_supporting_documents: boolean;
-                        }[];
-                        cursor?: components["schemas"]["PaginationCursor"];
-                    };
-                };
-            };
-            /** @description Validation error or bad request */
-            400: {
+            /** @description The first request with this Idempotency-Key is still being processed, stopped before it finished, or finished with a reply that cannot be replayed */
+            409: {
                 headers: {
                     "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
                     [name: string]: unknown;
@@ -84170,22 +86586,8 @@ export interface operations {
                     };
                 };
             };
-            /** @description Unauthorized - missing or invalid API key */
-            401: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description The resource does not exist in the scope of the request */
-            404: {
+            /** @description This Idempotency-Key was already used with a different request */
+            422: {
                 headers: {
                     "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
                     [name: string]: unknown;
@@ -84212,168 +86614,8 @@ export interface operations {
                     };
                 };
             };
-        };
-    };
-    listPhoneNumbers: {
-        parameters: {
-            query?: {
-                filter?: {
-                    [key: string]: false;
-                };
-                cursor?: {
-                    /** @example string */
-                    prev?: string;
-                    /** @example string */
-                    next?: string;
-                };
-                query?: {
-                    phone_number_id?: string | {
-                        /** @example string */
-                        not_equals?: string;
-                        has_length?: number;
-                        has_any?: string[];
-                        has_none?: string[];
-                        /** @example string */
-                        gt?: string;
-                        /** @example string */
-                        lt?: string;
-                        /** @example string */
-                        gte?: string;
-                        /** @example string */
-                        lte?: string;
-                    };
-                    type?: {
-                        is_empty?: boolean;
-                        contains?: ("local" | "mobile" | "toll_free" | "virtual_long_number" | "10_dlc" | "long_code" | "short_code" | "short_code_ussd" | "sim_hosting" | "virtual_sim_hosting" | "virtual_long_number_call_trigger" | "whatsapp" | "viber" | "viber_voice" | "facebook" | "rcs" | "telegram" | "kakao_sangdam")[];
-                        length_less_than?: number;
-                        length_less_than_or_equals?: number;
-                        length_greater_than?: number;
-                        length_greater_than_or_equals?: number;
-                    };
-                    /** @description Phone number in E.164 format */
-                    phone_number?: string;
-                    region_code?: string | {
-                        /** @example string */
-                        not_equals?: string;
-                        has_length?: number;
-                        has_any?: string[];
-                        has_none?: string[];
-                        /** @example string */
-                        gt?: string;
-                        /** @example string */
-                        lt?: string;
-                        /** @example string */
-                        gte?: string;
-                        /** @example string */
-                        lte?: string;
-                    };
-                };
-                search?: {
-                    keyword: string;
-                };
-                sort?: {
-                    [key: string]: "asc" | "desc";
-                };
-                limit?: string | number;
-            };
-            header: {
-                /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
-                "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
-                /** @description Messaging profile identifier */
-                "Messaging-Profile-ID": string;
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful response */
-            200: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response?: components["schemas"]["ApiSuccessResponseMeta"];
-                        data?: {
-                            phone_number_id: string;
-                            profile_id: string;
-                            conjoin_account_id: string;
-                            conjoin_project_id: string;
-                            live_mode: boolean;
-                            reference_id?: string | null;
-                            type: string;
-                            phone_number: string;
-                            country_iso_code: string;
-                            region_code: string;
-                            title: string;
-                            description?: string;
-                            price?: {
-                                amount: string;
-                                currency_code: string;
-                            };
-                            recurring_charge?: {
-                                [key: string]: unknown;
-                            };
-                            features?: {
-                                [key: string]: unknown;
-                            };
-                            provisioned_at?: string | null;
-                            expires_at?: string | null;
-                            status: string;
-                            date_created: string;
-                            date_updated: string;
-                            date_deleted?: string | null;
-                        }[];
-                        cursor?: components["schemas"]["PaginationCursor"];
-                    };
-                };
-            };
-            /** @description Validation error or bad request */
-            400: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description Unauthorized - missing or invalid API key */
-            401: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description The resource does not exist in the scope of the request */
-            404: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description Internal server error */
-            500: {
+            /** @description The server could not check the Idempotency-Key and did not process the request */
+            503: {
                 headers: {
                     "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
                     [name: string]: unknown;
@@ -84400,7 +86642,7 @@ export interface operations {
                 "Messaging-Profile-ID": string;
             };
             path: {
-                phone_number: string;
+                phone_number_id: string;
             };
             cookie?: never;
         };
@@ -84549,6 +86791,289 @@ export interface operations {
             };
         };
     };
+    listAvailablePhoneNumbers: {
+        parameters: {
+            query?: {
+                type?: "local" | "mobile" | "toll_free";
+                region_code?: string;
+                limit?: string | number;
+            };
+            header: {
+                /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
+                "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
+                /** @description Messaging profile identifier */
+                "Messaging-Profile-ID": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful response */
+            200: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response?: components["schemas"]["ApiSuccessResponseMeta"];
+                        data?: {
+                            type: string;
+                            phone_number: string;
+                            country_iso_code: string;
+                            capabilities: {
+                                sms?: boolean;
+                                mms?: boolean;
+                                voice?: boolean;
+                            };
+                            price: {
+                                amount: string;
+                                currency_code: string;
+                            };
+                            recurring_charge: {
+                                amount: string;
+                                currency_code: string;
+                                duration_type: string;
+                                duration_quantity: number;
+                            };
+                            requires_supporting_documents: boolean;
+                        }[];
+                        cursor?: components["schemas"]["PaginationCursor"];
+                    };
+                };
+            };
+            /** @description Validation error or bad request */
+            400: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Unauthorized - missing or invalid API key */
+            401: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description The resource does not exist in the scope of the request */
+            404: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiServerErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+        };
+    };
+    listMessagingProfiles: {
+        parameters: {
+            query?: {
+                reference_id?: string | {
+                    /** @example string */
+                    not_equals?: string;
+                    has_length?: number;
+                    has_any?: string[];
+                    has_none?: string[];
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                name?: string | {
+                    /** @example string */
+                    not_equals?: string;
+                    has_length?: number;
+                    has_any?: string[];
+                    has_none?: string[];
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                date_created?: {
+                    /** @example string */
+                    equals?: string;
+                    /** @example string */
+                    not_equals?: string;
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                cursor?: {
+                    /** @example string */
+                    prev?: string;
+                    /** @example string */
+                    next?: string;
+                };
+                sort?: {
+                    [key: string]: "asc" | "desc";
+                };
+                limit?: string | number;
+            };
+            header?: {
+                /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
+                "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful response */
+            200: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response?: components["schemas"]["ApiSuccessResponseMeta"];
+                        data?: {
+                            profile_id: string;
+                            conjoin_account_id: string;
+                            conjoin_project_id: string;
+                            live_mode: boolean;
+                            reference_id?: string | null;
+                            name: string;
+                            description?: string;
+                            is_system_profile: boolean;
+                            resource_region: string;
+                            properties?: {
+                                [key: string]: unknown;
+                            };
+                            message_retention_days: number;
+                            features: {
+                                sms: boolean;
+                                email: boolean;
+                            };
+                            email_config?: {
+                                [key: string]: unknown;
+                            };
+                            sms_config?: {
+                                [key: string]: unknown;
+                            };
+                            multisend_config?: {
+                                [key: string]: unknown;
+                            };
+                            verification_config?: {
+                                [key: string]: unknown;
+                            };
+                            status: string;
+                            date_created: string;
+                            date_updated: string;
+                            date_deleted?: string | null;
+                        }[];
+                        cursor?: components["schemas"]["PaginationCursor"];
+                    };
+                };
+            };
+            /** @description Validation error or bad request */
+            400: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Unauthorized - missing or invalid API key */
+            401: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description The resource does not exist in the scope of the request */
+            404: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiServerErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+        };
+    };
     createMessagingProfile: {
         parameters: {
             query?: never;
@@ -84564,6 +87089,8 @@ export interface operations {
         requestBody: {
             content: {
                 "application/json": {
+                    /** @example string */
+                    reference_id?: string;
                     /** @example string */
                     name: string;
                     /** @example string */
@@ -84828,12 +87355,154 @@ export interface operations {
             };
         };
     };
+    listMessagingProfilesCount: {
+        parameters: {
+            query?: {
+                reference_id?: string | {
+                    /** @example string */
+                    not_equals?: string;
+                    has_length?: number;
+                    has_any?: string[];
+                    has_none?: string[];
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                name?: string | {
+                    /** @example string */
+                    not_equals?: string;
+                    has_length?: number;
+                    has_any?: string[];
+                    has_none?: string[];
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                date_created?: {
+                    /** @example string */
+                    equals?: string;
+                    /** @example string */
+                    not_equals?: string;
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                cursor?: {
+                    /** @example string */
+                    prev?: string;
+                    /** @example string */
+                    next?: string;
+                };
+                sort?: {
+                    [key: string]: "asc" | "desc";
+                };
+                limit?: string | number;
+            };
+            header?: {
+                /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
+                "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful response */
+            200: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response?: components["schemas"]["ApiSuccessResponseMeta"];
+                        data?: {
+                            count: number;
+                        };
+                    };
+                };
+            };
+            /** @description Validation error or bad request */
+            400: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Unauthorized - missing or invalid API key */
+            401: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description The resource does not exist in the scope of the request */
+            404: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiServerErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+        };
+    };
     enableMessagingProfile: {
         parameters: {
             query?: never;
             header?: {
                 /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
                 "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
+                /** @description A key that makes a retry of this request safe. A retry with the same key and the same request returns the first reply with the `Idempotent-Replayed: true` header and changes nothing. The same key with a different request answers 422, and a key whose first request is still being processed answers 409. The server keeps each key for 24 hours. An empty value counts as no key, so the server processes that request once for each time it arrives. */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
             };
             path: {
                 profile_id: string;
@@ -84846,6 +87515,7 @@ export interface operations {
             200: {
                 headers: {
                     "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    "Idempotent-Replayed": components["headers"]["IdempotentReplayed"];
                     [name: string]: unknown;
                 };
                 content: {
@@ -84931,8 +87601,50 @@ export interface operations {
                     };
                 };
             };
+            /** @description The first request with this Idempotency-Key is still being processed, stopped before it finished, or finished with a reply that cannot be replayed */
+            409: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description This Idempotency-Key was already used with a different request */
+            422: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
             /** @description Internal server error */
             500: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiServerErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description The server could not check the Idempotency-Key and did not process the request */
+            503: {
                 headers: {
                     "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
                     [name: string]: unknown;
@@ -84953,6 +87665,8 @@ export interface operations {
             header?: {
                 /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
                 "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
+                /** @description A key that makes a retry of this request safe. A retry with the same key and the same request returns the first reply with the `Idempotent-Replayed: true` header and changes nothing. The same key with a different request answers 422, and a key whose first request is still being processed answers 409. The server keeps each key for 24 hours. An empty value counts as no key, so the server processes that request once for each time it arrives. */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
             };
             path: {
                 profile_id: string;
@@ -84965,6 +87679,7 @@ export interface operations {
             200: {
                 headers: {
                     "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    "Idempotent-Replayed": components["headers"]["IdempotentReplayed"];
                     [name: string]: unknown;
                 };
                 content: {
@@ -85038,6 +87753,34 @@ export interface operations {
             };
             /** @description The resource does not exist in the scope of the request */
             404: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description The first request with this Idempotency-Key is still being processed, stopped before it finished, or finished with a reply that cannot be replayed */
+            409: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description This Idempotency-Key was already used with a different request */
+            422: {
                 headers: {
                     "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
                     [name: string]: unknown;
@@ -85064,26 +87807,49 @@ export interface operations {
                     };
                 };
             };
+            /** @description The server could not check the Idempotency-Key and did not process the request */
+            503: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiServerErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
         };
     };
-    closeMessagingProfile: {
+    enableMessagingProfileChannels: {
         parameters: {
             query?: never;
             header?: {
                 /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
                 "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
+                /** @description A key that makes a retry of this request safe. A retry with the same key and the same request returns the first reply with the `Idempotent-Replayed: true` header and changes nothing. The same key with a different request answers 422, and a key whose first request is still being processed answers 409. The server keeps each key for 24 hours. An empty value counts as no key, so the server processes that request once for each time it arrives. */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
             };
             path: {
                 profile_id: string;
             };
             cookie?: never;
         };
-        requestBody?: never;
+        requestBody: {
+            content: {
+                "application/json": {
+                    channels: ("sms" | "email")[];
+                };
+            };
+        };
         responses: {
             /** @description Successful response */
             200: {
                 headers: {
                     "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    "Idempotent-Replayed": components["headers"]["IdempotentReplayed"];
                     [name: string]: unknown;
                 };
                 content: {
@@ -85169,8 +87935,384 @@ export interface operations {
                     };
                 };
             };
+            /** @description The first request with this Idempotency-Key is still being processed, stopped before it finished, or finished with a reply that cannot be replayed */
+            409: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description This Idempotency-Key was already used with a different request */
+            422: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
             /** @description Internal server error */
             500: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiServerErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description The server could not check the Idempotency-Key and did not process the request */
+            503: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiServerErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+        };
+    };
+    disableMessagingProfileChannels: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
+                "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
+                /** @description A key that makes a retry of this request safe. A retry with the same key and the same request returns the first reply with the `Idempotent-Replayed: true` header and changes nothing. The same key with a different request answers 422, and a key whose first request is still being processed answers 409. The server keeps each key for 24 hours. An empty value counts as no key, so the server processes that request once for each time it arrives. */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+            };
+            path: {
+                profile_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    channels: ("sms" | "email")[];
+                };
+            };
+        };
+        responses: {
+            /** @description Successful response */
+            200: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    "Idempotent-Replayed": components["headers"]["IdempotentReplayed"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response?: components["schemas"]["ApiSuccessResponseMeta"];
+                        data?: {
+                            profile_id: string;
+                            conjoin_account_id: string;
+                            conjoin_project_id: string;
+                            live_mode: boolean;
+                            reference_id?: string | null;
+                            name: string;
+                            description?: string;
+                            is_system_profile: boolean;
+                            resource_region: string;
+                            properties?: {
+                                [key: string]: unknown;
+                            };
+                            message_retention_days: number;
+                            features: {
+                                sms: boolean;
+                                email: boolean;
+                            };
+                            email_config?: {
+                                [key: string]: unknown;
+                            };
+                            sms_config?: {
+                                [key: string]: unknown;
+                            };
+                            multisend_config?: {
+                                [key: string]: unknown;
+                            };
+                            verification_config?: {
+                                [key: string]: unknown;
+                            };
+                            status: string;
+                            date_created: string;
+                            date_updated: string;
+                            date_deleted?: string | null;
+                        };
+                    };
+                };
+            };
+            /** @description Validation error or bad request */
+            400: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Unauthorized - missing or invalid API key */
+            401: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description The resource does not exist in the scope of the request */
+            404: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description The first request with this Idempotency-Key is still being processed, stopped before it finished, or finished with a reply that cannot be replayed */
+            409: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description This Idempotency-Key was already used with a different request */
+            422: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiServerErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description The server could not check the Idempotency-Key and did not process the request */
+            503: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiServerErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+        };
+    };
+    closeMessagingProfile: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
+                "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
+                /** @description A key that makes a retry of this request safe. A retry with the same key and the same request returns the first reply with the `Idempotent-Replayed: true` header and changes nothing. The same key with a different request answers 422, and a key whose first request is still being processed answers 409. The server keeps each key for 24 hours. An empty value counts as no key, so the server processes that request once for each time it arrives. */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+            };
+            path: {
+                profile_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful response */
+            200: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    "Idempotent-Replayed": components["headers"]["IdempotentReplayed"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response?: components["schemas"]["ApiSuccessResponseMeta"];
+                        data?: {
+                            profile_id: string;
+                            conjoin_account_id: string;
+                            conjoin_project_id: string;
+                            live_mode: boolean;
+                            reference_id?: string | null;
+                            name: string;
+                            description?: string;
+                            is_system_profile: boolean;
+                            resource_region: string;
+                            properties?: {
+                                [key: string]: unknown;
+                            };
+                            message_retention_days: number;
+                            features: {
+                                sms: boolean;
+                                email: boolean;
+                            };
+                            email_config?: {
+                                [key: string]: unknown;
+                            };
+                            sms_config?: {
+                                [key: string]: unknown;
+                            };
+                            multisend_config?: {
+                                [key: string]: unknown;
+                            };
+                            verification_config?: {
+                                [key: string]: unknown;
+                            };
+                            status: string;
+                            date_created: string;
+                            date_updated: string;
+                            date_deleted?: string | null;
+                        };
+                    };
+                };
+            };
+            /** @description Validation error or bad request */
+            400: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Unauthorized - missing or invalid API key */
+            401: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description The resource does not exist in the scope of the request */
+            404: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description The first request with this Idempotency-Key is still being processed, stopped before it finished, or finished with a reply that cannot be replayed */
+            409: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description This Idempotency-Key was already used with a different request */
+            422: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiServerErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description The server could not check the Idempotency-Key and did not process the request */
+            503: {
                 headers: {
                     "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
                     [name: string]: unknown;
@@ -85440,136 +88582,8 @@ export interface operations {
                 "application/json": {
                     /** @example string */
                     name?: string;
-                    features?: {
-                        sms?: boolean;
-                        email?: boolean;
-                    };
                     message_retention_days?: number;
-                };
-            };
-        };
-        responses: {
-            /** @description Successful response */
-            200: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response?: components["schemas"]["ApiSuccessResponseMeta"];
-                        data?: {
-                            profile_id: string;
-                            conjoin_account_id: string;
-                            conjoin_project_id: string;
-                            live_mode: boolean;
-                            reference_id?: string | null;
-                            name: string;
-                            description?: string;
-                            is_system_profile: boolean;
-                            resource_region: string;
-                            properties?: {
-                                [key: string]: unknown;
-                            };
-                            message_retention_days: number;
-                            features: {
-                                sms: boolean;
-                                email: boolean;
-                            };
-                            email_config?: {
-                                [key: string]: unknown;
-                            };
-                            sms_config?: {
-                                [key: string]: unknown;
-                            };
-                            multisend_config?: {
-                                [key: string]: unknown;
-                            };
-                            verification_config?: {
-                                [key: string]: unknown;
-                            };
-                            status: string;
-                            date_created: string;
-                            date_updated: string;
-                            date_deleted?: string | null;
-                        };
-                    };
-                };
-            };
-            /** @description Validation error or bad request */
-            400: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description Unauthorized - missing or invalid API key */
-            401: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description The resource does not exist in the scope of the request */
-            404: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description Internal server error */
-            500: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiServerErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-        };
-    };
-    updateMessagingProfileEmailConfig: {
-        parameters: {
-            query?: never;
-            header?: {
-                /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
-                "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
-            };
-            path: {
-                profile_id: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": {
-                    email_config: {
+                    email_config?: {
                         suppression?: {
                             statuses?: ("invalid_recipient" | "insufficient_balance" | "invalid_auth" | "invalid_message_body" | "rate_limits_reached" | "unknown" | "accepted" | "sent" | "processing" | "in_transit" | "delivered" | "received" | "complained" | "bounced" | "failed" | "rejected" | "queued" | "scheduled" | "cancelled" | "expired" | "delayed")[];
                         };
@@ -85601,258 +88615,10 @@ export interface operations {
                             };
                         };
                     };
-                };
-            };
-        };
-        responses: {
-            /** @description Successful response */
-            200: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response?: components["schemas"]["ApiSuccessResponseMeta"];
-                        data?: {
-                            profile_id: string;
-                            conjoin_account_id: string;
-                            conjoin_project_id: string;
-                            live_mode: boolean;
-                            reference_id?: string | null;
-                            name: string;
-                            description?: string;
-                            is_system_profile: boolean;
-                            resource_region: string;
-                            properties?: {
-                                [key: string]: unknown;
-                            };
-                            message_retention_days: number;
-                            features: {
-                                sms: boolean;
-                                email: boolean;
-                            };
-                            email_config?: {
-                                [key: string]: unknown;
-                            };
-                            sms_config?: {
-                                [key: string]: unknown;
-                            };
-                            multisend_config?: {
-                                [key: string]: unknown;
-                            };
-                            verification_config?: {
-                                [key: string]: unknown;
-                            };
-                            status: string;
-                            date_created: string;
-                            date_updated: string;
-                            date_deleted?: string | null;
-                        };
-                    };
-                };
-            };
-            /** @description Validation error or bad request */
-            400: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description Unauthorized - missing or invalid API key */
-            401: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description The resource does not exist in the scope of the request */
-            404: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description Internal server error */
-            500: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiServerErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-        };
-    };
-    updateMessagingProfileMultisendConfig: {
-        parameters: {
-            query?: never;
-            header?: {
-                /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
-                "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
-            };
-            path: {
-                profile_id: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": {
-                    multisend_config: {
+                    multisend_config?: {
                         preferred_channels?: ("sms" | "email")[];
                     };
-                };
-            };
-        };
-        responses: {
-            /** @description Successful response */
-            200: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response?: components["schemas"]["ApiSuccessResponseMeta"];
-                        data?: {
-                            profile_id: string;
-                            conjoin_account_id: string;
-                            conjoin_project_id: string;
-                            live_mode: boolean;
-                            reference_id?: string | null;
-                            name: string;
-                            description?: string;
-                            is_system_profile: boolean;
-                            resource_region: string;
-                            properties?: {
-                                [key: string]: unknown;
-                            };
-                            message_retention_days: number;
-                            features: {
-                                sms: boolean;
-                                email: boolean;
-                            };
-                            email_config?: {
-                                [key: string]: unknown;
-                            };
-                            sms_config?: {
-                                [key: string]: unknown;
-                            };
-                            multisend_config?: {
-                                [key: string]: unknown;
-                            };
-                            verification_config?: {
-                                [key: string]: unknown;
-                            };
-                            status: string;
-                            date_created: string;
-                            date_updated: string;
-                            date_deleted?: string | null;
-                        };
-                    };
-                };
-            };
-            /** @description Validation error or bad request */
-            400: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description Unauthorized - missing or invalid API key */
-            401: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description The resource does not exist in the scope of the request */
-            404: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description Internal server error */
-            500: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiServerErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-        };
-    };
-    updateMessagingProfileVerificationsConfig: {
-        parameters: {
-            query?: never;
-            header?: {
-                /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
-                "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
-            };
-            path: {
-                profile_id: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": {
-                    verifications_config: {
+                    verifications_config?: {
                         preferred_sender?: string | "";
                     };
                 };
@@ -85964,98 +88730,114 @@ export interface operations {
             };
         };
     };
-    listMessagingProfiles: {
+    listSmsBrands: {
         parameters: {
-            query?: never;
-            header?: {
+            query?: {
+                reference_id?: string | {
+                    /** @example string */
+                    not_equals?: string;
+                    has_length?: number;
+                    has_any?: string[];
+                    has_none?: string[];
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                date_created?: {
+                    /** @example string */
+                    equals?: string;
+                    /** @example string */
+                    not_equals?: string;
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                date_updated?: {
+                    /** @example string */
+                    equals?: string;
+                    /** @example string */
+                    not_equals?: string;
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                date_deleted?: {
+                    /** @example string */
+                    equals?: string;
+                    /** @example string */
+                    not_equals?: string;
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                cursor?: {
+                    /** @example string */
+                    prev?: string;
+                    /** @example string */
+                    next?: string;
+                };
+                sort?: {
+                    [key: string]: "asc" | "desc";
+                };
+                limit?: string | number;
+            };
+            header: {
                 /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
                 "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
-                /** @description A key that makes a retry of this request safe. A retry with the same key and the same request returns the first reply with the `Idempotent-Replayed: true` header and changes nothing. The same key with a different request answers 422, and a key whose first request is still being processed answers 409. The server keeps each key for 24 hours. An empty value counts as no key, so the server processes that request once for each time it arrives. */
-                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                /** @description Messaging profile identifier */
+                "Messaging-Profile-ID": string;
             };
             path?: never;
             cookie?: never;
         };
-        requestBody: {
-            content: {
-                "application/json": {
-                    filter?: {
-                        [key: string]: false;
-                    };
-                    cursor?: {
-                        /** @example string */
-                        prev?: string;
-                        /** @example string */
-                        next?: string;
-                    };
-                    /** @default {} */
-                    query?: {
-                        name?: string | {
-                            /** @example string */
-                            not_equals?: string;
-                            has_length?: number;
-                            has_any?: string[];
-                            has_none?: string[];
-                            /** @example string */
-                            gt?: string;
-                            /** @example string */
-                            lt?: string;
-                            /** @example string */
-                            gte?: string;
-                            /** @example string */
-                            lte?: string;
-                        };
-                    };
-                    sort?: {
-                        [key: string]: "asc" | "desc";
-                    };
-                    /** @default 50 */
-                    limit?: string | number;
-                };
-            };
-        };
+        requestBody?: never;
         responses: {
             /** @description Successful response */
             200: {
                 headers: {
                     "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    "Idempotent-Replayed": components["headers"]["IdempotentReplayed"];
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
                         response?: components["schemas"]["ApiSuccessResponseMeta"];
                         data?: {
+                            brand_id: string;
                             profile_id: string;
                             conjoin_account_id: string;
                             conjoin_project_id: string;
                             live_mode: boolean;
                             reference_id?: string | null;
-                            name: string;
-                            description?: string;
-                            is_system_profile: boolean;
-                            resource_region: string;
-                            properties?: {
+                            display_name: string;
+                            brand_registration_type: string;
+                            brand_tcr_id?: string | null;
+                            sole_proprietor_details?: {
                                 [key: string]: unknown;
                             };
-                            message_retention_days: number;
-                            features: {
-                                sms: boolean;
-                                email: boolean;
-                            };
-                            email_config?: {
+                            business_details?: {
                                 [key: string]: unknown;
                             };
-                            sms_config?: {
-                                [key: string]: unknown;
-                            };
-                            multisend_config?: {
-                                [key: string]: unknown;
-                            };
-                            verification_config?: {
-                                [key: string]: unknown;
-                            };
-                            status: string;
+                            status?: string;
                             date_created: string;
                             date_updated: string;
                             date_deleted?: string | null;
@@ -86106,50 +88888,8 @@ export interface operations {
                     };
                 };
             };
-            /** @description The first request with this Idempotency-Key is still being processed, stopped before it finished, or finished with a reply that cannot be replayed */
-            409: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description This Idempotency-Key was already used with a different request */
-            422: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
             /** @description Internal server error */
             500: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiServerErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description The server could not check the Idempotency-Key and did not process the request */
-            503: {
                 headers: {
                     "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
                     [name: string]: unknown;
@@ -86181,6 +88921,8 @@ export interface operations {
         requestBody: {
             content: {
                 "application/json": {
+                    /** @example string */
+                    reference_id?: string;
                     /** @example string */
                     display_name: string;
                 } & Omit<{
@@ -86422,6 +89164,161 @@ export interface operations {
             };
         };
     };
+    listSmsBrandsCount: {
+        parameters: {
+            query?: {
+                reference_id?: string | {
+                    /** @example string */
+                    not_equals?: string;
+                    has_length?: number;
+                    has_any?: string[];
+                    has_none?: string[];
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                date_created?: {
+                    /** @example string */
+                    equals?: string;
+                    /** @example string */
+                    not_equals?: string;
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                date_updated?: {
+                    /** @example string */
+                    equals?: string;
+                    /** @example string */
+                    not_equals?: string;
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                date_deleted?: {
+                    /** @example string */
+                    equals?: string;
+                    /** @example string */
+                    not_equals?: string;
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                cursor?: {
+                    /** @example string */
+                    prev?: string;
+                    /** @example string */
+                    next?: string;
+                };
+                sort?: {
+                    [key: string]: "asc" | "desc";
+                };
+                limit?: string | number;
+            };
+            header: {
+                /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
+                "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
+                /** @description Messaging profile identifier */
+                "Messaging-Profile-ID": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful response */
+            200: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response?: components["schemas"]["ApiSuccessResponseMeta"];
+                        data?: {
+                            count: number;
+                        };
+                    };
+                };
+            };
+            /** @description Validation error or bad request */
+            400: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Unauthorized - missing or invalid API key */
+            401: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description The resource does not exist in the scope of the request */
+            404: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiServerErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+        };
+    };
     readSmsBrand: {
         parameters: {
             query?: never;
@@ -86432,7 +89329,7 @@ export interface operations {
                 "Messaging-Profile-ID": string;
             };
             path: {
-                brand_id: string;
+                sms_brand_id: string;
             };
             cookie?: never;
         };
@@ -86539,7 +89436,7 @@ export interface operations {
                 "Messaging-Profile-ID": string;
             };
             path: {
-                brand_id: string;
+                sms_brand_id: string;
             };
             cookie?: never;
         };
@@ -86646,7 +89543,7 @@ export interface operations {
                 "Messaging-Profile-ID": string;
             };
             path: {
-                brand_id: string;
+                sms_brand_id: string;
             };
             cookie?: never;
         };
@@ -86750,113 +89647,108 @@ export interface operations {
             };
         };
     };
-    listSmsBrands: {
+    listSmsCampaigns: {
         parameters: {
-            query?: never;
+            query?: {
+                reference_id?: string | {
+                    /** @example string */
+                    not_equals?: string;
+                    has_length?: number;
+                    has_any?: string[];
+                    has_none?: string[];
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                date_created?: {
+                    /** @example string */
+                    equals?: string;
+                    /** @example string */
+                    not_equals?: string;
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                date_updated?: {
+                    /** @example string */
+                    equals?: string;
+                    /** @example string */
+                    not_equals?: string;
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                date_deleted?: {
+                    /** @example string */
+                    equals?: string;
+                    /** @example string */
+                    not_equals?: string;
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                cursor?: {
+                    /** @example string */
+                    prev?: string;
+                    /** @example string */
+                    next?: string;
+                };
+                sort?: {
+                    [key: string]: "asc" | "desc";
+                };
+                limit?: string | number;
+            };
             header: {
                 /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
                 "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
-                /** @description A key that makes a retry of this request safe. A retry with the same key and the same request returns the first reply with the `Idempotent-Replayed: true` header and changes nothing. The same key with a different request answers 422, and a key whose first request is still being processed answers 409. The server keeps each key for 24 hours. An empty value counts as no key, so the server processes that request once for each time it arrives. */
-                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 /** @description Messaging profile identifier */
                 "Messaging-Profile-ID": string;
             };
             path?: never;
             cookie?: never;
         };
-        requestBody: {
-            content: {
-                "application/json": {
-                    filter?: {
-                        [key: string]: false;
-                    };
-                    cursor?: {
-                        /** @example string */
-                        prev?: string;
-                        /** @example string */
-                        next?: string;
-                    };
-                    /** @default {} */
-                    query?: {
-                        date_created?: {
-                            /** @example string */
-                            equals?: string;
-                            /** @example string */
-                            not_equals?: string;
-                            /** @example string */
-                            gt?: string;
-                            /** @example string */
-                            lt?: string;
-                            /** @example string */
-                            gte?: string;
-                            /** @example string */
-                            lte?: string;
-                        };
-                        date_updated?: {
-                            /** @example string */
-                            equals?: string;
-                            /** @example string */
-                            not_equals?: string;
-                            /** @example string */
-                            gt?: string;
-                            /** @example string */
-                            lt?: string;
-                            /** @example string */
-                            gte?: string;
-                            /** @example string */
-                            lte?: string;
-                        };
-                        date_deleted?: {
-                            /** @example string */
-                            equals?: string;
-                            /** @example string */
-                            not_equals?: string;
-                            /** @example string */
-                            gt?: string;
-                            /** @example string */
-                            lt?: string;
-                            /** @example string */
-                            gte?: string;
-                            /** @example string */
-                            lte?: string;
-                        };
-                    };
-                    sort?: {
-                        [key: string]: "asc" | "desc";
-                    };
-                    /** @default 50 */
-                    limit?: string | number;
-                };
-            };
-        };
+        requestBody?: never;
         responses: {
             /** @description Successful response */
             200: {
                 headers: {
                     "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    "Idempotent-Replayed": components["headers"]["IdempotentReplayed"];
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
                         response?: components["schemas"]["ApiSuccessResponseMeta"];
                         data?: {
-                            brand_id: string;
+                            campaign_id: string;
                             profile_id: string;
                             conjoin_account_id: string;
                             conjoin_project_id: string;
                             live_mode: boolean;
                             reference_id?: string | null;
-                            display_name: string;
-                            brand_registration_type: string;
-                            brand_tcr_id?: string | null;
-                            sole_proprietor_details?: {
-                                [key: string]: unknown;
-                            };
-                            business_details?: {
-                                [key: string]: unknown;
-                            };
-                            status?: string;
+                            brand_id: string;
+                            use_case?: string;
+                            description?: string;
+                            status: string;
                             date_created: string;
                             date_updated: string;
                             date_deleted?: string | null;
@@ -86907,50 +89799,8 @@ export interface operations {
                     };
                 };
             };
-            /** @description The first request with this Idempotency-Key is still being processed, stopped before it finished, or finished with a reply that cannot be replayed */
-            409: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description This Idempotency-Key was already used with a different request */
-            422: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
             /** @description Internal server error */
             500: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiServerErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description The server could not check the Idempotency-Key and did not process the request */
-            503: {
                 headers: {
                     "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
                     [name: string]: unknown;
@@ -86982,6 +89832,8 @@ export interface operations {
         requestBody: {
             content: {
                 "application/json": {
+                    /** @example string */
+                    reference_id?: string;
                     /** @example string */
                     brand_id: string;
                     /** @example string */
@@ -87182,6 +90034,161 @@ export interface operations {
             };
         };
     };
+    listSmsCampaignsCount: {
+        parameters: {
+            query?: {
+                reference_id?: string | {
+                    /** @example string */
+                    not_equals?: string;
+                    has_length?: number;
+                    has_any?: string[];
+                    has_none?: string[];
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                date_created?: {
+                    /** @example string */
+                    equals?: string;
+                    /** @example string */
+                    not_equals?: string;
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                date_updated?: {
+                    /** @example string */
+                    equals?: string;
+                    /** @example string */
+                    not_equals?: string;
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                date_deleted?: {
+                    /** @example string */
+                    equals?: string;
+                    /** @example string */
+                    not_equals?: string;
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                cursor?: {
+                    /** @example string */
+                    prev?: string;
+                    /** @example string */
+                    next?: string;
+                };
+                sort?: {
+                    [key: string]: "asc" | "desc";
+                };
+                limit?: string | number;
+            };
+            header: {
+                /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
+                "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
+                /** @description Messaging profile identifier */
+                "Messaging-Profile-ID": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful response */
+            200: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response?: components["schemas"]["ApiSuccessResponseMeta"];
+                        data?: {
+                            count: number;
+                        };
+                    };
+                };
+            };
+            /** @description Validation error or bad request */
+            400: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Unauthorized - missing or invalid API key */
+            401: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description The resource does not exist in the scope of the request */
+            404: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiServerErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+        };
+    };
     readSmsCampaign: {
         parameters: {
             query?: never;
@@ -87192,7 +90199,7 @@ export interface operations {
                 "Messaging-Profile-ID": string;
             };
             path: {
-                campaign_id: string;
+                sms_campaign_id: string;
             };
             cookie?: never;
         };
@@ -87293,7 +90300,7 @@ export interface operations {
                 "Messaging-Profile-ID": string;
             };
             path: {
-                campaign_id: string;
+                sms_campaign_id: string;
             };
             cookie?: never;
         };
@@ -87394,7 +90401,7 @@ export interface operations {
                 "Messaging-Profile-ID": string;
             };
             path: {
-                campaign_id: string;
+                sms_campaign_id: string;
             };
             cookie?: never;
         };
@@ -87492,106 +90499,222 @@ export interface operations {
             };
         };
     };
-    listSmsCampaigns: {
+    listSmsMessages: {
         parameters: {
-            query?: never;
+            query?: {
+                conversation_id?: string | {
+                    /** @example string */
+                    not_equals?: string;
+                    has_length?: number;
+                    has_any?: string[];
+                    has_none?: string[];
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                broadcast_id?: string | {
+                    /** @example string */
+                    not_equals?: string;
+                    has_length?: number;
+                    has_any?: string[];
+                    has_none?: string[];
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                request_id?: string | {
+                    /** @example string */
+                    not_equals?: string;
+                    has_length?: number;
+                    has_any?: string[];
+                    has_none?: string[];
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                message_id?: string | {
+                    /** @example string */
+                    not_equals?: string;
+                    has_length?: number;
+                    has_any?: string[];
+                    has_none?: string[];
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                recipient_id?: string | {
+                    /** @example string */
+                    not_equals?: string;
+                    has_length?: number;
+                    has_any?: string[];
+                    has_none?: string[];
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                reference_id?: string | {
+                    /** @example string */
+                    not_equals?: string;
+                    has_length?: number;
+                    has_any?: string[];
+                    has_none?: string[];
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                name?: string | {
+                    /** @example string */
+                    not_equals?: string;
+                    has_length?: number;
+                    has_any?: string[];
+                    has_none?: string[];
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                phone_number?: string | {
+                    /** @description Phone number in E.164 format */
+                    not_equals?: string;
+                    has_length?: number;
+                    has_any?: string[];
+                    has_none?: string[];
+                    /** @description Phone number in E.164 format */
+                    gt?: string;
+                    /** @description Phone number in E.164 format */
+                    lt?: string;
+                    /** @description Phone number in E.164 format */
+                    gte?: string;
+                    /** @description Phone number in E.164 format */
+                    lte?: string;
+                };
+                status?: ("invalid_recipient" | "insufficient_balance" | "invalid_auth" | "invalid_message_body" | "rate_limits_reached" | "unknown" | "accepted" | "sent" | "processing" | "in_transit" | "delivered" | "received" | "complained" | "failed" | "rejected" | "queued" | "delayed" | "scheduled" | "cancelled" | "expired" | "destination_unsupported" | "unreachable" | "carrier_rejected" | "carrier_unreachable" | "carrier_error" | "brand_rate_limits_reached" | "brand_message_cap_reached" | "numeric_sender_not_provisioned" | "numeric_sender_not_verified" | "sender_preregistration_required" | "routing_failed") | {
+                    /** @enum {string} */
+                    not_equals?: "invalid_recipient" | "insufficient_balance" | "invalid_auth" | "invalid_message_body" | "rate_limits_reached" | "unknown" | "accepted" | "sent" | "processing" | "in_transit" | "delivered" | "received" | "complained" | "failed" | "rejected" | "queued" | "delayed" | "scheduled" | "cancelled" | "expired" | "destination_unsupported" | "unreachable" | "carrier_rejected" | "carrier_unreachable" | "carrier_error" | "brand_rate_limits_reached" | "brand_message_cap_reached" | "numeric_sender_not_provisioned" | "numeric_sender_not_verified" | "sender_preregistration_required" | "routing_failed";
+                    has_length?: number;
+                    has_any?: ("invalid_recipient" | "insufficient_balance" | "invalid_auth" | "invalid_message_body" | "rate_limits_reached" | "unknown" | "accepted" | "sent" | "processing" | "in_transit" | "delivered" | "received" | "complained" | "failed" | "rejected" | "queued" | "delayed" | "scheduled" | "cancelled" | "expired" | "destination_unsupported" | "unreachable" | "carrier_rejected" | "carrier_unreachable" | "carrier_error" | "brand_rate_limits_reached" | "brand_message_cap_reached" | "numeric_sender_not_provisioned" | "numeric_sender_not_verified" | "sender_preregistration_required" | "routing_failed")[];
+                    has_none?: ("invalid_recipient" | "insufficient_balance" | "invalid_auth" | "invalid_message_body" | "rate_limits_reached" | "unknown" | "accepted" | "sent" | "processing" | "in_transit" | "delivered" | "received" | "complained" | "failed" | "rejected" | "queued" | "delayed" | "scheduled" | "cancelled" | "expired" | "destination_unsupported" | "unreachable" | "carrier_rejected" | "carrier_unreachable" | "carrier_error" | "brand_rate_limits_reached" | "brand_message_cap_reached" | "numeric_sender_not_provisioned" | "numeric_sender_not_verified" | "sender_preregistration_required" | "routing_failed")[];
+                    /** @enum {string} */
+                    gt?: "invalid_recipient" | "insufficient_balance" | "invalid_auth" | "invalid_message_body" | "rate_limits_reached" | "unknown" | "accepted" | "sent" | "processing" | "in_transit" | "delivered" | "received" | "complained" | "failed" | "rejected" | "queued" | "delayed" | "scheduled" | "cancelled" | "expired" | "destination_unsupported" | "unreachable" | "carrier_rejected" | "carrier_unreachable" | "carrier_error" | "brand_rate_limits_reached" | "brand_message_cap_reached" | "numeric_sender_not_provisioned" | "numeric_sender_not_verified" | "sender_preregistration_required" | "routing_failed";
+                    /** @enum {string} */
+                    lt?: "invalid_recipient" | "insufficient_balance" | "invalid_auth" | "invalid_message_body" | "rate_limits_reached" | "unknown" | "accepted" | "sent" | "processing" | "in_transit" | "delivered" | "received" | "complained" | "failed" | "rejected" | "queued" | "delayed" | "scheduled" | "cancelled" | "expired" | "destination_unsupported" | "unreachable" | "carrier_rejected" | "carrier_unreachable" | "carrier_error" | "brand_rate_limits_reached" | "brand_message_cap_reached" | "numeric_sender_not_provisioned" | "numeric_sender_not_verified" | "sender_preregistration_required" | "routing_failed";
+                    /** @enum {string} */
+                    gte?: "invalid_recipient" | "insufficient_balance" | "invalid_auth" | "invalid_message_body" | "rate_limits_reached" | "unknown" | "accepted" | "sent" | "processing" | "in_transit" | "delivered" | "received" | "complained" | "failed" | "rejected" | "queued" | "delayed" | "scheduled" | "cancelled" | "expired" | "destination_unsupported" | "unreachable" | "carrier_rejected" | "carrier_unreachable" | "carrier_error" | "brand_rate_limits_reached" | "brand_message_cap_reached" | "numeric_sender_not_provisioned" | "numeric_sender_not_verified" | "sender_preregistration_required" | "routing_failed";
+                    /** @enum {string} */
+                    lte?: "invalid_recipient" | "insufficient_balance" | "invalid_auth" | "invalid_message_body" | "rate_limits_reached" | "unknown" | "accepted" | "sent" | "processing" | "in_transit" | "delivered" | "received" | "complained" | "failed" | "rejected" | "queued" | "delayed" | "scheduled" | "cancelled" | "expired" | "destination_unsupported" | "unreachable" | "carrier_rejected" | "carrier_unreachable" | "carrier_error" | "brand_rate_limits_reached" | "brand_message_cap_reached" | "numeric_sender_not_provisioned" | "numeric_sender_not_verified" | "sender_preregistration_required" | "routing_failed";
+                };
+                sent_at?: {
+                    /** @example string */
+                    equals?: string;
+                    /** @example string */
+                    not_equals?: string;
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                date_created?: {
+                    /** @example string */
+                    equals?: string;
+                    /** @example string */
+                    not_equals?: string;
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                search?: string;
+                cursor?: {
+                    /** @example string */
+                    prev?: string;
+                    /** @example string */
+                    next?: string;
+                };
+                sort?: {
+                    [key: string]: "asc" | "desc";
+                };
+                limit?: string | number;
+            };
             header: {
                 /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
                 "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
-                /** @description A key that makes a retry of this request safe. A retry with the same key and the same request returns the first reply with the `Idempotent-Replayed: true` header and changes nothing. The same key with a different request answers 422, and a key whose first request is still being processed answers 409. The server keeps each key for 24 hours. An empty value counts as no key, so the server processes that request once for each time it arrives. */
-                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 /** @description Messaging profile identifier */
                 "Messaging-Profile-ID": string;
             };
             path?: never;
             cookie?: never;
         };
-        requestBody: {
-            content: {
-                "application/json": {
-                    filter?: {
-                        [key: string]: false;
-                    };
-                    cursor?: {
-                        /** @example string */
-                        prev?: string;
-                        /** @example string */
-                        next?: string;
-                    };
-                    /** @default {} */
-                    query?: {
-                        date_created?: {
-                            /** @example string */
-                            equals?: string;
-                            /** @example string */
-                            not_equals?: string;
-                            /** @example string */
-                            gt?: string;
-                            /** @example string */
-                            lt?: string;
-                            /** @example string */
-                            gte?: string;
-                            /** @example string */
-                            lte?: string;
-                        };
-                        date_updated?: {
-                            /** @example string */
-                            equals?: string;
-                            /** @example string */
-                            not_equals?: string;
-                            /** @example string */
-                            gt?: string;
-                            /** @example string */
-                            lt?: string;
-                            /** @example string */
-                            gte?: string;
-                            /** @example string */
-                            lte?: string;
-                        };
-                        date_deleted?: {
-                            /** @example string */
-                            equals?: string;
-                            /** @example string */
-                            not_equals?: string;
-                            /** @example string */
-                            gt?: string;
-                            /** @example string */
-                            lt?: string;
-                            /** @example string */
-                            gte?: string;
-                            /** @example string */
-                            lte?: string;
-                        };
-                    };
-                    sort?: {
-                        [key: string]: "asc" | "desc";
-                    };
-                    /** @default 50 */
-                    limit?: string | number;
-                };
-            };
-        };
+        requestBody?: never;
         responses: {
             /** @description Successful response */
             200: {
                 headers: {
                     "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    "Idempotent-Replayed": components["headers"]["IdempotentReplayed"];
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
                         response?: components["schemas"]["ApiSuccessResponseMeta"];
                         data?: {
-                            campaign_id: string;
+                            message_id: string;
                             profile_id: string;
                             conjoin_account_id: string;
                             conjoin_project_id: string;
                             live_mode: boolean;
                             reference_id?: string | null;
-                            brand_id: string;
-                            use_case?: string;
-                            description?: string;
+                            conversation_id?: string | null;
+                            parent_message_id?: string | null;
+                            type: string;
+                            reply_to?: string | null;
+                            default_placeholders?: {
+                                [key: string]: unknown;
+                            };
+                            sent_at: string;
+                            body: string;
+                            truncate_message: boolean;
+                            send_at?: string | null;
                             status: string;
                             date_created: string;
                             date_updated: string;
@@ -87643,50 +90766,8 @@ export interface operations {
                     };
                 };
             };
-            /** @description The first request with this Idempotency-Key is still being processed, stopped before it finished, or finished with a reply that cannot be replayed */
-            409: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description This Idempotency-Key was already used with a different request */
-            422: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
             /** @description Internal server error */
             500: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiServerErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description The server could not check the Idempotency-Key and did not process the request */
-            503: {
                 headers: {
                     "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
                     [name: string]: unknown;
@@ -87892,200 +90973,207 @@ export interface operations {
             };
         };
     };
-    readSmsMessages: {
+    listSmsMessagesCount: {
         parameters: {
-            query?: never;
+            query?: {
+                conversation_id?: string | {
+                    /** @example string */
+                    not_equals?: string;
+                    has_length?: number;
+                    has_any?: string[];
+                    has_none?: string[];
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                broadcast_id?: string | {
+                    /** @example string */
+                    not_equals?: string;
+                    has_length?: number;
+                    has_any?: string[];
+                    has_none?: string[];
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                request_id?: string | {
+                    /** @example string */
+                    not_equals?: string;
+                    has_length?: number;
+                    has_any?: string[];
+                    has_none?: string[];
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                message_id?: string | {
+                    /** @example string */
+                    not_equals?: string;
+                    has_length?: number;
+                    has_any?: string[];
+                    has_none?: string[];
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                recipient_id?: string | {
+                    /** @example string */
+                    not_equals?: string;
+                    has_length?: number;
+                    has_any?: string[];
+                    has_none?: string[];
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                reference_id?: string | {
+                    /** @example string */
+                    not_equals?: string;
+                    has_length?: number;
+                    has_any?: string[];
+                    has_none?: string[];
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                name?: string | {
+                    /** @example string */
+                    not_equals?: string;
+                    has_length?: number;
+                    has_any?: string[];
+                    has_none?: string[];
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                phone_number?: string | {
+                    /** @description Phone number in E.164 format */
+                    not_equals?: string;
+                    has_length?: number;
+                    has_any?: string[];
+                    has_none?: string[];
+                    /** @description Phone number in E.164 format */
+                    gt?: string;
+                    /** @description Phone number in E.164 format */
+                    lt?: string;
+                    /** @description Phone number in E.164 format */
+                    gte?: string;
+                    /** @description Phone number in E.164 format */
+                    lte?: string;
+                };
+                status?: ("invalid_recipient" | "insufficient_balance" | "invalid_auth" | "invalid_message_body" | "rate_limits_reached" | "unknown" | "accepted" | "sent" | "processing" | "in_transit" | "delivered" | "received" | "complained" | "failed" | "rejected" | "queued" | "delayed" | "scheduled" | "cancelled" | "expired" | "destination_unsupported" | "unreachable" | "carrier_rejected" | "carrier_unreachable" | "carrier_error" | "brand_rate_limits_reached" | "brand_message_cap_reached" | "numeric_sender_not_provisioned" | "numeric_sender_not_verified" | "sender_preregistration_required" | "routing_failed") | {
+                    /** @enum {string} */
+                    not_equals?: "invalid_recipient" | "insufficient_balance" | "invalid_auth" | "invalid_message_body" | "rate_limits_reached" | "unknown" | "accepted" | "sent" | "processing" | "in_transit" | "delivered" | "received" | "complained" | "failed" | "rejected" | "queued" | "delayed" | "scheduled" | "cancelled" | "expired" | "destination_unsupported" | "unreachable" | "carrier_rejected" | "carrier_unreachable" | "carrier_error" | "brand_rate_limits_reached" | "brand_message_cap_reached" | "numeric_sender_not_provisioned" | "numeric_sender_not_verified" | "sender_preregistration_required" | "routing_failed";
+                    has_length?: number;
+                    has_any?: ("invalid_recipient" | "insufficient_balance" | "invalid_auth" | "invalid_message_body" | "rate_limits_reached" | "unknown" | "accepted" | "sent" | "processing" | "in_transit" | "delivered" | "received" | "complained" | "failed" | "rejected" | "queued" | "delayed" | "scheduled" | "cancelled" | "expired" | "destination_unsupported" | "unreachable" | "carrier_rejected" | "carrier_unreachable" | "carrier_error" | "brand_rate_limits_reached" | "brand_message_cap_reached" | "numeric_sender_not_provisioned" | "numeric_sender_not_verified" | "sender_preregistration_required" | "routing_failed")[];
+                    has_none?: ("invalid_recipient" | "insufficient_balance" | "invalid_auth" | "invalid_message_body" | "rate_limits_reached" | "unknown" | "accepted" | "sent" | "processing" | "in_transit" | "delivered" | "received" | "complained" | "failed" | "rejected" | "queued" | "delayed" | "scheduled" | "cancelled" | "expired" | "destination_unsupported" | "unreachable" | "carrier_rejected" | "carrier_unreachable" | "carrier_error" | "brand_rate_limits_reached" | "brand_message_cap_reached" | "numeric_sender_not_provisioned" | "numeric_sender_not_verified" | "sender_preregistration_required" | "routing_failed")[];
+                    /** @enum {string} */
+                    gt?: "invalid_recipient" | "insufficient_balance" | "invalid_auth" | "invalid_message_body" | "rate_limits_reached" | "unknown" | "accepted" | "sent" | "processing" | "in_transit" | "delivered" | "received" | "complained" | "failed" | "rejected" | "queued" | "delayed" | "scheduled" | "cancelled" | "expired" | "destination_unsupported" | "unreachable" | "carrier_rejected" | "carrier_unreachable" | "carrier_error" | "brand_rate_limits_reached" | "brand_message_cap_reached" | "numeric_sender_not_provisioned" | "numeric_sender_not_verified" | "sender_preregistration_required" | "routing_failed";
+                    /** @enum {string} */
+                    lt?: "invalid_recipient" | "insufficient_balance" | "invalid_auth" | "invalid_message_body" | "rate_limits_reached" | "unknown" | "accepted" | "sent" | "processing" | "in_transit" | "delivered" | "received" | "complained" | "failed" | "rejected" | "queued" | "delayed" | "scheduled" | "cancelled" | "expired" | "destination_unsupported" | "unreachable" | "carrier_rejected" | "carrier_unreachable" | "carrier_error" | "brand_rate_limits_reached" | "brand_message_cap_reached" | "numeric_sender_not_provisioned" | "numeric_sender_not_verified" | "sender_preregistration_required" | "routing_failed";
+                    /** @enum {string} */
+                    gte?: "invalid_recipient" | "insufficient_balance" | "invalid_auth" | "invalid_message_body" | "rate_limits_reached" | "unknown" | "accepted" | "sent" | "processing" | "in_transit" | "delivered" | "received" | "complained" | "failed" | "rejected" | "queued" | "delayed" | "scheduled" | "cancelled" | "expired" | "destination_unsupported" | "unreachable" | "carrier_rejected" | "carrier_unreachable" | "carrier_error" | "brand_rate_limits_reached" | "brand_message_cap_reached" | "numeric_sender_not_provisioned" | "numeric_sender_not_verified" | "sender_preregistration_required" | "routing_failed";
+                    /** @enum {string} */
+                    lte?: "invalid_recipient" | "insufficient_balance" | "invalid_auth" | "invalid_message_body" | "rate_limits_reached" | "unknown" | "accepted" | "sent" | "processing" | "in_transit" | "delivered" | "received" | "complained" | "failed" | "rejected" | "queued" | "delayed" | "scheduled" | "cancelled" | "expired" | "destination_unsupported" | "unreachable" | "carrier_rejected" | "carrier_unreachable" | "carrier_error" | "brand_rate_limits_reached" | "brand_message_cap_reached" | "numeric_sender_not_provisioned" | "numeric_sender_not_verified" | "sender_preregistration_required" | "routing_failed";
+                };
+                sent_at?: {
+                    /** @example string */
+                    equals?: string;
+                    /** @example string */
+                    not_equals?: string;
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                date_created?: {
+                    /** @example string */
+                    equals?: string;
+                    /** @example string */
+                    not_equals?: string;
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                search?: string;
+                cursor?: {
+                    /** @example string */
+                    prev?: string;
+                    /** @example string */
+                    next?: string;
+                };
+                sort?: {
+                    [key: string]: "asc" | "desc";
+                };
+                limit?: string | number;
+            };
             header: {
                 /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
                 "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
-                /** @description A key that makes a retry of this request safe. A retry with the same key and the same request returns the first reply with the `Idempotent-Replayed: true` header and changes nothing. The same key with a different request answers 422, and a key whose first request is still being processed answers 409. The server keeps each key for 24 hours. An empty value counts as no key, so the server processes that request once for each time it arrives. */
-                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 /** @description Messaging profile identifier */
                 "Messaging-Profile-ID": string;
             };
-            path: {
-                message_id: string;
-            };
+            path?: never;
             cookie?: never;
         };
-        requestBody: {
-            content: {
-                "application/json": {
-                    cursor?: {
-                        /** @example string */
-                        prev?: string;
-                        /** @example string */
-                        next?: string;
-                    };
-                    /** @default {} */
-                    query?: {
-                        conversation_id?: string | {
-                            /** @example string */
-                            not_equals?: string;
-                            has_length?: number;
-                            has_any?: string[];
-                            has_none?: string[];
-                            /** @example string */
-                            gt?: string;
-                            /** @example string */
-                            lt?: string;
-                            /** @example string */
-                            gte?: string;
-                            /** @example string */
-                            lte?: string;
-                        };
-                        broadcast_id?: string | {
-                            /** @example string */
-                            not_equals?: string;
-                            has_length?: number;
-                            has_any?: string[];
-                            has_none?: string[];
-                            /** @example string */
-                            gt?: string;
-                            /** @example string */
-                            lt?: string;
-                            /** @example string */
-                            gte?: string;
-                            /** @example string */
-                            lte?: string;
-                        };
-                        request_id?: string | {
-                            /** @example string */
-                            not_equals?: string;
-                            has_length?: number;
-                            has_any?: string[];
-                            has_none?: string[];
-                            /** @example string */
-                            gt?: string;
-                            /** @example string */
-                            lt?: string;
-                            /** @example string */
-                            gte?: string;
-                            /** @example string */
-                            lte?: string;
-                        };
-                        message_id?: string | {
-                            /** @example string */
-                            not_equals?: string;
-                            has_length?: number;
-                            has_any?: string[];
-                            has_none?: string[];
-                            /** @example string */
-                            gt?: string;
-                            /** @example string */
-                            lt?: string;
-                            /** @example string */
-                            gte?: string;
-                            /** @example string */
-                            lte?: string;
-                        };
-                        recipient_id?: string | {
-                            /** @example string */
-                            not_equals?: string;
-                            has_length?: number;
-                            has_any?: string[];
-                            has_none?: string[];
-                            /** @example string */
-                            gt?: string;
-                            /** @example string */
-                            lt?: string;
-                            /** @example string */
-                            gte?: string;
-                            /** @example string */
-                            lte?: string;
-                        };
-                        name?: string | {
-                            /** @example string */
-                            not_equals?: string;
-                            has_length?: number;
-                            has_any?: string[];
-                            has_none?: string[];
-                            /** @example string */
-                            gt?: string;
-                            /** @example string */
-                            lt?: string;
-                            /** @example string */
-                            gte?: string;
-                            /** @example string */
-                            lte?: string;
-                        };
-                        phone_number?: string | {
-                            /** @description Phone number in E.164 format */
-                            not_equals?: string;
-                            has_length?: number;
-                            has_any?: string[];
-                            has_none?: string[];
-                            /** @description Phone number in E.164 format */
-                            gt?: string;
-                            /** @description Phone number in E.164 format */
-                            lt?: string;
-                            /** @description Phone number in E.164 format */
-                            gte?: string;
-                            /** @description Phone number in E.164 format */
-                            lte?: string;
-                        };
-                        status?: ("invalid_recipient" | "insufficient_balance" | "invalid_auth" | "invalid_message_body" | "rate_limits_reached" | "unknown" | "accepted" | "sent" | "processing" | "in_transit" | "delivered" | "received" | "complained" | "failed" | "rejected" | "queued" | "delayed" | "scheduled" | "cancelled" | "expired" | "destination_unsupported" | "unreachable" | "carrier_rejected" | "carrier_unreachable" | "carrier_error" | "brand_rate_limits_reached" | "brand_message_cap_reached" | "numeric_sender_not_provisioned" | "numeric_sender_not_verified" | "sender_preregistration_required" | "routing_failed") | {
-                            /** @enum {string} */
-                            not_equals?: "invalid_recipient" | "insufficient_balance" | "invalid_auth" | "invalid_message_body" | "rate_limits_reached" | "unknown" | "accepted" | "sent" | "processing" | "in_transit" | "delivered" | "received" | "complained" | "failed" | "rejected" | "queued" | "delayed" | "scheduled" | "cancelled" | "expired" | "destination_unsupported" | "unreachable" | "carrier_rejected" | "carrier_unreachable" | "carrier_error" | "brand_rate_limits_reached" | "brand_message_cap_reached" | "numeric_sender_not_provisioned" | "numeric_sender_not_verified" | "sender_preregistration_required" | "routing_failed";
-                            has_length?: number;
-                            has_any?: ("invalid_recipient" | "insufficient_balance" | "invalid_auth" | "invalid_message_body" | "rate_limits_reached" | "unknown" | "accepted" | "sent" | "processing" | "in_transit" | "delivered" | "received" | "complained" | "failed" | "rejected" | "queued" | "delayed" | "scheduled" | "cancelled" | "expired" | "destination_unsupported" | "unreachable" | "carrier_rejected" | "carrier_unreachable" | "carrier_error" | "brand_rate_limits_reached" | "brand_message_cap_reached" | "numeric_sender_not_provisioned" | "numeric_sender_not_verified" | "sender_preregistration_required" | "routing_failed")[];
-                            has_none?: ("invalid_recipient" | "insufficient_balance" | "invalid_auth" | "invalid_message_body" | "rate_limits_reached" | "unknown" | "accepted" | "sent" | "processing" | "in_transit" | "delivered" | "received" | "complained" | "failed" | "rejected" | "queued" | "delayed" | "scheduled" | "cancelled" | "expired" | "destination_unsupported" | "unreachable" | "carrier_rejected" | "carrier_unreachable" | "carrier_error" | "brand_rate_limits_reached" | "brand_message_cap_reached" | "numeric_sender_not_provisioned" | "numeric_sender_not_verified" | "sender_preregistration_required" | "routing_failed")[];
-                            /** @enum {string} */
-                            gt?: "invalid_recipient" | "insufficient_balance" | "invalid_auth" | "invalid_message_body" | "rate_limits_reached" | "unknown" | "accepted" | "sent" | "processing" | "in_transit" | "delivered" | "received" | "complained" | "failed" | "rejected" | "queued" | "delayed" | "scheduled" | "cancelled" | "expired" | "destination_unsupported" | "unreachable" | "carrier_rejected" | "carrier_unreachable" | "carrier_error" | "brand_rate_limits_reached" | "brand_message_cap_reached" | "numeric_sender_not_provisioned" | "numeric_sender_not_verified" | "sender_preregistration_required" | "routing_failed";
-                            /** @enum {string} */
-                            lt?: "invalid_recipient" | "insufficient_balance" | "invalid_auth" | "invalid_message_body" | "rate_limits_reached" | "unknown" | "accepted" | "sent" | "processing" | "in_transit" | "delivered" | "received" | "complained" | "failed" | "rejected" | "queued" | "delayed" | "scheduled" | "cancelled" | "expired" | "destination_unsupported" | "unreachable" | "carrier_rejected" | "carrier_unreachable" | "carrier_error" | "brand_rate_limits_reached" | "brand_message_cap_reached" | "numeric_sender_not_provisioned" | "numeric_sender_not_verified" | "sender_preregistration_required" | "routing_failed";
-                            /** @enum {string} */
-                            gte?: "invalid_recipient" | "insufficient_balance" | "invalid_auth" | "invalid_message_body" | "rate_limits_reached" | "unknown" | "accepted" | "sent" | "processing" | "in_transit" | "delivered" | "received" | "complained" | "failed" | "rejected" | "queued" | "delayed" | "scheduled" | "cancelled" | "expired" | "destination_unsupported" | "unreachable" | "carrier_rejected" | "carrier_unreachable" | "carrier_error" | "brand_rate_limits_reached" | "brand_message_cap_reached" | "numeric_sender_not_provisioned" | "numeric_sender_not_verified" | "sender_preregistration_required" | "routing_failed";
-                            /** @enum {string} */
-                            lte?: "invalid_recipient" | "insufficient_balance" | "invalid_auth" | "invalid_message_body" | "rate_limits_reached" | "unknown" | "accepted" | "sent" | "processing" | "in_transit" | "delivered" | "received" | "complained" | "failed" | "rejected" | "queued" | "delayed" | "scheduled" | "cancelled" | "expired" | "destination_unsupported" | "unreachable" | "carrier_rejected" | "carrier_unreachable" | "carrier_error" | "brand_rate_limits_reached" | "brand_message_cap_reached" | "numeric_sender_not_provisioned" | "numeric_sender_not_verified" | "sender_preregistration_required" | "routing_failed";
-                        };
-                    };
-                    search?: {
-                        keyword: string;
-                    };
-                    sort?: {
-                        [key: string]: "asc" | "desc";
-                    };
-                    /** @default 50 */
-                    limit?: string | number;
-                };
-            };
-        };
+        requestBody?: never;
         responses: {
             /** @description Successful response */
             200: {
                 headers: {
                     "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    "Idempotent-Replayed": components["headers"]["IdempotentReplayed"];
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
                         response?: components["schemas"]["ApiSuccessResponseMeta"];
                         data?: {
-                            message_id: string;
-                            profile_id: string;
-                            conjoin_account_id: string;
-                            conjoin_project_id: string;
-                            live_mode: boolean;
-                            reference_id?: string | null;
-                            conversation_id?: string | null;
-                            parent_message_id?: string | null;
-                            type: string;
-                            reply_to?: string | null;
-                            default_placeholders?: {
-                                [key: string]: unknown;
-                            };
-                            sent_at: string;
-                            body: string;
-                            truncate_message: boolean;
-                            send_at?: string | null;
-                            status: string;
-                            date_created: string;
-                            date_updated: string;
-                            date_deleted?: string | null;
-                        }[];
-                        cursor?: components["schemas"]["PaginationCursor"];
+                            count: number;
+                        };
                     };
                 };
             };
@@ -88131,34 +91219,6 @@ export interface operations {
                     };
                 };
             };
-            /** @description The first request with this Idempotency-Key is still being processed, stopped before it finished, or finished with a reply that cannot be replayed */
-            409: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description This Idempotency-Key was already used with a different request */
-            422: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
             /** @description Internal server error */
             500: {
                 headers: {
@@ -88173,8 +91233,103 @@ export interface operations {
                     };
                 };
             };
-            /** @description The server could not check the Idempotency-Key and did not process the request */
-            503: {
+        };
+    };
+    readSmsMessage: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
+                "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
+                /** @description Messaging profile identifier */
+                "Messaging-Profile-ID": string;
+            };
+            path: {
+                sms_message_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful response */
+            200: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response?: components["schemas"]["ApiSuccessResponseMeta"];
+                        data?: {
+                            message_id: string;
+                            profile_id: string;
+                            conjoin_account_id: string;
+                            conjoin_project_id: string;
+                            live_mode: boolean;
+                            reference_id?: string | null;
+                            conversation_id?: string | null;
+                            parent_message_id?: string | null;
+                            type: string;
+                            reply_to?: string | null;
+                            default_placeholders?: {
+                                [key: string]: unknown;
+                            };
+                            sent_at: string;
+                            body: string;
+                            truncate_message: boolean;
+                            send_at?: string | null;
+                            status: string;
+                            date_created: string;
+                            date_updated: string;
+                            date_deleted?: string | null;
+                        };
+                    };
+                };
+            };
+            /** @description Validation error or bad request */
+            400: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Unauthorized - missing or invalid API key */
+            401: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description The resource does not exist in the scope of the request */
+            404: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Internal server error */
+            500: {
                 headers: {
                     "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
                     [name: string]: unknown;
@@ -88354,6 +91509,173 @@ export interface operations {
             };
         };
     };
+    listManySmsSenderPools: {
+        parameters: {
+            query?: {
+                pool_id?: string | {
+                    /** @example string */
+                    not_equals?: string;
+                    has_length?: number;
+                    has_any?: string[];
+                    has_none?: string[];
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                reference_id?: string | {
+                    /** @example string */
+                    not_equals?: string;
+                    has_length?: number;
+                    has_any?: string[];
+                    has_none?: string[];
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                capability?: ("sms_messages" | "verification_messages") | {
+                    /** @enum {string} */
+                    not_equals?: "sms_messages" | "verification_messages";
+                    has_length?: number;
+                    has_any?: ("sms_messages" | "verification_messages")[];
+                    has_none?: ("sms_messages" | "verification_messages")[];
+                    /** @enum {string} */
+                    gt?: "sms_messages" | "verification_messages";
+                    /** @enum {string} */
+                    lt?: "sms_messages" | "verification_messages";
+                    /** @enum {string} */
+                    gte?: "sms_messages" | "verification_messages";
+                    /** @enum {string} */
+                    lte?: "sms_messages" | "verification_messages";
+                };
+                date_created?: {
+                    /** @example string */
+                    equals?: string;
+                    /** @example string */
+                    not_equals?: string;
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                cursor?: {
+                    /** @example string */
+                    prev?: string;
+                    /** @example string */
+                    next?: string;
+                };
+                sort?: {
+                    [key: string]: "asc" | "desc";
+                };
+                limit?: string | number;
+            };
+            header: {
+                /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
+                "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
+                /** @description Messaging profile identifier */
+                "Messaging-Profile-ID": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful response */
+            200: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response?: components["schemas"]["ApiSuccessResponseMeta"];
+                        data?: {
+                            pool_id: string;
+                            reference_id?: string | null;
+                            profile_id: string;
+                            conjoin_account_id: string;
+                            conjoin_project_id: string;
+                            live_mode: boolean;
+                            senders: string[];
+                            date_created: string;
+                            date_updated: string;
+                            date_deleted?: string | null;
+                        }[];
+                        cursor?: components["schemas"]["PaginationCursor"];
+                    };
+                };
+            };
+            /** @description Validation error or bad request */
+            400: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Unauthorized - missing or invalid API key */
+            401: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description The resource does not exist in the scope of the request */
+            404: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiServerErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+        };
+    };
     createSmsSenderPool: {
         parameters: {
             query?: never;
@@ -88371,6 +91693,8 @@ export interface operations {
         requestBody: {
             content: {
                 "application/json": {
+                    /** @example string */
+                    reference_id?: string;
                     /** @example string */
                     title: string;
                     /** @example string */
@@ -88394,6 +91718,7 @@ export interface operations {
                         response?: components["schemas"]["ApiSuccessResponseMeta"];
                         data?: {
                             pool_id: string;
+                            reference_id?: string | null;
                             profile_id: string;
                             conjoin_account_id: string;
                             conjoin_project_id: string;
@@ -88506,6 +91831,163 @@ export interface operations {
             };
         };
     };
+    listManySmsSenderPoolsCount: {
+        parameters: {
+            query?: {
+                pool_id?: string | {
+                    /** @example string */
+                    not_equals?: string;
+                    has_length?: number;
+                    has_any?: string[];
+                    has_none?: string[];
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                reference_id?: string | {
+                    /** @example string */
+                    not_equals?: string;
+                    has_length?: number;
+                    has_any?: string[];
+                    has_none?: string[];
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                capability?: ("sms_messages" | "verification_messages") | {
+                    /** @enum {string} */
+                    not_equals?: "sms_messages" | "verification_messages";
+                    has_length?: number;
+                    has_any?: ("sms_messages" | "verification_messages")[];
+                    has_none?: ("sms_messages" | "verification_messages")[];
+                    /** @enum {string} */
+                    gt?: "sms_messages" | "verification_messages";
+                    /** @enum {string} */
+                    lt?: "sms_messages" | "verification_messages";
+                    /** @enum {string} */
+                    gte?: "sms_messages" | "verification_messages";
+                    /** @enum {string} */
+                    lte?: "sms_messages" | "verification_messages";
+                };
+                date_created?: {
+                    /** @example string */
+                    equals?: string;
+                    /** @example string */
+                    not_equals?: string;
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                cursor?: {
+                    /** @example string */
+                    prev?: string;
+                    /** @example string */
+                    next?: string;
+                };
+                sort?: {
+                    [key: string]: "asc" | "desc";
+                };
+                limit?: string | number;
+            };
+            header: {
+                /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
+                "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
+                /** @description Messaging profile identifier */
+                "Messaging-Profile-ID": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful response */
+            200: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response?: components["schemas"]["ApiSuccessResponseMeta"];
+                        data?: {
+                            count: number;
+                        };
+                    };
+                };
+            };
+            /** @description Validation error or bad request */
+            400: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Unauthorized - missing or invalid API key */
+            401: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description The resource does not exist in the scope of the request */
+            404: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiServerErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+        };
+    };
     addSmsSendersToPool: {
         parameters: {
             query?: never;
@@ -88518,7 +92000,7 @@ export interface operations {
                 "Messaging-Profile-ID": string;
             };
             path: {
-                pool_id: string;
+                sms_sender_pool_id: string;
             };
             cookie?: never;
         };
@@ -88542,6 +92024,7 @@ export interface operations {
                         response?: components["schemas"]["ApiSuccessResponseMeta"];
                         data?: {
                             pool_id: string;
+                            reference_id?: string | null;
                             profile_id: string;
                             conjoin_account_id: string;
                             conjoin_project_id: string;
@@ -88664,7 +92147,7 @@ export interface operations {
                 "Messaging-Profile-ID": string;
             };
             path: {
-                pool_id: string;
+                sms_sender_pool_id: string;
             };
             cookie?: never;
         };
@@ -88681,6 +92164,7 @@ export interface operations {
                         response?: components["schemas"]["ApiSuccessResponseMeta"];
                         data?: {
                             pool_id: string;
+                            reference_id?: string | null;
                             profile_id: string;
                             conjoin_account_id: string;
                             conjoin_project_id: string;
@@ -88761,7 +92245,7 @@ export interface operations {
                 "Messaging-Profile-ID": string;
             };
             path: {
-                pool_id: string;
+                sms_sender_pool_id: string;
             };
             cookie?: never;
         };
@@ -88778,6 +92262,7 @@ export interface operations {
                         response?: components["schemas"]["ApiSuccessResponseMeta"];
                         data?: {
                             pool_id: string;
+                            reference_id?: string | null;
                             profile_id: string;
                             conjoin_account_id: string;
                             conjoin_project_id: string;
@@ -88787,6 +92272,202 @@ export interface operations {
                             date_updated: string;
                             date_deleted?: string | null;
                         };
+                    };
+                };
+            };
+            /** @description Validation error or bad request */
+            400: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Unauthorized - missing or invalid API key */
+            401: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description The resource does not exist in the scope of the request */
+            404: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiServerErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+        };
+    };
+    listManySmsSenders: {
+        parameters: {
+            query?: {
+                sender_id?: string | {
+                    /** @example string */
+                    not_equals?: string;
+                    has_length?: number;
+                    has_any?: string[];
+                    has_none?: string[];
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                reference_id?: string | {
+                    /** @example string */
+                    not_equals?: string;
+                    has_length?: number;
+                    has_any?: string[];
+                    has_none?: string[];
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                sender?: string;
+                capability?: ("sms_messages" | "verification_messages") | {
+                    /** @enum {string} */
+                    not_equals?: "sms_messages" | "verification_messages";
+                    has_length?: number;
+                    has_any?: ("sms_messages" | "verification_messages")[];
+                    has_none?: ("sms_messages" | "verification_messages")[];
+                    /** @enum {string} */
+                    gt?: "sms_messages" | "verification_messages";
+                    /** @enum {string} */
+                    lt?: "sms_messages" | "verification_messages";
+                    /** @enum {string} */
+                    gte?: "sms_messages" | "verification_messages";
+                    /** @enum {string} */
+                    lte?: "sms_messages" | "verification_messages";
+                };
+                status?: ("transfering" | "active" | "disabled" | "verifying" | "unverified" | "available" | "incompliant") | {
+                    /** @enum {string} */
+                    not_equals?: "transfering" | "active" | "disabled" | "verifying" | "unverified" | "available" | "incompliant";
+                    has_length?: number;
+                    has_any?: ("transfering" | "active" | "disabled" | "verifying" | "unverified" | "available" | "incompliant")[];
+                    has_none?: ("transfering" | "active" | "disabled" | "verifying" | "unverified" | "available" | "incompliant")[];
+                    /** @enum {string} */
+                    gt?: "transfering" | "active" | "disabled" | "verifying" | "unverified" | "available" | "incompliant";
+                    /** @enum {string} */
+                    lt?: "transfering" | "active" | "disabled" | "verifying" | "unverified" | "available" | "incompliant";
+                    /** @enum {string} */
+                    gte?: "transfering" | "active" | "disabled" | "verifying" | "unverified" | "available" | "incompliant";
+                    /** @enum {string} */
+                    lte?: "transfering" | "active" | "disabled" | "verifying" | "unverified" | "available" | "incompliant";
+                };
+                is_default_sender?: boolean | ("true" | "false");
+                is_test_sender?: boolean | ("true" | "false");
+                date_created?: {
+                    /** @example string */
+                    equals?: string;
+                    /** @example string */
+                    not_equals?: string;
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                cursor?: {
+                    /** @example string */
+                    prev?: string;
+                    /** @example string */
+                    next?: string;
+                };
+                sort?: {
+                    [key: string]: "asc" | "desc";
+                };
+                limit?: string | number;
+            };
+            header: {
+                /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
+                "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
+                /** @description Messaging profile identifier */
+                "Messaging-Profile-ID": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful response */
+            200: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response?: components["schemas"]["ApiSuccessResponseMeta"];
+                        data?: {
+                            sender_id: string;
+                            profile_id: string;
+                            conjoin_account_id: string;
+                            conjoin_project_id: string;
+                            live_mode: boolean;
+                            reference_id?: string | null;
+                            brand_id: string;
+                            sender: string;
+                            capability: string;
+                            destination_countries?: {
+                                [key: string]: unknown;
+                            };
+                            is_phone_number: boolean;
+                            is_default_sender?: boolean;
+                            is_test_sender?: boolean;
+                            submitted_at: string;
+                            provisioned_at?: string | null;
+                            status: string;
+                            date_created: string;
+                            date_updated: string;
+                            date_deleted?: string | null;
+                        }[];
+                        cursor?: components["schemas"]["PaginationCursor"];
                     };
                 };
             };
@@ -88876,6 +92557,8 @@ export interface operations {
                     /** @description Phone number in E.164 format */
                     sender: string;
                 }, "sender_type"> & {
+                    /** @example string */
+                    reference_id?: string;
                     /** @enum {string} */
                     capability: "sms_messages" | "verification_messages";
                     /** @default false */
@@ -89022,18 +92705,104 @@ export interface operations {
             };
         };
     };
-    enableSmsSender: {
+    listManySmsSendersCount: {
         parameters: {
-            query?: never;
+            query?: {
+                sender_id?: string | {
+                    /** @example string */
+                    not_equals?: string;
+                    has_length?: number;
+                    has_any?: string[];
+                    has_none?: string[];
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                reference_id?: string | {
+                    /** @example string */
+                    not_equals?: string;
+                    has_length?: number;
+                    has_any?: string[];
+                    has_none?: string[];
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                sender?: string;
+                capability?: ("sms_messages" | "verification_messages") | {
+                    /** @enum {string} */
+                    not_equals?: "sms_messages" | "verification_messages";
+                    has_length?: number;
+                    has_any?: ("sms_messages" | "verification_messages")[];
+                    has_none?: ("sms_messages" | "verification_messages")[];
+                    /** @enum {string} */
+                    gt?: "sms_messages" | "verification_messages";
+                    /** @enum {string} */
+                    lt?: "sms_messages" | "verification_messages";
+                    /** @enum {string} */
+                    gte?: "sms_messages" | "verification_messages";
+                    /** @enum {string} */
+                    lte?: "sms_messages" | "verification_messages";
+                };
+                status?: ("transfering" | "active" | "disabled" | "verifying" | "unverified" | "available" | "incompliant") | {
+                    /** @enum {string} */
+                    not_equals?: "transfering" | "active" | "disabled" | "verifying" | "unverified" | "available" | "incompliant";
+                    has_length?: number;
+                    has_any?: ("transfering" | "active" | "disabled" | "verifying" | "unverified" | "available" | "incompliant")[];
+                    has_none?: ("transfering" | "active" | "disabled" | "verifying" | "unverified" | "available" | "incompliant")[];
+                    /** @enum {string} */
+                    gt?: "transfering" | "active" | "disabled" | "verifying" | "unverified" | "available" | "incompliant";
+                    /** @enum {string} */
+                    lt?: "transfering" | "active" | "disabled" | "verifying" | "unverified" | "available" | "incompliant";
+                    /** @enum {string} */
+                    gte?: "transfering" | "active" | "disabled" | "verifying" | "unverified" | "available" | "incompliant";
+                    /** @enum {string} */
+                    lte?: "transfering" | "active" | "disabled" | "verifying" | "unverified" | "available" | "incompliant";
+                };
+                is_default_sender?: boolean | ("true" | "false");
+                is_test_sender?: boolean | ("true" | "false");
+                date_created?: {
+                    /** @example string */
+                    equals?: string;
+                    /** @example string */
+                    not_equals?: string;
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                cursor?: {
+                    /** @example string */
+                    prev?: string;
+                    /** @example string */
+                    next?: string;
+                };
+                sort?: {
+                    [key: string]: "asc" | "desc";
+                };
+                limit?: string | number;
+            };
             header: {
                 /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
                 "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
                 /** @description Messaging profile identifier */
                 "Messaging-Profile-ID": string;
             };
-            path: {
-                sender_id: string;
-            };
+            path?: never;
             cookie?: never;
         };
         requestBody?: never;
@@ -89048,27 +92817,7 @@ export interface operations {
                     "application/json": {
                         response?: components["schemas"]["ApiSuccessResponseMeta"];
                         data?: {
-                            sender_id: string;
-                            profile_id: string;
-                            conjoin_account_id: string;
-                            conjoin_project_id: string;
-                            live_mode: boolean;
-                            reference_id?: string | null;
-                            brand_id: string;
-                            sender: string;
-                            capability: string;
-                            destination_countries?: {
-                                [key: string]: unknown;
-                            };
-                            is_phone_number: boolean;
-                            is_default_sender?: boolean;
-                            is_test_sender?: boolean;
-                            submitted_at: string;
-                            provisioned_at?: string | null;
-                            status: string;
-                            date_created: string;
-                            date_updated: string;
-                            date_deleted?: string | null;
+                            count: number;
                         };
                     };
                 };
@@ -89131,7 +92880,7 @@ export interface operations {
             };
         };
     };
-    disableSmsSender: {
+    readSmsSender: {
         parameters: {
             query?: never;
             header: {
@@ -89141,116 +92890,7 @@ export interface operations {
                 "Messaging-Profile-ID": string;
             };
             path: {
-                sender_id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful response */
-            200: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response?: components["schemas"]["ApiSuccessResponseMeta"];
-                        data?: {
-                            sender_id: string;
-                            profile_id: string;
-                            conjoin_account_id: string;
-                            conjoin_project_id: string;
-                            live_mode: boolean;
-                            reference_id?: string | null;
-                            brand_id: string;
-                            sender: string;
-                            capability: string;
-                            destination_countries?: {
-                                [key: string]: unknown;
-                            };
-                            is_phone_number: boolean;
-                            is_default_sender?: boolean;
-                            is_test_sender?: boolean;
-                            submitted_at: string;
-                            provisioned_at?: string | null;
-                            status: string;
-                            date_created: string;
-                            date_updated: string;
-                            date_deleted?: string | null;
-                        };
-                    };
-                };
-            };
-            /** @description Validation error or bad request */
-            400: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description Unauthorized - missing or invalid API key */
-            401: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description The resource does not exist in the scope of the request */
-            404: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description Internal server error */
-            500: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiServerErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-        };
-    };
-    listSmsSender: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
-                "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
-                /** @description Messaging profile identifier */
-                "Messaging-Profile-ID": string;
-            };
-            path: {
-                sender_id: string;
+                sms_sender_id: string;
             };
             cookie?: never;
         };
@@ -89359,7 +92999,7 @@ export interface operations {
                 "Messaging-Profile-ID": string;
             };
             path: {
-                sender_id: string;
+                sms_sender_id: string;
             };
             cookie?: never;
         };
@@ -89468,7 +93108,7 @@ export interface operations {
                 "Messaging-Profile-ID": string;
             };
             path: {
-                sender_id: string;
+                sms_sender_id: string;
             };
             cookie?: never;
         };
@@ -89580,18 +93220,19 @@ export interface operations {
             };
         };
     };
-    transferSmsSender: {
+    enableSmsSender: {
         parameters: {
             query?: never;
             header: {
                 /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
                 "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
+                /** @description A key that makes a retry of this request safe. A retry with the same key and the same request returns the first reply with the `Idempotent-Replayed: true` header and changes nothing. The same key with a different request answers 422, and a key whose first request is still being processed answers 409. The server keeps each key for 24 hours. An empty value counts as no key, so the server processes that request once for each time it arrives. */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 /** @description Messaging profile identifier */
                 "Messaging-Profile-ID": string;
             };
             path: {
-                sender_id: string;
-                project_id: string;
+                sms_sender_id: string;
             };
             cookie?: never;
         };
@@ -89601,6 +93242,7 @@ export interface operations {
             200: {
                 headers: {
                     "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    "Idempotent-Replayed": components["headers"]["IdempotentReplayed"];
                     [name: string]: unknown;
                 };
                 content: {
@@ -89629,6 +93271,633 @@ export interface operations {
                             date_updated: string;
                             date_deleted?: string | null;
                         };
+                    };
+                };
+            };
+            /** @description Validation error or bad request */
+            400: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Unauthorized - missing or invalid API key */
+            401: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description The resource does not exist in the scope of the request */
+            404: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description The first request with this Idempotency-Key is still being processed, stopped before it finished, or finished with a reply that cannot be replayed */
+            409: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description This Idempotency-Key was already used with a different request */
+            422: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiServerErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description The server could not check the Idempotency-Key and did not process the request */
+            503: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiServerErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+        };
+    };
+    disableSmsSender: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
+                "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
+                /** @description A key that makes a retry of this request safe. A retry with the same key and the same request returns the first reply with the `Idempotent-Replayed: true` header and changes nothing. The same key with a different request answers 422, and a key whose first request is still being processed answers 409. The server keeps each key for 24 hours. An empty value counts as no key, so the server processes that request once for each time it arrives. */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                /** @description Messaging profile identifier */
+                "Messaging-Profile-ID": string;
+            };
+            path: {
+                sms_sender_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful response */
+            200: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    "Idempotent-Replayed": components["headers"]["IdempotentReplayed"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response?: components["schemas"]["ApiSuccessResponseMeta"];
+                        data?: {
+                            sender_id: string;
+                            profile_id: string;
+                            conjoin_account_id: string;
+                            conjoin_project_id: string;
+                            live_mode: boolean;
+                            reference_id?: string | null;
+                            brand_id: string;
+                            sender: string;
+                            capability: string;
+                            destination_countries?: {
+                                [key: string]: unknown;
+                            };
+                            is_phone_number: boolean;
+                            is_default_sender?: boolean;
+                            is_test_sender?: boolean;
+                            submitted_at: string;
+                            provisioned_at?: string | null;
+                            status: string;
+                            date_created: string;
+                            date_updated: string;
+                            date_deleted?: string | null;
+                        };
+                    };
+                };
+            };
+            /** @description Validation error or bad request */
+            400: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Unauthorized - missing or invalid API key */
+            401: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description The resource does not exist in the scope of the request */
+            404: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description The first request with this Idempotency-Key is still being processed, stopped before it finished, or finished with a reply that cannot be replayed */
+            409: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description This Idempotency-Key was already used with a different request */
+            422: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiServerErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description The server could not check the Idempotency-Key and did not process the request */
+            503: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiServerErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+        };
+    };
+    transferSmsSender: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
+                "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
+                /** @description A key that makes a retry of this request safe. A retry with the same key and the same request returns the first reply with the `Idempotent-Replayed: true` header and changes nothing. The same key with a different request answers 422, and a key whose first request is still being processed answers 409. The server keeps each key for 24 hours. An empty value counts as no key, so the server processes that request once for each time it arrives. */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
+                /** @description Messaging profile identifier */
+                "Messaging-Profile-ID": string;
+            };
+            path: {
+                sms_sender_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @example string */
+                    project_id: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Successful response */
+            200: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    "Idempotent-Replayed": components["headers"]["IdempotentReplayed"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response?: components["schemas"]["ApiSuccessResponseMeta"];
+                        data?: {
+                            sender_id: string;
+                            profile_id: string;
+                            conjoin_account_id: string;
+                            conjoin_project_id: string;
+                            live_mode: boolean;
+                            reference_id?: string | null;
+                            brand_id: string;
+                            sender: string;
+                            capability: string;
+                            destination_countries?: {
+                                [key: string]: unknown;
+                            };
+                            is_phone_number: boolean;
+                            is_default_sender?: boolean;
+                            is_test_sender?: boolean;
+                            submitted_at: string;
+                            provisioned_at?: string | null;
+                            status: string;
+                            date_created: string;
+                            date_updated: string;
+                            date_deleted?: string | null;
+                        };
+                    };
+                };
+            };
+            /** @description Validation error or bad request */
+            400: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Unauthorized - missing or invalid API key */
+            401: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description The resource does not exist in the scope of the request */
+            404: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description The first request with this Idempotency-Key is still being processed, stopped before it finished, or finished with a reply that cannot be replayed */
+            409: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description This Idempotency-Key was already used with a different request */
+            422: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiServerErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description The server could not check the Idempotency-Key and did not process the request */
+            503: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiServerErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+        };
+    };
+    listMessageTemplates: {
+        parameters: {
+            query?: {
+                template_id?: string | {
+                    /** @example string */
+                    not_equals?: string;
+                    has_length?: number;
+                    has_any?: string[];
+                    has_none?: string[];
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                reference_id?: string | {
+                    /** @example string */
+                    not_equals?: string;
+                    has_length?: number;
+                    has_any?: string[];
+                    has_none?: string[];
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                title?: string | {
+                    /** @example string */
+                    not_equals?: string;
+                    has_length?: number;
+                    has_any?: string[];
+                    has_none?: string[];
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                channel?: ("sms" | "email" | "mms" | "rcs" | "ussd" | "verification" | "multisend" | "voice" | "live-chat" | "push-notifications" | "whatsapp-business" | "instagram-business" | "apple-business") | {
+                    /** @enum {string} */
+                    not_equals?: "sms" | "email" | "mms" | "rcs" | "ussd" | "verification" | "multisend" | "voice" | "live-chat" | "push-notifications" | "whatsapp-business" | "instagram-business" | "apple-business";
+                    has_length?: number;
+                    has_any?: ("sms" | "email" | "mms" | "rcs" | "ussd" | "verification" | "multisend" | "voice" | "live-chat" | "push-notifications" | "whatsapp-business" | "instagram-business" | "apple-business")[];
+                    has_none?: ("sms" | "email" | "mms" | "rcs" | "ussd" | "verification" | "multisend" | "voice" | "live-chat" | "push-notifications" | "whatsapp-business" | "instagram-business" | "apple-business")[];
+                    /** @enum {string} */
+                    gt?: "sms" | "email" | "mms" | "rcs" | "ussd" | "verification" | "multisend" | "voice" | "live-chat" | "push-notifications" | "whatsapp-business" | "instagram-business" | "apple-business";
+                    /** @enum {string} */
+                    lt?: "sms" | "email" | "mms" | "rcs" | "ussd" | "verification" | "multisend" | "voice" | "live-chat" | "push-notifications" | "whatsapp-business" | "instagram-business" | "apple-business";
+                    /** @enum {string} */
+                    gte?: "sms" | "email" | "mms" | "rcs" | "ussd" | "verification" | "multisend" | "voice" | "live-chat" | "push-notifications" | "whatsapp-business" | "instagram-business" | "apple-business";
+                    /** @enum {string} */
+                    lte?: "sms" | "email" | "mms" | "rcs" | "ussd" | "verification" | "multisend" | "voice" | "live-chat" | "push-notifications" | "whatsapp-business" | "instagram-business" | "apple-business";
+                };
+                content_type?: ("HTML" | "MARKDOWN" | "PLAIN_TEXT") | {
+                    /** @enum {string} */
+                    not_equals?: "HTML" | "MARKDOWN" | "PLAIN_TEXT";
+                    has_length?: number;
+                    has_any?: ("HTML" | "MARKDOWN" | "PLAIN_TEXT")[];
+                    has_none?: ("HTML" | "MARKDOWN" | "PLAIN_TEXT")[];
+                    /** @enum {string} */
+                    gt?: "HTML" | "MARKDOWN" | "PLAIN_TEXT";
+                    /** @enum {string} */
+                    lt?: "HTML" | "MARKDOWN" | "PLAIN_TEXT";
+                    /** @enum {string} */
+                    gte?: "HTML" | "MARKDOWN" | "PLAIN_TEXT";
+                    /** @enum {string} */
+                    lte?: "HTML" | "MARKDOWN" | "PLAIN_TEXT";
+                };
+                content_limit?: {
+                    not_equals?: number | string;
+                    gt?: number | string;
+                    lt?: number | string;
+                    gte?: number | string;
+                    lte?: number | string;
+                    has_any?: (number | string)[];
+                    has_none?: (number | string)[];
+                };
+                is_default?: boolean | ("true" | "false");
+                tags?: {
+                    is_empty?: boolean | ("true" | "false");
+                    contains?: string[];
+                    length_less_than?: number | string;
+                    length_less_than_or_equals?: number | string;
+                    length_greater_than?: number | string;
+                    length_greater_than_or_equals?: number | string;
+                };
+                date_created?: {
+                    /** @example string */
+                    equals?: string;
+                    /** @example string */
+                    not_equals?: string;
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                date_updated?: {
+                    /** @example string */
+                    equals?: string;
+                    /** @example string */
+                    not_equals?: string;
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                date_deleted?: {
+                    /** @example string */
+                    equals?: string;
+                    /** @example string */
+                    not_equals?: string;
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                date_archived?: {
+                    /** @example string */
+                    equals?: string;
+                    /** @example string */
+                    not_equals?: string;
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                search?: string;
+                cursor?: {
+                    /** @example string */
+                    prev?: string;
+                    /** @example string */
+                    next?: string;
+                };
+                sort?: {
+                    [key: string]: "asc" | "desc";
+                };
+                limit?: string | number;
+            };
+            header: {
+                /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
+                "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
+                /** @description Messaging profile identifier */
+                "Messaging-Profile-ID": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful response */
+            200: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response?: components["schemas"]["ApiSuccessResponseMeta"];
+                        data?: {
+                            template_id: string;
+                            profile_id: string;
+                            conjoin_account_id: string;
+                            conjoin_project_id: string;
+                            live_mode: boolean;
+                            reference_id?: string | null;
+                            template_group_id?: string | null;
+                            channel: string;
+                            is_otp_template?: boolean;
+                            title: string;
+                            description?: string;
+                            language: string;
+                            content: string;
+                            content_type: string;
+                            content_limit?: number | null;
+                            is_default: boolean;
+                            is_favourite: boolean;
+                            tags?: string[];
+                            date_archived?: string | null;
+                            date_created: string;
+                            date_updated: string;
+                            date_deleted?: string | null;
+                        }[];
+                        cursor?: components["schemas"]["PaginationCursor"];
                     };
                 };
             };
@@ -89707,6 +93976,8 @@ export interface operations {
         requestBody: {
             content: {
                 "application/json": {
+                    /** @example string */
+                    reference_id?: string;
                     /** @example string */
                     template_group_id?: string;
                     /** @enum {string} */
@@ -89873,216 +94144,193 @@ export interface operations {
             };
         };
     };
-    listMessageTemplates: {
+    listMessageTemplatesCount: {
         parameters: {
-            query?: never;
+            query?: {
+                template_id?: string | {
+                    /** @example string */
+                    not_equals?: string;
+                    has_length?: number;
+                    has_any?: string[];
+                    has_none?: string[];
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                reference_id?: string | {
+                    /** @example string */
+                    not_equals?: string;
+                    has_length?: number;
+                    has_any?: string[];
+                    has_none?: string[];
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                title?: string | {
+                    /** @example string */
+                    not_equals?: string;
+                    has_length?: number;
+                    has_any?: string[];
+                    has_none?: string[];
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                channel?: ("sms" | "email" | "mms" | "rcs" | "ussd" | "verification" | "multisend" | "voice" | "live-chat" | "push-notifications" | "whatsapp-business" | "instagram-business" | "apple-business") | {
+                    /** @enum {string} */
+                    not_equals?: "sms" | "email" | "mms" | "rcs" | "ussd" | "verification" | "multisend" | "voice" | "live-chat" | "push-notifications" | "whatsapp-business" | "instagram-business" | "apple-business";
+                    has_length?: number;
+                    has_any?: ("sms" | "email" | "mms" | "rcs" | "ussd" | "verification" | "multisend" | "voice" | "live-chat" | "push-notifications" | "whatsapp-business" | "instagram-business" | "apple-business")[];
+                    has_none?: ("sms" | "email" | "mms" | "rcs" | "ussd" | "verification" | "multisend" | "voice" | "live-chat" | "push-notifications" | "whatsapp-business" | "instagram-business" | "apple-business")[];
+                    /** @enum {string} */
+                    gt?: "sms" | "email" | "mms" | "rcs" | "ussd" | "verification" | "multisend" | "voice" | "live-chat" | "push-notifications" | "whatsapp-business" | "instagram-business" | "apple-business";
+                    /** @enum {string} */
+                    lt?: "sms" | "email" | "mms" | "rcs" | "ussd" | "verification" | "multisend" | "voice" | "live-chat" | "push-notifications" | "whatsapp-business" | "instagram-business" | "apple-business";
+                    /** @enum {string} */
+                    gte?: "sms" | "email" | "mms" | "rcs" | "ussd" | "verification" | "multisend" | "voice" | "live-chat" | "push-notifications" | "whatsapp-business" | "instagram-business" | "apple-business";
+                    /** @enum {string} */
+                    lte?: "sms" | "email" | "mms" | "rcs" | "ussd" | "verification" | "multisend" | "voice" | "live-chat" | "push-notifications" | "whatsapp-business" | "instagram-business" | "apple-business";
+                };
+                content_type?: ("HTML" | "MARKDOWN" | "PLAIN_TEXT") | {
+                    /** @enum {string} */
+                    not_equals?: "HTML" | "MARKDOWN" | "PLAIN_TEXT";
+                    has_length?: number;
+                    has_any?: ("HTML" | "MARKDOWN" | "PLAIN_TEXT")[];
+                    has_none?: ("HTML" | "MARKDOWN" | "PLAIN_TEXT")[];
+                    /** @enum {string} */
+                    gt?: "HTML" | "MARKDOWN" | "PLAIN_TEXT";
+                    /** @enum {string} */
+                    lt?: "HTML" | "MARKDOWN" | "PLAIN_TEXT";
+                    /** @enum {string} */
+                    gte?: "HTML" | "MARKDOWN" | "PLAIN_TEXT";
+                    /** @enum {string} */
+                    lte?: "HTML" | "MARKDOWN" | "PLAIN_TEXT";
+                };
+                content_limit?: {
+                    not_equals?: number | string;
+                    gt?: number | string;
+                    lt?: number | string;
+                    gte?: number | string;
+                    lte?: number | string;
+                    has_any?: (number | string)[];
+                    has_none?: (number | string)[];
+                };
+                is_default?: boolean | ("true" | "false");
+                tags?: {
+                    is_empty?: boolean | ("true" | "false");
+                    contains?: string[];
+                    length_less_than?: number | string;
+                    length_less_than_or_equals?: number | string;
+                    length_greater_than?: number | string;
+                    length_greater_than_or_equals?: number | string;
+                };
+                date_created?: {
+                    /** @example string */
+                    equals?: string;
+                    /** @example string */
+                    not_equals?: string;
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                date_updated?: {
+                    /** @example string */
+                    equals?: string;
+                    /** @example string */
+                    not_equals?: string;
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                date_deleted?: {
+                    /** @example string */
+                    equals?: string;
+                    /** @example string */
+                    not_equals?: string;
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                date_archived?: {
+                    /** @example string */
+                    equals?: string;
+                    /** @example string */
+                    not_equals?: string;
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                search?: string;
+                cursor?: {
+                    /** @example string */
+                    prev?: string;
+                    /** @example string */
+                    next?: string;
+                };
+                sort?: {
+                    [key: string]: "asc" | "desc";
+                };
+                limit?: string | number;
+            };
             header: {
                 /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
                 "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
-                /** @description A key that makes a retry of this request safe. A retry with the same key and the same request returns the first reply with the `Idempotent-Replayed: true` header and changes nothing. The same key with a different request answers 422, and a key whose first request is still being processed answers 409. The server keeps each key for 24 hours. An empty value counts as no key, so the server processes that request once for each time it arrives. */
-                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 /** @description Messaging profile identifier */
                 "Messaging-Profile-ID": string;
             };
             path?: never;
             cookie?: never;
         };
-        requestBody: {
-            content: {
-                "application/json": {
-                    cursor?: {
-                        /** @example string */
-                        prev?: string;
-                        /** @example string */
-                        next?: string;
-                    };
-                    filter?: {
-                        [key: string]: false;
-                    };
-                    /** @default {} */
-                    query?: {
-                        template_id?: string | {
-                            /** @example string */
-                            not_equals?: string;
-                            has_length?: number;
-                            has_any?: string[];
-                            has_none?: string[];
-                            /** @example string */
-                            gt?: string;
-                            /** @example string */
-                            lt?: string;
-                            /** @example string */
-                            gte?: string;
-                            /** @example string */
-                            lte?: string;
-                        };
-                        title?: string | {
-                            /** @example string */
-                            not_equals?: string;
-                            has_length?: number;
-                            has_any?: string[];
-                            has_none?: string[];
-                            /** @example string */
-                            gt?: string;
-                            /** @example string */
-                            lt?: string;
-                            /** @example string */
-                            gte?: string;
-                            /** @example string */
-                            lte?: string;
-                        };
-                        channel?: ("sms" | "email" | "mms" | "rcs" | "ussd" | "verification" | "multisend" | "voice" | "live-chat" | "push-notifications" | "whatsapp-business" | "instagram-business" | "apple-business") | {
-                            /** @enum {string} */
-                            not_equals?: "sms" | "email" | "mms" | "rcs" | "ussd" | "verification" | "multisend" | "voice" | "live-chat" | "push-notifications" | "whatsapp-business" | "instagram-business" | "apple-business";
-                            has_length?: number;
-                            has_any?: ("sms" | "email" | "mms" | "rcs" | "ussd" | "verification" | "multisend" | "voice" | "live-chat" | "push-notifications" | "whatsapp-business" | "instagram-business" | "apple-business")[];
-                            has_none?: ("sms" | "email" | "mms" | "rcs" | "ussd" | "verification" | "multisend" | "voice" | "live-chat" | "push-notifications" | "whatsapp-business" | "instagram-business" | "apple-business")[];
-                            /** @enum {string} */
-                            gt?: "sms" | "email" | "mms" | "rcs" | "ussd" | "verification" | "multisend" | "voice" | "live-chat" | "push-notifications" | "whatsapp-business" | "instagram-business" | "apple-business";
-                            /** @enum {string} */
-                            lt?: "sms" | "email" | "mms" | "rcs" | "ussd" | "verification" | "multisend" | "voice" | "live-chat" | "push-notifications" | "whatsapp-business" | "instagram-business" | "apple-business";
-                            /** @enum {string} */
-                            gte?: "sms" | "email" | "mms" | "rcs" | "ussd" | "verification" | "multisend" | "voice" | "live-chat" | "push-notifications" | "whatsapp-business" | "instagram-business" | "apple-business";
-                            /** @enum {string} */
-                            lte?: "sms" | "email" | "mms" | "rcs" | "ussd" | "verification" | "multisend" | "voice" | "live-chat" | "push-notifications" | "whatsapp-business" | "instagram-business" | "apple-business";
-                        };
-                        content_type?: ("HTML" | "MARKDOWN" | "PLAIN_TEXT") | {
-                            /** @enum {string} */
-                            not_equals?: "HTML" | "MARKDOWN" | "PLAIN_TEXT";
-                            has_length?: number;
-                            has_any?: ("HTML" | "MARKDOWN" | "PLAIN_TEXT")[];
-                            has_none?: ("HTML" | "MARKDOWN" | "PLAIN_TEXT")[];
-                            /** @enum {string} */
-                            gt?: "HTML" | "MARKDOWN" | "PLAIN_TEXT";
-                            /** @enum {string} */
-                            lt?: "HTML" | "MARKDOWN" | "PLAIN_TEXT";
-                            /** @enum {string} */
-                            gte?: "HTML" | "MARKDOWN" | "PLAIN_TEXT";
-                            /** @enum {string} */
-                            lte?: "HTML" | "MARKDOWN" | "PLAIN_TEXT";
-                        };
-                        content_limit?: {
-                            not_equals?: number;
-                            gt?: number;
-                            lt?: number;
-                            gte?: number;
-                            lte?: number;
-                            has_any?: number[];
-                            has_none?: number[];
-                        } | null;
-                        is_default?: boolean;
-                        tags?: {
-                            is_empty?: boolean;
-                            contains?: string[];
-                            length_less_than?: number;
-                            length_less_than_or_equals?: number;
-                            length_greater_than?: number;
-                            length_greater_than_or_equals?: number;
-                        };
-                        date_created?: {
-                            /** @example string */
-                            equals?: string;
-                            /** @example string */
-                            not_equals?: string;
-                            /** @example string */
-                            gt?: string;
-                            /** @example string */
-                            lt?: string;
-                            /** @example string */
-                            gte?: string;
-                            /** @example string */
-                            lte?: string;
-                        };
-                        date_updated?: {
-                            /** @example string */
-                            equals?: string;
-                            /** @example string */
-                            not_equals?: string;
-                            /** @example string */
-                            gt?: string;
-                            /** @example string */
-                            lt?: string;
-                            /** @example string */
-                            gte?: string;
-                            /** @example string */
-                            lte?: string;
-                        };
-                        date_deleted?: {
-                            /** @example string */
-                            equals?: string;
-                            /** @example string */
-                            not_equals?: string;
-                            /** @example string */
-                            gt?: string;
-                            /** @example string */
-                            lt?: string;
-                            /** @example string */
-                            gte?: string;
-                            /** @example string */
-                            lte?: string;
-                        } | null;
-                        date_archived?: {
-                            /** @example string */
-                            equals?: string;
-                            /** @example string */
-                            not_equals?: string;
-                            /** @example string */
-                            gt?: string;
-                            /** @example string */
-                            lt?: string;
-                            /** @example string */
-                            gte?: string;
-                            /** @example string */
-                            lte?: string;
-                        } | null;
-                    };
-                    search?: {
-                        keyword: string;
-                    };
-                    sort?: {
-                        [key: string]: "asc" | "desc";
-                    };
-                    /** @default 50 */
-                    limit?: string | number;
-                };
-            };
-        };
+        requestBody?: never;
         responses: {
             /** @description Successful response */
             200: {
                 headers: {
                     "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    "Idempotent-Replayed": components["headers"]["IdempotentReplayed"];
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
                         response?: components["schemas"]["ApiSuccessResponseMeta"];
                         data?: {
-                            template_id: string;
-                            profile_id: string;
-                            conjoin_account_id: string;
-                            conjoin_project_id: string;
-                            live_mode: boolean;
-                            reference_id?: string | null;
-                            template_group_id?: string | null;
-                            channel: string;
-                            is_otp_template?: boolean;
-                            title: string;
-                            description?: string;
-                            language: string;
-                            content: string;
-                            content_type: string;
-                            content_limit?: number | null;
-                            is_default: boolean;
-                            is_favourite: boolean;
-                            tags?: string[];
-                            date_archived?: string | null;
-                            date_created: string;
-                            date_updated: string;
-                            date_deleted?: string | null;
-                        }[];
-                        cursor?: components["schemas"]["PaginationCursor"];
+                            count: number;
+                        };
                     };
                 };
             };
@@ -90128,50 +94376,8 @@ export interface operations {
                     };
                 };
             };
-            /** @description The first request with this Idempotency-Key is still being processed, stopped before it finished, or finished with a reply that cannot be replayed */
-            409: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description This Idempotency-Key was already used with a different request */
-            422: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
             /** @description Internal server error */
             500: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiServerErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description The server could not check the Idempotency-Key and did not process the request */
-            503: {
                 headers: {
                     "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
                     [name: string]: unknown;
@@ -90546,9 +94752,65 @@ export interface operations {
             };
         };
     };
-    deleteMessageTemplates: {
+    listVerificationMessages: {
         parameters: {
-            query?: never;
+            query: {
+                verification_id?: string | {
+                    /** @example string */
+                    not_equals?: string;
+                    has_length?: number;
+                    has_any?: string[];
+                    has_none?: string[];
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                reference_id?: string | {
+                    /** @example string */
+                    not_equals?: string;
+                    has_length?: number;
+                    has_any?: string[];
+                    has_none?: string[];
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                date_created?: {
+                    /** @example string */
+                    equals?: string;
+                    /** @example string */
+                    not_equals?: string;
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                channel: "sms" | "email";
+                cursor?: {
+                    /** @example string */
+                    prev?: string;
+                    /** @example string */
+                    next?: string;
+                };
+                sort?: {
+                    [key: string]: "asc" | "desc";
+                };
+                limit?: string | number;
+            };
             header: {
                 /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
                 "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
@@ -90558,149 +94820,7 @@ export interface operations {
             path?: never;
             cookie?: never;
         };
-        requestBody: {
-            content: {
-                "application/json": {
-                    /** @default {} */
-                    query?: {
-                        template_id?: string | {
-                            /** @example string */
-                            not_equals?: string;
-                            has_length?: number;
-                            has_any?: string[];
-                            has_none?: string[];
-                            /** @example string */
-                            gt?: string;
-                            /** @example string */
-                            lt?: string;
-                            /** @example string */
-                            gte?: string;
-                            /** @example string */
-                            lte?: string;
-                        };
-                        title?: string | {
-                            /** @example string */
-                            not_equals?: string;
-                            has_length?: number;
-                            has_any?: string[];
-                            has_none?: string[];
-                            /** @example string */
-                            gt?: string;
-                            /** @example string */
-                            lt?: string;
-                            /** @example string */
-                            gte?: string;
-                            /** @example string */
-                            lte?: string;
-                        };
-                        channel?: ("sms" | "email" | "mms" | "rcs" | "ussd" | "verification" | "multisend" | "voice" | "live-chat" | "push-notifications" | "whatsapp-business" | "instagram-business" | "apple-business") | {
-                            /** @enum {string} */
-                            not_equals?: "sms" | "email" | "mms" | "rcs" | "ussd" | "verification" | "multisend" | "voice" | "live-chat" | "push-notifications" | "whatsapp-business" | "instagram-business" | "apple-business";
-                            has_length?: number;
-                            has_any?: ("sms" | "email" | "mms" | "rcs" | "ussd" | "verification" | "multisend" | "voice" | "live-chat" | "push-notifications" | "whatsapp-business" | "instagram-business" | "apple-business")[];
-                            has_none?: ("sms" | "email" | "mms" | "rcs" | "ussd" | "verification" | "multisend" | "voice" | "live-chat" | "push-notifications" | "whatsapp-business" | "instagram-business" | "apple-business")[];
-                            /** @enum {string} */
-                            gt?: "sms" | "email" | "mms" | "rcs" | "ussd" | "verification" | "multisend" | "voice" | "live-chat" | "push-notifications" | "whatsapp-business" | "instagram-business" | "apple-business";
-                            /** @enum {string} */
-                            lt?: "sms" | "email" | "mms" | "rcs" | "ussd" | "verification" | "multisend" | "voice" | "live-chat" | "push-notifications" | "whatsapp-business" | "instagram-business" | "apple-business";
-                            /** @enum {string} */
-                            gte?: "sms" | "email" | "mms" | "rcs" | "ussd" | "verification" | "multisend" | "voice" | "live-chat" | "push-notifications" | "whatsapp-business" | "instagram-business" | "apple-business";
-                            /** @enum {string} */
-                            lte?: "sms" | "email" | "mms" | "rcs" | "ussd" | "verification" | "multisend" | "voice" | "live-chat" | "push-notifications" | "whatsapp-business" | "instagram-business" | "apple-business";
-                        };
-                        content_type?: ("HTML" | "MARKDOWN" | "PLAIN_TEXT") | {
-                            /** @enum {string} */
-                            not_equals?: "HTML" | "MARKDOWN" | "PLAIN_TEXT";
-                            has_length?: number;
-                            has_any?: ("HTML" | "MARKDOWN" | "PLAIN_TEXT")[];
-                            has_none?: ("HTML" | "MARKDOWN" | "PLAIN_TEXT")[];
-                            /** @enum {string} */
-                            gt?: "HTML" | "MARKDOWN" | "PLAIN_TEXT";
-                            /** @enum {string} */
-                            lt?: "HTML" | "MARKDOWN" | "PLAIN_TEXT";
-                            /** @enum {string} */
-                            gte?: "HTML" | "MARKDOWN" | "PLAIN_TEXT";
-                            /** @enum {string} */
-                            lte?: "HTML" | "MARKDOWN" | "PLAIN_TEXT";
-                        };
-                        content_limit?: {
-                            not_equals?: number;
-                            gt?: number;
-                            lt?: number;
-                            gte?: number;
-                            lte?: number;
-                            has_any?: number[];
-                            has_none?: number[];
-                        } | null;
-                        is_default?: boolean;
-                        tags?: {
-                            is_empty?: boolean;
-                            contains?: string[];
-                            length_less_than?: number;
-                            length_less_than_or_equals?: number;
-                            length_greater_than?: number;
-                            length_greater_than_or_equals?: number;
-                        };
-                        date_created?: {
-                            /** @example string */
-                            equals?: string;
-                            /** @example string */
-                            not_equals?: string;
-                            /** @example string */
-                            gt?: string;
-                            /** @example string */
-                            lt?: string;
-                            /** @example string */
-                            gte?: string;
-                            /** @example string */
-                            lte?: string;
-                        };
-                        date_updated?: {
-                            /** @example string */
-                            equals?: string;
-                            /** @example string */
-                            not_equals?: string;
-                            /** @example string */
-                            gt?: string;
-                            /** @example string */
-                            lt?: string;
-                            /** @example string */
-                            gte?: string;
-                            /** @example string */
-                            lte?: string;
-                        };
-                        date_deleted?: {
-                            /** @example string */
-                            equals?: string;
-                            /** @example string */
-                            not_equals?: string;
-                            /** @example string */
-                            gt?: string;
-                            /** @example string */
-                            lt?: string;
-                            /** @example string */
-                            gte?: string;
-                            /** @example string */
-                            lte?: string;
-                        } | null;
-                        date_archived?: {
-                            /** @example string */
-                            equals?: string;
-                            /** @example string */
-                            not_equals?: string;
-                            /** @example string */
-                            gt?: string;
-                            /** @example string */
-                            lt?: string;
-                            /** @example string */
-                            gte?: string;
-                            /** @example string */
-                            lte?: string;
-                        } | null;
-                    };
-                };
-            };
-        };
+        requestBody?: never;
         responses: {
             /** @description Successful response */
             200: {
@@ -90711,6 +94831,31 @@ export interface operations {
                 content: {
                     "application/json": {
                         response?: components["schemas"]["ApiSuccessResponseMeta"];
+                        data?: {
+                            verification_id: string;
+                            profile_id: string;
+                            conjoin_account_id: string;
+                            conjoin_project_id: string;
+                            live_mode: boolean;
+                            reference_id?: string | null;
+                            message_channel: string;
+                            message_status: string;
+                            from: string;
+                            message_subject?: string;
+                            recipient: {
+                                [key: string]: unknown;
+                            };
+                            sent_at: string;
+                            token_type: string;
+                            verification_status: string;
+                            expires_at: string;
+                            max_verification_attempts: number;
+                            current_verification_attempts: number;
+                            date_created: string;
+                            date_updated: string;
+                            date_deleted?: string | null;
+                        }[];
+                        cursor?: components["schemas"]["PaginationCursor"];
                     };
                 };
             };
@@ -91015,6 +95160,149 @@ export interface operations {
             };
         };
     };
+    listVerificationMessagesCount: {
+        parameters: {
+            query: {
+                verification_id?: string | {
+                    /** @example string */
+                    not_equals?: string;
+                    has_length?: number;
+                    has_any?: string[];
+                    has_none?: string[];
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                reference_id?: string | {
+                    /** @example string */
+                    not_equals?: string;
+                    has_length?: number;
+                    has_any?: string[];
+                    has_none?: string[];
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                date_created?: {
+                    /** @example string */
+                    equals?: string;
+                    /** @example string */
+                    not_equals?: string;
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                channel: "sms" | "email";
+                cursor?: {
+                    /** @example string */
+                    prev?: string;
+                    /** @example string */
+                    next?: string;
+                };
+                sort?: {
+                    [key: string]: "asc" | "desc";
+                };
+                limit?: string | number;
+            };
+            header: {
+                /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
+                "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
+                /** @description Messaging profile identifier */
+                "Messaging-Profile-ID": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful response */
+            200: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response?: components["schemas"]["ApiSuccessResponseMeta"];
+                        data?: {
+                            count: number;
+                        };
+                    };
+                };
+            };
+            /** @description Validation error or bad request */
+            400: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Unauthorized - missing or invalid API key */
+            401: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description The resource does not exist in the scope of the request */
+            404: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiServerErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+        };
+    };
     checkVerification: {
         parameters: {
             query?: never;
@@ -91183,6 +95471,8 @@ export interface operations {
             header: {
                 /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
                 "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
+                /** @description A key that makes a retry of this request safe. A retry with the same key and the same request returns the first reply with the `Idempotent-Replayed: true` header and changes nothing. The same key with a different request answers 422, and a key whose first request is still being processed answers 409. The server keeps each key for 24 hours. An empty value counts as no key, so the server processes that request once for each time it arrives. */
+                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
                 /** @description Messaging profile identifier */
                 "Messaging-Profile-ID": string;
             };
@@ -91197,6 +95487,7 @@ export interface operations {
             200: {
                 headers: {
                     "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    "Idempotent-Replayed": components["headers"]["IdempotentReplayed"];
                     [name: string]: unknown;
                 };
                 content: {
@@ -91214,182 +95505,6 @@ export interface operations {
                                 email?: string;
                             }[];
                         };
-                    };
-                };
-            };
-            /** @description Validation error or bad request */
-            400: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description Unauthorized - missing or invalid API key */
-            401: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description The resource does not exist in the scope of the request */
-            404: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description Internal server error */
-            500: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiServerErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-        };
-    };
-    listVerificationMessages: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
-                "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
-                /** @description A key that makes a retry of this request safe. A retry with the same key and the same request returns the first reply with the `Idempotent-Replayed: true` header and changes nothing. The same key with a different request answers 422, and a key whose first request is still being processed answers 409. The server keeps each key for 24 hours. An empty value counts as no key, so the server processes that request once for each time it arrives. */
-                "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
-                /** @description Messaging profile identifier */
-                "Messaging-Profile-ID": string;
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": {
-                    cursor?: {
-                        /** @example string */
-                        prev?: string;
-                        /** @example string */
-                        next?: string;
-                    };
-                    query: {
-                        /** @enum {string} */
-                        channel: "sms" | "email";
-                        verification_id?: string | {
-                            /** @example string */
-                            not_equals?: string;
-                            has_length?: number;
-                            has_any?: string[];
-                            has_none?: string[];
-                            /** @example string */
-                            gt?: string;
-                            /** @example string */
-                            lt?: string;
-                            /** @example string */
-                            gte?: string;
-                            /** @example string */
-                            lte?: string;
-                        };
-                        reference_id?: string | {
-                            /** @example string */
-                            not_equals?: string;
-                            has_length?: number;
-                            has_any?: string[];
-                            has_none?: string[];
-                            /** @example string */
-                            gt?: string;
-                            /** @example string */
-                            lt?: string;
-                            /** @example string */
-                            gte?: string;
-                            /** @example string */
-                            lte?: string;
-                        };
-                        date_created?: {
-                            /** @example string */
-                            equals?: string;
-                            /** @example string */
-                            not_equals?: string;
-                            /** @example string */
-                            gt?: string;
-                            /** @example string */
-                            lt?: string;
-                            /** @example string */
-                            gte?: string;
-                            /** @example string */
-                            lte?: string;
-                        };
-                    };
-                    sort?: {
-                        [key: string]: "asc" | "desc";
-                    };
-                    /** @default 50 */
-                    limit?: string | number;
-                };
-            };
-        };
-        responses: {
-            /** @description Successful response */
-            200: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    "Idempotent-Replayed": components["headers"]["IdempotentReplayed"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response?: components["schemas"]["ApiSuccessResponseMeta"];
-                        data?: {
-                            verification_id: string;
-                            profile_id: string;
-                            conjoin_account_id: string;
-                            conjoin_project_id: string;
-                            live_mode: boolean;
-                            reference_id?: string | null;
-                            message_channel: string;
-                            message_status: string;
-                            from: string;
-                            message_subject?: string;
-                            recipient: {
-                                [key: string]: unknown;
-                            };
-                            sent_at: string;
-                            token_type: string;
-                            verification_status: string;
-                            expires_at: string;
-                            max_verification_attempts: number;
-                            current_verification_attempts: number;
-                            date_created: string;
-                            date_updated: string;
-                            date_deleted?: string | null;
-                        }[];
-                        cursor?: components["schemas"]["PaginationCursor"];
                     };
                 };
             };

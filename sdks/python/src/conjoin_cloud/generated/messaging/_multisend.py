@@ -26,7 +26,7 @@ class MessagingMultisendsResource:
     ) -> MessagingMultisendCreateResponse:
         return self._client.request(
             'POST',
-            'messaging/multisend/send',
+            'messaging/broadcasts/',
             body=data,
             cast_to=MessagingMultisendCreateResponse,
             request_options=request_options,
@@ -36,13 +36,13 @@ class MessagingMultisendsResource:
 
     def read(
         self,
-        message_id: str,
+        broadcast_id: str,
         *,
         request_options: RequestOptions | Mapping[str, Any] | None = None,
     ) -> MessagingMultisendReadResponse:
         return self._client.request(
             'GET',
-            f'messaging/multisend/{encode_path_param(message_id)}',
+            f'messaging/broadcasts/{encode_path_param(broadcast_id)}',
             cast_to=MessagingMultisendReadResponse,
             request_options=request_options,
             scopes=('messaging_profile_id',),
@@ -61,7 +61,7 @@ class AsyncMessagingMultisendsResource:
     ) -> MessagingMultisendCreateResponse:
         return await self._client.request(
             'POST',
-            'messaging/multisend/send',
+            'messaging/broadcasts/',
             body=data,
             cast_to=MessagingMultisendCreateResponse,
             request_options=request_options,
@@ -71,13 +71,13 @@ class AsyncMessagingMultisendsResource:
 
     async def read(
         self,
-        message_id: str,
+        broadcast_id: str,
         *,
         request_options: RequestOptions | Mapping[str, Any] | None = None,
     ) -> MessagingMultisendReadResponse:
         return await self._client.request(
             'GET',
-            f'messaging/multisend/{encode_path_param(message_id)}',
+            f'messaging/broadcasts/{encode_path_param(broadcast_id)}',
             cast_to=MessagingMultisendReadResponse,
             request_options=request_options,
             scopes=('messaging_profile_id',),

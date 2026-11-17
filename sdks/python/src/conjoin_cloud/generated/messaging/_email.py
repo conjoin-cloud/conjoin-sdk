@@ -11,8 +11,11 @@ from conjoin_cloud._wire import wire_names
 from conjoin_cloud.generated._models import (
     MessagingEmailGenerateSummaryRequest,
     MessagingEmailGenerateSummaryResponse,
-    MessagingEmailReadMessagesItem,
-    MessagingEmailReadMessagesRequest,
+    MessagingEmailListMessagesCountQuery,
+    MessagingEmailListMessagesCountResponse,
+    MessagingEmailListMessagesItem,
+    MessagingEmailListMessagesQuery,
+    MessagingEmailReadMessageResponse,
     MessagingEmailSendRequest,
     MessagingEmailSendResponse,
 )
@@ -30,6 +33,21 @@ class MessagingEmailsResource:
     def __init__(self, client: Conjoin) -> None:
         self._client = client
 
+    def list_messages(
+        self,
+        query: MessagingEmailListMessagesQuery | None = None,
+        *,
+        request_options: RequestOptions | Mapping[str, Any] | None = None,
+    ) -> Page[MessagingEmailListMessagesItem]:
+        return self._client.request(
+            'GET',
+            'messaging/email-messages/',
+            query=query,
+            cast_to=Page[MessagingEmailListMessagesItem],
+            request_options=request_options,
+            scopes=('messaging_profile_id',),
+        )
+
     def send(
         self,
         data: MessagingEmailSendRequest,
@@ -38,7 +56,7 @@ class MessagingEmailsResource:
     ) -> MessagingEmailSendResponse:
         return self._client.request(
             'POST',
-            'messaging/email/send',
+            'messaging/email-messages/',
             body=MultipartBody(wire_names(data, _SEND_BODY_ALIASES)),
             cast_to=MessagingEmailSendResponse,
             request_options=request_options,
@@ -46,21 +64,33 @@ class MessagingEmailsResource:
             accepts_idempotency_key=True,
         )
 
-    def read_messages(
+    def list_messages_count(
         self,
-        message_id: str,
-        data: MessagingEmailReadMessagesRequest,
+        query: MessagingEmailListMessagesCountQuery | None = None,
         *,
         request_options: RequestOptions | Mapping[str, Any] | None = None,
-    ) -> Page[MessagingEmailReadMessagesItem]:
+    ) -> MessagingEmailListMessagesCountResponse:
         return self._client.request(
-            'POST',
-            f'messaging/email/messages/{encode_path_param(message_id)}',
-            body=data,
-            cast_to=Page[MessagingEmailReadMessagesItem],
+            'GET',
+            'messaging/email-messages/count',
+            query=query,
+            cast_to=MessagingEmailListMessagesCountResponse,
             request_options=request_options,
             scopes=('messaging_profile_id',),
-            accepts_idempotency_key=True,
+        )
+
+    def read_message(
+        self,
+        email_message_id: str,
+        *,
+        request_options: RequestOptions | Mapping[str, Any] | None = None,
+    ) -> MessagingEmailReadMessageResponse:
+        return self._client.request(
+            'GET',
+            f'messaging/email-messages/{encode_path_param(email_message_id)}',
+            cast_to=MessagingEmailReadMessageResponse,
+            request_options=request_options,
+            scopes=('messaging_profile_id',),
         )
 
     def generate_summary(
@@ -71,7 +101,7 @@ class MessagingEmailsResource:
     ) -> MessagingEmailGenerateSummaryResponse:
         return self._client.request(
             'POST',
-            'messaging/email/summary',
+            'messaging/email-message-previews/',
             body=data,
             cast_to=MessagingEmailGenerateSummaryResponse,
             request_options=request_options,
@@ -84,6 +114,21 @@ class AsyncMessagingEmailsResource:
     def __init__(self, client: AsyncConjoin) -> None:
         self._client = client
 
+    async def list_messages(
+        self,
+        query: MessagingEmailListMessagesQuery | None = None,
+        *,
+        request_options: RequestOptions | Mapping[str, Any] | None = None,
+    ) -> AsyncPage[MessagingEmailListMessagesItem]:
+        return await self._client.request(
+            'GET',
+            'messaging/email-messages/',
+            query=query,
+            cast_to=AsyncPage[MessagingEmailListMessagesItem],
+            request_options=request_options,
+            scopes=('messaging_profile_id',),
+        )
+
     async def send(
         self,
         data: MessagingEmailSendRequest,
@@ -92,7 +137,7 @@ class AsyncMessagingEmailsResource:
     ) -> MessagingEmailSendResponse:
         return await self._client.request(
             'POST',
-            'messaging/email/send',
+            'messaging/email-messages/',
             body=MultipartBody(wire_names(data, _SEND_BODY_ALIASES)),
             cast_to=MessagingEmailSendResponse,
             request_options=request_options,
@@ -100,21 +145,33 @@ class AsyncMessagingEmailsResource:
             accepts_idempotency_key=True,
         )
 
-    async def read_messages(
+    async def list_messages_count(
         self,
-        message_id: str,
-        data: MessagingEmailReadMessagesRequest,
+        query: MessagingEmailListMessagesCountQuery | None = None,
         *,
         request_options: RequestOptions | Mapping[str, Any] | None = None,
-    ) -> AsyncPage[MessagingEmailReadMessagesItem]:
+    ) -> MessagingEmailListMessagesCountResponse:
         return await self._client.request(
-            'POST',
-            f'messaging/email/messages/{encode_path_param(message_id)}',
-            body=data,
-            cast_to=AsyncPage[MessagingEmailReadMessagesItem],
+            'GET',
+            'messaging/email-messages/count',
+            query=query,
+            cast_to=MessagingEmailListMessagesCountResponse,
             request_options=request_options,
             scopes=('messaging_profile_id',),
-            accepts_idempotency_key=True,
+        )
+
+    async def read_message(
+        self,
+        email_message_id: str,
+        *,
+        request_options: RequestOptions | Mapping[str, Any] | None = None,
+    ) -> MessagingEmailReadMessageResponse:
+        return await self._client.request(
+            'GET',
+            f'messaging/email-messages/{encode_path_param(email_message_id)}',
+            cast_to=MessagingEmailReadMessageResponse,
+            request_options=request_options,
+            scopes=('messaging_profile_id',),
         )
 
     async def generate_summary(
@@ -125,7 +182,7 @@ class AsyncMessagingEmailsResource:
     ) -> MessagingEmailGenerateSummaryResponse:
         return await self._client.request(
             'POST',
-            'messaging/email/summary',
+            'messaging/email-message-previews/',
             body=data,
             cast_to=MessagingEmailGenerateSummaryResponse,
             request_options=request_options,

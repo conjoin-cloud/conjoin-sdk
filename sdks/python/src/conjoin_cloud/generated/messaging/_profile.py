@@ -11,19 +11,19 @@ from conjoin_cloud.generated._models import (
     MessagingProfileCreateRequest,
     MessagingProfileCreateResponse,
     MessagingProfileDeleteResponse,
+    MessagingProfileDisableChannelsRequest,
+    MessagingProfileDisableChannelsResponse,
     MessagingProfileDisableResponse,
+    MessagingProfileEnableChannelsRequest,
+    MessagingProfileEnableChannelsResponse,
     MessagingProfileEnableResponse,
+    MessagingProfileListCountQuery,
+    MessagingProfileListCountResponse,
     MessagingProfileListItem,
-    MessagingProfileListRequest,
+    MessagingProfileListQuery,
     MessagingProfileReadResponse,
-    MessagingProfileUpdateEmailConfigRequest,
-    MessagingProfileUpdateEmailConfigResponse,
-    MessagingProfileUpdateMultisendConfigRequest,
-    MessagingProfileUpdateMultisendConfigResponse,
     MessagingProfileUpdateRequest,
     MessagingProfileUpdateResponse,
-    MessagingProfileUpdateVerificationsConfigRequest,
-    MessagingProfileUpdateVerificationsConfigResponse,
 )
 
 if TYPE_CHECKING:
@@ -33,6 +33,20 @@ if TYPE_CHECKING:
 class MessagingProfilesResource:
     def __init__(self, client: Conjoin) -> None:
         self._client = client
+
+    def list(
+        self,
+        query: MessagingProfileListQuery | None = None,
+        *,
+        request_options: RequestOptions | Mapping[str, Any] | None = None,
+    ) -> Page[MessagingProfileListItem]:
+        return self._client.request(
+            'GET',
+            'messaging/profiles/',
+            query=query,
+            cast_to=Page[MessagingProfileListItem],
+            request_options=request_options,
+        )
 
     def create(
         self,
@@ -49,6 +63,20 @@ class MessagingProfilesResource:
             accepts_idempotency_key=True,
         )
 
+    def list_count(
+        self,
+        query: MessagingProfileListCountQuery | None = None,
+        *,
+        request_options: RequestOptions | Mapping[str, Any] | None = None,
+    ) -> MessagingProfileListCountResponse:
+        return self._client.request(
+            'GET',
+            'messaging/profiles/count',
+            query=query,
+            cast_to=MessagingProfileListCountResponse,
+            request_options=request_options,
+        )
+
     def enable(
         self,
         profile_id: str,
@@ -56,10 +84,11 @@ class MessagingProfilesResource:
         request_options: RequestOptions | Mapping[str, Any] | None = None,
     ) -> MessagingProfileEnableResponse:
         return self._client.request(
-            'PATCH',
+            'POST',
             f'messaging/profiles/{encode_path_param(profile_id)}/enable',
             cast_to=MessagingProfileEnableResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     def disable(
@@ -69,10 +98,43 @@ class MessagingProfilesResource:
         request_options: RequestOptions | Mapping[str, Any] | None = None,
     ) -> MessagingProfileDisableResponse:
         return self._client.request(
-            'PATCH',
+            'POST',
             f'messaging/profiles/{encode_path_param(profile_id)}/disable',
             cast_to=MessagingProfileDisableResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
+        )
+
+    def enable_channels(
+        self,
+        profile_id: str,
+        data: MessagingProfileEnableChannelsRequest,
+        *,
+        request_options: RequestOptions | Mapping[str, Any] | None = None,
+    ) -> MessagingProfileEnableChannelsResponse:
+        return self._client.request(
+            'POST',
+            f'messaging/profiles/{encode_path_param(profile_id)}/enable-channels',
+            body=data,
+            cast_to=MessagingProfileEnableChannelsResponse,
+            request_options=request_options,
+            accepts_idempotency_key=True,
+        )
+
+    def disable_channels(
+        self,
+        profile_id: str,
+        data: MessagingProfileDisableChannelsRequest,
+        *,
+        request_options: RequestOptions | Mapping[str, Any] | None = None,
+    ) -> MessagingProfileDisableChannelsResponse:
+        return self._client.request(
+            'POST',
+            f'messaging/profiles/{encode_path_param(profile_id)}/disable-channels',
+            body=data,
+            cast_to=MessagingProfileDisableChannelsResponse,
+            request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     def close(
@@ -82,10 +144,11 @@ class MessagingProfilesResource:
         request_options: RequestOptions | Mapping[str, Any] | None = None,
     ) -> MessagingProfileCloseResponse:
         return self._client.request(
-            'PATCH',
+            'POST',
             f'messaging/profiles/{encode_path_param(profile_id)}/close',
             cast_to=MessagingProfileCloseResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     def read(
@@ -129,70 +192,24 @@ class MessagingProfilesResource:
             request_options=request_options,
         )
 
-    def update_email_config(
-        self,
-        profile_id: str,
-        data: MessagingProfileUpdateEmailConfigRequest,
-        *,
-        request_options: RequestOptions | Mapping[str, Any] | None = None,
-    ) -> MessagingProfileUpdateEmailConfigResponse:
-        return self._client.request(
-            'PATCH',
-            f'messaging/profiles/{encode_path_param(profile_id)}/emails-config',
-            body=data,
-            cast_to=MessagingProfileUpdateEmailConfigResponse,
-            request_options=request_options,
-        )
-
-    def update_multisend_config(
-        self,
-        profile_id: str,
-        data: MessagingProfileUpdateMultisendConfigRequest,
-        *,
-        request_options: RequestOptions | Mapping[str, Any] | None = None,
-    ) -> MessagingProfileUpdateMultisendConfigResponse:
-        return self._client.request(
-            'PATCH',
-            f'messaging/profiles/{encode_path_param(profile_id)}/multisend-config',
-            body=data,
-            cast_to=MessagingProfileUpdateMultisendConfigResponse,
-            request_options=request_options,
-        )
-
-    def update_verifications_config(
-        self,
-        profile_id: str,
-        data: MessagingProfileUpdateVerificationsConfigRequest,
-        *,
-        request_options: RequestOptions | Mapping[str, Any] | None = None,
-    ) -> MessagingProfileUpdateVerificationsConfigResponse:
-        return self._client.request(
-            'PATCH',
-            f'messaging/profiles/{encode_path_param(profile_id)}/verifications-config',
-            body=data,
-            cast_to=MessagingProfileUpdateVerificationsConfigResponse,
-            request_options=request_options,
-        )
-
-    def list(
-        self,
-        data: MessagingProfileListRequest,
-        *,
-        request_options: RequestOptions | Mapping[str, Any] | None = None,
-    ) -> Page[MessagingProfileListItem]:
-        return self._client.request(
-            'POST',
-            'messaging/profiles/retrieve',
-            body=data,
-            cast_to=Page[MessagingProfileListItem],
-            request_options=request_options,
-            accepts_idempotency_key=True,
-        )
-
 
 class AsyncMessagingProfilesResource:
     def __init__(self, client: AsyncConjoin) -> None:
         self._client = client
+
+    async def list(
+        self,
+        query: MessagingProfileListQuery | None = None,
+        *,
+        request_options: RequestOptions | Mapping[str, Any] | None = None,
+    ) -> AsyncPage[MessagingProfileListItem]:
+        return await self._client.request(
+            'GET',
+            'messaging/profiles/',
+            query=query,
+            cast_to=AsyncPage[MessagingProfileListItem],
+            request_options=request_options,
+        )
 
     async def create(
         self,
@@ -209,6 +226,20 @@ class AsyncMessagingProfilesResource:
             accepts_idempotency_key=True,
         )
 
+    async def list_count(
+        self,
+        query: MessagingProfileListCountQuery | None = None,
+        *,
+        request_options: RequestOptions | Mapping[str, Any] | None = None,
+    ) -> MessagingProfileListCountResponse:
+        return await self._client.request(
+            'GET',
+            'messaging/profiles/count',
+            query=query,
+            cast_to=MessagingProfileListCountResponse,
+            request_options=request_options,
+        )
+
     async def enable(
         self,
         profile_id: str,
@@ -216,10 +247,11 @@ class AsyncMessagingProfilesResource:
         request_options: RequestOptions | Mapping[str, Any] | None = None,
     ) -> MessagingProfileEnableResponse:
         return await self._client.request(
-            'PATCH',
+            'POST',
             f'messaging/profiles/{encode_path_param(profile_id)}/enable',
             cast_to=MessagingProfileEnableResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     async def disable(
@@ -229,10 +261,43 @@ class AsyncMessagingProfilesResource:
         request_options: RequestOptions | Mapping[str, Any] | None = None,
     ) -> MessagingProfileDisableResponse:
         return await self._client.request(
-            'PATCH',
+            'POST',
             f'messaging/profiles/{encode_path_param(profile_id)}/disable',
             cast_to=MessagingProfileDisableResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
+        )
+
+    async def enable_channels(
+        self,
+        profile_id: str,
+        data: MessagingProfileEnableChannelsRequest,
+        *,
+        request_options: RequestOptions | Mapping[str, Any] | None = None,
+    ) -> MessagingProfileEnableChannelsResponse:
+        return await self._client.request(
+            'POST',
+            f'messaging/profiles/{encode_path_param(profile_id)}/enable-channels',
+            body=data,
+            cast_to=MessagingProfileEnableChannelsResponse,
+            request_options=request_options,
+            accepts_idempotency_key=True,
+        )
+
+    async def disable_channels(
+        self,
+        profile_id: str,
+        data: MessagingProfileDisableChannelsRequest,
+        *,
+        request_options: RequestOptions | Mapping[str, Any] | None = None,
+    ) -> MessagingProfileDisableChannelsResponse:
+        return await self._client.request(
+            'POST',
+            f'messaging/profiles/{encode_path_param(profile_id)}/disable-channels',
+            body=data,
+            cast_to=MessagingProfileDisableChannelsResponse,
+            request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     async def close(
@@ -242,10 +307,11 @@ class AsyncMessagingProfilesResource:
         request_options: RequestOptions | Mapping[str, Any] | None = None,
     ) -> MessagingProfileCloseResponse:
         return await self._client.request(
-            'PATCH',
+            'POST',
             f'messaging/profiles/{encode_path_param(profile_id)}/close',
             cast_to=MessagingProfileCloseResponse,
             request_options=request_options,
+            accepts_idempotency_key=True,
         )
 
     async def read(
@@ -287,64 +353,4 @@ class AsyncMessagingProfilesResource:
             f'messaging/profiles/{encode_path_param(profile_id)}',
             cast_to=MessagingProfileDeleteResponse,
             request_options=request_options,
-        )
-
-    async def update_email_config(
-        self,
-        profile_id: str,
-        data: MessagingProfileUpdateEmailConfigRequest,
-        *,
-        request_options: RequestOptions | Mapping[str, Any] | None = None,
-    ) -> MessagingProfileUpdateEmailConfigResponse:
-        return await self._client.request(
-            'PATCH',
-            f'messaging/profiles/{encode_path_param(profile_id)}/emails-config',
-            body=data,
-            cast_to=MessagingProfileUpdateEmailConfigResponse,
-            request_options=request_options,
-        )
-
-    async def update_multisend_config(
-        self,
-        profile_id: str,
-        data: MessagingProfileUpdateMultisendConfigRequest,
-        *,
-        request_options: RequestOptions | Mapping[str, Any] | None = None,
-    ) -> MessagingProfileUpdateMultisendConfigResponse:
-        return await self._client.request(
-            'PATCH',
-            f'messaging/profiles/{encode_path_param(profile_id)}/multisend-config',
-            body=data,
-            cast_to=MessagingProfileUpdateMultisendConfigResponse,
-            request_options=request_options,
-        )
-
-    async def update_verifications_config(
-        self,
-        profile_id: str,
-        data: MessagingProfileUpdateVerificationsConfigRequest,
-        *,
-        request_options: RequestOptions | Mapping[str, Any] | None = None,
-    ) -> MessagingProfileUpdateVerificationsConfigResponse:
-        return await self._client.request(
-            'PATCH',
-            f'messaging/profiles/{encode_path_param(profile_id)}/verifications-config',
-            body=data,
-            cast_to=MessagingProfileUpdateVerificationsConfigResponse,
-            request_options=request_options,
-        )
-
-    async def list(
-        self,
-        data: MessagingProfileListRequest,
-        *,
-        request_options: RequestOptions | Mapping[str, Any] | None = None,
-    ) -> AsyncPage[MessagingProfileListItem]:
-        return await self._client.request(
-            'POST',
-            'messaging/profiles/retrieve',
-            body=data,
-            cast_to=AsyncPage[MessagingProfileListItem],
-            request_options=request_options,
-            accepts_idempotency_key=True,
         )

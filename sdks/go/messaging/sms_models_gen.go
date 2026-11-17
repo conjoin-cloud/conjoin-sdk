@@ -2,21 +2,25 @@ package messaging
 
 import conjoin "github.com/conjoin-cloud/conjoin-sdk/sdks/go"
 
-type SendSmsRequest struct {
-	ReferenceID         *string        `json:"reference_id,omitzero"`
-	TemplateID          *string        `json:"template_id,omitzero"`
-	SenderPoolID        *string        `json:"sender_pool_id,omitzero"`
-	From                *string        `json:"from,omitzero"`
-	To                  []any          `json:"to,omitzero"`
-	DefaultPlaceholders map[string]any `json:"default_placeholders,omitzero"`
-	Body                *string        `json:"body,omitzero"`
-	TruncateMessage     *bool          `json:"truncate_message,omitzero"`
-	SendAt              *string        `json:"send_at,omitzero"`
-	ReplyTo             *string        `json:"reply_to,omitzero"`
-	CreateConversation  *bool          `json:"create_conversation,omitzero"`
+type ListSmsMessagesQuery struct {
+	ConversationID any                                   `json:"conversation_id,omitzero"`
+	BroadcastID    any                                   `json:"broadcast_id,omitzero"`
+	RequestID      any                                   `json:"request_id,omitzero"`
+	MessageID      any                                   `json:"message_id,omitzero"`
+	RecipientID    any                                   `json:"recipient_id,omitzero"`
+	ReferenceID    any                                   `json:"reference_id,omitzero"`
+	Name           any                                   `json:"name,omitzero"`
+	PhoneNumber    any                                   `json:"phone_number,omitzero"`
+	Status         any                                   `json:"status,omitzero"`
+	SentAt         *ListChannelAnalyticsQueryDateCreated `json:"sent_at,omitzero"`
+	DateCreated    *ListChannelAnalyticsQueryDateCreated `json:"date_created,omitzero"`
+	Search         *string                               `json:"search,omitzero"`
+	Cursor         *ListChannelAnalyticsQueryCursor      `json:"cursor,omitzero"`
+	Sort           map[string]string                     `json:"sort,omitzero"`
+	Limit          any                                   `json:"limit,omitzero"`
 }
 
-type SendSmsResponse struct {
+type ListSmsMessagesItem struct {
 	MessageID           string                   `json:"message_id"`
 	ProfileID           string                   `json:"profile_id"`
 	ConjoinAccountID    string                   `json:"conjoin_account_id"`
@@ -38,26 +42,27 @@ type SendSmsResponse struct {
 	DateDeleted         conjoin.Nullable[string] `json:"date_deleted,omitzero"`
 }
 
-type ReadSmsMessagesRequestQuery struct {
-	ConversationID any `json:"conversation_id,omitzero"`
-	BroadcastID    any `json:"broadcast_id,omitzero"`
-	RequestID      any `json:"request_id,omitzero"`
-	MessageID      any `json:"message_id,omitzero"`
-	RecipientID    any `json:"recipient_id,omitzero"`
-	Name           any `json:"name,omitzero"`
-	PhoneNumber    any `json:"phone_number,omitzero"`
-	Status         any `json:"status,omitzero"`
+type SendSmsRequest struct {
+	ReferenceID         *string        `json:"reference_id,omitzero"`
+	TemplateID          *string        `json:"template_id,omitzero"`
+	SenderPoolID        *string        `json:"sender_pool_id,omitzero"`
+	From                *string        `json:"from,omitzero"`
+	To                  []any          `json:"to,omitzero"`
+	DefaultPlaceholders map[string]any `json:"default_placeholders,omitzero"`
+	Body                *string        `json:"body,omitzero"`
+	TruncateMessage     *bool          `json:"truncate_message,omitzero"`
+	SendAt              *string        `json:"send_at,omitzero"`
+	ReplyTo             *string        `json:"reply_to,omitzero"`
+	CreateConversation  *bool          `json:"create_conversation,omitzero"`
 }
 
-type ReadSmsMessagesRequest struct {
-	Cursor *ListChannelAnalyticsRequestCursor `json:"cursor,omitzero"`
-	Query  *ReadSmsMessagesRequestQuery       `json:"query,omitzero"`
-	Search *ListContactsRequestSearch         `json:"search,omitzero"`
-	Sort   map[string]string                  `json:"sort,omitzero"`
-	Limit  any                                `json:"limit,omitzero"`
-}
+type SendSmsResponse = ListSmsMessagesItem
 
-type ReadSmsMessagesItem = SendSmsResponse
+type ListSmsMessagesCountQuery = ListSmsMessagesQuery
+
+type ListSmsMessagesCountResponse = ListChannelAnalyticsCountResponse
+
+type ReadSmsMessageResponse = ListSmsMessagesItem
 
 type GenerateSmsSummaryRequest struct {
 	Currency            string            `json:"currency"`

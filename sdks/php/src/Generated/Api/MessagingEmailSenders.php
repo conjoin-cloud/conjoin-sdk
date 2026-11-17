@@ -18,82 +18,93 @@ final class MessagingEmailSenders
     {
     }
 
-    public function verify(string $senderId, ?CallOptions $options = null): array
-    {
-        return $this->client->send(new OperationRequest(
-            method: HttpMethod::Patch,
-            path: 'messaging/email/senders/' . PathSegment::encode($senderId) . '/verify',
-            scopes: [Scope::MessagingProfileId],
-        ), $options)->dataArray();
-    }
-
-    public function listMany(array $data, ?CallOptions $options = null): ListPage
+    public function listMany(?array $query = null, ?CallOptions $options = null): ListPage
     {
         return $this->client->sendList(new OperationRequest(
-            method: HttpMethod::Post,
-            path: 'messaging/email/senders/retrieve',
-            body: $data,
-            scopes: [Scope::MessagingProfileId],
-            acceptsIdempotencyKey: true,
-        ), $options);
-    }
-
-    public function listOne(string $senderId, ?CallOptions $options = null): array
-    {
-        return $this->client->send(new OperationRequest(
             method: HttpMethod::Get,
-            path: 'messaging/email/senders/' . PathSegment::encode($senderId),
+            path: 'messaging/email-senders/',
+            query: $query,
             scopes: [Scope::MessagingProfileId],
-        ), $options)->dataArray();
-    }
-
-    public function delete(string $senderId, ?CallOptions $options = null): array
-    {
-        return $this->client->send(new OperationRequest(
-            method: HttpMethod::Delete,
-            path: 'messaging/email/senders/' . PathSegment::encode($senderId),
-            scopes: [Scope::MessagingProfileId],
-        ), $options)->dataArray();
+        ), $options);
     }
 
     public function create(array $data, ?CallOptions $options = null): array
     {
         return $this->client->send(new OperationRequest(
             method: HttpMethod::Post,
-            path: 'messaging/email/senders/',
+            path: 'messaging/email-senders/',
             body: $data,
             scopes: [Scope::MessagingProfileId],
             acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
-    public function enable(string $senderId, ?CallOptions $options = null): array
+    public function listManyCount(?array $query = null, ?CallOptions $options = null): array
     {
         return $this->client->send(new OperationRequest(
-            method: HttpMethod::Patch,
-            path: 'messaging/email/senders/' . PathSegment::encode($senderId) . '/enable',
+            method: HttpMethod::Get,
+            path: 'messaging/email-senders/count',
+            query: $query,
             scopes: [Scope::MessagingProfileId],
         ), $options)->dataArray();
     }
 
-    public function disable(string $senderId, ?CallOptions $options = null): array
+    public function read(string $emailSenderId, ?CallOptions $options = null): array
     {
         return $this->client->send(new OperationRequest(
-            method: HttpMethod::Patch,
-            path: 'messaging/email/senders/' . PathSegment::encode($senderId) . '/disable',
+            method: HttpMethod::Get,
+            path: 'messaging/email-senders/' . PathSegment::encode($emailSenderId),
             scopes: [Scope::MessagingProfileId],
         ), $options)->dataArray();
     }
 
-    public function transfer(string $senderId, string $projectId, ?CallOptions $options = null): array
+    public function delete(string $emailSenderId, ?CallOptions $options = null): array
     {
         return $this->client->send(new OperationRequest(
-            method: HttpMethod::Patch,
-            path: 'messaging/email/senders/transfers/'
-                . PathSegment::encode($senderId)
-                . '/'
-                . PathSegment::encode($projectId),
+            method: HttpMethod::Delete,
+            path: 'messaging/email-senders/' . PathSegment::encode($emailSenderId),
             scopes: [Scope::MessagingProfileId],
+        ), $options)->dataArray();
+    }
+
+    public function verify(string $emailSenderId, ?CallOptions $options = null): array
+    {
+        return $this->client->send(new OperationRequest(
+            method: HttpMethod::Post,
+            path: 'messaging/email-senders/' . PathSegment::encode($emailSenderId) . '/verify',
+            scopes: [Scope::MessagingProfileId],
+            acceptsIdempotencyKey: true,
+        ), $options)->dataArray();
+    }
+
+    public function enable(string $emailSenderId, ?CallOptions $options = null): array
+    {
+        return $this->client->send(new OperationRequest(
+            method: HttpMethod::Post,
+            path: 'messaging/email-senders/' . PathSegment::encode($emailSenderId) . '/enable',
+            scopes: [Scope::MessagingProfileId],
+            acceptsIdempotencyKey: true,
+        ), $options)->dataArray();
+    }
+
+    public function disable(string $emailSenderId, ?CallOptions $options = null): array
+    {
+        return $this->client->send(new OperationRequest(
+            method: HttpMethod::Post,
+            path: 'messaging/email-senders/' . PathSegment::encode($emailSenderId) . '/disable',
+            scopes: [Scope::MessagingProfileId],
+            acceptsIdempotencyKey: true,
+        ), $options)->dataArray();
+    }
+
+    public function transfer(string $emailSenderId, array $data, ?CallOptions $options = null): array
+    {
+        return $this->client->send(new OperationRequest(
+            method: HttpMethod::Post,
+            path: 'messaging/email-senders/' . PathSegment::encode($emailSenderId) . '/transfer',
+            body: $data,
+            scopes: [Scope::MessagingProfileId],
+            acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 }

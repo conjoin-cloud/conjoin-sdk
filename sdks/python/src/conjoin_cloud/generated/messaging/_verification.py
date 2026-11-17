@@ -10,8 +10,10 @@ from conjoin_cloud.generated._models import (
     MessagingVerificationCheckRequest,
     MessagingVerificationCheckResponse,
     MessagingVerificationCreateResponse,
+    MessagingVerificationListMessagesCountQuery,
+    MessagingVerificationListMessagesCountResponse,
     MessagingVerificationListMessagesItem,
-    MessagingVerificationListMessagesRequest,
+    MessagingVerificationListMessagesQuery,
     MessagingVerificationResendResponse,
 )
 
@@ -23,6 +25,21 @@ class MessagingVerificationsResource:
     def __init__(self, client: Conjoin) -> None:
         self._client = client
 
+    def list_messages(
+        self,
+        query: MessagingVerificationListMessagesQuery,
+        *,
+        request_options: RequestOptions | Mapping[str, Any] | None = None,
+    ) -> Page[MessagingVerificationListMessagesItem]:
+        return self._client.request(
+            'GET',
+            'messaging/verifications/',
+            query=query,
+            cast_to=Page[MessagingVerificationListMessagesItem],
+            request_options=request_options,
+            scopes=('messaging_profile_id',),
+        )
+
     def create(
         self,
         data: Mapping[str, Any],
@@ -31,12 +48,27 @@ class MessagingVerificationsResource:
     ) -> MessagingVerificationCreateResponse:
         return self._client.request(
             'POST',
-            'messaging/verifications/send',
+            'messaging/verifications/',
             body=data,
             cast_to=MessagingVerificationCreateResponse,
             request_options=request_options,
             scopes=('messaging_profile_id',),
             accepts_idempotency_key=True,
+        )
+
+    def list_messages_count(
+        self,
+        query: MessagingVerificationListMessagesCountQuery,
+        *,
+        request_options: RequestOptions | Mapping[str, Any] | None = None,
+    ) -> MessagingVerificationListMessagesCountResponse:
+        return self._client.request(
+            'GET',
+            'messaging/verifications/count',
+            query=query,
+            cast_to=MessagingVerificationListMessagesCountResponse,
+            request_options=request_options,
+            scopes=('messaging_profile_id',),
         )
 
     def check(
@@ -63,24 +95,9 @@ class MessagingVerificationsResource:
         request_options: RequestOptions | Mapping[str, Any] | None = None,
     ) -> MessagingVerificationResendResponse:
         return self._client.request(
-            'PATCH',
-            f'messaging/verifications/resend/{encode_path_param(verification_id)}',
-            cast_to=MessagingVerificationResendResponse,
-            request_options=request_options,
-            scopes=('messaging_profile_id',),
-        )
-
-    def list_messages(
-        self,
-        data: MessagingVerificationListMessagesRequest,
-        *,
-        request_options: RequestOptions | Mapping[str, Any] | None = None,
-    ) -> Page[MessagingVerificationListMessagesItem]:
-        return self._client.request(
             'POST',
-            'messaging/verifications/messages',
-            body=data,
-            cast_to=Page[MessagingVerificationListMessagesItem],
+            f'messaging/verifications/{encode_path_param(verification_id)}/resend',
+            cast_to=MessagingVerificationResendResponse,
             request_options=request_options,
             scopes=('messaging_profile_id',),
             accepts_idempotency_key=True,
@@ -91,6 +108,21 @@ class AsyncMessagingVerificationsResource:
     def __init__(self, client: AsyncConjoin) -> None:
         self._client = client
 
+    async def list_messages(
+        self,
+        query: MessagingVerificationListMessagesQuery,
+        *,
+        request_options: RequestOptions | Mapping[str, Any] | None = None,
+    ) -> AsyncPage[MessagingVerificationListMessagesItem]:
+        return await self._client.request(
+            'GET',
+            'messaging/verifications/',
+            query=query,
+            cast_to=AsyncPage[MessagingVerificationListMessagesItem],
+            request_options=request_options,
+            scopes=('messaging_profile_id',),
+        )
+
     async def create(
         self,
         data: Mapping[str, Any],
@@ -99,12 +131,27 @@ class AsyncMessagingVerificationsResource:
     ) -> MessagingVerificationCreateResponse:
         return await self._client.request(
             'POST',
-            'messaging/verifications/send',
+            'messaging/verifications/',
             body=data,
             cast_to=MessagingVerificationCreateResponse,
             request_options=request_options,
             scopes=('messaging_profile_id',),
             accepts_idempotency_key=True,
+        )
+
+    async def list_messages_count(
+        self,
+        query: MessagingVerificationListMessagesCountQuery,
+        *,
+        request_options: RequestOptions | Mapping[str, Any] | None = None,
+    ) -> MessagingVerificationListMessagesCountResponse:
+        return await self._client.request(
+            'GET',
+            'messaging/verifications/count',
+            query=query,
+            cast_to=MessagingVerificationListMessagesCountResponse,
+            request_options=request_options,
+            scopes=('messaging_profile_id',),
         )
 
     async def check(
@@ -131,24 +178,9 @@ class AsyncMessagingVerificationsResource:
         request_options: RequestOptions | Mapping[str, Any] | None = None,
     ) -> MessagingVerificationResendResponse:
         return await self._client.request(
-            'PATCH',
-            f'messaging/verifications/resend/{encode_path_param(verification_id)}',
-            cast_to=MessagingVerificationResendResponse,
-            request_options=request_options,
-            scopes=('messaging_profile_id',),
-        )
-
-    async def list_messages(
-        self,
-        data: MessagingVerificationListMessagesRequest,
-        *,
-        request_options: RequestOptions | Mapping[str, Any] | None = None,
-    ) -> AsyncPage[MessagingVerificationListMessagesItem]:
-        return await self._client.request(
             'POST',
-            'messaging/verifications/messages',
-            body=data,
-            cast_to=AsyncPage[MessagingVerificationListMessagesItem],
+            f'messaging/verifications/{encode_path_param(verification_id)}/resend',
+            cast_to=MessagingVerificationResendResponse,
             request_options=request_options,
             scopes=('messaging_profile_id',),
             accepts_idempotency_key=True,

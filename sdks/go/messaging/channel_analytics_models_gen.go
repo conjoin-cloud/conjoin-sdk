@@ -2,12 +2,7 @@ package messaging
 
 import conjoin "github.com/conjoin-cloud/conjoin-sdk/sdks/go"
 
-type ListChannelAnalyticsRequestCursor struct {
-	Prev *string `json:"prev,omitzero"`
-	Next *string `json:"next,omitzero"`
-}
-
-type ListChannelAnalyticsRequestQueryDateCreated struct {
+type ListChannelAnalyticsQueryDateCreated struct {
 	Equals    *string `json:"equals,omitzero"`
 	NotEquals *string `json:"not_equals,omitzero"`
 	Gt        *string `json:"gt,omitzero"`
@@ -16,17 +11,21 @@ type ListChannelAnalyticsRequestQueryDateCreated struct {
 	Lte       *string `json:"lte,omitzero"`
 }
 
-type ListChannelAnalyticsRequestQuery struct {
-	MessageRequestID any                                          `json:"message_request_id,omitzero"`
-	DateCreated      *ListChannelAnalyticsRequestQueryDateCreated `json:"date_created,omitzero"`
+type ListChannelAnalyticsQueryCursor struct {
+	Prev *string `json:"prev,omitzero"`
+	Next *string `json:"next,omitzero"`
 }
 
-type ListChannelAnalyticsRequest struct {
-	Cursor *ListChannelAnalyticsRequestCursor `json:"cursor,omitzero"`
-	Filter map[string]bool                    `json:"filter,omitzero"`
-	Query  *ListChannelAnalyticsRequestQuery  `json:"query,omitzero"`
-	Sort   map[string]string                  `json:"sort,omitzero"`
-	Limit  any                                `json:"limit,omitzero"`
+type ListChannelAnalyticsQuery struct {
+	ReferenceID      any                                   `json:"reference_id,omitzero"`
+	MessageRequestID any                                   `json:"message_request_id,omitzero"`
+	ConversationID   any                                   `json:"conversation_id,omitzero"`
+	ChannelID        any                                   `json:"channel_id,omitzero"`
+	DateCreated      *ListChannelAnalyticsQueryDateCreated `json:"date_created,omitzero"`
+	DateUpdated      *ListChannelAnalyticsQueryDateCreated `json:"date_updated,omitzero"`
+	Cursor           *ListChannelAnalyticsQueryCursor      `json:"cursor,omitzero"`
+	Sort             map[string]string                     `json:"sort,omitzero"`
+	Limit            any                                   `json:"limit,omitzero"`
 }
 
 type ListChannelAnalyticsItemClicks struct {
@@ -91,8 +90,39 @@ type ListChannelAnalyticsItem struct {
 	DateDeleted       conjoin.Nullable[string]             `json:"date_deleted,omitzero"`
 }
 
-type GenerateChannelAnalyticsSummariesRequest struct {
-	Duration string `json:"duration"`
+type CreateChannelAnalyticsReportRequestDocument struct {
+	SendAsLink  *bool   `json:"send_as_link,omitzero"`
+	Title       *string `json:"title,omitzero"`
+	Author      *string `json:"author,omitzero"`
+	Subject     *string `json:"subject,omitzero"`
+	Keywords    *string `json:"keywords,omitzero"`
+	Password    *string `json:"password,omitzero"`
+	Orientation *string `json:"orientation,omitzero"`
+	PageSize    *string `json:"page_size,omitzero"`
+	Margin      any     `json:"margin,omitzero"`
+	Version     *string `json:"version,omitzero"`
+}
+
+type CreateChannelAnalyticsReportRequest struct {
+	MessageRequestID string                                       `json:"message_request_id"`
+	ChannelID        string                                       `json:"channel_id"`
+	Duration         string                                       `json:"duration"`
+	Document         *CreateChannelAnalyticsReportRequestDocument `json:"document,omitzero"`
+}
+
+type CreateChannelAnalyticsReportResponse struct {
+	URL string `json:"url"`
+}
+
+type ListChannelAnalyticsCountQuery = ListChannelAnalyticsQuery
+
+type ListChannelAnalyticsCountResponse struct {
+	Count int64 `json:"count"`
+}
+
+type GenerateChannelAnalyticsSummariesQuery struct {
+	ChannelID string `json:"channel_id"`
+	Duration  string `json:"duration"`
 }
 
 type GenerateChannelAnalyticsSummariesResponseOpens struct {
@@ -136,28 +166,6 @@ type GenerateChannelAnalyticsSummariesResponse struct {
 	Subscribes        GenerateChannelAnalyticsSummariesResponseDeliveries    `json:"subscribes"`
 	Unsubscribes      GenerateChannelAnalyticsSummariesResponseDeliveries    `json:"unsubscribes"`
 	Periods           []GenerateChannelAnalyticsSummariesResponsePeriodsItem `json:"periods"`
-}
-
-type CreateChannelAnalyticsReportRequestDocument struct {
-	SendAsLink  *bool   `json:"send_as_link,omitzero"`
-	Title       *string `json:"title,omitzero"`
-	Author      *string `json:"author,omitzero"`
-	Subject     *string `json:"subject,omitzero"`
-	Keywords    *string `json:"keywords,omitzero"`
-	Password    *string `json:"password,omitzero"`
-	Orientation *string `json:"orientation,omitzero"`
-	PageSize    *string `json:"page_size,omitzero"`
-	Margin      any     `json:"margin,omitzero"`
-	Version     *string `json:"version,omitzero"`
-}
-
-type CreateChannelAnalyticsReportRequest struct {
-	Duration string                                       `json:"duration"`
-	Document *CreateChannelAnalyticsReportRequestDocument `json:"document,omitzero"`
-}
-
-type CreateChannelAnalyticsReportResponse struct {
-	URL string `json:"url"`
 }
 
 type IncrementChannelAnalyticsOpensRequest struct {

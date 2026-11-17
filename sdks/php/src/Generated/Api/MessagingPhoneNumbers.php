@@ -18,39 +18,6 @@ final class MessagingPhoneNumbers
     {
     }
 
-    public function purchase(string $phoneNumber, array $data, ?CallOptions $options = null): array
-    {
-        return $this->client->send(new OperationRequest(
-            method: HttpMethod::Post,
-            path: 'messaging/phone-numbers/' . PathSegment::encode($phoneNumber) . '/provision',
-            body: $data,
-            scopes: [Scope::MessagingProfileId],
-            acceptsIdempotencyKey: true,
-        ), $options)->dataArray();
-    }
-
-    public function update(string $phoneNumber, string $projectId, ?CallOptions $options = null): array
-    {
-        return $this->client->send(new OperationRequest(
-            method: HttpMethod::Patch,
-            path: 'messaging/phone-numbers/transfer/'
-                . PathSegment::encode($phoneNumber)
-                . '/project/'
-                . PathSegment::encode($projectId),
-            scopes: [Scope::MessagingProfileId],
-        ), $options)->dataArray();
-    }
-
-    public function listAvailable(?array $query = null, ?CallOptions $options = null): ListPage
-    {
-        return $this->client->sendList(new OperationRequest(
-            method: HttpMethod::Get,
-            path: 'messaging/phone-numbers/available',
-            query: $query,
-            scopes: [Scope::MessagingProfileId],
-        ), $options);
-    }
-
     public function list(?array $query = null, ?CallOptions $options = null): ListPage
     {
         return $this->client->sendList(new OperationRequest(
@@ -61,13 +28,55 @@ final class MessagingPhoneNumbers
         ), $options);
     }
 
-    public function release(string $phoneNumber, ?CallOptions $options = null): array
+    public function purchase(array $data, ?CallOptions $options = null): array
     {
         return $this->client->send(new OperationRequest(
             method: HttpMethod::Post,
-            path: 'messaging/phone-numbers/' . PathSegment::encode($phoneNumber) . '/release',
+            path: 'messaging/phone-numbers/',
+            body: $data,
             scopes: [Scope::MessagingProfileId],
             acceptsIdempotencyKey: true,
         ), $options)->dataArray();
+    }
+
+    public function listCount(?array $query = null, ?CallOptions $options = null): array
+    {
+        return $this->client->send(new OperationRequest(
+            method: HttpMethod::Get,
+            path: 'messaging/phone-numbers/count',
+            query: $query,
+            scopes: [Scope::MessagingProfileId],
+        ), $options)->dataArray();
+    }
+
+    public function transfer(string $phoneNumberId, array $data, ?CallOptions $options = null): array
+    {
+        return $this->client->send(new OperationRequest(
+            method: HttpMethod::Post,
+            path: 'messaging/phone-numbers/' . PathSegment::encode($phoneNumberId) . '/transfer',
+            body: $data,
+            scopes: [Scope::MessagingProfileId],
+            acceptsIdempotencyKey: true,
+        ), $options)->dataArray();
+    }
+
+    public function release(string $phoneNumberId, ?CallOptions $options = null): array
+    {
+        return $this->client->send(new OperationRequest(
+            method: HttpMethod::Post,
+            path: 'messaging/phone-numbers/' . PathSegment::encode($phoneNumberId) . '/release',
+            scopes: [Scope::MessagingProfileId],
+            acceptsIdempotencyKey: true,
+        ), $options)->dataArray();
+    }
+
+    public function listAvailable(?array $query = null, ?CallOptions $options = null): ListPage
+    {
+        return $this->client->sendList(new OperationRequest(
+            method: HttpMethod::Get,
+            path: 'messaging/available-phone-numbers/',
+            query: $query,
+            scopes: [Scope::MessagingProfileId],
+        ), $options);
     }
 }

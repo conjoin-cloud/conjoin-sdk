@@ -2,12 +2,14 @@ import { encodePathParam } from '../../core/path'
 import type { ConjoinCallOptions, ConjoinClient } from '../../core/types'
 import type { operations } from '../api-types'
 
-type ListBody = NonNullable<operations['listChannelAnalytics']['requestBody']>['content']['application/json']
 type ListData = NonNullable<operations['listChannelAnalytics']['responses']['200']['content']['application/json']['data']>[number]
-type GenerateSummariesBody = NonNullable<operations['generateChannelAnalyticsSummaries']['requestBody']>['content']['application/json']
-type GenerateSummariesData = NonNullable<operations['generateChannelAnalyticsSummaries']['responses']['200']['content']['application/json']['data']>
+type ListQuery = NonNullable<operations['listChannelAnalytics']['parameters']['query']>
 type CreateReportBody = NonNullable<operations['createChannelAnalyticsReport']['requestBody']>['content']['application/json']
 type CreateReportData = NonNullable<operations['createChannelAnalyticsReport']['responses']['200']['content']['application/json']['data']>
+type ListCountData = NonNullable<operations['listChannelAnalyticsCount']['responses']['200']['content']['application/json']['data']>
+type ListCountQuery = NonNullable<operations['listChannelAnalyticsCount']['parameters']['query']>
+type GenerateSummariesData = NonNullable<operations['generateChannelAnalyticsSummaries']['responses']['200']['content']['application/json']['data']>
+type GenerateSummariesQuery = NonNullable<operations['generateChannelAnalyticsSummaries']['parameters']['query']>
 type IncrementOpensBody = NonNullable<operations['incrementChannelAnalyticsOpens']['requestBody']>['content']['application/json']
 type IncrementOpensData = NonNullable<operations['incrementChannelAnalyticsOpens']['responses']['200']['content']['application/json']['data']>
 type IncrementClicksBody = NonNullable<operations['incrementChannelAnalyticsClicks']['requestBody']>['content']['application/json']
@@ -21,28 +23,31 @@ type IncrementUnsubscribesData = NonNullable<operations['incrementChannelAnalyti
 
 export function createMessagingChannelAnalytics(client: ConjoinClient) {
   return {
-    list: (data: ListBody, options?: ConjoinCallOptions) =>
-      client.fetchList<ListData>('messaging/email/analytics/', { ...options, method: 'POST', body: data, scopes: ['messagingProfileId'], acceptsIdempotencyKey: true }),
+    list: (query?: ListQuery, options?: ConjoinCallOptions) =>
+      client.fetchList<ListData>('messaging/analytics/', { ...options, method: 'GET', query: query as Record<string, unknown> | undefined, scopes: ['messagingProfileId'] }),
 
-    generateSummaries: (channelId: string, data: GenerateSummariesBody, options?: ConjoinCallOptions) =>
-      client.fetch<GenerateSummariesData>(`messaging/email/analytics/channels/${encodePathParam(channelId)}/generate`, { ...options, method: 'POST', body: data, scopes: ['messagingProfileId'], acceptsIdempotencyKey: true }),
+    createReport: (data: CreateReportBody, options?: ConjoinCallOptions) =>
+      client.fetch<CreateReportData>('messaging/analytics-reports/', { ...options, method: 'POST', body: data, scopes: ['messagingProfileId'], acceptsIdempotencyKey: true }),
 
-    createReport: (messageId: string, channelId: string, data: CreateReportBody, options?: ConjoinCallOptions) =>
-      client.fetch<CreateReportData>(`messaging/email/analytics/messages/${encodePathParam(messageId)}/channels/${encodePathParam(channelId)}/reports`, { ...options, method: 'POST', body: data, scopes: ['messagingProfileId'], acceptsIdempotencyKey: true }),
+    listCount: (query?: ListCountQuery, options?: ConjoinCallOptions) =>
+      client.fetch<ListCountData>('messaging/analytics/count', { ...options, method: 'GET', query: query as Record<string, unknown> | undefined, scopes: ['messagingProfileId'] }),
+
+    generateSummaries: (query: GenerateSummariesQuery, options?: ConjoinCallOptions) =>
+      client.fetch<GenerateSummariesData>('messaging/analytics/stats', { ...options, method: 'GET', query: query as Record<string, unknown> | undefined, scopes: ['messagingProfileId'] }),
 
     incrementOpens: (analyticsId: string, data: IncrementOpensBody, options?: ConjoinCallOptions) =>
-      client.fetch<IncrementOpensData>(`messaging/email/analytics/${encodePathParam(analyticsId)}/opens`, { ...options, method: 'PATCH', body: data, scopes: ['messagingProfileId'] }),
+      client.fetch<IncrementOpensData>(`messaging/analytics/${encodePathParam(analyticsId)}/opens`, { ...options, method: 'POST', body: data, scopes: ['messagingProfileId'], acceptsIdempotencyKey: true }),
 
     incrementClicks: (analyticsId: string, data: IncrementClicksBody, options?: ConjoinCallOptions) =>
-      client.fetch<IncrementClicksData>(`messaging/email/analytics/${encodePathParam(analyticsId)}/clicks`, { ...options, method: 'PATCH', body: data, scopes: ['messagingProfileId'] }),
+      client.fetch<IncrementClicksData>(`messaging/analytics/${encodePathParam(analyticsId)}/clicks`, { ...options, method: 'POST', body: data, scopes: ['messagingProfileId'], acceptsIdempotencyKey: true }),
 
     incrementDeliveries: (analyticsId: string, data: IncrementDeliveriesBody, options?: ConjoinCallOptions) =>
-      client.fetch<IncrementDeliveriesData>(`messaging/email/analytics/${encodePathParam(analyticsId)}/deliveries`, { ...options, method: 'PATCH', body: data, scopes: ['messagingProfileId'] }),
+      client.fetch<IncrementDeliveriesData>(`messaging/analytics/${encodePathParam(analyticsId)}/deliveries`, { ...options, method: 'POST', body: data, scopes: ['messagingProfileId'], acceptsIdempotencyKey: true }),
 
     incrementSubscribes: (analyticsId: string, data: IncrementSubscribesBody, options?: ConjoinCallOptions) =>
-      client.fetch<IncrementSubscribesData>(`messaging/email/analytics/${encodePathParam(analyticsId)}/subscribes`, { ...options, method: 'PATCH', body: data, scopes: ['messagingProfileId'] }),
+      client.fetch<IncrementSubscribesData>(`messaging/analytics/${encodePathParam(analyticsId)}/subscribes`, { ...options, method: 'POST', body: data, scopes: ['messagingProfileId'], acceptsIdempotencyKey: true }),
 
     incrementUnsubscribes: (analyticsId: string, data: IncrementUnsubscribesBody, options?: ConjoinCallOptions) =>
-      client.fetch<IncrementUnsubscribesData>(`messaging/email/analytics/${encodePathParam(analyticsId)}/unsubscribes`, { ...options, method: 'PATCH', body: data, scopes: ['messagingProfileId'] }),
+      client.fetch<IncrementUnsubscribesData>(`messaging/analytics/${encodePathParam(analyticsId)}/unsubscribes`, { ...options, method: 'POST', body: data, scopes: ['messagingProfileId'], acceptsIdempotencyKey: true }),
   }
 }

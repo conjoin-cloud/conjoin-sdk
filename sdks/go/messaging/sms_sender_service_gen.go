@@ -10,11 +10,20 @@ type SMSSendersService struct {
 	client *conjoin.Client
 }
 
+func (s *SMSSendersService) ListManySmsSenders(ctx context.Context, query *ListManySmsSendersQuery, opts ...conjoin.CallOption) (*conjoin.Page[ListManySmsSendersItem], error) {
+	return conjoin.List[ListManySmsSendersItem](ctx, s.client, conjoin.Operation{
+		Method: "GET",
+		Path:   "messaging/sms-senders/",
+		Query:  query,
+		Scopes: []conjoin.ScopeName{conjoin.ScopeMessagingProfile},
+	}, opts...)
+}
+
 func (s *SMSSendersService) CreateSmsSender(ctx context.Context, body *CreateSmsSenderRequest, opts ...conjoin.CallOption) (*CreateSmsSenderResponse, error) {
 	var out CreateSmsSenderResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
 		Method:                "POST",
-		Path:                  "messaging/sms/senders/",
+		Path:                  "messaging/sms-senders/",
 		Body:                  body,
 		BodyRequired:          true,
 		Scopes:                []conjoin.ScopeName{conjoin.ScopeMessagingProfile},
@@ -25,38 +34,25 @@ func (s *SMSSendersService) CreateSmsSender(ctx context.Context, body *CreateSms
 	return &out, nil
 }
 
-func (s *SMSSendersService) EnableSmsSender(ctx context.Context, senderID string, opts ...conjoin.CallOption) (*EnableSmsSenderResponse, error) {
-	var out EnableSmsSenderResponse
+func (s *SMSSendersService) ListManySmsSendersCount(ctx context.Context, query *ListManySmsSendersCountQuery, opts ...conjoin.CallOption) (*ListManySmsSendersCountResponse, error) {
+	var out ListManySmsSendersCountResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:     "PATCH",
-		Path:       "messaging/sms/senders/{sender_id}/enable",
-		PathParams: []string{senderID},
-		Scopes:     []conjoin.ScopeName{conjoin.ScopeMessagingProfile},
+		Method: "GET",
+		Path:   "messaging/sms-senders/count",
+		Query:  query,
+		Scopes: []conjoin.ScopeName{conjoin.ScopeMessagingProfile},
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
 	return &out, nil
 }
 
-func (s *SMSSendersService) DisableSmsSender(ctx context.Context, senderID string, opts ...conjoin.CallOption) (*DisableSmsSenderResponse, error) {
-	var out DisableSmsSenderResponse
-	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:     "PATCH",
-		Path:       "messaging/sms/senders/{sender_id}/disable",
-		PathParams: []string{senderID},
-		Scopes:     []conjoin.ScopeName{conjoin.ScopeMessagingProfile},
-	}, &out, opts...); err != nil {
-		return nil, err
-	}
-	return &out, nil
-}
-
-func (s *SMSSendersService) ListSmsSender(ctx context.Context, senderID string, opts ...conjoin.CallOption) (*ListSmsSenderResponse, error) {
-	var out ListSmsSenderResponse
+func (s *SMSSendersService) ReadSmsSender(ctx context.Context, smsSenderID string, opts ...conjoin.CallOption) (*ReadSmsSenderResponse, error) {
+	var out ReadSmsSenderResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
 		Method:     "GET",
-		Path:       "messaging/sms/senders/{sender_id}",
-		PathParams: []string{senderID},
+		Path:       "messaging/sms-senders/{sms_sender_id}",
+		PathParams: []string{smsSenderID},
 		Scopes:     []conjoin.ScopeName{conjoin.ScopeMessagingProfile},
 	}, &out, opts...); err != nil {
 		return nil, err
@@ -64,25 +60,12 @@ func (s *SMSSendersService) ListSmsSender(ctx context.Context, senderID string, 
 	return &out, nil
 }
 
-func (s *SMSSendersService) DeleteSmsSender(ctx context.Context, senderID string, opts ...conjoin.CallOption) (*DeleteSmsSenderResponse, error) {
-	var out DeleteSmsSenderResponse
-	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:     "DELETE",
-		Path:       "messaging/sms/senders/{sender_id}",
-		PathParams: []string{senderID},
-		Scopes:     []conjoin.ScopeName{conjoin.ScopeMessagingProfile},
-	}, &out, opts...); err != nil {
-		return nil, err
-	}
-	return &out, nil
-}
-
-func (s *SMSSendersService) UpdateOneSmsSender(ctx context.Context, senderID string, body *UpdateOneSmsSenderRequest, opts ...conjoin.CallOption) (*UpdateOneSmsSenderResponse, error) {
+func (s *SMSSendersService) UpdateOneSmsSender(ctx context.Context, smsSenderID string, body *UpdateOneSmsSenderRequest, opts ...conjoin.CallOption) (*UpdateOneSmsSenderResponse, error) {
 	var out UpdateOneSmsSenderResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
 		Method:       "PATCH",
-		Path:         "messaging/sms/senders/{sender_id}",
-		PathParams:   []string{senderID},
+		Path:         "messaging/sms-senders/{sms_sender_id}",
+		PathParams:   []string{smsSenderID},
 		Body:         body,
 		BodyRequired: true,
 		Scopes:       []conjoin.ScopeName{conjoin.ScopeMessagingProfile},
@@ -92,13 +75,57 @@ func (s *SMSSendersService) UpdateOneSmsSender(ctx context.Context, senderID str
 	return &out, nil
 }
 
-func (s *SMSSendersService) TransferSmsSender(ctx context.Context, senderID string, projectID string, opts ...conjoin.CallOption) (*TransferSmsSenderResponse, error) {
+func (s *SMSSendersService) DeleteSmsSender(ctx context.Context, smsSenderID string, opts ...conjoin.CallOption) (*DeleteSmsSenderResponse, error) {
+	var out DeleteSmsSenderResponse
+	if err := s.client.Do(ctx, conjoin.Operation{
+		Method:     "DELETE",
+		Path:       "messaging/sms-senders/{sms_sender_id}",
+		PathParams: []string{smsSenderID},
+		Scopes:     []conjoin.ScopeName{conjoin.ScopeMessagingProfile},
+	}, &out, opts...); err != nil {
+		return nil, err
+	}
+	return &out, nil
+}
+
+func (s *SMSSendersService) EnableSmsSender(ctx context.Context, smsSenderID string, opts ...conjoin.CallOption) (*EnableSmsSenderResponse, error) {
+	var out EnableSmsSenderResponse
+	if err := s.client.Do(ctx, conjoin.Operation{
+		Method:                "POST",
+		Path:                  "messaging/sms-senders/{sms_sender_id}/enable",
+		PathParams:            []string{smsSenderID},
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeMessagingProfile},
+		AcceptsIdempotencyKey: true,
+	}, &out, opts...); err != nil {
+		return nil, err
+	}
+	return &out, nil
+}
+
+func (s *SMSSendersService) DisableSmsSender(ctx context.Context, smsSenderID string, opts ...conjoin.CallOption) (*DisableSmsSenderResponse, error) {
+	var out DisableSmsSenderResponse
+	if err := s.client.Do(ctx, conjoin.Operation{
+		Method:                "POST",
+		Path:                  "messaging/sms-senders/{sms_sender_id}/disable",
+		PathParams:            []string{smsSenderID},
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeMessagingProfile},
+		AcceptsIdempotencyKey: true,
+	}, &out, opts...); err != nil {
+		return nil, err
+	}
+	return &out, nil
+}
+
+func (s *SMSSendersService) TransferSmsSender(ctx context.Context, smsSenderID string, body *TransferSmsSenderRequest, opts ...conjoin.CallOption) (*TransferSmsSenderResponse, error) {
 	var out TransferSmsSenderResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
-		Method:     "PATCH",
-		Path:       "messaging/sms/senders/transfers/{sender_id}/{project_id}",
-		PathParams: []string{senderID, projectID},
-		Scopes:     []conjoin.ScopeName{conjoin.ScopeMessagingProfile},
+		Method:                "POST",
+		Path:                  "messaging/sms-senders/{sms_sender_id}/transfer",
+		PathParams:            []string{smsSenderID},
+		Body:                  body,
+		BodyRequired:          true,
+		Scopes:                []conjoin.ScopeName{conjoin.ScopeMessagingProfile},
+		AcceptsIdempotencyKey: true,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}

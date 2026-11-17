@@ -2,6 +2,34 @@ package messaging
 
 import conjoin "github.com/conjoin-cloud/conjoin-sdk/sdks/go"
 
+type ListSmsBrandsQuery struct {
+	ReferenceID any                                   `json:"reference_id,omitzero"`
+	DateCreated *ListChannelAnalyticsQueryDateCreated `json:"date_created,omitzero"`
+	DateUpdated *ListChannelAnalyticsQueryDateCreated `json:"date_updated,omitzero"`
+	DateDeleted *ListChannelAnalyticsQueryDateCreated `json:"date_deleted,omitzero"`
+	Cursor      *ListChannelAnalyticsQueryCursor      `json:"cursor,omitzero"`
+	Sort        map[string]string                     `json:"sort,omitzero"`
+	Limit       any                                   `json:"limit,omitzero"`
+}
+
+type ListSmsBrandsItem struct {
+	BrandID               string                   `json:"brand_id"`
+	ProfileID             string                   `json:"profile_id"`
+	ConjoinAccountID      string                   `json:"conjoin_account_id"`
+	ConjoinProjectID      string                   `json:"conjoin_project_id"`
+	LiveMode              bool                     `json:"live_mode"`
+	ReferenceID           conjoin.Nullable[string] `json:"reference_id,omitzero"`
+	DisplayName           string                   `json:"display_name"`
+	BrandRegistrationType string                   `json:"brand_registration_type"`
+	BrandTcrID            conjoin.Nullable[string] `json:"brand_tcr_id,omitzero"`
+	SoleProprietorDetails map[string]any           `json:"sole_proprietor_details,omitzero"`
+	BusinessDetails       map[string]any           `json:"business_details,omitzero"`
+	Status                *string                  `json:"status,omitzero"`
+	DateCreated           string                   `json:"date_created"`
+	DateUpdated           string                   `json:"date_updated"`
+	DateDeleted           conjoin.Nullable[string] `json:"date_deleted,omitzero"`
+}
+
 type CreateSmsBrandRequestBusinessRepresentative struct {
 	BusinessTitle string `json:"business_title"`
 	JobPosition   string `json:"job_position"`
@@ -12,6 +40,7 @@ type CreateSmsBrandRequestBusinessRepresentative struct {
 }
 
 type CreateSmsBrandRequest struct {
+	ReferenceID              *string                                      `json:"reference_id,omitzero"`
 	DisplayName              string                                       `json:"display_name"`
 	BrandRegistrationType    *string                                      `json:"brand_registration_type,omitzero"`
 	BrandName                *string                                      `json:"brand_name,omitzero"`
@@ -51,46 +80,18 @@ type CreateSmsBrandRequest struct {
 	SkipSecondaryVetting     *bool                                        `json:"skip_secondary_vetting,omitzero"`
 }
 
-type CreateSmsBrandResponse struct {
-	BrandID               string                   `json:"brand_id"`
-	ProfileID             string                   `json:"profile_id"`
-	ConjoinAccountID      string                   `json:"conjoin_account_id"`
-	ConjoinProjectID      string                   `json:"conjoin_project_id"`
-	LiveMode              bool                     `json:"live_mode"`
-	ReferenceID           conjoin.Nullable[string] `json:"reference_id,omitzero"`
-	DisplayName           string                   `json:"display_name"`
-	BrandRegistrationType string                   `json:"brand_registration_type"`
-	BrandTcrID            conjoin.Nullable[string] `json:"brand_tcr_id,omitzero"`
-	SoleProprietorDetails map[string]any           `json:"sole_proprietor_details,omitzero"`
-	BusinessDetails       map[string]any           `json:"business_details,omitzero"`
-	Status                *string                  `json:"status,omitzero"`
-	DateCreated           string                   `json:"date_created"`
-	DateUpdated           string                   `json:"date_updated"`
-	DateDeleted           conjoin.Nullable[string] `json:"date_deleted,omitzero"`
-}
+type CreateSmsBrandResponse = ListSmsBrandsItem
 
-type ReadSmsBrandResponse = CreateSmsBrandResponse
+type ListSmsBrandsCountQuery = ListSmsBrandsQuery
+
+type ListSmsBrandsCountResponse = ListChannelAnalyticsCountResponse
+
+type ReadSmsBrandResponse = ListSmsBrandsItem
 
 type UpdateSmsBrandRequest struct {
 	DisplayName string `json:"display_name"`
 }
 
-type UpdateSmsBrandResponse = CreateSmsBrandResponse
+type UpdateSmsBrandResponse = ListSmsBrandsItem
 
-type DeleteSmsBrandResponse = CreateSmsBrandResponse
-
-type ListSmsBrandsRequestQuery struct {
-	DateCreated *ListChannelAnalyticsRequestQueryDateCreated `json:"date_created,omitzero"`
-	DateUpdated *ListChannelAnalyticsRequestQueryDateCreated `json:"date_updated,omitzero"`
-	DateDeleted *ListChannelAnalyticsRequestQueryDateCreated `json:"date_deleted,omitzero"`
-}
-
-type ListSmsBrandsRequest struct {
-	Filter map[string]bool                    `json:"filter,omitzero"`
-	Cursor *ListChannelAnalyticsRequestCursor `json:"cursor,omitzero"`
-	Query  *ListSmsBrandsRequestQuery         `json:"query,omitzero"`
-	Sort   map[string]string                  `json:"sort,omitzero"`
-	Limit  any                                `json:"limit,omitzero"`
-}
-
-type ListSmsBrandsItem = CreateSmsBrandResponse
+type DeleteSmsBrandResponse = ListSmsBrandsItem

@@ -18,14 +18,34 @@ final class MessagingVerifications
     {
     }
 
+    public function listMessages(array $query, ?CallOptions $options = null): ListPage
+    {
+        return $this->client->sendList(new OperationRequest(
+            method: HttpMethod::Get,
+            path: 'messaging/verifications/',
+            query: $query,
+            scopes: [Scope::MessagingProfileId],
+        ), $options);
+    }
+
     public function create(array $data, ?CallOptions $options = null): array
     {
         return $this->client->send(new OperationRequest(
             method: HttpMethod::Post,
-            path: 'messaging/verifications/send',
+            path: 'messaging/verifications/',
             body: $data,
             scopes: [Scope::MessagingProfileId],
             acceptsIdempotencyKey: true,
+        ), $options)->dataArray();
+    }
+
+    public function listMessagesCount(array $query, ?CallOptions $options = null): array
+    {
+        return $this->client->send(new OperationRequest(
+            method: HttpMethod::Get,
+            path: 'messaging/verifications/count',
+            query: $query,
+            scopes: [Scope::MessagingProfileId],
         ), $options)->dataArray();
     }
 
@@ -43,20 +63,10 @@ final class MessagingVerifications
     public function resend(string $verificationId, ?CallOptions $options = null): array
     {
         return $this->client->send(new OperationRequest(
-            method: HttpMethod::Patch,
-            path: 'messaging/verifications/resend/' . PathSegment::encode($verificationId),
-            scopes: [Scope::MessagingProfileId],
-        ), $options)->dataArray();
-    }
-
-    public function listMessages(array $data, ?CallOptions $options = null): ListPage
-    {
-        return $this->client->sendList(new OperationRequest(
             method: HttpMethod::Post,
-            path: 'messaging/verifications/messages',
-            body: $data,
+            path: 'messaging/verifications/' . PathSegment::encode($verificationId) . '/resend',
             scopes: [Scope::MessagingProfileId],
             acceptsIdempotencyKey: true,
-        ), $options);
+        ), $options)->dataArray();
     }
 }

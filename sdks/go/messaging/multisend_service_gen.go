@@ -14,7 +14,7 @@ func (s *MultisendsService) Create(ctx context.Context, body *CreateMultisendReq
 	var out CreateMultisendResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
 		Method:                "POST",
-		Path:                  "messaging/multisend/send",
+		Path:                  "messaging/broadcasts/",
 		Body:                  body,
 		BodyRequired:          true,
 		Scopes:                []conjoin.ScopeName{conjoin.ScopeMessagingProfile},
@@ -25,12 +25,12 @@ func (s *MultisendsService) Create(ctx context.Context, body *CreateMultisendReq
 	return &out, nil
 }
 
-func (s *MultisendsService) Read(ctx context.Context, messageID string, opts ...conjoin.CallOption) (*ReadMultisendResponse, error) {
+func (s *MultisendsService) Read(ctx context.Context, broadcastID string, opts ...conjoin.CallOption) (*ReadMultisendResponse, error) {
 	var out ReadMultisendResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
 		Method:     "GET",
-		Path:       "messaging/multisend/{message_id}",
-		PathParams: []string{messageID},
+		Path:       "messaging/broadcasts/{broadcast_id}",
+		PathParams: []string{broadcastID},
 		Scopes:     []conjoin.ScopeName{conjoin.ScopeMessagingProfile},
 	}, &out, opts...); err != nil {
 		return nil, err

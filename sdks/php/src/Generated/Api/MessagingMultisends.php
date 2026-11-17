@@ -21,18 +21,18 @@ final class MessagingMultisends
     {
         return $this->client->send(new OperationRequest(
             method: HttpMethod::Post,
-            path: 'messaging/multisend/send',
+            path: 'messaging/broadcasts/',
             body: $data,
             scopes: [Scope::MessagingProfileId],
             acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }
 
-    public function read(string $messageId, ?CallOptions $options = null): array
+    public function read(string $broadcastId, ?CallOptions $options = null): array
     {
         return $this->client->send(new OperationRequest(
             method: HttpMethod::Get,
-            path: 'messaging/multisend/' . PathSegment::encode($messageId),
+            path: 'messaging/broadcasts/' . PathSegment::encode($broadcastId),
             scopes: [Scope::MessagingProfileId],
         ), $options)->dataArray();
     }

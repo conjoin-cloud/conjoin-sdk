@@ -10,10 +10,10 @@ from conjoin_cloud.generated._models import (
     MessagingTemplateCreateMessageRequest,
     MessagingTemplateCreateMessageResponse,
     MessagingTemplateDeleteMessageResponse,
-    MessagingTemplateDeleteMessagesRequest,
-    MessagingTemplateDeleteMessagesResponse,
+    MessagingTemplateListMessageCountQuery,
+    MessagingTemplateListMessageCountResponse,
     MessagingTemplateListMessageItem,
-    MessagingTemplateListMessageRequest,
+    MessagingTemplateListMessageQuery,
     MessagingTemplateReadMessageResponse,
     MessagingTemplateUpdateMessageRequest,
     MessagingTemplateUpdateMessageResponse,
@@ -26,6 +26,21 @@ if TYPE_CHECKING:
 class MessagingTemplatesResource:
     def __init__(self, client: Conjoin) -> None:
         self._client = client
+
+    def list_message(
+        self,
+        query: MessagingTemplateListMessageQuery | None = None,
+        *,
+        request_options: RequestOptions | Mapping[str, Any] | None = None,
+    ) -> Page[MessagingTemplateListMessageItem]:
+        return self._client.request(
+            'GET',
+            'messaging/templates/',
+            query=query,
+            cast_to=Page[MessagingTemplateListMessageItem],
+            request_options=request_options,
+            scopes=('messaging_profile_id',),
+        )
 
     def create_message(
         self,
@@ -43,20 +58,19 @@ class MessagingTemplatesResource:
             accepts_idempotency_key=True,
         )
 
-    def list_message(
+    def list_message_count(
         self,
-        data: MessagingTemplateListMessageRequest,
+        query: MessagingTemplateListMessageCountQuery | None = None,
         *,
         request_options: RequestOptions | Mapping[str, Any] | None = None,
-    ) -> Page[MessagingTemplateListMessageItem]:
+    ) -> MessagingTemplateListMessageCountResponse:
         return self._client.request(
-            'POST',
-            'messaging/templates/retrieve',
-            body=data,
-            cast_to=Page[MessagingTemplateListMessageItem],
+            'GET',
+            'messaging/templates/count',
+            query=query,
+            cast_to=MessagingTemplateListMessageCountResponse,
             request_options=request_options,
             scopes=('messaging_profile_id',),
-            accepts_idempotency_key=True,
         )
 
     def read_message(
@@ -103,26 +117,25 @@ class MessagingTemplatesResource:
             scopes=('messaging_profile_id',),
         )
 
-    def delete_messages(
-        self,
-        data: MessagingTemplateDeleteMessagesRequest,
-        *,
-        request_options: RequestOptions | Mapping[str, Any] | None = None,
-    ) -> MessagingTemplateDeleteMessagesResponse:
-        return self._client.request(
-            'PATCH',
-            'messaging/templates/wipe',
-            body=data,
-            cast_to=MessagingTemplateDeleteMessagesResponse,
-            request_options=request_options,
-            scopes=('messaging_profile_id',),
-            unwrap_data=False,
-        )
-
 
 class AsyncMessagingTemplatesResource:
     def __init__(self, client: AsyncConjoin) -> None:
         self._client = client
+
+    async def list_message(
+        self,
+        query: MessagingTemplateListMessageQuery | None = None,
+        *,
+        request_options: RequestOptions | Mapping[str, Any] | None = None,
+    ) -> AsyncPage[MessagingTemplateListMessageItem]:
+        return await self._client.request(
+            'GET',
+            'messaging/templates/',
+            query=query,
+            cast_to=AsyncPage[MessagingTemplateListMessageItem],
+            request_options=request_options,
+            scopes=('messaging_profile_id',),
+        )
 
     async def create_message(
         self,
@@ -140,20 +153,19 @@ class AsyncMessagingTemplatesResource:
             accepts_idempotency_key=True,
         )
 
-    async def list_message(
+    async def list_message_count(
         self,
-        data: MessagingTemplateListMessageRequest,
+        query: MessagingTemplateListMessageCountQuery | None = None,
         *,
         request_options: RequestOptions | Mapping[str, Any] | None = None,
-    ) -> AsyncPage[MessagingTemplateListMessageItem]:
+    ) -> MessagingTemplateListMessageCountResponse:
         return await self._client.request(
-            'POST',
-            'messaging/templates/retrieve',
-            body=data,
-            cast_to=AsyncPage[MessagingTemplateListMessageItem],
+            'GET',
+            'messaging/templates/count',
+            query=query,
+            cast_to=MessagingTemplateListMessageCountResponse,
             request_options=request_options,
             scopes=('messaging_profile_id',),
-            accepts_idempotency_key=True,
         )
 
     async def read_message(
@@ -198,20 +210,4 @@ class AsyncMessagingTemplatesResource:
             cast_to=MessagingTemplateDeleteMessageResponse,
             request_options=request_options,
             scopes=('messaging_profile_id',),
-        )
-
-    async def delete_messages(
-        self,
-        data: MessagingTemplateDeleteMessagesRequest,
-        *,
-        request_options: RequestOptions | Mapping[str, Any] | None = None,
-    ) -> MessagingTemplateDeleteMessagesResponse:
-        return await self._client.request(
-            'PATCH',
-            'messaging/templates/wipe',
-            body=data,
-            cast_to=MessagingTemplateDeleteMessagesResponse,
-            request_options=request_options,
-            scopes=('messaging_profile_id',),
-            unwrap_data=False,
         )

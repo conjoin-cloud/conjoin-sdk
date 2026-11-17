@@ -2,6 +2,39 @@ package messaging
 
 import conjoin "github.com/conjoin-cloud/conjoin-sdk/sdks/go"
 
+type ListConversationsQuery struct {
+	ConversationID any                                   `json:"conversation_id,omitzero"`
+	ReferenceID    any                                   `json:"reference_id,omitzero"`
+	Title          any                                   `json:"title,omitzero"`
+	AcceptsReplies any                                   `json:"accepts_replies,omitzero"`
+	DateCreated    *ListChannelAnalyticsQueryDateCreated `json:"date_created,omitzero"`
+	DateArchived   *ListChannelAnalyticsQueryDateCreated `json:"date_archived,omitzero"`
+	Search         *string                               `json:"search,omitzero"`
+	Cursor         *ListChannelAnalyticsQueryCursor      `json:"cursor,omitzero"`
+	Sort           map[string]string                     `json:"sort,omitzero"`
+	Limit          any                                   `json:"limit,omitzero"`
+}
+
+type ListConversationsItem struct {
+	ConversationID   string                           `json:"conversation_id"`
+	ProfileID        string                           `json:"profile_id"`
+	ConjoinAccountID string                           `json:"conjoin_account_id"`
+	ConjoinProjectID string                           `json:"conjoin_project_id"`
+	LiveMode         bool                             `json:"live_mode"`
+	ReferenceID      conjoin.Nullable[string]         `json:"reference_id,omitzero"`
+	Title            string                           `json:"title"`
+	Description      *string                          `json:"description,omitzero"`
+	MessageChannels  map[string]any                   `json:"message_channels"`
+	Senders          conjoin.Nullable[map[string]any] `json:"senders,omitzero"`
+	AcceptsReplies   bool                             `json:"accepts_replies"`
+	TotalRecipients  float64                          `json:"total_recipients"`
+	Placeholders     conjoin.Nullable[map[string]any] `json:"placeholders,omitzero"`
+	DateArchived     conjoin.Nullable[string]         `json:"date_archived,omitzero"`
+	DateCreated      string                           `json:"date_created"`
+	DateUpdated      string                           `json:"date_updated"`
+	DateDeleted      conjoin.Nullable[string]         `json:"date_deleted,omitzero"`
+}
+
 type CreateConversationRequestSendersSMS struct {
 	Type         *string `json:"type,omitzero"`
 	SenderPoolID *string `json:"sender_pool_id,omitzero"`
@@ -24,33 +57,95 @@ type CreateConversationRequest struct {
 	AcceptsReplies      *bool                             `json:"accepts_replies,omitzero"`
 }
 
-type CreateConversationResponse struct {
-	ConversationID   string                           `json:"conversation_id"`
-	ProfileID        string                           `json:"profile_id"`
-	ConjoinAccountID string                           `json:"conjoin_account_id"`
-	ConjoinProjectID string                           `json:"conjoin_project_id"`
-	LiveMode         bool                             `json:"live_mode"`
-	ReferenceID      conjoin.Nullable[string]         `json:"reference_id,omitzero"`
-	Title            string                           `json:"title"`
-	Description      *string                          `json:"description,omitzero"`
-	MessageChannels  map[string]any                   `json:"message_channels"`
-	Senders          conjoin.Nullable[map[string]any] `json:"senders,omitzero"`
-	AcceptsReplies   bool                             `json:"accepts_replies"`
-	TotalRecipients  float64                          `json:"total_recipients"`
-	Placeholders     conjoin.Nullable[map[string]any] `json:"placeholders,omitzero"`
-	DateArchived     conjoin.Nullable[string]         `json:"date_archived,omitzero"`
-	DateCreated      string                           `json:"date_created"`
-	DateUpdated      string                           `json:"date_updated"`
-	DateDeleted      conjoin.Nullable[string]         `json:"date_deleted,omitzero"`
+type CreateConversationResponse = ListConversationsItem
+
+type ListConversationMessagesQuery struct {
+	ParentMessageID *string                          `json:"parent_message_id,omitzero"`
+	ReferenceID     any                              `json:"reference_id,omitzero"`
+	Search          *string                          `json:"search,omitzero"`
+	Channel         string                           `json:"channel"`
+	Cursor          *ListChannelAnalyticsQueryCursor `json:"cursor,omitzero"`
+	Sort            map[string]string                `json:"sort,omitzero"`
+	Limit           any                              `json:"limit,omitzero"`
 }
 
-type CloneConversationRequest struct {
+type ListConversationMessagesItem struct {
+	MessageID           *string                  `json:"message_id,omitzero"`
+	ProfileID           *string                  `json:"profile_id,omitzero"`
+	ConjoinAccountID    *string                  `json:"conjoin_account_id,omitzero"`
+	ConjoinProjectID    *string                  `json:"conjoin_project_id,omitzero"`
+	LiveMode            *bool                    `json:"live_mode,omitzero"`
+	ReferenceID         conjoin.Nullable[string] `json:"reference_id,omitzero"`
+	ConversationID      conjoin.Nullable[string] `json:"conversation_id,omitzero"`
+	ParentMessageID     conjoin.Nullable[string] `json:"parent_message_id,omitzero"`
+	Type                *string                  `json:"type,omitzero"`
+	ReplyTo             conjoin.Nullable[string] `json:"reply_to,omitzero"`
+	DefaultPlaceholders map[string]any           `json:"default_placeholders,omitzero"`
+	SentAt              *string                  `json:"sent_at,omitzero"`
+	Body                *string                  `json:"body,omitzero"`
+	TruncateMessage     *bool                    `json:"truncate_message,omitzero"`
+	SendAt              conjoin.Nullable[string] `json:"send_at,omitzero"`
+	Status              *string                  `json:"status,omitzero"`
+	DateCreated         *string                  `json:"date_created,omitzero"`
+	DateUpdated         *string                  `json:"date_updated,omitzero"`
+	DateDeleted         conjoin.Nullable[string] `json:"date_deleted,omitzero"`
+	ReplyCount          *float64                 `json:"reply_count,omitzero"`
+	From                *string                  `json:"from,omitzero"`
+	Subject             *string                  `json:"subject,omitzero"`
+	Cc                  []string                 `json:"cc,omitzero"`
+	Bcc                 []string                 `json:"bcc,omitzero"`
+	Attachments         []map[string]any         `json:"attachments,omitzero"`
+	Tracking            map[string]any           `json:"tracking,omitzero"`
+	AcceptsReplies      *bool                    `json:"accepts_replies,omitzero"`
+}
+
+type ListConversationRecipientsQuery struct {
+	ReferenceID any                                   `json:"reference_id,omitzero"`
+	ContactID   any                                   `json:"contact_id,omitzero"`
+	DateCreated *ListChannelAnalyticsQueryDateCreated `json:"date_created,omitzero"`
+	Cursor      *ListChannelAnalyticsQueryCursor      `json:"cursor,omitzero"`
+	Sort        map[string]string                     `json:"sort,omitzero"`
+	Limit       any                                   `json:"limit,omitzero"`
+}
+
+type ListConversationRecipientsItem struct {
+	ProfileID        string                   `json:"profile_id"`
+	ConjoinAccountID string                   `json:"conjoin_account_id"`
+	ConjoinProjectID string                   `json:"conjoin_project_id"`
+	LiveMode         bool                     `json:"live_mode"`
+	ReferenceID      conjoin.Nullable[string] `json:"reference_id,omitzero"`
+	ContactID        string                   `json:"contact_id"`
+	ConversationID   string                   `json:"conversation_id"`
+	RecipientID      string                   `json:"recipient_id"`
+	DateArchived     conjoin.Nullable[string] `json:"date_archived,omitzero"`
+	DateCreated      string                   `json:"date_created"`
+	DateUpdated      string                   `json:"date_updated"`
+	DateDeleted      conjoin.Nullable[string] `json:"date_deleted,omitzero"`
+}
+
+type AddOneConversationRecipientRequest = CreateContactRequest
+
+type AddOneConversationRecipientResponse = ListConversationRecipientsItem
+
+type ListConversationsCountQuery = ListConversationsQuery
+
+type ListConversationsCountResponse = ListChannelAnalyticsCountResponse
+
+type ListConversationMessagesCountQuery = ListConversationMessagesQuery
+
+type ListConversationMessagesCountResponse = ListChannelAnalyticsCountResponse
+
+type ListConversationRecipientsCountQuery = ListConversationRecipientsQuery
+
+type ListConversationRecipientsCountResponse = ListChannelAnalyticsCountResponse
+
+type DuplicateConversationRequest struct {
 	Title          *string `json:"title,omitzero"`
 	Description    *string `json:"description,omitzero"`
 	AcceptsReplies *bool   `json:"accepts_replies,omitzero"`
 }
 
-type CloneConversationResponse = CreateConversationResponse
+type DuplicateConversationResponse = ListConversationsItem
 
 type SendConversationMessageRequestMessagesSMS struct {
 	ReferenceID         *string        `json:"reference_id,omitzero"`
@@ -108,103 +203,20 @@ type SendConversationMessageRequest struct {
 	SendAt               *string                                `json:"send_at,omitzero"`
 }
 
-type DeleteConversationResponse = CreateConversationResponse
+type DeleteConversationResponse = ListConversationsItem
 
-type UpdateConversationRequest = CloneConversationRequest
+type UpdateConversationRequest = DuplicateConversationRequest
 
-type UpdateConversationResponse = CreateConversationResponse
+type UpdateConversationResponse = ListConversationsItem
 
-type ArchiveConversationResponse = CreateConversationResponse
+type ArchiveConversationResponse = ListConversationsItem
 
-type ListConversationsRequestQuery struct {
-	ConversationID any                                          `json:"conversation_id,omitzero"`
-	ReferenceID    any                                          `json:"reference_id,omitzero"`
-	Title          any                                          `json:"title,omitzero"`
-	AcceptsReplies *bool                                        `json:"accepts_replies,omitzero"`
-	DateCreated    *ListChannelAnalyticsRequestQueryDateCreated `json:"date_created,omitzero"`
-	DateArchived   *ListChannelAnalyticsRequestQueryDateCreated `json:"date_archived,omitzero"`
-}
+type ReadOneConversationRecipientResponse = ListConversationRecipientsItem
 
-type ListConversationsRequest struct {
-	Cursor *ListChannelAnalyticsRequestCursor `json:"cursor,omitzero"`
-	Filter map[string]bool                    `json:"filter,omitzero"`
-	Query  *ListConversationsRequestQuery     `json:"query,omitzero"`
-	Search *ListContactsRequestSearch         `json:"search,omitzero"`
-	Sort   map[string]string                  `json:"sort,omitzero"`
-	Limit  any                                `json:"limit,omitzero"`
-}
-
-type ListConversationsItem = CreateConversationResponse
-
-type ReadConversationMessagesRequest struct {
-	Channel string                             `json:"channel"`
-	Cursor  *ListChannelAnalyticsRequestCursor `json:"cursor,omitzero"`
-	Search  *ListContactsRequestSearch         `json:"search,omitzero"`
-	Sort    map[string]string                  `json:"sort,omitzero"`
-	Limit   any                                `json:"limit,omitzero"`
-}
-
-type ReadConversationMessagesItem struct {
-	MessageID           *string                  `json:"message_id,omitzero"`
-	ProfileID           *string                  `json:"profile_id,omitzero"`
-	ConjoinAccountID    *string                  `json:"conjoin_account_id,omitzero"`
-	ConjoinProjectID    *string                  `json:"conjoin_project_id,omitzero"`
-	LiveMode            *bool                    `json:"live_mode,omitzero"`
-	ReferenceID         conjoin.Nullable[string] `json:"reference_id,omitzero"`
-	ConversationID      conjoin.Nullable[string] `json:"conversation_id,omitzero"`
-	ParentMessageID     conjoin.Nullable[string] `json:"parent_message_id,omitzero"`
-	Type                *string                  `json:"type,omitzero"`
-	ReplyTo             conjoin.Nullable[string] `json:"reply_to,omitzero"`
-	DefaultPlaceholders map[string]any           `json:"default_placeholders,omitzero"`
-	SentAt              *string                  `json:"sent_at,omitzero"`
-	Body                *string                  `json:"body,omitzero"`
-	TruncateMessage     *bool                    `json:"truncate_message,omitzero"`
-	SendAt              conjoin.Nullable[string] `json:"send_at,omitzero"`
-	Status              *string                  `json:"status,omitzero"`
-	DateCreated         *string                  `json:"date_created,omitzero"`
-	DateUpdated         *string                  `json:"date_updated,omitzero"`
-	DateDeleted         conjoin.Nullable[string] `json:"date_deleted,omitzero"`
-	ReplyCount          *float64                 `json:"reply_count,omitzero"`
-	From                *string                  `json:"from,omitzero"`
-	Subject             *string                  `json:"subject,omitzero"`
-	Cc                  []string                 `json:"cc,omitzero"`
-	Bcc                 []string                 `json:"bcc,omitzero"`
-	Attachments         []map[string]any         `json:"attachments,omitzero"`
-	Tracking            map[string]any           `json:"tracking,omitzero"`
-	AcceptsReplies      *bool                    `json:"accepts_replies,omitzero"`
-}
-
-type ReadOneConversationRecipientResponse struct {
-	ProfileID        string                   `json:"profile_id"`
-	ConjoinAccountID string                   `json:"conjoin_account_id"`
-	ConjoinProjectID string                   `json:"conjoin_project_id"`
-	LiveMode         bool                     `json:"live_mode"`
-	ReferenceID      conjoin.Nullable[string] `json:"reference_id,omitzero"`
-	ContactID        string                   `json:"contact_id"`
-	ConversationID   string                   `json:"conversation_id"`
-	RecipientID      string                   `json:"recipient_id"`
-	DateArchived     conjoin.Nullable[string] `json:"date_archived,omitzero"`
-	DateCreated      string                   `json:"date_created"`
-	DateUpdated      string                   `json:"date_updated"`
-	DateDeleted      conjoin.Nullable[string] `json:"date_deleted,omitzero"`
-}
-
-type DeleteConversationRecipientsResponse = ReadOneConversationRecipientResponse
-
-type ReadManyConversationRecipientsRequest struct {
-	Cursor *ListChannelAnalyticsRequestCursor `json:"cursor,omitzero"`
-	Sort   map[string]string                  `json:"sort,omitzero"`
-	Limit  any                                `json:"limit,omitzero"`
-}
-
-type ReadManyConversationRecipientsItem = ReadOneConversationRecipientResponse
-
-type AddOneConversationRecipientRequest = CreateContactRequest
-
-type AddOneConversationRecipientResponse = ReadOneConversationRecipientResponse
+type DeleteConversationRecipientsResponse = ListConversationRecipientsItem
 
 type AddManyConversationRecipientsRequest struct {
 	Recipients []CreateContactRequest `json:"recipients"`
 }
 
-type AddManyConversationRecipientsItem = ReadOneConversationRecipientResponse
+type AddManyConversationRecipientsItem = ListConversationRecipientsItem

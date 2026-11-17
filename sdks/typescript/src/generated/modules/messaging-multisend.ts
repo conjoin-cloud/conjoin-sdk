@@ -9,9 +9,9 @@ type ReadData = NonNullable<operations['readMultisend']['responses']['200']['con
 export function createMessagingMultisends(client: ConjoinClient) {
   return {
     create: (data: CreateBody, options?: ConjoinCallOptions) =>
-      client.fetch<CreateData>('messaging/multisend/send', { ...options, method: 'POST', body: data, scopes: ['messagingProfileId'], acceptsIdempotencyKey: true }),
+      client.fetch<CreateData>('messaging/broadcasts/', { ...options, method: 'POST', body: data, scopes: ['messagingProfileId'], acceptsIdempotencyKey: true }),
 
-    read: (messageId: string, options?: ConjoinCallOptions) =>
-      client.fetch<ReadData>(`messaging/multisend/${encodePathParam(messageId)}`, { ...options, method: 'GET', scopes: ['messagingProfileId'] }),
+    read: (broadcastId: string, options?: ConjoinCallOptions) =>
+      client.fetch<ReadData>(`messaging/broadcasts/${encodePathParam(broadcastId)}`, { ...options, method: 'GET', scopes: ['messagingProfileId'] }),
   }
 }
