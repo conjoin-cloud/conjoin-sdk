@@ -10,6 +10,8 @@ from conjoin_cloud.generated._models import (
     AiBYOKCreateByokConfigRequest,
     AiBYOKCreateByokConfigResponse,
     AiBYOKDeleteByokConfigResponse,
+    AiBYOKListByokConfigsCountQuery,
+    AiBYOKListByokConfigsCountResponse,
     AiBYOKListByokConfigsItem,
     AiBYOKListByokConfigsQuery,
     AiBYOKReadByokConfigResponse,
@@ -34,7 +36,7 @@ class AiBYOKsResource:
     ) -> Page[AiBYOKListByokConfigsItem]:
         return self._client.request(
             'GET',
-            'ai/byok/',
+            'ai/byok-configs/',
             query=query,
             cast_to=Page[AiBYOKListByokConfigsItem],
             request_options=request_options,
@@ -48,11 +50,25 @@ class AiBYOKsResource:
     ) -> AiBYOKCreateByokConfigResponse:
         return self._client.request(
             'POST',
-            'ai/byok/',
+            'ai/byok-configs/',
             body=data,
             cast_to=AiBYOKCreateByokConfigResponse,
             request_options=request_options,
             accepts_idempotency_key=True,
+        )
+
+    def list_byok_configs_count(
+        self,
+        query: AiBYOKListByokConfigsCountQuery | None = None,
+        *,
+        request_options: RequestOptions | Mapping[str, Any] | None = None,
+    ) -> AiBYOKListByokConfigsCountResponse:
+        return self._client.request(
+            'GET',
+            'ai/byok-configs/count',
+            query=query,
+            cast_to=AiBYOKListByokConfigsCountResponse,
+            request_options=request_options,
         )
 
     def read_byok_config(
@@ -63,7 +79,7 @@ class AiBYOKsResource:
     ) -> AiBYOKReadByokConfigResponse:
         return self._client.request(
             'GET',
-            f'ai/byok/{encode_path_param(byok_config_id)}',
+            f'ai/byok-configs/{encode_path_param(byok_config_id)}',
             cast_to=AiBYOKReadByokConfigResponse,
             request_options=request_options,
         )
@@ -77,7 +93,7 @@ class AiBYOKsResource:
     ) -> AiBYOKUpdateByokConfigResponse:
         return self._client.request(
             'PATCH',
-            f'ai/byok/{encode_path_param(byok_config_id)}',
+            f'ai/byok-configs/{encode_path_param(byok_config_id)}',
             body=data,
             cast_to=AiBYOKUpdateByokConfigResponse,
             request_options=request_options,
@@ -91,7 +107,7 @@ class AiBYOKsResource:
     ) -> AiBYOKDeleteByokConfigResponse:
         return self._client.request(
             'DELETE',
-            f'ai/byok/{encode_path_param(byok_config_id)}',
+            f'ai/byok-configs/{encode_path_param(byok_config_id)}',
             cast_to=AiBYOKDeleteByokConfigResponse,
             request_options=request_options,
         )
@@ -104,7 +120,7 @@ class AiBYOKsResource:
     ) -> AiBYOKTestByokConnectionResponse:
         return self._client.request(
             'POST',
-            f'ai/byok/{encode_path_param(byok_config_id)}/test',
+            f'ai/byok-configs/{encode_path_param(byok_config_id)}/test',
             cast_to=AiBYOKTestByokConnectionResponse,
             request_options=request_options,
             accepts_idempotency_key=True,
@@ -123,7 +139,7 @@ class AsyncAiBYOKsResource:
     ) -> AsyncPage[AiBYOKListByokConfigsItem]:
         return await self._client.request(
             'GET',
-            'ai/byok/',
+            'ai/byok-configs/',
             query=query,
             cast_to=AsyncPage[AiBYOKListByokConfigsItem],
             request_options=request_options,
@@ -137,11 +153,25 @@ class AsyncAiBYOKsResource:
     ) -> AiBYOKCreateByokConfigResponse:
         return await self._client.request(
             'POST',
-            'ai/byok/',
+            'ai/byok-configs/',
             body=data,
             cast_to=AiBYOKCreateByokConfigResponse,
             request_options=request_options,
             accepts_idempotency_key=True,
+        )
+
+    async def list_byok_configs_count(
+        self,
+        query: AiBYOKListByokConfigsCountQuery | None = None,
+        *,
+        request_options: RequestOptions | Mapping[str, Any] | None = None,
+    ) -> AiBYOKListByokConfigsCountResponse:
+        return await self._client.request(
+            'GET',
+            'ai/byok-configs/count',
+            query=query,
+            cast_to=AiBYOKListByokConfigsCountResponse,
+            request_options=request_options,
         )
 
     async def read_byok_config(
@@ -152,7 +182,7 @@ class AsyncAiBYOKsResource:
     ) -> AiBYOKReadByokConfigResponse:
         return await self._client.request(
             'GET',
-            f'ai/byok/{encode_path_param(byok_config_id)}',
+            f'ai/byok-configs/{encode_path_param(byok_config_id)}',
             cast_to=AiBYOKReadByokConfigResponse,
             request_options=request_options,
         )
@@ -166,7 +196,7 @@ class AsyncAiBYOKsResource:
     ) -> AiBYOKUpdateByokConfigResponse:
         return await self._client.request(
             'PATCH',
-            f'ai/byok/{encode_path_param(byok_config_id)}',
+            f'ai/byok-configs/{encode_path_param(byok_config_id)}',
             body=data,
             cast_to=AiBYOKUpdateByokConfigResponse,
             request_options=request_options,
@@ -180,7 +210,7 @@ class AsyncAiBYOKsResource:
     ) -> AiBYOKDeleteByokConfigResponse:
         return await self._client.request(
             'DELETE',
-            f'ai/byok/{encode_path_param(byok_config_id)}',
+            f'ai/byok-configs/{encode_path_param(byok_config_id)}',
             cast_to=AiBYOKDeleteByokConfigResponse,
             request_options=request_options,
         )
@@ -193,7 +223,7 @@ class AsyncAiBYOKsResource:
     ) -> AiBYOKTestByokConnectionResponse:
         return await self._client.request(
             'POST',
-            f'ai/byok/{encode_path_param(byok_config_id)}/test',
+            f'ai/byok-configs/{encode_path_param(byok_config_id)}/test',
             cast_to=AiBYOKTestByokConnectionResponse,
             request_options=request_options,
             accepts_idempotency_key=True,

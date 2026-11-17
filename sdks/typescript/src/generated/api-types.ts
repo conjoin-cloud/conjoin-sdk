@@ -4,7 +4,7 @@
  */
 
 export interface paths {
-    "/v1/ai/byok/": {
+    "/v1/ai/byok-configs/": {
         parameters: {
             query?: never;
             header?: never;
@@ -22,7 +22,27 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/v1/ai/byok/{byok_config_id}": {
+    "/v1/ai/byok-configs/count": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Count BYOK API key configurations
+         * @description Returns how many records match the filters that the list route accepts.
+         */
+        get: operations["listAiByokConfigsCount"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/ai/byok-configs/{byok_config_id}": {
         parameters: {
             query?: never;
             header?: never;
@@ -41,7 +61,7 @@ export interface paths {
         patch: operations["updateAiByokConfig"];
         trace?: never;
     };
-    "/v1/ai/byok/{byok_config_id}/test": {
+    "/v1/ai/byok-configs/{byok_config_id}/test": {
         parameters: {
             query?: never;
             header?: never;
@@ -58,7 +78,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/v1/ai/context/indexes": {
+    "/v1/ai/context-indexes/": {
         parameters: {
             query?: never;
             header?: never;
@@ -76,7 +96,27 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/v1/ai/context/indexes/{index_id}": {
+    "/v1/ai/context-indexes/count": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Count AI context indexes
+         * @description Returns how many records match the filters that the list route accepts.
+         */
+        get: operations["listAiContextIndexesCount"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/ai/context-indexes/{context_index_id}": {
         parameters: {
             query?: never;
             header?: never;
@@ -94,7 +134,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/v1/ai/context/indexes/{index_id}/sync": {
+    "/v1/ai/context-indexes/{context_index_id}/sync": {
         parameters: {
             query?: never;
             header?: never;
@@ -111,32 +151,36 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/v1/ai/context/query": {
+    "/v1/ai/context-queries/": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get?: never;
+        /** List AI context queries */
+        get: operations["listAiContextQueries"];
         put?: never;
-        /** Query AI context */
-        post: operations["queryAiContext"];
+        /** Query AI context indexes */
+        post: operations["createAiContextQuery"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/v1/ai/context/query-logs": {
+    "/v1/ai/context-queries/count": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        /** List AI context query logs */
-        get: operations["listAiContextQueryLogs"];
+        /**
+         * Count AI context queries
+         * @description Returns how many records match the filters that the list route accepts.
+         */
+        get: operations["listAiContextQueriesCount"];
         put?: never;
         post?: never;
         delete?: never;
@@ -145,7 +189,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/v1/ai/model/models": {
+    "/v1/ai/models/": {
         parameters: {
             query?: never;
             header?: never;
@@ -162,7 +206,27 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/v1/ai/model/models/{model_id}": {
+    "/v1/ai/models/count": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Count AI models
+         * @description Returns how many records match the filters that the list route accepts.
+         */
+        get: operations["listAiModelsCount"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/ai/models/{model_id}": {
         parameters: {
             query?: never;
             header?: never;
@@ -179,7 +243,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/v1/ai/policy/check": {
+    "/v1/ai/policy-checks/": {
         parameters: {
             query?: never;
             header?: never;
@@ -189,14 +253,51 @@ export interface paths {
         get?: never;
         put?: never;
         /** Check content against AI policy rules */
-        post: operations["checkAiPolicy"];
+        post: operations["createAiPolicyCheck"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/v1/ai/policy/rules": {
+    "/v1/ai/policy-logs/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List AI policy logs */
+        get: operations["listAiPolicyLogs"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/ai/policy-logs/count": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Count AI policy logs
+         * @description Returns how many records match the filters that the list route accepts.
+         */
+        get: operations["listAiPolicyLogsCount"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/ai/policy-rules/": {
         parameters: {
             query?: never;
             header?: never;
@@ -214,7 +315,27 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/v1/ai/policy/rules/{rule_id}": {
+    "/v1/ai/policy-rules/count": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Count AI policy rules
+         * @description Returns how many records match the filters that the list route accepts.
+         */
+        get: operations["listAiPolicyRulesCount"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/ai/policy-rules/{policy_rule_id}": {
         parameters: {
             query?: never;
             header?: never;
@@ -233,24 +354,7 @@ export interface paths {
         patch: operations["updateAiPolicyRule"];
         trace?: never;
     };
-    "/v1/ai/policy/logs": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** List AI policy logs */
-        get: operations["listAiPolicyLogs"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/v1/ai/usage/records": {
+    "/v1/ai/usage-records/": {
         parameters: {
             query?: never;
             header?: never;
@@ -267,14 +371,34 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/v1/ai/usage/summary": {
+    "/v1/ai/usage-records/count": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        /** Read AI usage summary */
+        /**
+         * Count AI usage records
+         * @description Returns how many records match the filters that the list route accepts.
+         */
+        get: operations["listAiUsageRecordsCount"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/ai/usage/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Read the AI usage summary */
         get: operations["readAiUsageSummary"];
         put?: never;
         post?: never;
@@ -9077,7 +9201,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/v1/ai/inference/multi-model": {
+    "/v1/ai/multi-model-inferences/": {
         parameters: {
             query?: never;
             header?: never;
@@ -9094,7 +9218,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/v1/ai/inference/best-of-n": {
+    "/v1/ai/best-of-n-inferences/": {
         parameters: {
             query?: never;
             header?: never;
@@ -9111,7 +9235,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/v1/ai/inference/requests": {
+    "/v1/ai/inference-requests/": {
         parameters: {
             query?: never;
             header?: never;
@@ -9128,7 +9252,27 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/v1/ai/inference/requests/{request_id}": {
+    "/v1/ai/inference-requests/count": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Count AI inference requests
+         * @description Returns how many records match the filters that the list route accepts.
+         */
+        get: operations["listAiInferenceRequestsCount"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/ai/inference-requests/{inference_request_id}": {
         parameters: {
             query?: never;
             header?: never;
@@ -9198,6 +9342,24 @@ export interface operations {
     listAiByokConfigs: {
         parameters: {
             query?: {
+                provider?: "anthropic" | "openai" | "google" | "openai_compatible" | "self_hosted";
+                status?: "active" | "disabled" | "archived";
+                is_enabled?: boolean | ("true" | "false");
+                reference_id?: string;
+                date_created?: {
+                    /** @example string */
+                    equals?: string;
+                    /** @example string */
+                    not_equals?: string;
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
                 cursor?: {
                     /** @example string */
                     prev?: string;
@@ -9208,27 +9370,6 @@ export interface operations {
                     [key: string]: "asc" | "desc";
                 };
                 limit?: string | number;
-                query?: {
-                    /** @enum {string} */
-                    provider?: "anthropic" | "openai" | "google" | "openai_compatible" | "self_hosted";
-                    /** @enum {string} */
-                    status?: "active" | "disabled" | "archived";
-                    is_enabled?: boolean;
-                    date_created?: {
-                        /** @example string */
-                        equals?: string;
-                        /** @example string */
-                        not_equals?: string;
-                        /** @example string */
-                        gt?: string;
-                        /** @example string */
-                        lt?: string;
-                        /** @example string */
-                        gte?: string;
-                        /** @example string */
-                        lte?: string;
-                    };
-                };
             };
             header?: {
                 /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
@@ -9501,6 +9642,120 @@ export interface operations {
             };
         };
     };
+    listAiByokConfigsCount: {
+        parameters: {
+            query?: {
+                provider?: "anthropic" | "openai" | "google" | "openai_compatible" | "self_hosted";
+                status?: "active" | "disabled" | "archived";
+                is_enabled?: boolean | ("true" | "false");
+                reference_id?: string;
+                date_created?: {
+                    /** @example string */
+                    equals?: string;
+                    /** @example string */
+                    not_equals?: string;
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                cursor?: {
+                    /** @example string */
+                    prev?: string;
+                    /** @example string */
+                    next?: string;
+                };
+                sort?: {
+                    [key: string]: "asc" | "desc";
+                };
+                limit?: string | number;
+            };
+            header?: {
+                /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
+                "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful response */
+            200: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response?: components["schemas"]["ApiSuccessResponseMeta"];
+                        data?: {
+                            count: number;
+                        };
+                    };
+                };
+            };
+            /** @description Validation error or bad request */
+            400: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Unauthorized - missing or invalid API key */
+            401: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description The resource does not exist in the scope of the request */
+            404: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiServerErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+        };
+    };
     readAiByokConfig: {
         parameters: {
             query?: never;
@@ -9734,7 +9989,7 @@ export interface operations {
                     allowed_models?: string[];
                     is_enabled?: boolean;
                     /** @enum {string} */
-                    status?: "active" | "disabled" | "archived";
+                    status?: "active" | "disabled";
                     description?: string | null;
                     /** @description Custom key-value metadata (max 50 keys) */
                     metadata?: {
@@ -9972,6 +10227,24 @@ export interface operations {
     listAiContextIndexes: {
         parameters: {
             query?: {
+                status?: "active" | "building" | "paused" | "archived";
+                sync_status?: "idle" | "syncing" | "failed";
+                source_type?: "storage_container";
+                reference_id?: string;
+                date_created?: {
+                    /** @example string */
+                    equals?: string;
+                    /** @example string */
+                    not_equals?: string;
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
                 cursor?: {
                     /** @example string */
                     prev?: string;
@@ -9982,26 +10255,6 @@ export interface operations {
                     [key: string]: "asc" | "desc";
                 };
                 limit?: string | number;
-                query?: {
-                    /** @enum {string} */
-                    status?: "active" | "building" | "paused" | "archived";
-                    /** @enum {string} */
-                    source_type?: "storage_container";
-                    date_created?: {
-                        /** @example string */
-                        equals?: string;
-                        /** @example string */
-                        not_equals?: string;
-                        /** @example string */
-                        gt?: string;
-                        /** @example string */
-                        lt?: string;
-                        /** @example string */
-                        gte?: string;
-                        /** @example string */
-                        lte?: string;
-                    };
-                };
             };
             header?: {
                 /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
@@ -10055,6 +10308,7 @@ export interface operations {
                             };
                             date_created: string;
                             date_updated: string;
+                            date_deleted?: string | null;
                         }[];
                         cursor?: components["schemas"]["PaginationCursor"];
                     };
@@ -10138,6 +10392,7 @@ export interface operations {
                     /** @enum {string} */
                     source_type: "storage_container";
                     source_config: {
+                        /** @example string */
                         container_id: string;
                         /** @example string */
                         path_prefix?: string;
@@ -10151,8 +10406,8 @@ export interface operations {
                             min_confidence?: number;
                         };
                     };
-                    /** @example string */
-                    embedding_model?: string;
+                    /** @enum {string} */
+                    embedding_model?: "text-embedding-005";
                     description?: string | null;
                     reference_id?: string | null;
                     /**
@@ -10210,6 +10465,7 @@ export interface operations {
                             };
                             date_created: string;
                             date_updated: string;
+                            date_deleted?: string | null;
                         };
                     };
                 };
@@ -10314,6 +10570,120 @@ export interface operations {
             };
         };
     };
+    listAiContextIndexesCount: {
+        parameters: {
+            query?: {
+                status?: "active" | "building" | "paused" | "archived";
+                sync_status?: "idle" | "syncing" | "failed";
+                source_type?: "storage_container";
+                reference_id?: string;
+                date_created?: {
+                    /** @example string */
+                    equals?: string;
+                    /** @example string */
+                    not_equals?: string;
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                cursor?: {
+                    /** @example string */
+                    prev?: string;
+                    /** @example string */
+                    next?: string;
+                };
+                sort?: {
+                    [key: string]: "asc" | "desc";
+                };
+                limit?: string | number;
+            };
+            header?: {
+                /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
+                "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful response */
+            200: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response?: components["schemas"]["ApiSuccessResponseMeta"];
+                        data?: {
+                            count: number;
+                        };
+                    };
+                };
+            };
+            /** @description Validation error or bad request */
+            400: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Unauthorized - missing or invalid API key */
+            401: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description The resource does not exist in the scope of the request */
+            404: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiServerErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+        };
+    };
     readAiContextIndex: {
         parameters: {
             query?: never;
@@ -10322,7 +10692,7 @@ export interface operations {
                 "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
             };
             path: {
-                index_id: string;
+                context_index_id: string;
             };
             cookie?: never;
         };
@@ -10371,6 +10741,7 @@ export interface operations {
                             };
                             date_created: string;
                             date_updated: string;
+                            date_deleted?: string | null;
                         };
                     };
                 };
@@ -10441,7 +10812,7 @@ export interface operations {
                 "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
             };
             path: {
-                index_id: string;
+                context_index_id: string;
             };
             cookie?: never;
         };
@@ -10490,6 +10861,7 @@ export interface operations {
                             };
                             date_created: string;
                             date_updated: string;
+                            date_deleted?: string | null;
                         };
                     };
                 };
@@ -10562,7 +10934,7 @@ export interface operations {
                 "Idempotency-Key"?: components["parameters"]["IdempotencyKey"];
             };
             path: {
-                index_id: string;
+                context_index_id: string;
             };
             cookie?: never;
         };
@@ -10612,6 +10984,7 @@ export interface operations {
                             };
                             date_created: string;
                             date_updated: string;
+                            date_deleted?: string | null;
                         };
                     };
                 };
@@ -10716,7 +11089,146 @@ export interface operations {
             };
         };
     };
-    queryAiContext: {
+    listAiContextQueries: {
+        parameters: {
+            query?: {
+                user_id?: string;
+                queried_at?: {
+                    /** @example string */
+                    equals?: string;
+                    /** @example string */
+                    not_equals?: string;
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                date_created?: {
+                    /** @example string */
+                    equals?: string;
+                    /** @example string */
+                    not_equals?: string;
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                cursor?: {
+                    /** @example string */
+                    prev?: string;
+                    /** @example string */
+                    next?: string;
+                };
+                sort?: {
+                    [key: string]: "asc" | "desc";
+                };
+                limit?: string | number;
+            };
+            header?: {
+                /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
+                "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful response */
+            200: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response?: components["schemas"]["ApiSuccessResponseMeta"];
+                        data?: {
+                            query_id: string;
+                            conjoin_account_id: string;
+                            conjoin_project_id: string;
+                            live_mode: boolean;
+                            index_ids: string[];
+                            modes_used: string[];
+                            vector_results_count: number;
+                            fulltext_results_count: number;
+                            agentic_reads_count: number;
+                            total_results_returned: number;
+                            latency_ms: number;
+                            token_cost_usd: number;
+                            queried_at: string;
+                            date_created: string;
+                        }[];
+                        cursor?: components["schemas"]["PaginationCursor"];
+                    };
+                };
+            };
+            /** @description Validation error or bad request */
+            400: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Unauthorized - missing or invalid API key */
+            401: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description The resource does not exist in the scope of the request */
+            404: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiServerErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+        };
+    };
+    createAiContextQuery: {
         parameters: {
             query?: never;
             header?: {
@@ -10736,9 +11248,7 @@ export interface operations {
                     query: string;
                     modes?: ("vector" | "fulltext" | "agentic")[];
                     limit?: number;
-                    filters?: {
-                        [key: string]: unknown;
-                    };
+                    /** @example string */
                     user_id?: string;
                 };
             };
@@ -10870,9 +11380,38 @@ export interface operations {
             };
         };
     };
-    listAiContextQueryLogs: {
+    listAiContextQueriesCount: {
         parameters: {
             query?: {
+                user_id?: string;
+                queried_at?: {
+                    /** @example string */
+                    equals?: string;
+                    /** @example string */
+                    not_equals?: string;
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                date_created?: {
+                    /** @example string */
+                    equals?: string;
+                    /** @example string */
+                    not_equals?: string;
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
                 cursor?: {
                     /** @example string */
                     prev?: string;
@@ -10883,22 +11422,6 @@ export interface operations {
                     [key: string]: "asc" | "desc";
                 };
                 limit?: string | number;
-                query?: {
-                    queried_at?: {
-                        /** @example string */
-                        equals?: string;
-                        /** @example string */
-                        not_equals?: string;
-                        /** @example string */
-                        gt?: string;
-                        /** @example string */
-                        lt?: string;
-                        /** @example string */
-                        gte?: string;
-                        /** @example string */
-                        lte?: string;
-                    };
-                };
             };
             header?: {
                 /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
@@ -10919,22 +11442,8 @@ export interface operations {
                     "application/json": {
                         response?: components["schemas"]["ApiSuccessResponseMeta"];
                         data?: {
-                            query_id: string;
-                            conjoin_account_id: string;
-                            conjoin_project_id: string;
-                            live_mode: boolean;
-                            index_ids: string[];
-                            modes_used: string[];
-                            vector_results_count: number;
-                            fulltext_results_count: number;
-                            agentic_reads_count: number;
-                            total_results_returned: number;
-                            latency_ms: number;
-                            token_cost_usd: number;
-                            queried_at: string;
-                            date_created: string;
-                        }[];
-                        cursor?: components["schemas"]["PaginationCursor"];
+                            count: number;
+                        };
                     };
                 };
             };
@@ -10999,6 +11508,10 @@ export interface operations {
     listAiModels: {
         parameters: {
             query?: {
+                vendor?: string;
+                plan_availability?: "free" | "pro" | "business" | "enterprise";
+                text_input?: boolean | ("true" | "false");
+                image_input?: boolean | ("true" | "false");
                 cursor?: {
                     /** @example string */
                     prev?: string;
@@ -11009,14 +11522,6 @@ export interface operations {
                     [key: string]: "asc" | "desc";
                 };
                 limit?: string | number;
-                query?: {
-                    vendor?: string;
-                    /** @enum {string} */
-                    plan_availability?: "free" | "pro" | "business" | "enterprise";
-                    is_active?: boolean;
-                    text_input?: boolean;
-                    image_input?: boolean;
-                };
             };
             header?: {
                 /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
@@ -11056,9 +11561,109 @@ export interface operations {
                             release_date?: string | null;
                             deprecation_date?: string | null;
                             date_created: string;
-                            date_updated: string;
+                            date_updated: string | null;
                         }[];
                         cursor?: components["schemas"]["PaginationCursor"];
+                    };
+                };
+            };
+            /** @description Validation error or bad request */
+            400: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Unauthorized - missing or invalid API key */
+            401: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description The resource does not exist in the scope of the request */
+            404: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiServerErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+        };
+    };
+    listAiModelsCount: {
+        parameters: {
+            query?: {
+                vendor?: string;
+                plan_availability?: "free" | "pro" | "business" | "enterprise";
+                text_input?: boolean | ("true" | "false");
+                image_input?: boolean | ("true" | "false");
+                cursor?: {
+                    /** @example string */
+                    prev?: string;
+                    /** @example string */
+                    next?: string;
+                };
+                sort?: {
+                    [key: string]: "asc" | "desc";
+                };
+                limit?: string | number;
+            };
+            header?: {
+                /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
+                "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful response */
+            200: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response?: components["schemas"]["ApiSuccessResponseMeta"];
+                        data?: {
+                            count: number;
+                        };
                     };
                 };
             };
@@ -11163,7 +11768,7 @@ export interface operations {
                             release_date?: string | null;
                             deprecation_date?: string | null;
                             date_created: string;
-                            date_updated: string;
+                            date_updated: string | null;
                         };
                     };
                 };
@@ -11226,7 +11831,7 @@ export interface operations {
             };
         };
     };
-    checkAiPolicy: {
+    createAiPolicyCheck: {
         parameters: {
             query?: never;
             header?: {
@@ -11241,11 +11846,14 @@ export interface operations {
         requestBody: {
             content: {
                 "application/json": {
+                    /** @example string */
                     content: string;
                     /** @enum {string} */
                     direction: "request" | "response" | "both";
                     context?: {
+                        /** @example string */
                         model?: string;
+                        /** @example string */
                         request_id?: string;
                     };
                 };
@@ -11384,9 +11992,28 @@ export interface operations {
             };
         };
     };
-    listAiPolicyRules: {
+    listAiPolicyLogs: {
         parameters: {
             query?: {
+                rule_id?: string;
+                rule_type?: "pii_redaction" | "topic_blocking" | "content_inspection" | "custom_pattern";
+                action_taken?: "redacted" | "blocked" | "logged" | "alerted";
+                severity?: "low" | "medium" | "high" | "critical";
+                direction?: "request" | "response" | "both";
+                logged_at?: {
+                    /** @example string */
+                    equals?: string;
+                    /** @example string */
+                    not_equals?: string;
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
                 cursor?: {
                     /** @example string */
                     prev?: string;
@@ -11397,27 +12024,256 @@ export interface operations {
                     [key: string]: "asc" | "desc";
                 };
                 limit?: string | number;
-                query?: {
-                    /** @enum {string} */
-                    rule_type?: "pii_redaction" | "topic_blocking" | "content_inspection" | "custom_pattern";
-                    /** @enum {string} */
-                    status?: "active" | "disabled" | "archived";
-                    is_active?: boolean;
-                    date_created?: {
-                        /** @example string */
-                        equals?: string;
-                        /** @example string */
-                        not_equals?: string;
-                        /** @example string */
-                        gt?: string;
-                        /** @example string */
-                        lt?: string;
-                        /** @example string */
-                        gte?: string;
-                        /** @example string */
-                        lte?: string;
+            };
+            header?: {
+                /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
+                "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful response */
+            200: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response?: components["schemas"]["ApiSuccessResponseMeta"];
+                        data?: {
+                            log_id: string;
+                            conjoin_account_id: string;
+                            conjoin_project_id: string;
+                            live_mode: boolean;
+                            request_id: string;
+                            rule_id: string;
+                            rule_type: string;
+                            action_taken: string;
+                            direction: string;
+                            detections: {
+                                type: string;
+                                value: string;
+                                position: {
+                                    start: number;
+                                    end: number;
+                                };
+                                confidence: number;
+                            }[];
+                            severity: string;
+                            logged_at: string;
+                            date_created: string;
+                        }[];
+                        cursor?: components["schemas"]["PaginationCursor"];
                     };
                 };
+            };
+            /** @description Validation error or bad request */
+            400: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Unauthorized - missing or invalid API key */
+            401: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description The resource does not exist in the scope of the request */
+            404: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiServerErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+        };
+    };
+    listAiPolicyLogsCount: {
+        parameters: {
+            query?: {
+                rule_id?: string;
+                rule_type?: "pii_redaction" | "topic_blocking" | "content_inspection" | "custom_pattern";
+                action_taken?: "redacted" | "blocked" | "logged" | "alerted";
+                severity?: "low" | "medium" | "high" | "critical";
+                direction?: "request" | "response" | "both";
+                logged_at?: {
+                    /** @example string */
+                    equals?: string;
+                    /** @example string */
+                    not_equals?: string;
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                cursor?: {
+                    /** @example string */
+                    prev?: string;
+                    /** @example string */
+                    next?: string;
+                };
+                sort?: {
+                    [key: string]: "asc" | "desc";
+                };
+                limit?: string | number;
+            };
+            header?: {
+                /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
+                "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful response */
+            200: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response?: components["schemas"]["ApiSuccessResponseMeta"];
+                        data?: {
+                            count: number;
+                        };
+                    };
+                };
+            };
+            /** @description Validation error or bad request */
+            400: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Unauthorized - missing or invalid API key */
+            401: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description The resource does not exist in the scope of the request */
+            404: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiServerErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+        };
+    };
+    listAiPolicyRules: {
+        parameters: {
+            query?: {
+                rule_type?: "pii_redaction" | "topic_blocking" | "content_inspection" | "custom_pattern";
+                status?: "active" | "disabled" | "archived";
+                is_active?: boolean | ("true" | "false");
+                reference_id?: string;
+                date_created?: {
+                    /** @example string */
+                    equals?: string;
+                    /** @example string */
+                    not_equals?: string;
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                cursor?: {
+                    /** @example string */
+                    prev?: string;
+                    /** @example string */
+                    next?: string;
+                };
+                sort?: {
+                    [key: string]: "asc" | "desc";
+                };
+                limit?: string | number;
             };
             header?: {
                 /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
@@ -11449,11 +12305,11 @@ export interface operations {
                             action: string;
                             priority: number;
                             config: {
-                                patterns?: string[];
-                                pii_types?: string[];
-                                topics?: string[];
-                                regex?: string;
-                                replacement_template?: string;
+                                patterns: string[];
+                                pii_types: string[];
+                                topics: string[];
+                                regex: string[];
+                                replacement_template: string;
                             };
                             is_active: boolean;
                             status: string;
@@ -11462,7 +12318,7 @@ export interface operations {
                                 [key: string]: unknown;
                             };
                             date_created: string;
-                            date_updated: string;
+                            date_updated: string | null;
                             date_deleted?: string | null;
                         }[];
                         cursor?: components["schemas"]["PaginationCursor"];
@@ -11595,11 +12451,11 @@ export interface operations {
                             action: string;
                             priority: number;
                             config: {
-                                patterns?: string[];
-                                pii_types?: string[];
-                                topics?: string[];
-                                regex?: string;
-                                replacement_template?: string;
+                                patterns: string[];
+                                pii_types: string[];
+                                topics: string[];
+                                regex: string[];
+                                replacement_template: string;
                             };
                             is_active: boolean;
                             status: string;
@@ -11608,7 +12464,7 @@ export interface operations {
                                 [key: string]: unknown;
                             };
                             date_created: string;
-                            date_updated: string;
+                            date_updated: string | null;
                             date_deleted?: string | null;
                         };
                     };
@@ -11714,6 +12570,120 @@ export interface operations {
             };
         };
     };
+    listAiPolicyRulesCount: {
+        parameters: {
+            query?: {
+                rule_type?: "pii_redaction" | "topic_blocking" | "content_inspection" | "custom_pattern";
+                status?: "active" | "disabled" | "archived";
+                is_active?: boolean | ("true" | "false");
+                reference_id?: string;
+                date_created?: {
+                    /** @example string */
+                    equals?: string;
+                    /** @example string */
+                    not_equals?: string;
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                cursor?: {
+                    /** @example string */
+                    prev?: string;
+                    /** @example string */
+                    next?: string;
+                };
+                sort?: {
+                    [key: string]: "asc" | "desc";
+                };
+                limit?: string | number;
+            };
+            header?: {
+                /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
+                "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful response */
+            200: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response?: components["schemas"]["ApiSuccessResponseMeta"];
+                        data?: {
+                            count: number;
+                        };
+                    };
+                };
+            };
+            /** @description Validation error or bad request */
+            400: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Unauthorized - missing or invalid API key */
+            401: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description The resource does not exist in the scope of the request */
+            404: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiServerErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+        };
+    };
     readAiPolicyRule: {
         parameters: {
             query?: never;
@@ -11722,7 +12692,7 @@ export interface operations {
                 "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
             };
             path: {
-                rule_id: string;
+                policy_rule_id: string;
             };
             cookie?: never;
         };
@@ -11749,11 +12719,11 @@ export interface operations {
                             action: string;
                             priority: number;
                             config: {
-                                patterns?: string[];
-                                pii_types?: string[];
-                                topics?: string[];
-                                regex?: string;
-                                replacement_template?: string;
+                                patterns: string[];
+                                pii_types: string[];
+                                topics: string[];
+                                regex: string[];
+                                replacement_template: string;
                             };
                             is_active: boolean;
                             status: string;
@@ -11762,7 +12732,7 @@ export interface operations {
                                 [key: string]: unknown;
                             };
                             date_created: string;
-                            date_updated: string;
+                            date_updated: string | null;
                             date_deleted?: string | null;
                         };
                     };
@@ -11834,7 +12804,7 @@ export interface operations {
                 "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
             };
             path: {
-                rule_id: string;
+                policy_rule_id: string;
             };
             cookie?: never;
         };
@@ -11861,11 +12831,11 @@ export interface operations {
                             action: string;
                             priority: number;
                             config: {
-                                patterns?: string[];
-                                pii_types?: string[];
-                                topics?: string[];
-                                regex?: string;
-                                replacement_template?: string;
+                                patterns: string[];
+                                pii_types: string[];
+                                topics: string[];
+                                regex: string[];
+                                replacement_template: string;
                             };
                             is_active: boolean;
                             status: string;
@@ -11874,7 +12844,7 @@ export interface operations {
                                 [key: string]: unknown;
                             };
                             date_created: string;
-                            date_updated: string;
+                            date_updated: string | null;
                             date_deleted?: string | null;
                         };
                     };
@@ -11946,7 +12916,7 @@ export interface operations {
                 "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
             };
             path: {
-                rule_id: string;
+                policy_rule_id: string;
             };
             cookie?: never;
         };
@@ -11971,7 +12941,7 @@ export interface operations {
                     };
                     is_active?: boolean;
                     /** @enum {string} */
-                    status?: "active" | "disabled" | "archived";
+                    status?: "active" | "disabled";
                     description?: string | null;
                     /** @description Custom key-value metadata (max 50 keys) */
                     metadata?: {
@@ -12002,11 +12972,11 @@ export interface operations {
                             action: string;
                             priority: number;
                             config: {
-                                patterns?: string[];
-                                pii_types?: string[];
-                                topics?: string[];
-                                regex?: string;
-                                replacement_template?: string;
+                                patterns: string[];
+                                pii_types: string[];
+                                topics: string[];
+                                regex: string[];
+                                replacement_template: string;
                             };
                             is_active: boolean;
                             status: string;
@@ -12015,150 +12985,9 @@ export interface operations {
                                 [key: string]: unknown;
                             };
                             date_created: string;
-                            date_updated: string;
+                            date_updated: string | null;
                             date_deleted?: string | null;
                         };
-                    };
-                };
-            };
-            /** @description Validation error or bad request */
-            400: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description Unauthorized - missing or invalid API key */
-            401: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description The resource does not exist in the scope of the request */
-            404: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiClientErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-            /** @description Internal server error */
-            500: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response: components["schemas"]["ApiServerErrorResponseMeta"];
-                        data: null;
-                        error: components["schemas"]["ApiErrorDetail"];
-                    };
-                };
-            };
-        };
-    };
-    listAiPolicyLogs: {
-        parameters: {
-            query?: {
-                cursor?: {
-                    /** @example string */
-                    prev?: string;
-                    /** @example string */
-                    next?: string;
-                };
-                sort?: {
-                    [key: string]: "asc" | "desc";
-                };
-                limit?: string | number;
-                query?: {
-                    /** @enum {string} */
-                    rule_type?: "pii_redaction" | "topic_blocking" | "content_inspection" | "custom_pattern";
-                    /** @enum {string} */
-                    action_taken?: "redacted" | "blocked" | "logged" | "alerted";
-                    /** @enum {string} */
-                    severity?: "low" | "medium" | "high" | "critical";
-                    /** @enum {string} */
-                    direction?: "request" | "response" | "both";
-                    logged_at?: {
-                        /** @example string */
-                        equals?: string;
-                        /** @example string */
-                        not_equals?: string;
-                        /** @example string */
-                        gt?: string;
-                        /** @example string */
-                        lt?: string;
-                        /** @example string */
-                        gte?: string;
-                        /** @example string */
-                        lte?: string;
-                    };
-                };
-            };
-            header?: {
-                /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
-                "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful response */
-            200: {
-                headers: {
-                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        response?: components["schemas"]["ApiSuccessResponseMeta"];
-                        data?: {
-                            log_id: string;
-                            conjoin_account_id: string;
-                            conjoin_project_id: string;
-                            live_mode: boolean;
-                            request_id: string;
-                            rule_id: string;
-                            rule_type: string;
-                            action_taken: string;
-                            direction: string;
-                            detections: {
-                                type: string;
-                                value: string;
-                                position: {
-                                    start: number;
-                                    end: number;
-                                };
-                                confidence: number;
-                            }[];
-                            severity: string;
-                            logged_at: string;
-                            date_created: string;
-                        }[];
-                        cursor?: components["schemas"]["PaginationCursor"];
                     };
                 };
             };
@@ -12223,6 +13052,41 @@ export interface operations {
     listAiUsageRecords: {
         parameters: {
             query?: {
+                record_type?: "inference" | "policy_check" | "context_query" | "embedding_generation" | "image_generation";
+                model?: string;
+                provider?: "vertex_ai" | "azure_ai_foundry" | "openai_compatible" | "self_hosted";
+                billing_period?: string;
+                is_billable?: boolean | ("true" | "false");
+                conjoin_request_id?: string;
+                trace_source?: "public_api" | "sdk" | "service_rpc" | "outbox" | "service_event" | "relay_worker" | "schedule" | "system_job" | "provider_webhook";
+                recorded_at?: {
+                    /** @example string */
+                    equals?: string;
+                    /** @example string */
+                    not_equals?: string;
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                date_created?: {
+                    /** @example string */
+                    equals?: string;
+                    /** @example string */
+                    not_equals?: string;
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
                 cursor?: {
                     /** @example string */
                     prev?: string;
@@ -12233,34 +13097,6 @@ export interface operations {
                     [key: string]: "asc" | "desc";
                 };
                 limit?: string | number;
-                query?: {
-                    /** @enum {string} */
-                    record_type?: "inference" | "policy_check" | "context_query" | "embedding_generation" | "image_generation";
-                    model?: string;
-                    /** @enum {string} */
-                    provider?: "vertex_ai" | "azure_ai_foundry" | "openai_compatible" | "self_hosted";
-                    /** @example string */
-                    billing_period?: string;
-                    is_billable?: boolean;
-                    /** @example string */
-                    conjoin_request_id?: string;
-                    /** @enum {string} */
-                    trace_source?: "public_api" | "sdk" | "service_rpc" | "outbox" | "service_event" | "relay_worker" | "schedule" | "system_job" | "provider_webhook";
-                    recorded_at?: {
-                        /** @example string */
-                        equals?: string;
-                        /** @example string */
-                        not_equals?: string;
-                        /** @example string */
-                        gt?: string;
-                        /** @example string */
-                        lt?: string;
-                        /** @example string */
-                        gte?: string;
-                        /** @example string */
-                        lte?: string;
-                    };
-                };
             };
             header?: {
                 /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
@@ -12364,6 +13200,137 @@ export interface operations {
             };
         };
     };
+    listAiUsageRecordsCount: {
+        parameters: {
+            query?: {
+                record_type?: "inference" | "policy_check" | "context_query" | "embedding_generation" | "image_generation";
+                model?: string;
+                provider?: "vertex_ai" | "azure_ai_foundry" | "openai_compatible" | "self_hosted";
+                billing_period?: string;
+                is_billable?: boolean | ("true" | "false");
+                conjoin_request_id?: string;
+                trace_source?: "public_api" | "sdk" | "service_rpc" | "outbox" | "service_event" | "relay_worker" | "schedule" | "system_job" | "provider_webhook";
+                recorded_at?: {
+                    /** @example string */
+                    equals?: string;
+                    /** @example string */
+                    not_equals?: string;
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                date_created?: {
+                    /** @example string */
+                    equals?: string;
+                    /** @example string */
+                    not_equals?: string;
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                cursor?: {
+                    /** @example string */
+                    prev?: string;
+                    /** @example string */
+                    next?: string;
+                };
+                sort?: {
+                    [key: string]: "asc" | "desc";
+                };
+                limit?: string | number;
+            };
+            header?: {
+                /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
+                "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful response */
+            200: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response?: components["schemas"]["ApiSuccessResponseMeta"];
+                        data?: {
+                            count: number;
+                        };
+                    };
+                };
+            };
+            /** @description Validation error or bad request */
+            400: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Unauthorized - missing or invalid API key */
+            401: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description The resource does not exist in the scope of the request */
+            404: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiServerErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+        };
+    };
     readAiUsageSummary: {
         parameters: {
             query?: {
@@ -12395,6 +13362,12 @@ export interface operations {
                             total_requests: number;
                             breakdown_by_model: {
                                 model: string;
+                                total_tokens: number;
+                                total_cost_usd: number;
+                                total_requests: number;
+                            }[];
+                            breakdown_by_provider: {
+                                provider: string;
                                 total_tokens: number;
                                 total_cost_usd: number;
                                 total_requests: number;
@@ -73102,7 +74075,7 @@ export interface operations {
                      * @example https://example.com
                      */
                     url: string;
-                    events: ("cloud-all-events" | "ai-inference-completed" | "ai-inference-failed" | "ai-policy-triggered" | "ai-policy-rule-created" | "ai-policy-rule-updated" | "ai-policy-rule-deleted" | "ai-context-index-created" | "ai-context-index-synced" | "ai-context-index-deleted" | "ai-context-query-completed" | "ai-byok-config-created" | "ai-byok-config-updated" | "ai-byok-config-deleted" | "ai-byok-config-tested" | "ai-budget-threshold-reached" | "auth-account-created" | "auth-account-updated" | "auth-account-soft_deleted" | "auth-account-hard_deleted" | "auth-account-status_changed" | "auth-verification-email_code_requested" | "auth-verification-email_link_requested" | "auth-verification-sms_code_requested" | "auth-session-created" | "auth-session-refreshed" | "auth-session-revoked" | "auth-credential-password_created" | "auth-credential-password_changed" | "auth-credential-password_reset_started" | "auth-credential-password_reset_completed" | "auth-credential-verified" | "auth-credential-removed" | "auth-credential-passkey_clone_suspected" | "auth-mfa-totp_enrolled" | "auth-mfa-totp_activated" | "auth-mfa-totp_verified" | "auth-mfa-sms_enrolled" | "auth-mfa-sms_activated" | "auth-mfa-sms_verified" | "auth-mfa-sms_challenge_sent" | "auth-mfa-passkey_registered" | "auth-mfa-passkey_deleted" | "auth-mfa-recovery_codes_rotated" | "auth-mfa-recovery_code_consumed" | "auth-step_up-verification_requested" | "auth-step_up-verification_completed" | "auth-account-recovery_started" | "auth-account-recovery_completed" | "auth-account-mfa_admin_reset" | "auth-account-deprovisioned" | "auth-account-suspended" | "auth-account-dormant" | "auth-organization-member_added" | "auth-organization-member_removed" | "auth-organization-member_role_changed" | "auth-organization-invitation_created" | "auth-organization-invitation_accepted" | "auth-organization-invitation_revoked" | "auth-organization-group_created" | "auth-organization-group_updated" | "auth-organization-group_deleted" | "auth-organization-group_member_added" | "auth-organization-group_member_removed" | "auth-organization-deleted" | "auth-identity-linked" | "auth-identity-unlinked" | "auth-sso-login_completed" | "auth-api_key-expiring_soon" | "auth-organization-domain_verification_failed" | "auth-organization-domain_verification_reminder" | "auth-organization-domain_verification_demoted" | "auth-organization-domain_verification_recovered" | "auth-connection-created" | "auth-connection-configured" | "auth-connection-activated" | "auth-connection-disabled" | "auth-connection-test_failed" | "auth-guard-threat_detected" | "auth-guard-account_blocked" | "auth-guard-challenge_triggered" | "billing-entity-updated" | "billing-customer-created" | "billing-customer-updated" | "billing-customer-archived" | "billing-customer-unarchived" | "billing-product-created" | "billing-product-updated" | "billing-product-deleted" | "billing-price-created" | "billing-price-updated" | "billing-price-deleted" | "billing-subscription-created" | "billing-subscription-updated" | "billing-subscription-deleted" | "billing-subscription-canceled" | "billing-subscription-trial_will_end" | "billing-subscription-usage_recorded" | "billing-subscription-renewal_reminder" | "billing-subscription_schedule-created" | "billing-subscription_schedule-canceled" | "billing-subscription_schedule-released" | "billing-subscription_schedule-phase_applied" | "billing-subscription_schedule-completed" | "billing-payment_intent-created" | "billing-payment_intent-cancelled" | "billing-payment_intent-failed" | "billing-payment_intent-succeeded" | "billing-payment_intent-processing" | "billing-payment_intent-requires_action" | "billing-payment_method-created" | "billing-payment_method-updated" | "billing-payment_method-deleted" | "billing-payment_method-attached" | "billing-payment_method-detached" | "billing-payment_method-network_updated" | "billing-charge-succeeded" | "billing-charge-failed" | "billing-charge-pending" | "billing-charge-refunded" | "billing-charge-disputed" | "billing-charge-dispute_updated" | "billing-charge-dispute_closed" | "billing-refund-created" | "billing-refund-processing" | "billing-refund-updated" | "billing-refund-succeeded" | "billing-refund-failed" | "billing-tax-reported" | "billing-tax-updated" | "billing-invoice-created" | "billing-invoice-updated" | "billing-invoice-deleted" | "billing-invoice-finalized" | "billing-invoice-paid" | "billing-invoice-payment_failed" | "billing-invoice-open" | "billing-invoice-voided" | "billing-invoice-uncollectible" | "billing-invoice-sent" | "billing-entitlement_feature-created" | "billing-entitlement_feature-updated" | "billing-entitlement_feature-archived" | "billing-price_bundle-created" | "billing-price_bundle-updated" | "billing-price_bundle-archived" | "billing-price_bundle-restored" | "billing-price_bundle_activation-activated" | "billing-price_bundle_activation-deactivated" | "billing-price_bundle_activation-tier_transitioned" | "billing-price_bundle_activation-tier_failed" | "billing-price_bundle_activation-failed" | "billing-price_bundle_activation-fallback_activated" | "billing-entitlement_override-created" | "billing-entitlement_override-updated" | "billing-entitlement_override-deleted" | "billing-coupon-created" | "billing-coupon-updated" | "billing-coupon-deleted" | "billing-discount-created" | "billing-discount-deleted" | "billing-discount-applied" | "billing-discount-expired" | "billing-credit_note-created" | "billing-credit_note-applied" | "billing-credit_note-voided" | "billing-receipt-generated" | "billing-credit_wallet-created" | "billing-credit_wallet-updated" | "billing-credit_wallet-granted" | "billing-credit_wallet-deducted" | "billing-credit_wallet-topup_initiated" | "cloud-spend_controls-threshold_reached" | "cloud-spend_controls-limit_blocked" | "cloud-spend_controls-updated" | "messaging-message-unknown" | "messaging-sms-unknown" | "messaging-sms-inbound_received" | "messaging-sms-outbound_accepted" | "messaging-sms-outbound_delayed" | "messaging-sms-outbound_sent" | "messaging-sms-outbound_failed" | "messaging-sms-outbound_delivered" | "messaging-sms-outbound_complained" | "messaging-sms-outbound_rejected" | "messaging-sms-outbound_replied" | "messaging-sms-outbound_expired" | "messaging-email-unknown" | "messaging-email-inbound_received" | "messaging-email-outbound_accepted" | "messaging-email-outbound_delayed" | "messaging-email-outbound_sent" | "messaging-email-outbound_failed" | "messaging-email-outbound_delivered" | "messaging-email-outbound_bounced" | "messaging-email-outbound_complained" | "messaging-email-outbound_rejected" | "messaging-email-outbound_updated" | "messaging-email-outbound_replied" | "messaging-email-outbound_opened" | "messaging-email-outbound_clicked" | "messaging-email-recipient_subscribed" | "messaging-email-recipient_unsubscribed" | "messaging-conversation-created" | "messaging-conversation-updated" | "messaging-conversation-deleted" | "messaging-verification-sent" | "messaging-verification-failed" | "messaging-verification-delivered" | "messaging-verification-expired" | "messaging-verification-verified" | "messaging-email-sender-created" | "messaging-email-sender-deleted" | "messaging-email-sender-verified" | "messaging-sms-sender-reserved" | "messaging-sms-sender-released" | "messaging-sms-sender-approved" | "messaging-sms-sender-rejected" | "messaging-sms-sender-blocked" | "messaging-sms-brand-registered" | "messaging-sms-brand-suspended" | "messaging-sms-brand-deletion_failed" | "messaging-sms-brand-deletion_pending" | "messaging-sms-brand-deleted" | "messaging-sms-brand-under_review" | "messaging-sms-brand-registration_failed" | "messaging-sms-brand-registration_pending" | "messaging-sms-brand-unverified" | "messaging-sms-brand-vetted" | "messaging-sms-brand-vetting_failed" | "messaging-sms-campaign-approved" | "messaging-sms-campaign-suspended" | "messaging-sms-campaign-failed" | "messaging-sms-campaign-pending" | "messaging-sms-campaign-deleted" | "messaging-sms-campaign-in_review" | "messaging-sms-campaign-rejected" | "messaging-sms-campaign-submitted" | "messaging-phone-number-provision_not_requested" | "messaging-phone-number-provisioned" | "messaging-phone-number-provisioned_for_sms" | "messaging-phone-number-provisioned_for_voice" | "messaging-phone-number-provision_in_progress" | "messaging-phone-number-provision_pending" | "messaging-phone-number-provisioned_for_campaign" | "messaging-phone-number-provision_failed" | "messaging-phone-number-sms_provision_failed" | "messaging-phone-number-provision_unknown" | "messaging-phone-number-toll_free_not_allowed" | "messaging-phone-number-unlinked_for_sms" | "messaging-phone-number-unlinked_for_voice" | "messaging-phone-number-released" | "messaging-phone-number-unlinked_for_campaign" | "messaging-phone-number-campaign_acceptance_pending" | "messaging-phone-number-campaign_expired" | "messaging-phone-number-campaign_mno_rejected" | "messaging-phone-number-campaign_mno_suspended" | "messaging-phone-number-campaign_not_found" | "messaging-phone-number-campaign_provision_failed" | "messaging-phone-number-campaign_under_review" | "messaging-phone-number-10dlc_limit_exceeded" | "messaging-phone-number-invalid_net_number_id" | "messaging-phone-number-provider_internal_error" | "messaging-phone-number-mno_sharing_error" | "messaging-phone-number-provider_service_unavailable" | "messaging-phone-number-provider_partner_service_unavailable" | "messaging-phone-number-provision_status_unknown" | "messaging-phone-number-insufficient_balance" | "messaging-phone-number-error_code_unknown" | "relay-queue-created" | "relay-queue-updated" | "relay-queue-deleted" | "relay-queue-task_enqueued" | "relay-queue-task_completed" | "relay-queue-task_failed" | "relay-queue-task_dead_lettered" | "relay-queue-dead_letter_replayed" | "relay-event_channel-created" | "relay-event_channel-updated" | "relay-event_channel-deleted" | "relay-event_subscription-created" | "relay-event_subscription-updated" | "relay-event_subscription-deleted" | "relay-event-published" | "relay-event-delivery_failed" | "relay-broadcast_channel-created" | "relay-broadcast_channel-updated" | "relay-broadcast_channel-deleted" | "relay-scheduler-created" | "relay-scheduler-updated" | "relay-scheduler-paused" | "relay-scheduler-resumed" | "relay-scheduler-cancelled" | "relay-scheduler-fired" | "relay-scheduler-execution_failed" | "relay-memorystore_cluster-created" | "relay-memorystore_cluster-updated" | "relay-memorystore_cluster-suspended" | "relay-memorystore_cluster-deleted" | "relay-pipeline-created" | "relay-pipeline-updated" | "relay-pipeline-deleted" | "relay-pipeline-run_triggered" | "relay-pipeline-run_completed" | "relay-pipeline-run_failed" | "relay-pipeline-run_cancelled" | "relay-pipeline-gate_approved" | "relay-pipeline-gate_rejected" | "relay-search_index-created" | "relay-search_index-deleted" | "relay-search_document-indexed" | "relay-search_document-removed" | "storage-container-created" | "storage-container-updated" | "storage-container-archived" | "storage-container-restored" | "storage-container-deletion-requested" | "storage-container-deleted" | "storage-container-class-changed" | "storage-object-created" | "storage-object-updated" | "storage-object-renamed" | "storage-object-archived" | "storage-object-restored" | "storage-object-deleted" | "storage-object-version-restored" | "storage-object-acl-granted" | "storage-object-acl-revoked" | "storage-object-visibility-changed")[];
+                    events: ("cloud-all-events" | "ai-inference-completed" | "ai-inference-failed" | "ai-policy-triggered" | "ai-policy-rule-created" | "ai-policy-rule-updated" | "ai-policy-rule-deleted" | "ai-context-index-created" | "ai-context-index-synced" | "ai-context-index-deleted" | "ai-context-query-completed" | "ai-byok-config-created" | "ai-byok-config-updated" | "ai-byok-config-deleted" | "ai-byok-config-tested" | "ai-budget-threshold-reached" | "auth-account-created" | "auth-account-updated" | "auth-account-soft_deleted" | "auth-account-hard_deleted" | "auth-account-status_changed" | "auth-verification-email_code_requested" | "auth-verification-email_link_requested" | "auth-verification-sms_code_requested" | "auth-session-created" | "auth-session-refreshed" | "auth-session-revoked" | "auth-credential-password_created" | "auth-credential-password_changed" | "auth-credential-password_reset_started" | "auth-credential-password_reset_completed" | "auth-credential-verified" | "auth-credential-removed" | "auth-credential-passkey_clone_suspected" | "auth-mfa-totp_enrolled" | "auth-mfa-totp_activated" | "auth-mfa-totp_verified" | "auth-mfa-sms_enrolled" | "auth-mfa-sms_activated" | "auth-mfa-sms_verified" | "auth-mfa-sms_challenge_sent" | "auth-mfa-passkey_registered" | "auth-mfa-passkey_deleted" | "auth-mfa-recovery_codes_rotated" | "auth-mfa-recovery_code_consumed" | "auth-step_up-verification_requested" | "auth-step_up-verification_completed" | "auth-account-recovery_started" | "auth-account-recovery_completed" | "auth-account-mfa_admin_reset" | "auth-account-deprovisioned" | "auth-account-suspended" | "auth-account-dormant" | "auth-organization-member_added" | "auth-organization-member_removed" | "auth-organization-member_role_changed" | "auth-organization-invitation_created" | "auth-organization-invitation_accepted" | "auth-organization-invitation_revoked" | "auth-organization-group_created" | "auth-organization-group_updated" | "auth-organization-group_deleted" | "auth-organization-group_member_added" | "auth-organization-group_member_removed" | "auth-organization-deleted" | "auth-identity-linked" | "auth-identity-unlinked" | "auth-sso-login_completed" | "auth-api_key-expiring_soon" | "auth-organization-domain_verification_failed" | "auth-organization-domain_verification_reminder" | "auth-organization-domain_verification_demoted" | "auth-organization-domain_verification_recovered" | "auth-connection-created" | "auth-connection-configured" | "auth-connection-activated" | "auth-connection-disabled" | "auth-connection-test_failed" | "auth-guard-threat_detected" | "auth-guard-account_blocked" | "auth-guard-challenge_triggered" | "billing-entity-updated" | "billing-customer-created" | "billing-customer-updated" | "billing-customer-archived" | "billing-customer-unarchived" | "billing-product-created" | "billing-product-updated" | "billing-product-deleted" | "billing-price-created" | "billing-price-updated" | "billing-price-deleted" | "billing-subscription-created" | "billing-subscription-updated" | "billing-subscription-deleted" | "billing-subscription-canceled" | "billing-subscription-trial_will_end" | "billing-subscription-usage_recorded" | "billing-subscription-renewal_reminder" | "billing-subscription_schedule-created" | "billing-subscription_schedule-canceled" | "billing-subscription_schedule-released" | "billing-subscription_schedule-phase_applied" | "billing-subscription_schedule-completed" | "billing-payment_intent-created" | "billing-payment_intent-cancelled" | "billing-payment_intent-failed" | "billing-payment_intent-succeeded" | "billing-payment_intent-processing" | "billing-payment_intent-requires_action" | "billing-payment_method-created" | "billing-payment_method-updated" | "billing-payment_method-deleted" | "billing-payment_method-attached" | "billing-payment_method-detached" | "billing-payment_method-network_updated" | "billing-charge-succeeded" | "billing-charge-failed" | "billing-charge-pending" | "billing-charge-refunded" | "billing-charge-disputed" | "billing-charge-dispute_updated" | "billing-charge-dispute_closed" | "billing-refund-created" | "billing-refund-processing" | "billing-refund-updated" | "billing-refund-succeeded" | "billing-refund-failed" | "billing-tax-reported" | "billing-tax-updated" | "billing-invoice-created" | "billing-invoice-updated" | "billing-invoice-deleted" | "billing-invoice-finalized" | "billing-invoice-paid" | "billing-invoice-payment_failed" | "billing-invoice-open" | "billing-invoice-voided" | "billing-invoice-uncollectible" | "billing-invoice-sent" | "billing-entitlement_feature-created" | "billing-entitlement_feature-updated" | "billing-entitlement_feature-archived" | "billing-price_bundle-created" | "billing-price_bundle-updated" | "billing-price_bundle-archived" | "billing-price_bundle-restored" | "billing-price_bundle_activation-activated" | "billing-price_bundle_activation-deactivated" | "billing-price_bundle_activation-tier_transitioned" | "billing-price_bundle_activation-tier_failed" | "billing-price_bundle_activation-failed" | "billing-price_bundle_activation-fallback_activated" | "billing-entitlement_override-created" | "billing-entitlement_override-updated" | "billing-entitlement_override-deleted" | "billing-coupon-created" | "billing-coupon-updated" | "billing-coupon-deleted" | "billing-discount-created" | "billing-discount-deleted" | "billing-discount-applied" | "billing-discount-expired" | "billing-credit_note-created" | "billing-credit_note-applied" | "billing-credit_note-voided" | "billing-receipt-generated" | "billing-credit_wallet-created" | "billing-credit_wallet-updated" | "billing-credit_wallet-granted" | "billing-credit_wallet-deducted" | "billing-credit_wallet-topup_initiated" | "cloud-spend_controls-threshold_reached" | "cloud-spend_controls-limit_blocked" | "cloud-spend_controls-updated" | "messaging-message-unknown" | "messaging-sms-unknown" | "messaging-sms-inbound_received" | "messaging-sms-outbound_accepted" | "messaging-sms-outbound_queued" | "messaging-sms-outbound_in_transit" | "messaging-sms-outbound_cancelled" | "messaging-sms-outbound_delayed" | "messaging-sms-outbound_sent" | "messaging-sms-outbound_failed" | "messaging-sms-outbound_delivered" | "messaging-sms-outbound_complained" | "messaging-sms-outbound_rejected" | "messaging-sms-outbound_replied" | "messaging-sms-outbound_expired" | "messaging-email-unknown" | "messaging-email-inbound_received" | "messaging-email-outbound_accepted" | "messaging-email-outbound_delayed" | "messaging-email-outbound_sent" | "messaging-email-outbound_failed" | "messaging-email-outbound_delivered" | "messaging-email-outbound_bounced" | "messaging-email-outbound_complained" | "messaging-email-outbound_rejected" | "messaging-email-outbound_updated" | "messaging-email-outbound_replied" | "messaging-email-outbound_opened" | "messaging-email-outbound_clicked" | "messaging-email-recipient_subscribed" | "messaging-email-recipient_unsubscribed" | "messaging-conversation-created" | "messaging-conversation-updated" | "messaging-conversation-deleted" | "messaging-verification-sent" | "messaging-verification-failed" | "messaging-verification-delivered" | "messaging-verification-expired" | "messaging-verification-verified" | "messaging-email-sender-created" | "messaging-email-sender-deleted" | "messaging-email-sender-verified" | "messaging-sms-sender-reserved" | "messaging-sms-sender-released" | "messaging-sms-sender-approved" | "messaging-sms-sender-rejected" | "messaging-sms-sender-blocked" | "messaging-sms-brand-registered" | "messaging-sms-brand-suspended" | "messaging-sms-brand-deletion_failed" | "messaging-sms-brand-deletion_pending" | "messaging-sms-brand-deleted" | "messaging-sms-brand-under_review" | "messaging-sms-brand-registration_failed" | "messaging-sms-brand-registration_pending" | "messaging-sms-brand-unverified" | "messaging-sms-brand-vetted" | "messaging-sms-brand-vetting_failed" | "messaging-sms-campaign-approved" | "messaging-sms-campaign-suspended" | "messaging-sms-campaign-failed" | "messaging-sms-campaign-pending" | "messaging-sms-campaign-deleted" | "messaging-sms-campaign-in_review" | "messaging-sms-campaign-rejected" | "messaging-sms-campaign-submitted" | "messaging-phone-number-provision_not_requested" | "messaging-phone-number-provisioned" | "messaging-phone-number-provisioned_for_sms" | "messaging-phone-number-provisioned_for_voice" | "messaging-phone-number-provision_in_progress" | "messaging-phone-number-provision_pending" | "messaging-phone-number-provisioned_for_campaign" | "messaging-phone-number-provision_failed" | "messaging-phone-number-sms_provision_failed" | "messaging-phone-number-provision_unknown" | "messaging-phone-number-toll_free_not_allowed" | "messaging-phone-number-unlinked_for_sms" | "messaging-phone-number-unlinked_for_voice" | "messaging-phone-number-released" | "messaging-phone-number-unlinked_for_campaign" | "messaging-phone-number-campaign_acceptance_pending" | "messaging-phone-number-campaign_expired" | "messaging-phone-number-campaign_mno_rejected" | "messaging-phone-number-campaign_mno_suspended" | "messaging-phone-number-campaign_not_found" | "messaging-phone-number-campaign_provision_failed" | "messaging-phone-number-campaign_under_review" | "messaging-phone-number-10dlc_limit_exceeded" | "messaging-phone-number-invalid_net_number_id" | "messaging-phone-number-provider_internal_error" | "messaging-phone-number-mno_sharing_error" | "messaging-phone-number-provider_service_unavailable" | "messaging-phone-number-provider_partner_service_unavailable" | "messaging-phone-number-provision_status_unknown" | "messaging-phone-number-insufficient_balance" | "messaging-phone-number-error_code_unknown" | "relay-queue-created" | "relay-queue-updated" | "relay-queue-deleted" | "relay-queue-task_enqueued" | "relay-queue-task_completed" | "relay-queue-task_failed" | "relay-queue-task_dead_lettered" | "relay-queue-dead_letter_replayed" | "relay-event_channel-created" | "relay-event_channel-updated" | "relay-event_channel-deleted" | "relay-event_subscription-created" | "relay-event_subscription-updated" | "relay-event_subscription-deleted" | "relay-event-published" | "relay-event-delivery_failed" | "relay-broadcast_channel-created" | "relay-broadcast_channel-updated" | "relay-broadcast_channel-deleted" | "relay-scheduler-created" | "relay-scheduler-updated" | "relay-scheduler-paused" | "relay-scheduler-resumed" | "relay-scheduler-cancelled" | "relay-scheduler-fired" | "relay-scheduler-execution_failed" | "relay-memorystore_cluster-created" | "relay-memorystore_cluster-updated" | "relay-memorystore_cluster-suspended" | "relay-memorystore_cluster-deleted" | "relay-pipeline-created" | "relay-pipeline-updated" | "relay-pipeline-deleted" | "relay-pipeline-run_triggered" | "relay-pipeline-run_completed" | "relay-pipeline-run_failed" | "relay-pipeline-run_cancelled" | "relay-pipeline-gate_approved" | "relay-pipeline-gate_rejected" | "relay-search_index-created" | "relay-search_index-deleted" | "relay-search_document-indexed" | "relay-search_document-removed" | "storage-container-created" | "storage-container-updated" | "storage-container-archived" | "storage-container-restored" | "storage-container-deletion-requested" | "storage-container-deleted" | "storage-container-class-changed" | "storage-object-created" | "storage-object-updated" | "storage-object-renamed" | "storage-object-archived" | "storage-object-restored" | "storage-object-deleted" | "storage-object-version-restored" | "storage-object-acl-granted" | "storage-object-acl-revoked" | "storage-object-visibility-changed")[];
                     is_active?: boolean;
                 };
             };
@@ -73539,7 +74512,7 @@ export interface operations {
                      * @example https://example.com
                      */
                     url?: string;
-                    events?: ("cloud-all-events" | "ai-inference-completed" | "ai-inference-failed" | "ai-policy-triggered" | "ai-policy-rule-created" | "ai-policy-rule-updated" | "ai-policy-rule-deleted" | "ai-context-index-created" | "ai-context-index-synced" | "ai-context-index-deleted" | "ai-context-query-completed" | "ai-byok-config-created" | "ai-byok-config-updated" | "ai-byok-config-deleted" | "ai-byok-config-tested" | "ai-budget-threshold-reached" | "auth-account-created" | "auth-account-updated" | "auth-account-soft_deleted" | "auth-account-hard_deleted" | "auth-account-status_changed" | "auth-verification-email_code_requested" | "auth-verification-email_link_requested" | "auth-verification-sms_code_requested" | "auth-session-created" | "auth-session-refreshed" | "auth-session-revoked" | "auth-credential-password_created" | "auth-credential-password_changed" | "auth-credential-password_reset_started" | "auth-credential-password_reset_completed" | "auth-credential-verified" | "auth-credential-removed" | "auth-credential-passkey_clone_suspected" | "auth-mfa-totp_enrolled" | "auth-mfa-totp_activated" | "auth-mfa-totp_verified" | "auth-mfa-sms_enrolled" | "auth-mfa-sms_activated" | "auth-mfa-sms_verified" | "auth-mfa-sms_challenge_sent" | "auth-mfa-passkey_registered" | "auth-mfa-passkey_deleted" | "auth-mfa-recovery_codes_rotated" | "auth-mfa-recovery_code_consumed" | "auth-step_up-verification_requested" | "auth-step_up-verification_completed" | "auth-account-recovery_started" | "auth-account-recovery_completed" | "auth-account-mfa_admin_reset" | "auth-account-deprovisioned" | "auth-account-suspended" | "auth-account-dormant" | "auth-organization-member_added" | "auth-organization-member_removed" | "auth-organization-member_role_changed" | "auth-organization-invitation_created" | "auth-organization-invitation_accepted" | "auth-organization-invitation_revoked" | "auth-organization-group_created" | "auth-organization-group_updated" | "auth-organization-group_deleted" | "auth-organization-group_member_added" | "auth-organization-group_member_removed" | "auth-organization-deleted" | "auth-identity-linked" | "auth-identity-unlinked" | "auth-sso-login_completed" | "auth-api_key-expiring_soon" | "auth-organization-domain_verification_failed" | "auth-organization-domain_verification_reminder" | "auth-organization-domain_verification_demoted" | "auth-organization-domain_verification_recovered" | "auth-connection-created" | "auth-connection-configured" | "auth-connection-activated" | "auth-connection-disabled" | "auth-connection-test_failed" | "auth-guard-threat_detected" | "auth-guard-account_blocked" | "auth-guard-challenge_triggered" | "billing-entity-updated" | "billing-customer-created" | "billing-customer-updated" | "billing-customer-archived" | "billing-customer-unarchived" | "billing-product-created" | "billing-product-updated" | "billing-product-deleted" | "billing-price-created" | "billing-price-updated" | "billing-price-deleted" | "billing-subscription-created" | "billing-subscription-updated" | "billing-subscription-deleted" | "billing-subscription-canceled" | "billing-subscription-trial_will_end" | "billing-subscription-usage_recorded" | "billing-subscription-renewal_reminder" | "billing-subscription_schedule-created" | "billing-subscription_schedule-canceled" | "billing-subscription_schedule-released" | "billing-subscription_schedule-phase_applied" | "billing-subscription_schedule-completed" | "billing-payment_intent-created" | "billing-payment_intent-cancelled" | "billing-payment_intent-failed" | "billing-payment_intent-succeeded" | "billing-payment_intent-processing" | "billing-payment_intent-requires_action" | "billing-payment_method-created" | "billing-payment_method-updated" | "billing-payment_method-deleted" | "billing-payment_method-attached" | "billing-payment_method-detached" | "billing-payment_method-network_updated" | "billing-charge-succeeded" | "billing-charge-failed" | "billing-charge-pending" | "billing-charge-refunded" | "billing-charge-disputed" | "billing-charge-dispute_updated" | "billing-charge-dispute_closed" | "billing-refund-created" | "billing-refund-processing" | "billing-refund-updated" | "billing-refund-succeeded" | "billing-refund-failed" | "billing-tax-reported" | "billing-tax-updated" | "billing-invoice-created" | "billing-invoice-updated" | "billing-invoice-deleted" | "billing-invoice-finalized" | "billing-invoice-paid" | "billing-invoice-payment_failed" | "billing-invoice-open" | "billing-invoice-voided" | "billing-invoice-uncollectible" | "billing-invoice-sent" | "billing-entitlement_feature-created" | "billing-entitlement_feature-updated" | "billing-entitlement_feature-archived" | "billing-price_bundle-created" | "billing-price_bundle-updated" | "billing-price_bundle-archived" | "billing-price_bundle-restored" | "billing-price_bundle_activation-activated" | "billing-price_bundle_activation-deactivated" | "billing-price_bundle_activation-tier_transitioned" | "billing-price_bundle_activation-tier_failed" | "billing-price_bundle_activation-failed" | "billing-price_bundle_activation-fallback_activated" | "billing-entitlement_override-created" | "billing-entitlement_override-updated" | "billing-entitlement_override-deleted" | "billing-coupon-created" | "billing-coupon-updated" | "billing-coupon-deleted" | "billing-discount-created" | "billing-discount-deleted" | "billing-discount-applied" | "billing-discount-expired" | "billing-credit_note-created" | "billing-credit_note-applied" | "billing-credit_note-voided" | "billing-receipt-generated" | "billing-credit_wallet-created" | "billing-credit_wallet-updated" | "billing-credit_wallet-granted" | "billing-credit_wallet-deducted" | "billing-credit_wallet-topup_initiated" | "cloud-spend_controls-threshold_reached" | "cloud-spend_controls-limit_blocked" | "cloud-spend_controls-updated" | "messaging-message-unknown" | "messaging-sms-unknown" | "messaging-sms-inbound_received" | "messaging-sms-outbound_accepted" | "messaging-sms-outbound_delayed" | "messaging-sms-outbound_sent" | "messaging-sms-outbound_failed" | "messaging-sms-outbound_delivered" | "messaging-sms-outbound_complained" | "messaging-sms-outbound_rejected" | "messaging-sms-outbound_replied" | "messaging-sms-outbound_expired" | "messaging-email-unknown" | "messaging-email-inbound_received" | "messaging-email-outbound_accepted" | "messaging-email-outbound_delayed" | "messaging-email-outbound_sent" | "messaging-email-outbound_failed" | "messaging-email-outbound_delivered" | "messaging-email-outbound_bounced" | "messaging-email-outbound_complained" | "messaging-email-outbound_rejected" | "messaging-email-outbound_updated" | "messaging-email-outbound_replied" | "messaging-email-outbound_opened" | "messaging-email-outbound_clicked" | "messaging-email-recipient_subscribed" | "messaging-email-recipient_unsubscribed" | "messaging-conversation-created" | "messaging-conversation-updated" | "messaging-conversation-deleted" | "messaging-verification-sent" | "messaging-verification-failed" | "messaging-verification-delivered" | "messaging-verification-expired" | "messaging-verification-verified" | "messaging-email-sender-created" | "messaging-email-sender-deleted" | "messaging-email-sender-verified" | "messaging-sms-sender-reserved" | "messaging-sms-sender-released" | "messaging-sms-sender-approved" | "messaging-sms-sender-rejected" | "messaging-sms-sender-blocked" | "messaging-sms-brand-registered" | "messaging-sms-brand-suspended" | "messaging-sms-brand-deletion_failed" | "messaging-sms-brand-deletion_pending" | "messaging-sms-brand-deleted" | "messaging-sms-brand-under_review" | "messaging-sms-brand-registration_failed" | "messaging-sms-brand-registration_pending" | "messaging-sms-brand-unverified" | "messaging-sms-brand-vetted" | "messaging-sms-brand-vetting_failed" | "messaging-sms-campaign-approved" | "messaging-sms-campaign-suspended" | "messaging-sms-campaign-failed" | "messaging-sms-campaign-pending" | "messaging-sms-campaign-deleted" | "messaging-sms-campaign-in_review" | "messaging-sms-campaign-rejected" | "messaging-sms-campaign-submitted" | "messaging-phone-number-provision_not_requested" | "messaging-phone-number-provisioned" | "messaging-phone-number-provisioned_for_sms" | "messaging-phone-number-provisioned_for_voice" | "messaging-phone-number-provision_in_progress" | "messaging-phone-number-provision_pending" | "messaging-phone-number-provisioned_for_campaign" | "messaging-phone-number-provision_failed" | "messaging-phone-number-sms_provision_failed" | "messaging-phone-number-provision_unknown" | "messaging-phone-number-toll_free_not_allowed" | "messaging-phone-number-unlinked_for_sms" | "messaging-phone-number-unlinked_for_voice" | "messaging-phone-number-released" | "messaging-phone-number-unlinked_for_campaign" | "messaging-phone-number-campaign_acceptance_pending" | "messaging-phone-number-campaign_expired" | "messaging-phone-number-campaign_mno_rejected" | "messaging-phone-number-campaign_mno_suspended" | "messaging-phone-number-campaign_not_found" | "messaging-phone-number-campaign_provision_failed" | "messaging-phone-number-campaign_under_review" | "messaging-phone-number-10dlc_limit_exceeded" | "messaging-phone-number-invalid_net_number_id" | "messaging-phone-number-provider_internal_error" | "messaging-phone-number-mno_sharing_error" | "messaging-phone-number-provider_service_unavailable" | "messaging-phone-number-provider_partner_service_unavailable" | "messaging-phone-number-provision_status_unknown" | "messaging-phone-number-insufficient_balance" | "messaging-phone-number-error_code_unknown" | "relay-queue-created" | "relay-queue-updated" | "relay-queue-deleted" | "relay-queue-task_enqueued" | "relay-queue-task_completed" | "relay-queue-task_failed" | "relay-queue-task_dead_lettered" | "relay-queue-dead_letter_replayed" | "relay-event_channel-created" | "relay-event_channel-updated" | "relay-event_channel-deleted" | "relay-event_subscription-created" | "relay-event_subscription-updated" | "relay-event_subscription-deleted" | "relay-event-published" | "relay-event-delivery_failed" | "relay-broadcast_channel-created" | "relay-broadcast_channel-updated" | "relay-broadcast_channel-deleted" | "relay-scheduler-created" | "relay-scheduler-updated" | "relay-scheduler-paused" | "relay-scheduler-resumed" | "relay-scheduler-cancelled" | "relay-scheduler-fired" | "relay-scheduler-execution_failed" | "relay-memorystore_cluster-created" | "relay-memorystore_cluster-updated" | "relay-memorystore_cluster-suspended" | "relay-memorystore_cluster-deleted" | "relay-pipeline-created" | "relay-pipeline-updated" | "relay-pipeline-deleted" | "relay-pipeline-run_triggered" | "relay-pipeline-run_completed" | "relay-pipeline-run_failed" | "relay-pipeline-run_cancelled" | "relay-pipeline-gate_approved" | "relay-pipeline-gate_rejected" | "relay-search_index-created" | "relay-search_index-deleted" | "relay-search_document-indexed" | "relay-search_document-removed" | "storage-container-created" | "storage-container-updated" | "storage-container-archived" | "storage-container-restored" | "storage-container-deletion-requested" | "storage-container-deleted" | "storage-container-class-changed" | "storage-object-created" | "storage-object-updated" | "storage-object-renamed" | "storage-object-archived" | "storage-object-restored" | "storage-object-deleted" | "storage-object-version-restored" | "storage-object-acl-granted" | "storage-object-acl-revoked" | "storage-object-visibility-changed")[];
+                    events?: ("cloud-all-events" | "ai-inference-completed" | "ai-inference-failed" | "ai-policy-triggered" | "ai-policy-rule-created" | "ai-policy-rule-updated" | "ai-policy-rule-deleted" | "ai-context-index-created" | "ai-context-index-synced" | "ai-context-index-deleted" | "ai-context-query-completed" | "ai-byok-config-created" | "ai-byok-config-updated" | "ai-byok-config-deleted" | "ai-byok-config-tested" | "ai-budget-threshold-reached" | "auth-account-created" | "auth-account-updated" | "auth-account-soft_deleted" | "auth-account-hard_deleted" | "auth-account-status_changed" | "auth-verification-email_code_requested" | "auth-verification-email_link_requested" | "auth-verification-sms_code_requested" | "auth-session-created" | "auth-session-refreshed" | "auth-session-revoked" | "auth-credential-password_created" | "auth-credential-password_changed" | "auth-credential-password_reset_started" | "auth-credential-password_reset_completed" | "auth-credential-verified" | "auth-credential-removed" | "auth-credential-passkey_clone_suspected" | "auth-mfa-totp_enrolled" | "auth-mfa-totp_activated" | "auth-mfa-totp_verified" | "auth-mfa-sms_enrolled" | "auth-mfa-sms_activated" | "auth-mfa-sms_verified" | "auth-mfa-sms_challenge_sent" | "auth-mfa-passkey_registered" | "auth-mfa-passkey_deleted" | "auth-mfa-recovery_codes_rotated" | "auth-mfa-recovery_code_consumed" | "auth-step_up-verification_requested" | "auth-step_up-verification_completed" | "auth-account-recovery_started" | "auth-account-recovery_completed" | "auth-account-mfa_admin_reset" | "auth-account-deprovisioned" | "auth-account-suspended" | "auth-account-dormant" | "auth-organization-member_added" | "auth-organization-member_removed" | "auth-organization-member_role_changed" | "auth-organization-invitation_created" | "auth-organization-invitation_accepted" | "auth-organization-invitation_revoked" | "auth-organization-group_created" | "auth-organization-group_updated" | "auth-organization-group_deleted" | "auth-organization-group_member_added" | "auth-organization-group_member_removed" | "auth-organization-deleted" | "auth-identity-linked" | "auth-identity-unlinked" | "auth-sso-login_completed" | "auth-api_key-expiring_soon" | "auth-organization-domain_verification_failed" | "auth-organization-domain_verification_reminder" | "auth-organization-domain_verification_demoted" | "auth-organization-domain_verification_recovered" | "auth-connection-created" | "auth-connection-configured" | "auth-connection-activated" | "auth-connection-disabled" | "auth-connection-test_failed" | "auth-guard-threat_detected" | "auth-guard-account_blocked" | "auth-guard-challenge_triggered" | "billing-entity-updated" | "billing-customer-created" | "billing-customer-updated" | "billing-customer-archived" | "billing-customer-unarchived" | "billing-product-created" | "billing-product-updated" | "billing-product-deleted" | "billing-price-created" | "billing-price-updated" | "billing-price-deleted" | "billing-subscription-created" | "billing-subscription-updated" | "billing-subscription-deleted" | "billing-subscription-canceled" | "billing-subscription-trial_will_end" | "billing-subscription-usage_recorded" | "billing-subscription-renewal_reminder" | "billing-subscription_schedule-created" | "billing-subscription_schedule-canceled" | "billing-subscription_schedule-released" | "billing-subscription_schedule-phase_applied" | "billing-subscription_schedule-completed" | "billing-payment_intent-created" | "billing-payment_intent-cancelled" | "billing-payment_intent-failed" | "billing-payment_intent-succeeded" | "billing-payment_intent-processing" | "billing-payment_intent-requires_action" | "billing-payment_method-created" | "billing-payment_method-updated" | "billing-payment_method-deleted" | "billing-payment_method-attached" | "billing-payment_method-detached" | "billing-payment_method-network_updated" | "billing-charge-succeeded" | "billing-charge-failed" | "billing-charge-pending" | "billing-charge-refunded" | "billing-charge-disputed" | "billing-charge-dispute_updated" | "billing-charge-dispute_closed" | "billing-refund-created" | "billing-refund-processing" | "billing-refund-updated" | "billing-refund-succeeded" | "billing-refund-failed" | "billing-tax-reported" | "billing-tax-updated" | "billing-invoice-created" | "billing-invoice-updated" | "billing-invoice-deleted" | "billing-invoice-finalized" | "billing-invoice-paid" | "billing-invoice-payment_failed" | "billing-invoice-open" | "billing-invoice-voided" | "billing-invoice-uncollectible" | "billing-invoice-sent" | "billing-entitlement_feature-created" | "billing-entitlement_feature-updated" | "billing-entitlement_feature-archived" | "billing-price_bundle-created" | "billing-price_bundle-updated" | "billing-price_bundle-archived" | "billing-price_bundle-restored" | "billing-price_bundle_activation-activated" | "billing-price_bundle_activation-deactivated" | "billing-price_bundle_activation-tier_transitioned" | "billing-price_bundle_activation-tier_failed" | "billing-price_bundle_activation-failed" | "billing-price_bundle_activation-fallback_activated" | "billing-entitlement_override-created" | "billing-entitlement_override-updated" | "billing-entitlement_override-deleted" | "billing-coupon-created" | "billing-coupon-updated" | "billing-coupon-deleted" | "billing-discount-created" | "billing-discount-deleted" | "billing-discount-applied" | "billing-discount-expired" | "billing-credit_note-created" | "billing-credit_note-applied" | "billing-credit_note-voided" | "billing-receipt-generated" | "billing-credit_wallet-created" | "billing-credit_wallet-updated" | "billing-credit_wallet-granted" | "billing-credit_wallet-deducted" | "billing-credit_wallet-topup_initiated" | "cloud-spend_controls-threshold_reached" | "cloud-spend_controls-limit_blocked" | "cloud-spend_controls-updated" | "messaging-message-unknown" | "messaging-sms-unknown" | "messaging-sms-inbound_received" | "messaging-sms-outbound_accepted" | "messaging-sms-outbound_queued" | "messaging-sms-outbound_in_transit" | "messaging-sms-outbound_cancelled" | "messaging-sms-outbound_delayed" | "messaging-sms-outbound_sent" | "messaging-sms-outbound_failed" | "messaging-sms-outbound_delivered" | "messaging-sms-outbound_complained" | "messaging-sms-outbound_rejected" | "messaging-sms-outbound_replied" | "messaging-sms-outbound_expired" | "messaging-email-unknown" | "messaging-email-inbound_received" | "messaging-email-outbound_accepted" | "messaging-email-outbound_delayed" | "messaging-email-outbound_sent" | "messaging-email-outbound_failed" | "messaging-email-outbound_delivered" | "messaging-email-outbound_bounced" | "messaging-email-outbound_complained" | "messaging-email-outbound_rejected" | "messaging-email-outbound_updated" | "messaging-email-outbound_replied" | "messaging-email-outbound_opened" | "messaging-email-outbound_clicked" | "messaging-email-recipient_subscribed" | "messaging-email-recipient_unsubscribed" | "messaging-conversation-created" | "messaging-conversation-updated" | "messaging-conversation-deleted" | "messaging-verification-sent" | "messaging-verification-failed" | "messaging-verification-delivered" | "messaging-verification-expired" | "messaging-verification-verified" | "messaging-email-sender-created" | "messaging-email-sender-deleted" | "messaging-email-sender-verified" | "messaging-sms-sender-reserved" | "messaging-sms-sender-released" | "messaging-sms-sender-approved" | "messaging-sms-sender-rejected" | "messaging-sms-sender-blocked" | "messaging-sms-brand-registered" | "messaging-sms-brand-suspended" | "messaging-sms-brand-deletion_failed" | "messaging-sms-brand-deletion_pending" | "messaging-sms-brand-deleted" | "messaging-sms-brand-under_review" | "messaging-sms-brand-registration_failed" | "messaging-sms-brand-registration_pending" | "messaging-sms-brand-unverified" | "messaging-sms-brand-vetted" | "messaging-sms-brand-vetting_failed" | "messaging-sms-campaign-approved" | "messaging-sms-campaign-suspended" | "messaging-sms-campaign-failed" | "messaging-sms-campaign-pending" | "messaging-sms-campaign-deleted" | "messaging-sms-campaign-in_review" | "messaging-sms-campaign-rejected" | "messaging-sms-campaign-submitted" | "messaging-phone-number-provision_not_requested" | "messaging-phone-number-provisioned" | "messaging-phone-number-provisioned_for_sms" | "messaging-phone-number-provisioned_for_voice" | "messaging-phone-number-provision_in_progress" | "messaging-phone-number-provision_pending" | "messaging-phone-number-provisioned_for_campaign" | "messaging-phone-number-provision_failed" | "messaging-phone-number-sms_provision_failed" | "messaging-phone-number-provision_unknown" | "messaging-phone-number-toll_free_not_allowed" | "messaging-phone-number-unlinked_for_sms" | "messaging-phone-number-unlinked_for_voice" | "messaging-phone-number-released" | "messaging-phone-number-unlinked_for_campaign" | "messaging-phone-number-campaign_acceptance_pending" | "messaging-phone-number-campaign_expired" | "messaging-phone-number-campaign_mno_rejected" | "messaging-phone-number-campaign_mno_suspended" | "messaging-phone-number-campaign_not_found" | "messaging-phone-number-campaign_provision_failed" | "messaging-phone-number-campaign_under_review" | "messaging-phone-number-10dlc_limit_exceeded" | "messaging-phone-number-invalid_net_number_id" | "messaging-phone-number-provider_internal_error" | "messaging-phone-number-mno_sharing_error" | "messaging-phone-number-provider_service_unavailable" | "messaging-phone-number-provider_partner_service_unavailable" | "messaging-phone-number-provision_status_unknown" | "messaging-phone-number-insufficient_balance" | "messaging-phone-number-error_code_unknown" | "relay-queue-created" | "relay-queue-updated" | "relay-queue-deleted" | "relay-queue-task_enqueued" | "relay-queue-task_completed" | "relay-queue-task_failed" | "relay-queue-task_dead_lettered" | "relay-queue-dead_letter_replayed" | "relay-event_channel-created" | "relay-event_channel-updated" | "relay-event_channel-deleted" | "relay-event_subscription-created" | "relay-event_subscription-updated" | "relay-event_subscription-deleted" | "relay-event-published" | "relay-event-delivery_failed" | "relay-broadcast_channel-created" | "relay-broadcast_channel-updated" | "relay-broadcast_channel-deleted" | "relay-scheduler-created" | "relay-scheduler-updated" | "relay-scheduler-paused" | "relay-scheduler-resumed" | "relay-scheduler-cancelled" | "relay-scheduler-fired" | "relay-scheduler-execution_failed" | "relay-memorystore_cluster-created" | "relay-memorystore_cluster-updated" | "relay-memorystore_cluster-suspended" | "relay-memorystore_cluster-deleted" | "relay-pipeline-created" | "relay-pipeline-updated" | "relay-pipeline-deleted" | "relay-pipeline-run_triggered" | "relay-pipeline-run_completed" | "relay-pipeline-run_failed" | "relay-pipeline-run_cancelled" | "relay-pipeline-gate_approved" | "relay-pipeline-gate_rejected" | "relay-search_index-created" | "relay-search_index-deleted" | "relay-search_document-indexed" | "relay-search_document-removed" | "storage-container-created" | "storage-container-updated" | "storage-container-archived" | "storage-container-restored" | "storage-container-deletion-requested" | "storage-container-deleted" | "storage-container-class-changed" | "storage-object-created" | "storage-object-updated" | "storage-object-renamed" | "storage-object-archived" | "storage-object-restored" | "storage-object-deleted" | "storage-object-version-restored" | "storage-object-acl-granted" | "storage-object-acl-revoked" | "storage-object-visibility-changed")[];
                     is_active?: boolean;
                 };
             };
@@ -106636,6 +107609,7 @@ export interface operations {
         requestBody: {
             content: {
                 "application/json": {
+                    /** @example string */
                     model: string;
                     messages: {
                         /** @example string */
@@ -106682,32 +107656,30 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
-                        response?: components["schemas"]["ApiSuccessResponseMeta"];
-                        data?: {
-                            request_id: string;
-                            conjoin_account_id: string;
-                            conjoin_project_id: string;
-                            live_mode: boolean;
-                            /** @example string */
-                            conjoin_request_id: string;
-                            trace_source?: ("public_api" | "sdk" | "service_rpc" | "outbox" | "service_event" | "relay_worker" | "schedule" | "system_job" | "provider_webhook") | null;
-                            model: string;
-                            provider: string;
-                            request_type: string;
-                            status: string;
-                            token_usage: {
-                                input_tokens: number;
-                                output_tokens: number;
-                                total_tokens: number;
+                        id: string;
+                        /** @constant */
+                        object: "chat.completion";
+                        created: number;
+                        model: string;
+                        choices: {
+                            index: number;
+                            message: {
+                                role: string;
+                                content: string;
+                                tool_calls?: unknown[];
                             };
+                            finish_reason: string;
+                        }[];
+                        usage: {
+                            prompt_tokens: number;
+                            completion_tokens: number;
+                            total_tokens: number;
+                        };
+                        _conjoin: {
                             cost_usd: number;
                             latency_ms: number;
-                            streaming_enabled: boolean;
-                            policy_applied: boolean;
                             is_byok: boolean;
                             context_used: boolean;
-                            date_created: string;
-                            date_updated: string;
                         };
                     };
                 };
@@ -106837,13 +107809,14 @@ export interface operations {
                     temperature?: number;
                     max_tokens?: number;
                     synthesize?: boolean;
+                    /** @example string */
                     judge_model?: string;
                 };
             };
         };
         responses: {
             /** @description Successful response */
-            200: {
+            201: {
                 headers: {
                     "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
                     "Idempotent-Replayed": components["headers"]["IdempotentReplayed"];
@@ -106854,16 +107827,26 @@ export interface operations {
                         response?: components["schemas"]["ApiSuccessResponseMeta"];
                         data?: {
                             request_id: string;
-                            conjoin_account_id: string;
-                            conjoin_project_id: string;
-                            live_mode: boolean;
-                            /** @example string */
-                            conjoin_request_id: string;
-                            trace_source?: ("public_api" | "sdk" | "service_rpc" | "outbox" | "service_event" | "relay_worker" | "schedule" | "system_job" | "provider_webhook") | null;
-                            model: string;
-                            provider: string;
                             request_type: string;
-                            status: string;
+                            models: string[];
+                            results: {
+                                model: string;
+                                provider: string;
+                                output: {
+                                    content: string;
+                                    finish_reason: string;
+                                };
+                                token_usage: {
+                                    input_tokens: number;
+                                    output_tokens: number;
+                                    total_tokens: number;
+                                };
+                                cost_usd: number;
+                                latency_ms: number;
+                            }[];
+                            synthesis: {
+                                [key: string]: unknown;
+                            } | null;
                             token_usage: {
                                 input_tokens: number;
                                 output_tokens: number;
@@ -106871,12 +107854,6 @@ export interface operations {
                             };
                             cost_usd: number;
                             latency_ms: number;
-                            streaming_enabled: boolean;
-                            policy_applied: boolean;
-                            is_byok: boolean;
-                            context_used: boolean;
-                            date_created: string;
-                            date_updated: string;
                         };
                     };
                 };
@@ -106996,6 +107973,7 @@ export interface operations {
         requestBody: {
             content: {
                 "application/json": {
+                    /** @example string */
                     model: string;
                     messages: {
                         /** @example string */
@@ -107013,7 +107991,7 @@ export interface operations {
         };
         responses: {
             /** @description Successful response */
-            200: {
+            201: {
                 headers: {
                     "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
                     "Idempotent-Replayed": components["headers"]["IdempotentReplayed"];
@@ -107024,16 +108002,31 @@ export interface operations {
                         response?: components["schemas"]["ApiSuccessResponseMeta"];
                         data?: {
                             request_id: string;
-                            conjoin_account_id: string;
-                            conjoin_project_id: string;
-                            live_mode: boolean;
-                            /** @example string */
-                            conjoin_request_id: string;
-                            trace_source?: ("public_api" | "sdk" | "service_rpc" | "outbox" | "service_event" | "relay_worker" | "schedule" | "system_job" | "provider_webhook") | null;
-                            model: string;
-                            provider: string;
                             request_type: string;
-                            status: string;
+                            model: string;
+                            n: number;
+                            selected: {
+                                content: string;
+                                finish_reason: string;
+                                model: string;
+                                usage: {
+                                    input_tokens: number;
+                                    output_tokens: number;
+                                    total_tokens: number;
+                                };
+                                cost_usd: number;
+                            };
+                            candidates: {
+                                content: string;
+                                finish_reason: string;
+                                usage: {
+                                    input_tokens: number;
+                                    output_tokens: number;
+                                    total_tokens: number;
+                                };
+                                cost_usd: number;
+                                latency_ms: number;
+                            }[];
                             token_usage: {
                                 input_tokens: number;
                                 output_tokens: number;
@@ -107041,12 +108034,6 @@ export interface operations {
                             };
                             cost_usd: number;
                             latency_ms: number;
-                            streaming_enabled: boolean;
-                            policy_applied: boolean;
-                            is_byok: boolean;
-                            context_used: boolean;
-                            date_created: string;
-                            date_updated: string;
                         };
                     };
                 };
@@ -107154,6 +108141,25 @@ export interface operations {
     listAiInferenceRequests: {
         parameters: {
             query?: {
+                model?: string;
+                status?: "pending" | "streaming" | "completed" | "failed" | "cancelled";
+                request_type?: "single" | "multi_model" | "best_of_n" | "synthesis";
+                conjoin_request_id?: string;
+                trace_source?: "public_api" | "sdk" | "service_rpc" | "outbox" | "service_event" | "relay_worker" | "schedule" | "system_job" | "provider_webhook";
+                date_created?: {
+                    /** @example string */
+                    equals?: string;
+                    /** @example string */
+                    not_equals?: string;
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
                 cursor?: {
                     /** @example string */
                     prev?: string;
@@ -107164,31 +108170,6 @@ export interface operations {
                     [key: string]: "asc" | "desc";
                 };
                 limit?: string | number;
-                query?: {
-                    model?: string;
-                    /** @enum {string} */
-                    status?: "pending" | "streaming" | "completed" | "failed" | "cancelled";
-                    /** @enum {string} */
-                    request_type?: "single" | "multi_model" | "best_of_n" | "synthesis";
-                    /** @example string */
-                    conjoin_request_id?: string;
-                    /** @enum {string} */
-                    trace_source?: "public_api" | "sdk" | "service_rpc" | "outbox" | "service_event" | "relay_worker" | "schedule" | "system_job" | "provider_webhook";
-                    date_created?: {
-                        /** @example string */
-                        equals?: string;
-                        /** @example string */
-                        not_equals?: string;
-                        /** @example string */
-                        gt?: string;
-                        /** @example string */
-                        lt?: string;
-                        /** @example string */
-                        gte?: string;
-                        /** @example string */
-                        lte?: string;
-                    };
-                };
             };
             header?: {
                 /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
@@ -107296,6 +108277,121 @@ export interface operations {
             };
         };
     };
+    listAiInferenceRequestsCount: {
+        parameters: {
+            query?: {
+                model?: string;
+                status?: "pending" | "streaming" | "completed" | "failed" | "cancelled";
+                request_type?: "single" | "multi_model" | "best_of_n" | "synthesis";
+                conjoin_request_id?: string;
+                trace_source?: "public_api" | "sdk" | "service_rpc" | "outbox" | "service_event" | "relay_worker" | "schedule" | "system_job" | "provider_webhook";
+                date_created?: {
+                    /** @example string */
+                    equals?: string;
+                    /** @example string */
+                    not_equals?: string;
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                cursor?: {
+                    /** @example string */
+                    prev?: string;
+                    /** @example string */
+                    next?: string;
+                };
+                sort?: {
+                    [key: string]: "asc" | "desc";
+                };
+                limit?: string | number;
+            };
+            header?: {
+                /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
+                "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful response */
+            200: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response?: components["schemas"]["ApiSuccessResponseMeta"];
+                        data?: {
+                            count: number;
+                        };
+                    };
+                };
+            };
+            /** @description Validation error or bad request */
+            400: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Unauthorized - missing or invalid API key */
+            401: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description The resource does not exist in the scope of the request */
+            404: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiServerErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+        };
+    };
     readAiInferenceRequest: {
         parameters: {
             query?: never;
@@ -107304,7 +108400,7 @@ export interface operations {
                 "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
             };
             path: {
-                request_id: string;
+                inference_request_id: string;
             };
             cookie?: never;
         };

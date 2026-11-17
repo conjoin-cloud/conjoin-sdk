@@ -9,13 +9,17 @@ from conjoin_cloud._url import encode_path_param
 from conjoin_cloud.generated._models import (
     AiContextCreateIndexRequest,
     AiContextCreateIndexResponse,
+    AiContextCreateQueryRequest,
+    AiContextCreateQueryResponse,
     AiContextDeleteIndexResponse,
+    AiContextListIndexesCountQuery,
+    AiContextListIndexesCountResponse,
     AiContextListIndexesItem,
     AiContextListIndexesQuery,
-    AiContextListQueryLogsItem,
-    AiContextListQueryLogsQuery,
-    AiContextQueryRequest,
-    AiContextQueryResponse,
+    AiContextListQueriesCountQuery,
+    AiContextListQueriesCountResponse,
+    AiContextListQueriesItem,
+    AiContextListQueriesQuery,
     AiContextReadIndexResponse,
     AiContextSyncIndexResponse,
 )
@@ -36,7 +40,7 @@ class AiContextsResource:
     ) -> Page[AiContextListIndexesItem]:
         return self._client.request(
             'GET',
-            'ai/context/indexes',
+            'ai/context-indexes/',
             query=query,
             cast_to=Page[AiContextListIndexesItem],
             request_options=request_options,
@@ -50,79 +54,107 @@ class AiContextsResource:
     ) -> AiContextCreateIndexResponse:
         return self._client.request(
             'POST',
-            'ai/context/indexes',
+            'ai/context-indexes/',
             body=data,
             cast_to=AiContextCreateIndexResponse,
             request_options=request_options,
             accepts_idempotency_key=True,
         )
 
+    def list_indexes_count(
+        self,
+        query: AiContextListIndexesCountQuery | None = None,
+        *,
+        request_options: RequestOptions | Mapping[str, Any] | None = None,
+    ) -> AiContextListIndexesCountResponse:
+        return self._client.request(
+            'GET',
+            'ai/context-indexes/count',
+            query=query,
+            cast_to=AiContextListIndexesCountResponse,
+            request_options=request_options,
+        )
+
     def read_index(
         self,
-        index_id: str,
+        context_index_id: str,
         *,
         request_options: RequestOptions | Mapping[str, Any] | None = None,
     ) -> AiContextReadIndexResponse:
         return self._client.request(
             'GET',
-            f'ai/context/indexes/{encode_path_param(index_id)}',
+            f'ai/context-indexes/{encode_path_param(context_index_id)}',
             cast_to=AiContextReadIndexResponse,
             request_options=request_options,
         )
 
     def delete_index(
         self,
-        index_id: str,
+        context_index_id: str,
         *,
         request_options: RequestOptions | Mapping[str, Any] | None = None,
     ) -> AiContextDeleteIndexResponse:
         return self._client.request(
             'DELETE',
-            f'ai/context/indexes/{encode_path_param(index_id)}',
+            f'ai/context-indexes/{encode_path_param(context_index_id)}',
             cast_to=AiContextDeleteIndexResponse,
             request_options=request_options,
         )
 
     def sync_index(
         self,
-        index_id: str,
+        context_index_id: str,
         *,
         request_options: RequestOptions | Mapping[str, Any] | None = None,
     ) -> AiContextSyncIndexResponse:
         return self._client.request(
             'POST',
-            f'ai/context/indexes/{encode_path_param(index_id)}/sync',
+            f'ai/context-indexes/{encode_path_param(context_index_id)}/sync',
             cast_to=AiContextSyncIndexResponse,
             request_options=request_options,
             accepts_idempotency_key=True,
         )
 
-    def query(
+    def list_queries(
         self,
-        data: AiContextQueryRequest,
+        query: AiContextListQueriesQuery | None = None,
         *,
         request_options: RequestOptions | Mapping[str, Any] | None = None,
-    ) -> AiContextQueryResponse:
+    ) -> Page[AiContextListQueriesItem]:
+        return self._client.request(
+            'GET',
+            'ai/context-queries/',
+            query=query,
+            cast_to=Page[AiContextListQueriesItem],
+            request_options=request_options,
+        )
+
+    def create_query(
+        self,
+        data: AiContextCreateQueryRequest,
+        *,
+        request_options: RequestOptions | Mapping[str, Any] | None = None,
+    ) -> AiContextCreateQueryResponse:
         return self._client.request(
             'POST',
-            'ai/context/query',
+            'ai/context-queries/',
             body=data,
-            cast_to=AiContextQueryResponse,
+            cast_to=AiContextCreateQueryResponse,
             request_options=request_options,
             accepts_idempotency_key=True,
         )
 
-    def list_query_logs(
+    def list_queries_count(
         self,
-        query: AiContextListQueryLogsQuery | None = None,
+        query: AiContextListQueriesCountQuery | None = None,
         *,
         request_options: RequestOptions | Mapping[str, Any] | None = None,
-    ) -> Page[AiContextListQueryLogsItem]:
+    ) -> AiContextListQueriesCountResponse:
         return self._client.request(
             'GET',
-            'ai/context/query-logs',
+            'ai/context-queries/count',
             query=query,
-            cast_to=Page[AiContextListQueryLogsItem],
+            cast_to=AiContextListQueriesCountResponse,
             request_options=request_options,
         )
 
@@ -139,7 +171,7 @@ class AsyncAiContextsResource:
     ) -> AsyncPage[AiContextListIndexesItem]:
         return await self._client.request(
             'GET',
-            'ai/context/indexes',
+            'ai/context-indexes/',
             query=query,
             cast_to=AsyncPage[AiContextListIndexesItem],
             request_options=request_options,
@@ -153,78 +185,106 @@ class AsyncAiContextsResource:
     ) -> AiContextCreateIndexResponse:
         return await self._client.request(
             'POST',
-            'ai/context/indexes',
+            'ai/context-indexes/',
             body=data,
             cast_to=AiContextCreateIndexResponse,
             request_options=request_options,
             accepts_idempotency_key=True,
         )
 
+    async def list_indexes_count(
+        self,
+        query: AiContextListIndexesCountQuery | None = None,
+        *,
+        request_options: RequestOptions | Mapping[str, Any] | None = None,
+    ) -> AiContextListIndexesCountResponse:
+        return await self._client.request(
+            'GET',
+            'ai/context-indexes/count',
+            query=query,
+            cast_to=AiContextListIndexesCountResponse,
+            request_options=request_options,
+        )
+
     async def read_index(
         self,
-        index_id: str,
+        context_index_id: str,
         *,
         request_options: RequestOptions | Mapping[str, Any] | None = None,
     ) -> AiContextReadIndexResponse:
         return await self._client.request(
             'GET',
-            f'ai/context/indexes/{encode_path_param(index_id)}',
+            f'ai/context-indexes/{encode_path_param(context_index_id)}',
             cast_to=AiContextReadIndexResponse,
             request_options=request_options,
         )
 
     async def delete_index(
         self,
-        index_id: str,
+        context_index_id: str,
         *,
         request_options: RequestOptions | Mapping[str, Any] | None = None,
     ) -> AiContextDeleteIndexResponse:
         return await self._client.request(
             'DELETE',
-            f'ai/context/indexes/{encode_path_param(index_id)}',
+            f'ai/context-indexes/{encode_path_param(context_index_id)}',
             cast_to=AiContextDeleteIndexResponse,
             request_options=request_options,
         )
 
     async def sync_index(
         self,
-        index_id: str,
+        context_index_id: str,
         *,
         request_options: RequestOptions | Mapping[str, Any] | None = None,
     ) -> AiContextSyncIndexResponse:
         return await self._client.request(
             'POST',
-            f'ai/context/indexes/{encode_path_param(index_id)}/sync',
+            f'ai/context-indexes/{encode_path_param(context_index_id)}/sync',
             cast_to=AiContextSyncIndexResponse,
             request_options=request_options,
             accepts_idempotency_key=True,
         )
 
-    async def query(
+    async def list_queries(
         self,
-        data: AiContextQueryRequest,
+        query: AiContextListQueriesQuery | None = None,
         *,
         request_options: RequestOptions | Mapping[str, Any] | None = None,
-    ) -> AiContextQueryResponse:
+    ) -> AsyncPage[AiContextListQueriesItem]:
+        return await self._client.request(
+            'GET',
+            'ai/context-queries/',
+            query=query,
+            cast_to=AsyncPage[AiContextListQueriesItem],
+            request_options=request_options,
+        )
+
+    async def create_query(
+        self,
+        data: AiContextCreateQueryRequest,
+        *,
+        request_options: RequestOptions | Mapping[str, Any] | None = None,
+    ) -> AiContextCreateQueryResponse:
         return await self._client.request(
             'POST',
-            'ai/context/query',
+            'ai/context-queries/',
             body=data,
-            cast_to=AiContextQueryResponse,
+            cast_to=AiContextCreateQueryResponse,
             request_options=request_options,
             accepts_idempotency_key=True,
         )
 
-    async def list_query_logs(
+    async def list_queries_count(
         self,
-        query: AiContextListQueryLogsQuery | None = None,
+        query: AiContextListQueriesCountQuery | None = None,
         *,
         request_options: RequestOptions | Mapping[str, Any] | None = None,
-    ) -> AsyncPage[AiContextListQueryLogsItem]:
+    ) -> AiContextListQueriesCountResponse:
         return await self._client.request(
             'GET',
-            'ai/context/query-logs',
+            'ai/context-queries/count',
             query=query,
-            cast_to=AsyncPage[AiContextListQueryLogsItem],
+            cast_to=AiContextListQueriesCountResponse,
             request_options=request_options,
         )

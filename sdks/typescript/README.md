@@ -225,7 +225,7 @@ for await (const chunk of stream) {
 stream.controller.abort()
 ```
 
-`complete` returns the stored inference record, with its `status`, `token_usage`, `cost_usd`, and `latency_ms`. `stream` returns an `AsyncIterable<ChatCompletionChunk>` and an `AbortController`. Neither call retries until the API declares an `Idempotency-Key` header for chat completions, so a dropped connection never runs a completion twice.
+`complete` returns the chat completion in the OpenAI format, with `choices`, `usage`, and a `_conjoin` object that holds `cost_usd`, `latency_ms`, `is_byok`, and `context_used`. `stream` returns an `AsyncIterable<ChatCompletionChunk>` and an `AbortController`. Both calls send an `Idempotency-Key` header, and the SDK keeps the same key on every retry of a call.
 
 ## Relay Broadcast
 

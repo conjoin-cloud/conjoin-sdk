@@ -2,22 +2,19 @@ package ai
 
 import conjoin "github.com/conjoin-cloud/conjoin-sdk/sdks/go"
 
-type ListUsageRecordsQueryQuery struct {
-	RecordType       *string                               `json:"record_type,omitzero"`
-	Model            *string                               `json:"model,omitzero"`
-	Provider         *string                               `json:"provider,omitzero"`
-	BillingPeriod    *string                               `json:"billing_period,omitzero"`
-	IsBillable       *bool                                 `json:"is_billable,omitzero"`
-	ConjoinRequestID *string                               `json:"conjoin_request_id,omitzero"`
-	TraceSource      *string                               `json:"trace_source,omitzero"`
-	RecordedAt       *ListByokConfigsQueryQueryDateCreated `json:"recorded_at,omitzero"`
-}
-
 type ListUsageRecordsQuery struct {
-	Cursor *ListByokConfigsQueryCursor `json:"cursor,omitzero"`
-	Sort   map[string]string           `json:"sort,omitzero"`
-	Limit  any                         `json:"limit,omitzero"`
-	Query  *ListUsageRecordsQueryQuery `json:"query,omitzero"`
+	RecordType       *string                          `json:"record_type,omitzero"`
+	Model            *string                          `json:"model,omitzero"`
+	Provider         *string                          `json:"provider,omitzero"`
+	BillingPeriod    *string                          `json:"billing_period,omitzero"`
+	IsBillable       any                              `json:"is_billable,omitzero"`
+	ConjoinRequestID *string                          `json:"conjoin_request_id,omitzero"`
+	TraceSource      *string                          `json:"trace_source,omitzero"`
+	RecordedAt       *ListByokConfigsQueryDateCreated `json:"recorded_at,omitzero"`
+	DateCreated      *ListByokConfigsQueryDateCreated `json:"date_created,omitzero"`
+	Cursor           *ListByokConfigsQueryCursor      `json:"cursor,omitzero"`
+	Sort             map[string]string                `json:"sort,omitzero"`
+	Limit            any                              `json:"limit,omitzero"`
 }
 
 type ListUsageRecordsItem struct {
@@ -42,6 +39,10 @@ type ListUsageRecordsItem struct {
 	DateCreated      string                   `json:"date_created"`
 }
 
+type ListUsageRecordsCountQuery = ListUsageRecordsQuery
+
+type ListUsageRecordsCountResponse = ListByokConfigsCountResponse
+
 type ReadUsageSummaryQuery struct {
 	BillingPeriod *string `json:"billing_period,omitzero"`
 	StartDate     *string `json:"start_date,omitzero"`
@@ -55,6 +56,13 @@ type ReadUsageSummaryResponseBreakdownByModelItem struct {
 	TotalRequests float64 `json:"total_requests"`
 }
 
+type ReadUsageSummaryResponseBreakdownByProviderItem struct {
+	Provider      string  `json:"provider"`
+	TotalTokens   float64 `json:"total_tokens"`
+	TotalCostUsd  float64 `json:"total_cost_usd"`
+	TotalRequests float64 `json:"total_requests"`
+}
+
 type ReadUsageSummaryResponseBreakdownByTypeItem struct {
 	RecordType    string  `json:"record_type"`
 	TotalTokens   float64 `json:"total_tokens"`
@@ -63,10 +71,11 @@ type ReadUsageSummaryResponseBreakdownByTypeItem struct {
 }
 
 type ReadUsageSummaryResponse struct {
-	TotalTokens      float64                                        `json:"total_tokens"`
-	TotalCostUsd     float64                                        `json:"total_cost_usd"`
-	TotalRequests    float64                                        `json:"total_requests"`
-	BreakdownByModel []ReadUsageSummaryResponseBreakdownByModelItem `json:"breakdown_by_model"`
-	BreakdownByType  []ReadUsageSummaryResponseBreakdownByTypeItem  `json:"breakdown_by_type"`
-	BillingPeriod    string                                         `json:"billing_period"`
+	TotalTokens         float64                                           `json:"total_tokens"`
+	TotalCostUsd        float64                                           `json:"total_cost_usd"`
+	TotalRequests       float64                                           `json:"total_requests"`
+	BreakdownByModel    []ReadUsageSummaryResponseBreakdownByModelItem    `json:"breakdown_by_model"`
+	BreakdownByProvider []ReadUsageSummaryResponseBreakdownByProviderItem `json:"breakdown_by_provider"`
+	BreakdownByType     []ReadUsageSummaryResponseBreakdownByTypeItem     `json:"breakdown_by_type"`
+	BillingPeriod       string                                            `json:"billing_period"`
 }

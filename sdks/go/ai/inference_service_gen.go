@@ -18,6 +18,7 @@ func (s *InferencesService) CreateChatCompletion(ctx context.Context, body *Crea
 		Body:                  body,
 		BodyRequired:          true,
 		AcceptsIdempotencyKey: true,
+		Response:              conjoin.ResponseBody,
 	}, &out, opts...); err != nil {
 		return nil, err
 	}
@@ -28,7 +29,7 @@ func (s *InferencesService) CreateAiMultiModel(ctx context.Context, body *Create
 	var out CreateMultiModelInferenceResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
 		Method:                "POST",
-		Path:                  "ai/inference/multi-model",
+		Path:                  "ai/multi-model-inferences/",
 		Body:                  body,
 		BodyRequired:          true,
 		AcceptsIdempotencyKey: true,
@@ -42,7 +43,7 @@ func (s *InferencesService) CreateAiBestOfN(ctx context.Context, body *CreateBes
 	var out CreateBestOfNInferenceResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
 		Method:                "POST",
-		Path:                  "ai/inference/best-of-n",
+		Path:                  "ai/best-of-n-inferences/",
 		Body:                  body,
 		BodyRequired:          true,
 		AcceptsIdempotencyKey: true,
@@ -55,17 +56,29 @@ func (s *InferencesService) CreateAiBestOfN(ctx context.Context, body *CreateBes
 func (s *InferencesService) ListRequests(ctx context.Context, query *ListInferenceRequestsQuery, opts ...conjoin.CallOption) (*conjoin.Page[ListInferenceRequestsItem], error) {
 	return conjoin.List[ListInferenceRequestsItem](ctx, s.client, conjoin.Operation{
 		Method: "GET",
-		Path:   "ai/inference/requests",
+		Path:   "ai/inference-requests/",
 		Query:  query,
 	}, opts...)
 }
 
-func (s *InferencesService) ReadRequest(ctx context.Context, requestID string, opts ...conjoin.CallOption) (*ReadInferenceRequestResponse, error) {
+func (s *InferencesService) ListRequestsCount(ctx context.Context, query *ListInferenceRequestsCountQuery, opts ...conjoin.CallOption) (*ListInferenceRequestsCountResponse, error) {
+	var out ListInferenceRequestsCountResponse
+	if err := s.client.Do(ctx, conjoin.Operation{
+		Method: "GET",
+		Path:   "ai/inference-requests/count",
+		Query:  query,
+	}, &out, opts...); err != nil {
+		return nil, err
+	}
+	return &out, nil
+}
+
+func (s *InferencesService) ReadRequest(ctx context.Context, inferenceRequestID string, opts ...conjoin.CallOption) (*ReadInferenceRequestResponse, error) {
 	var out ReadInferenceRequestResponse
 	if err := s.client.Do(ctx, conjoin.Operation{
 		Method:     "GET",
-		Path:       "ai/inference/requests/{request_id}",
-		PathParams: []string{requestID},
+		Path:       "ai/inference-requests/{inference_request_id}",
+		PathParams: []string{inferenceRequestID},
 	}, &out, opts...); err != nil {
 		return nil, err
 	}

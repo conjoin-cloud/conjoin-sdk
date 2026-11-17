@@ -11,9 +11,7 @@ export type ChatCompletionParams = Omit<
 
 export type ChatMessage = ChatCompletionParams['messages'][number]
 
-export type ChatCompletionResponse = NonNullable<
-  ChatCompletionOperation['responses']['200']['content']['application/json']['data']
->
+export type ChatCompletionResponse = ChatCompletionOperation['responses']['200']['content']['application/json']
 
 export type ChatCompletionUsage = {
   prompt_tokens: number

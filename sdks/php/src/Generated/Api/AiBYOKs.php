@@ -21,7 +21,7 @@ final class AiBYOKs
     {
         return $this->client->sendList(new OperationRequest(
             method: HttpMethod::Get,
-            path: 'ai/byok/',
+            path: 'ai/byok-configs/',
             query: $query,
         ), $options);
     }
@@ -30,9 +30,18 @@ final class AiBYOKs
     {
         return $this->client->send(new OperationRequest(
             method: HttpMethod::Post,
-            path: 'ai/byok/',
+            path: 'ai/byok-configs/',
             body: $data,
             acceptsIdempotencyKey: true,
+        ), $options)->dataArray();
+    }
+
+    public function listByokConfigsCount(?array $query = null, ?CallOptions $options = null): array
+    {
+        return $this->client->send(new OperationRequest(
+            method: HttpMethod::Get,
+            path: 'ai/byok-configs/count',
+            query: $query,
         ), $options)->dataArray();
     }
 
@@ -40,7 +49,7 @@ final class AiBYOKs
     {
         return $this->client->send(new OperationRequest(
             method: HttpMethod::Get,
-            path: 'ai/byok/' . PathSegment::encode($byokConfigId),
+            path: 'ai/byok-configs/' . PathSegment::encode($byokConfigId),
         ), $options)->dataArray();
     }
 
@@ -48,7 +57,7 @@ final class AiBYOKs
     {
         return $this->client->send(new OperationRequest(
             method: HttpMethod::Patch,
-            path: 'ai/byok/' . PathSegment::encode($byokConfigId),
+            path: 'ai/byok-configs/' . PathSegment::encode($byokConfigId),
             body: $data,
         ), $options)->dataArray();
     }
@@ -57,7 +66,7 @@ final class AiBYOKs
     {
         return $this->client->send(new OperationRequest(
             method: HttpMethod::Delete,
-            path: 'ai/byok/' . PathSegment::encode($byokConfigId),
+            path: 'ai/byok-configs/' . PathSegment::encode($byokConfigId),
         ), $options)->dataArray();
     }
 
@@ -65,7 +74,7 @@ final class AiBYOKs
     {
         return $this->client->send(new OperationRequest(
             method: HttpMethod::Post,
-            path: 'ai/byok/' . PathSegment::encode($byokConfigId) . '/test',
+            path: 'ai/byok-configs/' . PathSegment::encode($byokConfigId) . '/test',
             acceptsIdempotencyKey: true,
         ), $options)->dataArray();
     }

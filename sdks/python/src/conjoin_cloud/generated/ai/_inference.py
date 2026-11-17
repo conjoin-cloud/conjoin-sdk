@@ -13,6 +13,8 @@ from conjoin_cloud.generated._models import (
     AiInferenceCreateAiMultiModelResponse,
     AiInferenceCreateChatCompletionRequest,
     AiInferenceCreateChatCompletionResponse,
+    AiInferenceListRequestsCountQuery,
+    AiInferenceListRequestsCountResponse,
     AiInferenceListRequestsItem,
     AiInferenceListRequestsQuery,
     AiInferenceReadRequestResponse,
@@ -39,6 +41,7 @@ class AiInferencesResource:
             cast_to=AiInferenceCreateChatCompletionResponse,
             request_options=request_options,
             accepts_idempotency_key=True,
+            unwrap_data=False,
         )
 
     def create_ai_multi_model(
@@ -49,7 +52,7 @@ class AiInferencesResource:
     ) -> AiInferenceCreateAiMultiModelResponse:
         return self._client.request(
             'POST',
-            'ai/inference/multi-model',
+            'ai/multi-model-inferences/',
             body=data,
             cast_to=AiInferenceCreateAiMultiModelResponse,
             request_options=request_options,
@@ -64,7 +67,7 @@ class AiInferencesResource:
     ) -> AiInferenceCreateAiBestOfNResponse:
         return self._client.request(
             'POST',
-            'ai/inference/best-of-n',
+            'ai/best-of-n-inferences/',
             body=data,
             cast_to=AiInferenceCreateAiBestOfNResponse,
             request_options=request_options,
@@ -79,21 +82,35 @@ class AiInferencesResource:
     ) -> Page[AiInferenceListRequestsItem]:
         return self._client.request(
             'GET',
-            'ai/inference/requests',
+            'ai/inference-requests/',
             query=query,
             cast_to=Page[AiInferenceListRequestsItem],
             request_options=request_options,
         )
 
+    def list_requests_count(
+        self,
+        query: AiInferenceListRequestsCountQuery | None = None,
+        *,
+        request_options: RequestOptions | Mapping[str, Any] | None = None,
+    ) -> AiInferenceListRequestsCountResponse:
+        return self._client.request(
+            'GET',
+            'ai/inference-requests/count',
+            query=query,
+            cast_to=AiInferenceListRequestsCountResponse,
+            request_options=request_options,
+        )
+
     def read_request(
         self,
-        request_id: str,
+        inference_request_id: str,
         *,
         request_options: RequestOptions | Mapping[str, Any] | None = None,
     ) -> AiInferenceReadRequestResponse:
         return self._client.request(
             'GET',
-            f'ai/inference/requests/{encode_path_param(request_id)}',
+            f'ai/inference-requests/{encode_path_param(inference_request_id)}',
             cast_to=AiInferenceReadRequestResponse,
             request_options=request_options,
         )
@@ -116,6 +133,7 @@ class AsyncAiInferencesResource:
             cast_to=AiInferenceCreateChatCompletionResponse,
             request_options=request_options,
             accepts_idempotency_key=True,
+            unwrap_data=False,
         )
 
     async def create_ai_multi_model(
@@ -126,7 +144,7 @@ class AsyncAiInferencesResource:
     ) -> AiInferenceCreateAiMultiModelResponse:
         return await self._client.request(
             'POST',
-            'ai/inference/multi-model',
+            'ai/multi-model-inferences/',
             body=data,
             cast_to=AiInferenceCreateAiMultiModelResponse,
             request_options=request_options,
@@ -141,7 +159,7 @@ class AsyncAiInferencesResource:
     ) -> AiInferenceCreateAiBestOfNResponse:
         return await self._client.request(
             'POST',
-            'ai/inference/best-of-n',
+            'ai/best-of-n-inferences/',
             body=data,
             cast_to=AiInferenceCreateAiBestOfNResponse,
             request_options=request_options,
@@ -156,21 +174,35 @@ class AsyncAiInferencesResource:
     ) -> AsyncPage[AiInferenceListRequestsItem]:
         return await self._client.request(
             'GET',
-            'ai/inference/requests',
+            'ai/inference-requests/',
             query=query,
             cast_to=AsyncPage[AiInferenceListRequestsItem],
             request_options=request_options,
         )
 
+    async def list_requests_count(
+        self,
+        query: AiInferenceListRequestsCountQuery | None = None,
+        *,
+        request_options: RequestOptions | Mapping[str, Any] | None = None,
+    ) -> AiInferenceListRequestsCountResponse:
+        return await self._client.request(
+            'GET',
+            'ai/inference-requests/count',
+            query=query,
+            cast_to=AiInferenceListRequestsCountResponse,
+            request_options=request_options,
+        )
+
     async def read_request(
         self,
-        request_id: str,
+        inference_request_id: str,
         *,
         request_options: RequestOptions | Mapping[str, Any] | None = None,
     ) -> AiInferenceReadRequestResponse:
         return await self._client.request(
             'GET',
-            f'ai/inference/requests/{encode_path_param(request_id)}',
+            f'ai/inference-requests/{encode_path_param(inference_request_id)}',
             cast_to=AiInferenceReadRequestResponse,
             request_options=request_options,
         )
