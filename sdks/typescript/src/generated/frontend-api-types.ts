@@ -624,6 +624,152 @@ export interface paths {
         patch: operations["updateSelfActiveOrganization"];
         trace?: never;
     };
+    "/v1/billing/self/payment-methods/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List the saved cards of the signed-in customer */
+        get: operations["listSelfPaymentMethods"];
+        put?: never;
+        /** Start saving a card for the signed-in customer */
+        post: operations["createSelfPaymentMethod"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/billing/self/payment-methods/count": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Count the saved cards of the signed-in customer
+         * @description Returns how many records match the filters that the list route accepts.
+         */
+        get: operations["listSelfPaymentMethodsCount"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/billing/self/entitlement-overrides/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List the entitlement overrides of the signed-in customer */
+        get: operations["listSelfEntitlementOverrides"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/billing/self/price-bundles/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List the published price bundles that the signed-in customer can buy */
+        get: operations["listSelfPriceBundles"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/billing/self/entitlement-overrides/count": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Count the entitlement overrides of the signed-in customer
+         * @description Returns how many records match the filters that the list route accepts.
+         */
+        get: operations["listSelfEntitlementOverridesCount"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/billing/self/price-bundles/count": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Count the published price bundles that the signed-in customer can buy
+         * @description Returns how many records match the filters that the list route accepts.
+         */
+        get: operations["listSelfPriceBundlesCount"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/billing/self/price-bundle-activations/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Check out price bundles for the signed-in customer */
+        post: operations["activateSelfPriceBundles"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/billing/self/price-bundle-activations/{price_bundle_activation_id}/deactivate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Deactivate a price bundle activation of the signed-in customer */
+        post: operations["deactivateSelfPriceBundle"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/cloud/client/branding/": {
         parameters: {
             query?: never;
@@ -5265,6 +5411,1185 @@ export interface operations {
                         response?: components["schemas"]["ApiSuccessResponseMeta"];
                         data?: {
                             active_organization_id: string | null;
+                        };
+                    };
+                };
+            };
+            /** @description Validation error or bad request */
+            400: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Unauthorized - missing or invalid API key */
+            401: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description The resource does not exist in the scope of the request */
+            404: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiServerErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+        };
+    };
+    listSelfPaymentMethods: {
+        parameters: {
+            query?: {
+                is_active?: boolean | ("true" | "false");
+                is_default?: boolean | ("true" | "false");
+                date_created?: {
+                    /** @example string */
+                    equals?: string;
+                    /** @example string */
+                    not_equals?: string;
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                cursor?: {
+                    /** @example string */
+                    prev?: string;
+                    /** @example string */
+                    next?: string;
+                };
+                sort?: {
+                    [key: string]: "asc" | "desc";
+                };
+                limit?: string | number;
+            };
+            header: {
+                /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
+                "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
+                /** @description The Billing entity that owns the resource. A resource of another entity answers 404. */
+                "Billing-Entity-ID": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful response */
+            200: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response?: components["schemas"]["ApiSuccessResponseMeta"];
+                        data?: {
+                            entity_id: string;
+                            payment_method_id: string;
+                            reference_id: string;
+                            customer_id: string;
+                            name?: string | null;
+                            type?: ("card" | "bank_account" | "mobile_money" | "wallet" | "bank_transfer" | "buy_now_pay_later") | null;
+                            brand?: ("visa" | "mastercard" | "amex" | "discover" | "diners" | "jcb" | "link" | "gh:mtn_mobile_money" | "gh:telecel_mobile_money" | "gh:airtel_tigo_mobile_money" | "unknown") | null;
+                            country_of_issuance?: string | null;
+                            last4?: string | null;
+                            exp_month?: number | null;
+                            exp_year?: number | null;
+                            is_default: boolean;
+                            is_active: boolean;
+                            date_created: string;
+                            date_updated: string;
+                            date_deleted?: string | null;
+                        }[];
+                        cursor?: components["schemas"]["PaginationCursor"];
+                    };
+                };
+            };
+            /** @description Validation error or bad request */
+            400: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Unauthorized - missing or invalid API key */
+            401: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description The resource does not exist in the scope of the request */
+            404: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiServerErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+        };
+    };
+    createSelfPaymentMethod: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
+                "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
+                /** @description The Billing entity that owns the resource. A resource of another entity answers 404. */
+                "Billing-Entity-ID": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @example string */
+                    name?: string;
+                    /** @default false */
+                    is_default?: boolean;
+                };
+            };
+        };
+        responses: {
+            /** @description Successful response */
+            201: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response?: components["schemas"]["ApiSuccessResponseMeta"];
+                        data?: {
+                            payment_method_id: string;
+                            authorisation_url: string;
+                        };
+                    };
+                };
+            };
+            /** @description Validation error or bad request */
+            400: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Unauthorized - missing or invalid API key */
+            401: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description The resource does not exist in the scope of the request */
+            404: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiServerErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+        };
+    };
+    listSelfPaymentMethodsCount: {
+        parameters: {
+            query?: {
+                is_active?: boolean | ("true" | "false");
+                is_default?: boolean | ("true" | "false");
+                date_created?: {
+                    /** @example string */
+                    equals?: string;
+                    /** @example string */
+                    not_equals?: string;
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                cursor?: {
+                    /** @example string */
+                    prev?: string;
+                    /** @example string */
+                    next?: string;
+                };
+                sort?: {
+                    [key: string]: "asc" | "desc";
+                };
+                limit?: string | number;
+            };
+            header: {
+                /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
+                "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
+                /** @description The Billing entity that owns the resource. A resource of another entity answers 404. */
+                "Billing-Entity-ID": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful response */
+            200: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response?: components["schemas"]["ApiSuccessResponseMeta"];
+                        data?: {
+                            count: number;
+                        };
+                    };
+                };
+            };
+            /** @description Validation error or bad request */
+            400: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Unauthorized - missing or invalid API key */
+            401: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description The resource does not exist in the scope of the request */
+            404: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiServerErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+        };
+    };
+    listSelfEntitlementOverrides: {
+        parameters: {
+            query?: {
+                feature_id?: string;
+                subscription_id?: string;
+                is_active?: boolean | ("true" | "false");
+                date_created?: {
+                    /** @example string */
+                    equals?: string;
+                    /** @example string */
+                    not_equals?: string;
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                cursor?: {
+                    /** @example string */
+                    prev?: string;
+                    /** @example string */
+                    next?: string;
+                };
+                sort?: {
+                    [key: string]: "asc" | "desc";
+                };
+                limit?: string | number;
+            };
+            header: {
+                /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
+                "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
+                /** @description The Billing entity that owns the resource. A resource of another entity answers 404. */
+                "Billing-Entity-ID": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful response */
+            200: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response?: components["schemas"]["ApiSuccessResponseMeta"];
+                        data?: {
+                            override_id: string;
+                            conjoin_account_id: string;
+                            conjoin_project_id: string;
+                            entity_id: string;
+                            customer_id: string;
+                            subscription_id: string;
+                            plan_id: string;
+                            feature_id: string;
+                            /** @enum {string} */
+                            value_type: "boolean" | "numeric" | "unlimited";
+                            included_units?: number | null;
+                            soft_limit?: boolean | null;
+                            reason?: string | null;
+                            effective_from: string;
+                            effective_to?: string | null;
+                            is_active: boolean;
+                            live_mode: boolean;
+                            date_created: string;
+                            date_updated: string;
+                            date_deleted?: string | null;
+                        }[];
+                        cursor?: components["schemas"]["PaginationCursor"];
+                    };
+                };
+            };
+            /** @description Validation error or bad request */
+            400: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Unauthorized - missing or invalid API key */
+            401: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description The resource does not exist in the scope of the request */
+            404: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiServerErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+        };
+    };
+    listSelfPriceBundles: {
+        parameters: {
+            query?: {
+                reference_id?: string;
+                date_created?: {
+                    /** @example string */
+                    equals?: string;
+                    /** @example string */
+                    not_equals?: string;
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                cursor?: {
+                    /** @example string */
+                    prev?: string;
+                    /** @example string */
+                    next?: string;
+                };
+                sort?: {
+                    [key: string]: "asc" | "desc";
+                };
+                limit?: string | number;
+            };
+            header: {
+                /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
+                "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
+                /** @description The Billing entity that owns the resource. A resource of another entity answers 404. */
+                "Billing-Entity-ID": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful response */
+            200: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response?: components["schemas"]["ApiSuccessResponseMeta"];
+                        data?: {
+                            conjoin_account_id: string;
+                            conjoin_project_id: string;
+                            entity_id: string;
+                            price_bundle_id: string;
+                            reference_id: string;
+                            name: string;
+                            description?: string | null;
+                            /** @enum {string} */
+                            authoring_mode: "linked" | "managed";
+                            items: {
+                                price_id?: string;
+                                price_key?: string;
+                                default_quantity: number;
+                                quantity_adjustable: boolean;
+                                /** @enum {string} */
+                                billing_mode?: "subscription" | "invoice";
+                                required: boolean;
+                                entitlement?: {
+                                    feature_id?: string;
+                                    feature_key?: string;
+                                    /** @enum {string} */
+                                    value_type: "boolean" | "numeric" | "unlimited";
+                                    included_units?: number;
+                                    soft_limit?: boolean;
+                                    overage_price_id?: string;
+                                    overage_price_key?: string;
+                                } | null;
+                            }[];
+                            managed_catalog?: {
+                                product: {
+                                    product_id?: string;
+                                    reference_id?: string;
+                                    name: string;
+                                    description?: string | null;
+                                    statement_descriptor?: string | null;
+                                    unit_label: string;
+                                    is_active?: boolean;
+                                    images?: string[];
+                                    features?: {
+                                        name: string;
+                                        description?: string;
+                                    }[];
+                                };
+                                prices: {
+                                    price_key: string;
+                                    price_id?: string;
+                                    reference_id?: string;
+                                    currency: string;
+                                    amount: number;
+                                    /** @enum {string} */
+                                    type: "recurring" | "one_time";
+                                    /** @enum {string} */
+                                    billing_scheme: "per_unit" | "tiered" | "volume";
+                                    tiers?: {
+                                        flat_amount: number;
+                                        unit_amount: number;
+                                        up_to?: number | null;
+                                    }[];
+                                    /** @enum {string} */
+                                    tiers_mode?: "graduated" | "volume";
+                                    recurring?: {
+                                        /** @enum {string} */
+                                        interval: "day" | "week" | "month" | "year";
+                                        interval_count?: number;
+                                        /** @enum {string} */
+                                        usage_type?: "licensed" | "metered";
+                                        usage_seats_included?: number;
+                                        aggregate_usage?: ("sum" | "max" | "last_during_period" | "last_ever") | null;
+                                    };
+                                    is_active?: boolean;
+                                    /** @enum {string} */
+                                    tax_behavior?: "exclusive" | "inclusive" | "unspecified";
+                                }[];
+                                entitlement_features?: {
+                                    feature_key: string;
+                                    feature_id?: string;
+                                    name: string;
+                                    description?: string | null;
+                                    /** @enum {string} */
+                                    type: "boolean" | "metered" | "credit";
+                                    metering_config?: {
+                                        consumable: boolean;
+                                        /** @enum {string} */
+                                        reset_interval: "billing_cycle" | "monthly" | "yearly" | "daily" | "never";
+                                        /** @enum {string} */
+                                        aggregation: "sum" | "max" | "last";
+                                    } | null;
+                                    credit_config?: {
+                                        wallet_currency: string;
+                                        wallet_label?: string;
+                                    } | null;
+                                }[];
+                            } | null;
+                            discount_coupon_id?: string | null;
+                            auto_activate: boolean;
+                            tier_group?: string | null;
+                            tier_rank?: number | null;
+                            is_default_tier: boolean;
+                            required_tier_group?: string | null;
+                            min_tier_rank?: number | null;
+                            compatible_bundle_ids?: string[] | null;
+                            /** @enum {string} */
+                            status: "draft" | "active" | "archived";
+                            live_mode: boolean;
+                            date_created: string;
+                            date_updated: string;
+                            date_deleted?: string | null;
+                        }[];
+                        cursor?: components["schemas"]["PaginationCursor"];
+                    };
+                };
+            };
+            /** @description Validation error or bad request */
+            400: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Unauthorized - missing or invalid API key */
+            401: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description The resource does not exist in the scope of the request */
+            404: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiServerErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+        };
+    };
+    listSelfEntitlementOverridesCount: {
+        parameters: {
+            query?: {
+                feature_id?: string;
+                subscription_id?: string;
+                is_active?: boolean | ("true" | "false");
+                date_created?: {
+                    /** @example string */
+                    equals?: string;
+                    /** @example string */
+                    not_equals?: string;
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                cursor?: {
+                    /** @example string */
+                    prev?: string;
+                    /** @example string */
+                    next?: string;
+                };
+                sort?: {
+                    [key: string]: "asc" | "desc";
+                };
+                limit?: string | number;
+            };
+            header: {
+                /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
+                "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
+                /** @description The Billing entity that owns the resource. A resource of another entity answers 404. */
+                "Billing-Entity-ID": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful response */
+            200: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response?: components["schemas"]["ApiSuccessResponseMeta"];
+                        data?: {
+                            count: number;
+                        };
+                    };
+                };
+            };
+            /** @description Validation error or bad request */
+            400: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Unauthorized - missing or invalid API key */
+            401: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description The resource does not exist in the scope of the request */
+            404: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiServerErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+        };
+    };
+    listSelfPriceBundlesCount: {
+        parameters: {
+            query?: {
+                reference_id?: string;
+                date_created?: {
+                    /** @example string */
+                    equals?: string;
+                    /** @example string */
+                    not_equals?: string;
+                    /** @example string */
+                    gt?: string;
+                    /** @example string */
+                    lt?: string;
+                    /** @example string */
+                    gte?: string;
+                    /** @example string */
+                    lte?: string;
+                };
+                cursor?: {
+                    /** @example string */
+                    prev?: string;
+                    /** @example string */
+                    next?: string;
+                };
+                sort?: {
+                    [key: string]: "asc" | "desc";
+                };
+                limit?: string | number;
+            };
+            header: {
+                /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
+                "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
+                /** @description The Billing entity that owns the resource. A resource of another entity answers 404. */
+                "Billing-Entity-ID": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful response */
+            200: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response?: components["schemas"]["ApiSuccessResponseMeta"];
+                        data?: {
+                            count: number;
+                        };
+                    };
+                };
+            };
+            /** @description Validation error or bad request */
+            400: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Unauthorized - missing or invalid API key */
+            401: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description The resource does not exist in the scope of the request */
+            404: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiServerErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+        };
+    };
+    activateSelfPriceBundles: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
+                "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
+                /** @description The Billing entity that owns the resource. A resource of another entity answers 404. */
+                "Billing-Entity-ID": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @example string */
+                    payment_method_id: string;
+                    bundles: {
+                        /** @example string */
+                        bundle_reference: string;
+                    }[];
+                };
+            };
+        };
+        responses: {
+            /** @description Successful response */
+            201: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response?: components["schemas"]["ApiSuccessResponseMeta"];
+                        data?: {
+                            batch_id: string;
+                            activations: {
+                                conjoin_account_id: string;
+                                conjoin_project_id: string;
+                                entity_id: string;
+                                activation_id: string;
+                                price_bundle_id: string;
+                                customer_id: string;
+                                subscription_id?: string | null;
+                                invoice_id?: string | null;
+                                resolved_items: {
+                                    price_id: string;
+                                    quantity: number;
+                                    billing_mode?: string;
+                                    entitlement?: {
+                                        feature_id: string;
+                                        value_type: string;
+                                        included_units?: number;
+                                    } | null;
+                                }[];
+                                upgrade_strategy?: ("replace" | "update" | "fallback") | null;
+                                previous_activation_id?: string | null;
+                                tier_group?: string | null;
+                                tier_rank?: number | null;
+                                /** @enum {string} */
+                                status: "active" | "pending_apply" | "pending_replace" | "pending_payment" | "canceled" | "expired" | "failed";
+                                failure_reason?: string | null;
+                                batch_id?: string | null;
+                                live_mode: boolean;
+                                date_created: string;
+                                date_updated: string;
+                                date_deleted?: string | null;
+                            }[];
+                        };
+                    };
+                };
+            };
+            /** @description Validation error or bad request */
+            400: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Unauthorized - missing or invalid API key */
+            401: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description The resource does not exist in the scope of the request */
+            404: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiClientErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response: components["schemas"]["ApiServerErrorResponseMeta"];
+                        data: null;
+                        error: components["schemas"]["ApiErrorDetail"];
+                    };
+                };
+            };
+        };
+    };
+    deactivateSelfPriceBundle: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Optional customer-visible root operation identifier. Invalid, malformed, or missing values are replaced; the response header contains the effective Conjoin request ID. */
+                "Conjoin-Request-Id"?: components["parameters"]["ConjoinRequestId"];
+                /** @description The Billing entity that owns the resource. A resource of another entity answers 404. */
+                "Billing-Entity-ID": string;
+            };
+            path: {
+                price_bundle_activation_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @example string */
+                    reason?: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Successful response */
+            200: {
+                headers: {
+                    "Conjoin-Request-Id": components["headers"]["ConjoinRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        response?: components["schemas"]["ApiSuccessResponseMeta"];
+                        data?: {
+                            conjoin_account_id: string;
+                            conjoin_project_id: string;
+                            entity_id: string;
+                            activation_id: string;
+                            price_bundle_id: string;
+                            customer_id: string;
+                            subscription_id?: string | null;
+                            invoice_id?: string | null;
+                            resolved_items: {
+                                price_id: string;
+                                quantity: number;
+                                billing_mode?: string;
+                                entitlement?: {
+                                    feature_id: string;
+                                    value_type: string;
+                                    included_units?: number;
+                                } | null;
+                            }[];
+                            upgrade_strategy?: ("replace" | "update" | "fallback") | null;
+                            previous_activation_id?: string | null;
+                            tier_group?: string | null;
+                            tier_rank?: number | null;
+                            /** @enum {string} */
+                            status: "active" | "pending_apply" | "pending_replace" | "pending_payment" | "canceled" | "expired" | "failed";
+                            failure_reason?: string | null;
+                            batch_id?: string | null;
+                            live_mode: boolean;
+                            date_created: string;
+                            date_updated: string;
+                            date_deleted?: string | null;
                         };
                     };
                 };

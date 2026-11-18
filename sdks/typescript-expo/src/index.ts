@@ -21,6 +21,7 @@ export {
   useConjoinStatus,
   useEntitlements,
   useOrg,
+  usePaymentMethods,
   useSession,
   useSignIn,
   useSignUp,

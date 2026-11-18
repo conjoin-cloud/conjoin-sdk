@@ -5,7 +5,8 @@ import { Spinner } from '../internal/spinner'
 
 type PricingTableProps = {
   entityId: string
-  referenceId: string
+  referenceId?: string
+  paymentMethodId: string
   highlightedBundleId?: string
   onCheckoutComplete?: () => void
 }
@@ -146,7 +147,13 @@ const PricingCard = memo(function PricingCard({
   )
 })
 
-export function PricingTable({ entityId, referenceId, highlightedBundleId, onCheckoutComplete }: PricingTableProps) {
+export function PricingTable({
+  entityId,
+  referenceId,
+  paymentMethodId,
+  highlightedBundleId,
+  onCheckoutComplete,
+}: PricingTableProps) {
   const { bundles, isLoading, error } = useBundles(entityId, referenceId)
   const checkout = useCheckout()
   const [activatingId, setActivatingId] = useState<string | null>(null)
@@ -161,6 +168,7 @@ export function PricingTable({ entityId, referenceId, highlightedBundleId, onChe
         await checkout.activate({
           entityId,
           referenceId: bundleReferenceId,
+          paymentMethodId,
         })
         onCheckoutComplete?.()
       } catch {
@@ -169,7 +177,7 @@ export function PricingTable({ entityId, referenceId, highlightedBundleId, onChe
         setActivatingId(null)
       }
     },
-    [entityId, checkout, onCheckoutComplete, activatingId],
+    [entityId, paymentMethodId, checkout, onCheckoutComplete, activatingId],
   )
 
   if (isLoading) {

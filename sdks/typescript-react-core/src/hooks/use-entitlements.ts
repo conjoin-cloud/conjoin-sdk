@@ -1,11 +1,10 @@
-import { createBillingEntitlementOverrides } from '@conjoin-cloud/sdk/billing'
 import { useCallback, useMemo } from 'react'
+import type { BillingSelfCalls } from '../auth/auth-api'
+import type { AuthTransport } from '../provider/types'
 import { collectPages } from './internal/collect-pages'
-import { useConjoinClient } from './internal/use-conjoin-client'
-import { useConjoinQuery } from './internal/use-conjoin-query'
+import { useBillingSelfQuery } from './internal/use-billing-self-query'
 
-type EntitlementOverridesApi = ReturnType<typeof createBillingEntitlementOverrides>
-type EntitlementOverrideItem = Awaited<ReturnType<EntitlementOverridesApi['list']>>['data'][number]
+type EntitlementOverrideItem = Awaited<ReturnType<BillingSelfCalls['listEntitlementOverrides']>>['data'][number]
 
 type EntitlementCheckResult = {
   allowed: boolean
@@ -14,23 +13,13 @@ type EntitlementCheckResult = {
 
 const EMPTY_ENTITLEMENTS: EntitlementOverrideItem[] = []
 
-export function useEntitlements(entityId: string) {
-  const { client } = useConjoinClient()
-  const api = useMemo(
-    () => (entityId ? createBillingEntitlementOverrides(client.withScope({ billingEntityId: entityId })) : null),
-    [client, entityId],
+const readEntitlements = (billing: BillingSelfCalls, transport: AuthTransport): Promise<EntitlementOverrideItem[]> =>
+  collectPages(
+    billing.listEntitlementOverrides(undefined, transport.readSessionToken(), transport.sessionCallOptions('GET')),
   )
 
-  const queryFn = useCallback(async () => {
-    if (api === null) return EMPTY_ENTITLEMENTS
-    return collectPages(api.list())
-  }, [api])
-
-  const result = useConjoinQuery<EntitlementOverrideItem[]>({
-    queryKey: ['conjoin', 'billing', 'entitlements', entityId],
-    queryFn,
-    enabled: !!entityId,
-  })
+export function useEntitlements(entityId: string) {
+  const result = useBillingSelfQuery({ name: 'entitlements', entityId, read: readEntitlements })
 
   const entitlements = useMemo<EntitlementOverrideItem[]>(() => result.data ?? EMPTY_ENTITLEMENTS, [result.data])
 
