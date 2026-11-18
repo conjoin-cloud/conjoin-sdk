@@ -7,20 +7,16 @@ namespace ConjoinCloud\Generated\Api;
 use ConjoinCloud\AuthMode;
 use ConjoinCloud\CallOptions;
 use ConjoinCloud\ConjoinClient;
-use ConjoinCloud\Credential;
 use ConjoinCloud\HttpMethod;
 use ConjoinCloud\Internal\Request\PathSegment;
 use ConjoinCloud\OperationRequest;
 
 final class AuthSCIMs
 {
-    private readonly ?Credential $scimToken;
-
     public function __construct(
         private readonly ConjoinClient $client,
-        #[\SensitiveParameter] ?string $scimToken = null,
+        #[\SensitiveParameter] private readonly ?string $scimToken = null,
     ) {
-        $this->scimToken = $scimToken === null ? null : new Credential($scimToken);
     }
 
     public function __debugInfo(): array

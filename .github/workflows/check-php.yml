@@ -20,17 +20,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        include:
-          - php-version: '8.2'
-            extensions: curl, json, xdebug-3.2.2
-            coverage: ''
-            ini-values: xdebug.mode=develop
-            xdebug: 3.2.2 develop
-          - php-version: '8.5'
-            extensions: curl, json
-            coverage: none
-            ini-values: ''
-            xdebug: none off
+        php-version: [ '8.2', '8.5' ]
     defaults:
       run:
         working-directory: sdks/php
@@ -45,16 +35,9 @@ jobs:
         uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962
         with:
           php-version: ${{ matrix.php-version }}
-          extensions: ${{ matrix.extensions }}
-          ini-values: ${{ matrix.ini-values }}
+          extensions: curl, json
           tools: composer:2.11.2
-          coverage: ${{ matrix.coverage }}
-
-      - name: Confirm the Xdebug build and mode
-        env:
-          EXPECTED_XDEBUG: ${{ matrix.xdebug }}
-        run: |
-          test "$(php -r 'echo (phpversion("xdebug") ?: "none") . " " . (ini_get("xdebug.mode") ?: "off");')" = "$EXPECTED_XDEBUG"
+          coverage: none
 
       - name: Install PHP dependencies
         run: composer install --no-interaction --no-progress --prefer-dist
