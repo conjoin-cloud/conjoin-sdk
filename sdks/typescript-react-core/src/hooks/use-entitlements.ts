@@ -1,8 +1,8 @@
 import { useCallback, useMemo } from 'react'
-import type { BillingSelfCalls } from '../auth/auth-api'
+import type { BillingSelfCalls, ConjoinAuthApi } from '../auth/auth-api'
 import type { AuthTransport } from '../provider/types'
 import { collectPages } from './internal/collect-pages'
-import { useBillingSelfQuery } from './internal/use-billing-self-query'
+import { useSignedInQuery } from './internal/use-signed-in-query'
 
 type EntitlementOverrideItem = Awaited<ReturnType<BillingSelfCalls['listEntitlementOverrides']>>['data'][number]
 
@@ -13,13 +13,21 @@ type EntitlementCheckResult = {
 
 const EMPTY_ENTITLEMENTS: EntitlementOverrideItem[] = []
 
-const readEntitlements = (billing: BillingSelfCalls, transport: AuthTransport): Promise<EntitlementOverrideItem[]> =>
-  collectPages(
-    billing.listEntitlementOverrides(undefined, transport.readSessionToken(), transport.sessionCallOptions('GET')),
+export function useEntitlements(entityId: string) {
+  const read = useCallback(
+    (authApi: ConjoinAuthApi, transport: AuthTransport): Promise<EntitlementOverrideItem[]> =>
+      collectPages(
+        authApi
+          .billingSelves(entityId)
+          .listEntitlementOverrides(undefined, transport.readSessionToken(), transport.sessionCallOptions('GET')),
+      ),
+    [entityId],
   )
 
-export function useEntitlements(entityId: string) {
-  const result = useBillingSelfQuery({ name: 'entitlements', entityId, read: readEntitlements })
+  const result = useSignedInQuery('billing-entitlements', read, {
+    keyParts: [entityId],
+    isEnabled: entityId.length > 0,
+  })
 
   const entitlements = useMemo<EntitlementOverrideItem[]>(() => result.data ?? EMPTY_ENTITLEMENTS, [result.data])
 
@@ -37,7 +45,7 @@ export function useEntitlements(entityId: string) {
   )
 
   return useMemo(
-    () => ({ entitlements, isLoading: result.isLoading, error: result.error ?? null, check }),
-    [entitlements, result.isLoading, result.error, check],
+    () => ({ entitlements, isLoading: !result.isLoaded, error: result.error, check }),
+    [entitlements, result.isLoaded, result.error, check],
   )
 }
