@@ -9,7 +9,8 @@ vi.mock('next/headers', () => ({
   headers: vi.fn(),
 }))
 
-vi.mock('../../server/tokens', () => ({
+vi.mock('../../server/tokens', async importOriginal => ({
+  ...(await importOriginal<typeof import('../../server/tokens')>()),
   verifyToken: vi.fn(),
 }))
 
@@ -49,11 +50,11 @@ describe('auth', () => {
     mockCookies.mockResolvedValue({ get: cookieGet } as never)
 
     mockVerifyToken.mockResolvedValueOnce({
-      payload: { sub: 'acc_123', sid: 'ses_456' },
+      payload: { sub: 'acc_123', session_id: 'ses_456' },
       accountId: 'acc_123',
       sessionId: 'ses_456',
       organizationId: null,
-      organizationRole: null,
+      organizationRoles: [],
     })
 
     const result = await auth()
@@ -63,7 +64,8 @@ describe('auth', () => {
     expect(result?.sessionId).toBe('ses_456')
     expect(result?.getToken()).toBe('jwt-from-cookie')
     expect(mockVerifyToken).toHaveBeenCalledWith('jwt-from-cookie', {
-      jwksUrl: 'https://auth.conjoin.cloud/.well-known/jwks.json',
+      jwksUrl: 'https://auth.conjoin.cloud/v1/auth/client/.well-known/jwks.json',
+      issuer: 'https://auth.conjoin.cloud/v1/auth/client',
     })
   })
 
@@ -79,7 +81,7 @@ describe('auth', () => {
       accountId: 'acc_456',
       sessionId: 'ses_789',
       organizationId: 'org_100',
-      organizationRole: 'member',
+      organizationRoles: ['member'],
     })
 
     const result = await auth()
@@ -108,7 +110,7 @@ describe('auth', () => {
       accountId: 'acc_123',
       sessionId: 'ses_456',
       organizationId: null,
-      organizationRole: null,
+      organizationRoles: [],
     })
 
     await auth()

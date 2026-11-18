@@ -32,7 +32,7 @@ function parseClientState(req: NextRequest): AuthObject | null {
       accountId: state.accountId,
       sessionId: state.sessionId,
       organizationId: state.orgId,
-      organizationRole: state.orgRole,
+      organizationRoles: state.orgRole === null ? [] : [state.orgRole],
       getToken: () => {
         throw new Error(
           'getToken() is not available in proxy. Use auth() in a Server Component or Route Handler instead.',

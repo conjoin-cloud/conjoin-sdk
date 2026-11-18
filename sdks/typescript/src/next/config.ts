@@ -1,6 +1,7 @@
 import { createConjoinClient } from '../core/client'
 import { ConjoinConfigurationError } from '../core/errors'
 import { createCloudSDKs } from '../generated/frontend/cloud-sdk'
+import { buildConjoinAuthIssuer, buildConjoinAuthJwksUrl } from '../server/tokens'
 import type { NextAdapterConfig } from './types'
 
 const AUTH_DOMAIN_PATTERN = /^[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)*(:[0-9]{1,5})?$/i
@@ -71,8 +72,17 @@ export async function resolveAuthDomain(config: NextAdapterConfig): Promise<stri
   return readCachedAuthDomain(config.publishableKey)
 }
 
-export async function resolveJwksUrl(config: NextAdapterConfig): Promise<string> {
-  if (config.jwksUrl) return config.jwksUrl
+export type TokenVerificationTarget = {
+  jwksUrl: string
+  issuer: string | undefined
+}
 
-  return `https://${await resolveAuthDomain(config)}/.well-known/jwks.json`
+export async function resolveTokenVerificationTarget(config: NextAdapterConfig): Promise<TokenVerificationTarget> {
+  if (config.jwksUrl && !config.authDomain && !config.publishableKey) {
+    return { jwksUrl: config.jwksUrl, issuer: undefined }
+  }
+
+  const issuer = buildConjoinAuthIssuer(await resolveAuthDomain(config))
+
+  return { jwksUrl: config.jwksUrl ?? buildConjoinAuthJwksUrl(issuer), issuer }
 }
