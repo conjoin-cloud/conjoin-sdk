@@ -254,20 +254,21 @@ The connection opens a WebSocket at `/v1/relay/broadcast` on the API host, or at
 ## Server Verification
 
 ```ts
-import { verifyToken, verifyWebhook } from '@conjoin-cloud/sdk/server'
+import { buildConjoinAuthIssuer, buildConjoinAuthJwksUrl, verifyToken, verifyWebhook } from '@conjoin-cloud/sdk/server'
+
+const issuer = buildConjoinAuthIssuer('auth.example.com')
 
 const verified = await verifyToken(token, {
-  jwksUrl: 'https://your-tenant.conjoin.cloud/.well-known/jwks.json',
-  audience: 'your-app',
-  issuer: 'https://conjoin.cloud',
+  jwksUrl: buildConjoinAuthJwksUrl(issuer),
+  issuer,
 })
 
-console.log(verified.accountId, verified.sessionId, verified.organizationId)
+console.log(verified.accountId, verified.sessionId, verified.organizationId, verified.organizationRoles)
 
 const ok = verifyWebhook(rawBody, signatureHeader, webhookSecret)
 ```
 
-`verifyToken` uses `jose` with a remote JWKS cached per `jwksUrl`. `verifyWebhook` checks a hex HMAC-SHA256 signature in constant time.
+The issuer is `https://{auth domain}/v1/auth/client`, and its keys are at `{issuer}/.well-known/jwks.json`. `verifyToken` uses `jose` with a remote JWKS cached per `jwksUrl`, and it accepts only the audience `conjoin-auth-session` unless you pass another `audience`, so it refuses an OpenID Connect ID token that a client presents as a session token. `verifyWebhook` checks a hex HMAC-SHA256 signature in constant time.
 
 ## Next.js App Router
 
@@ -319,7 +320,8 @@ import {
 const app = express()
 
 app.use(conjoinMiddleware({
-  jwksUrl: 'https://your-tenant.conjoin.cloud/.well-known/jwks.json',
+  jwksUrl: 'https://auth.example.com/v1/auth/client/.well-known/jwks.json',
+  issuer: 'https://auth.example.com/v1/auth/client',
 }))
 
 app.get('/me', requireAuth, (req, res) => {
@@ -349,7 +351,8 @@ import {
 const app = new Hono()
 
 app.use('*', conjoinMiddleware({
-  jwksUrl: 'https://your-tenant.conjoin.cloud/.well-known/jwks.json',
+  jwksUrl: 'https://auth.example.com/v1/auth/client/.well-known/jwks.json',
+  issuer: 'https://auth.example.com/v1/auth/client',
 }))
 
 app.get('/me', requireAuth, c => {

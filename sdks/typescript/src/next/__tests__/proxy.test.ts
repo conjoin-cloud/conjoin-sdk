@@ -40,7 +40,7 @@ describe('conjoinProxy', () => {
       accountId: 'acc_123',
       sessionId: 'ses_456',
       organizationId: 'org_789',
-      organizationRole: 'admin',
+      organizationRoles: ['admin'],
       getToken: expect.any(Function),
     })
   })
@@ -156,9 +156,9 @@ describe('conjoinProxy', () => {
 
     proxy(req)
 
-    const authObj = receivedAuth as { organizationId: unknown; organizationRole: unknown }
+    const authObj = receivedAuth as { organizationId: unknown; organizationRoles: unknown }
     expect(authObj.organizationId).toBeNull()
-    expect(authObj.organizationRole).toBeNull()
+    expect(authObj.organizationRoles).toEqual([])
   })
 
   it('treats non-string orgId as null', () => {
@@ -179,9 +179,9 @@ describe('conjoinProxy', () => {
 
     proxy(req)
 
-    const authObj = receivedAuth as { organizationId: unknown; organizationRole: unknown }
+    const authObj = receivedAuth as { organizationId: unknown; organizationRoles: unknown }
     expect(authObj.organizationId).toBeNull()
-    expect(authObj.organizationRole).toBeNull()
+    expect(authObj.organizationRoles).toEqual([])
   })
 
   it('passes the request object to handler', () => {
