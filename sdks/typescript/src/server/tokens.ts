@@ -2,6 +2,8 @@ import { createRemoteJWKSet, type JWTPayload, jwtVerify } from 'jose'
 
 export const CONJOIN_AUTH_ISSUER_PATH = '/v1/auth/client'
 export const CONJOIN_SESSION_TOKEN_AUDIENCE = 'conjoin-auth-session'
+export const CONJOIN_SESSION_TOKEN_COOKIE = '__conjoin_auth_sess'
+export const CONJOIN_CLIENT_HANDLE_COOKIE = '__conjoin_auth_cl'
 
 const CONJOIN_AUTH_JWKS_PATH = '/.well-known/jwks.json'
 
