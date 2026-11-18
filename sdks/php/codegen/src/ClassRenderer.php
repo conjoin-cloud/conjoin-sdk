@@ -59,12 +59,10 @@ final class ClassRenderer
             return "    public function __construct(private readonly ConjoinClient \$client)\n    {\n    }";
         }
 
-        return "    private readonly ?Credential \$scimToken;\n\n"
-            . "    public function __construct(\n"
+        return "    public function __construct(\n"
             . "        private readonly ConjoinClient \$client,\n"
-            . "        #[\\SensitiveParameter] ?string \$scimToken = null,\n"
+            . "        #[\\SensitiveParameter] private readonly ?string \$scimToken = null,\n"
             . "    ) {\n"
-            . "        \$this->scimToken = \$scimToken === null ? null : new Credential(\$scimToken);\n"
             . "    }\n\n"
             . "    public function __debugInfo(): array\n"
             . "    {\n"
@@ -90,11 +88,7 @@ final class ClassRenderer
             $imports->add('ConjoinCloud\\DeclaredHeader');
         }
 
-        if (
-            $operation->auth === AuthKind::Session
-            || $operation->auth === AuthKind::ScimBearer
-            || self::takesCredentialHeader($operation)
-        ) {
+        if ($operation->auth === AuthKind::Session || self::takesCredentialHeader($operation)) {
             $imports->add('ConjoinCloud\\Credential');
         }
 

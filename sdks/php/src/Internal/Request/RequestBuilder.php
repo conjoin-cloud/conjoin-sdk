@@ -127,13 +127,13 @@ final class RequestBuilder
     {
         return match ($request->auth) {
             AuthMode::None => null,
-            AuthMode::ClientKey => 'Bearer ' . $config->key->reveal(),
+            AuthMode::ClientKey => 'Bearer ' . $config->key,
             AuthMode::Bearer => 'Bearer ' . Validate::tokenValue(
-                $request->bearerToken?->reveal() ?? throw new ConfigurationException('This call needs a bearer token, such as the SCIM token'),
+                $request->bearerToken ?? throw new ConfigurationException('This call needs a bearer token, such as the SCIM token'),
                 'The bearer token',
             ),
             AuthMode::PublishableKey => $config->isPublishableKey
-                ? 'Bearer ' . $config->key->reveal()
+                ? 'Bearer ' . $config->key
                 : throw new ConfigurationException('This call needs publishableKey in the client settings'),
             AuthMode::Session => 'Bearer ' . Validate::tokenValue(
                 $request->sessionToken?->reveal() ?? throw new ConfigurationException('This call needs sessionToken'),
