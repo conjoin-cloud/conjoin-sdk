@@ -1,54 +1,71 @@
 import type { NextRequest } from 'next/server'
-import type { AuthObject } from './types'
+import { CONJOIN_CLIENT_HANDLE_COOKIE, CONJOIN_SESSION_TOKEN_COOKIE, verifyToken } from '../server/tokens'
+import { resolveConfig, resolveTokenVerificationTarget } from './config'
+import type { AuthObject, NextAdapterConfig } from './types'
 
-const COOKIE_CLIENT_STATE = '__conjoin_auth_cl'
+const CLIENT_HANDLE_MAX_BYTES = 2048
+const CLIENT_HANDLE_IDENTIFIER_PATTERN = /^[\w.:-]{1,256}$/
 
-type ClientState = {
-  accountId: string
-  sessionId: string
-  orgId: string | null
-  orgRole: string | null
+type ClientHandle = {
+  clientId: string
+  referenceId: string
 }
 
-function parseClientState(req: NextRequest): AuthObject | null {
-  const cookie = req.cookies.get(COOKIE_CLIENT_STATE)?.value
-  if (!cookie) return null
+type ProxyResult = Response | undefined
+
+type ProxyHandler = (auth: AuthObject | null, req: NextRequest) => ProxyResult | Promise<ProxyResult>
+
+function isClientHandleIdentifier(value: unknown): value is string {
+  return typeof value === 'string' && CLIENT_HANDLE_IDENTIFIER_PATTERN.test(value)
+}
+
+function parseClientHandle(cookieValue: string | undefined): ClientHandle | null {
+  if (!cookieValue || new TextEncoder().encode(cookieValue).byteLength > CLIENT_HANDLE_MAX_BYTES) return null
 
   try {
-    const parsed: unknown = JSON.parse(cookie)
-    if (typeof parsed !== 'object' || parsed === null) return null
+    const parsed: unknown = JSON.parse(cookieValue)
+    if (typeof parsed !== 'object' || parsed === null || Array.isArray(parsed)) return null
 
-    const raw = parsed as Record<string, unknown>
-    if (typeof raw.accountId !== 'string' || typeof raw.sessionId !== 'string') return null
+    const { client_id: clientId, reference_id: referenceId } = parsed as Record<string, unknown>
+    if (!isClientHandleIdentifier(clientId) || !isClientHandleIdentifier(referenceId)) return null
 
-    const state: ClientState = {
-      accountId: raw.accountId,
-      sessionId: raw.sessionId,
-      orgId: typeof raw.orgId === 'string' ? raw.orgId : null,
-      orgRole: typeof raw.orgRole === 'string' ? raw.orgRole : null,
-    }
+    return { clientId, referenceId }
+  } catch {
+    return null
+  }
+}
+
+async function resolveProxyAuth(req: NextRequest, config: NextAdapterConfig): Promise<AuthObject | null> {
+  const handle = parseClientHandle(req.cookies.get(CONJOIN_CLIENT_HANDLE_COOKIE)?.value)
+  if (!handle) return null
+
+  const token = req.cookies.get(CONJOIN_SESSION_TOKEN_COOKIE)?.value
+  if (!token) return null
+
+  const { jwksUrl, issuer } = await resolveTokenVerificationTarget(config)
+
+  try {
+    const verified = await verifyToken(token, { jwksUrl, issuer })
+    if (verified.payload.client_id !== handle.clientId) return null
 
     return {
-      accountId: state.accountId,
-      sessionId: state.sessionId,
-      organizationId: state.orgId,
-      organizationRoles: state.orgRole === null ? [] : [state.orgRole],
-      getToken: () => {
-        throw new Error(
-          'getToken() is not available in proxy. Use auth() in a Server Component or Route Handler instead.',
-        )
-      },
+      accountId: verified.accountId,
+      sessionId: verified.sessionId,
+      organizationId: verified.organizationId,
+      organizationRoles: verified.organizationRoles,
+      getToken: () => token,
     }
   } catch {
     return null
   }
 }
 
-export function conjoinProxy(handler?: (auth: AuthObject | null, req: NextRequest) => Response | undefined) {
-  return (req: NextRequest) => {
-    if (!handler) return
+export function conjoinProxy(handler?: ProxyHandler, overrides?: Partial<NextAdapterConfig>) {
+  return async (req: NextRequest): Promise<ProxyResult> => {
+    if (!handler) return undefined
 
-    const authObj = parseClientState(req)
+    const authObj = await resolveProxyAuth(req, resolveConfig(overrides))
+
     return handler(authObj, req)
   }
 }

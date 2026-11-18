@@ -44,7 +44,7 @@ describe('auth', () => {
 
   it('reads token from cookie and verifies', async () => {
     const cookieGet = vi.fn().mockImplementation((name: string) => {
-      if (name === '__conjoin_auth_at') return { value: 'jwt-from-cookie' }
+      if (name === '__conjoin_auth_sess') return { value: 'jwt-from-cookie' }
       return undefined
     })
     mockCookies.mockResolvedValue({ get: cookieGet } as never)
@@ -100,7 +100,7 @@ describe('auth', () => {
     mockHeaders.mockResolvedValue({ get: headerGet } as never)
 
     const cookieGet = vi.fn().mockImplementation((name: string) => {
-      if (name === '__conjoin_auth_at') return { value: 'cookie-token' }
+      if (name === '__conjoin_auth_sess') return { value: 'cookie-token' }
       return undefined
     })
     mockCookies.mockResolvedValue({ get: cookieGet } as never)
@@ -126,7 +126,7 @@ describe('auth', () => {
 
   it('returns null when token verification fails', async () => {
     const cookieGet = vi.fn().mockImplementation((name: string) => {
-      if (name === '__conjoin_auth_at') return { value: 'bad-token' }
+      if (name === '__conjoin_auth_sess') return { value: 'bad-token' }
       return undefined
     })
     mockCookies.mockResolvedValue({ get: cookieGet } as never)

@@ -303,7 +303,7 @@ export default conjoinProxy((auth, req) => {
 })
 ```
 
-The proxy reads a client-state cookie at the edge for routing decisions. Use `auth()` inside Server Components and Route Handlers when you need JWT verification.
+The proxy reads the `__conjoin_auth_cl` client handle and verifies the `__conjoin_auth_sess` session token that Conjoin Auth sets, using the same auth domain settings as `auth()`. It passes `null` when either cookie is missing, when the token fails verification, or when the token belongs to another client. `auth()` reads the same session token inside Server Components and Route Handlers.
 
 `auth()` checks tokens against the JWKS on your project's auth domain. Set `CONJOIN_AUTH_DOMAIN`, or pass `authDomain` or `jwksUrl`, to point it there. With only `CONJOIN_PUBLISHABLE_KEY` set, the adapter reads the auth domain from your project's SDK settings and keeps it for five minutes. `currentAccount()` reads the signed-in account's profile from the same auth domain.
 

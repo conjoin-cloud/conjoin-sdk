@@ -1,7 +1,8 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import type { VerifiedToken } from '../../server/tokens'
 
-vi.mock('../../server/tokens', () => ({
+vi.mock('../../server/tokens', async importOriginal => ({
+  ...(await importOriginal<typeof import('../../server/tokens')>()),
   verifyToken: vi.fn(),
 }))
 
@@ -72,7 +73,7 @@ describe('conjoinMiddleware', () => {
     const middleware = conjoinMiddleware({ jwksUrl: JWKS_URL })
 
     const req = createMockReq({
-      cookies: { __conjoin_auth_at: 'cookie-token' },
+      cookies: { __conjoin_auth_sess: 'cookie-token' },
     })
     const res = createMockRes()
     const next = vi.fn()
@@ -89,7 +90,7 @@ describe('conjoinMiddleware', () => {
 
     const req = createMockReq({
       headers: { authorization: 'Bearer bearer-token' },
-      cookies: { __conjoin_auth_at: 'cookie-token' },
+      cookies: { __conjoin_auth_sess: 'cookie-token' },
     })
     const res = createMockRes()
     const next = vi.fn()

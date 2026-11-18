@@ -1,13 +1,11 @@
 import type { Context, MiddlewareHandler } from 'hono'
 import { getCookie } from 'hono/cookie'
 import { getConjoinRequestIdFromHeaders } from '../core/request-tracing'
-import { verifyToken } from '../server/tokens'
+import { CONJOIN_SESSION_TOKEN_COOKIE, verifyToken } from '../server/tokens'
 import type { ConjoinEnv, ConjoinHonoOptions } from './types'
 
-const DEFAULT_COOKIE_NAME = '__conjoin_auth_at'
-
 export function conjoinMiddleware(options: ConjoinHonoOptions): MiddlewareHandler<ConjoinEnv> {
-  const cookieName = options.cookieName ?? DEFAULT_COOKIE_NAME
+  const cookieName = options.cookieName ?? CONJOIN_SESSION_TOKEN_COOKIE
 
   return async (c: Context<ConjoinEnv>, next) => {
     c.set('conjoinRequestId', getConjoinRequestIdFromHeaders(c.req.raw.headers))

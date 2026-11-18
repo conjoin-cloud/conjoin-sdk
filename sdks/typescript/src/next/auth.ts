@@ -1,10 +1,8 @@
 import { cookies, headers } from 'next/headers'
 import { cache } from 'react'
-import { verifyToken } from '../server/tokens'
+import { CONJOIN_SESSION_TOKEN_COOKIE, verifyToken } from '../server/tokens'
 import { resolveConfig, resolveTokenVerificationTarget } from './config'
 import type { AuthObject, NextAdapterConfig } from './types'
-
-const COOKIE_ACCESS_TOKEN = '__conjoin_auth_at'
 
 async function resolveAuth(overrides?: Partial<NextAdapterConfig>): Promise<AuthObject | null> {
   const config = resolveConfig(overrides)
@@ -15,7 +13,7 @@ async function resolveAuth(overrides?: Partial<NextAdapterConfig>): Promise<Auth
   const bearerHeader = headerStore.get('authorization')
   const bearerToken = bearerHeader?.startsWith('Bearer ') ? bearerHeader.slice(7) : null
 
-  const cookieToken = cookieStore.get(COOKIE_ACCESS_TOKEN)?.value
+  const cookieToken = cookieStore.get(CONJOIN_SESSION_TOKEN_COOKIE)?.value
 
   const token = bearerToken ?? cookieToken
   if (!token) return null

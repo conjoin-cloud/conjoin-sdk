@@ -2,7 +2,8 @@ import { Hono } from 'hono'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import type { VerifiedToken } from '../../server/tokens'
 
-vi.mock('../../server/tokens', () => ({
+vi.mock('../../server/tokens', async importOriginal => ({
+  ...(await importOriginal<typeof import('../../server/tokens')>()),
   verifyToken: vi.fn(),
 }))
 
@@ -65,7 +66,7 @@ describe('conjoinMiddleware', () => {
     })
 
     const res = await app.request('/test', {
-      headers: { cookie: '__conjoin_auth_at=cookie-token' },
+      headers: { cookie: '__conjoin_auth_sess=cookie-token' },
     })
 
     expect(res.status).toBe(200)
@@ -82,7 +83,7 @@ describe('conjoinMiddleware', () => {
     await app.request('/test', {
       headers: {
         authorization: 'Bearer bearer-token',
-        cookie: '__conjoin_auth_at=cookie-token',
+        cookie: '__conjoin_auth_sess=cookie-token',
       },
     })
 
