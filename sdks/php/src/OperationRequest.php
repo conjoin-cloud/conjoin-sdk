@@ -12,6 +12,8 @@ final class OperationRequest
 
     public readonly array $declaredHeaders;
 
+    public readonly ?Credential $bearerToken;
+
     public function __construct(
         public readonly HttpMethod $method,
         public readonly string $path,
@@ -21,7 +23,7 @@ final class OperationRequest
         array $scopes = [],
         public readonly bool $acceptsIdempotencyKey = false,
         public readonly AuthMode $auth = AuthMode::ClientKey,
-        #[\SensitiveParameter] public readonly ?string $bearerToken = null,
+        #[\SensitiveParameter] string|Credential|null $bearerToken = null,
         #[\SensitiveParameter] array $declaredHeaders = [],
         #[\SensitiveParameter] public readonly ?Credential $sessionToken = null,
     ) {
@@ -39,6 +41,7 @@ final class OperationRequest
 
         $this->scopes = array_values($scopes);
         $this->declaredHeaders = array_values($declaredHeaders);
+        $this->bearerToken = is_string($bearerToken) ? new Credential($bearerToken) : $bearerToken;
     }
 
     public function withQuery(?array $query): self
