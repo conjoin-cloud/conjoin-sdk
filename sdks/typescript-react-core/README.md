@@ -57,7 +57,9 @@ function Profile() {
 }
 ```
 
-`ConjoinProvider` accepts `publishableKey`, `config`, and `appearance`. It reads your project's SDK settings with the publishable key, and it calls the auth domain from those settings for sign-in and for the signed-in account. On the web, the session lives in the auth domain's cookies, and the provider renews it before it expires. The hooks include `useAuth`, `useSignIn`, `useSignUp`, `useSession`, `useSessions`, `useAccount`, `useUpdateAccount`, `useOrg`, `useEntitlements`, `useCheckout`, `useBundles`, `useChannel`, `useStorageUpload`, `useConjoinStatus`, and `useConjoinTheme`.
+`ConjoinProvider` accepts `publishableKey`, `config`, and `appearance`. It reads your project's SDK settings with the publishable key, and it calls the auth domain from those settings for sign-in and for the signed-in account. On the web, the session lives in the auth domain's cookies, and the provider renews it before it expires. The hooks include `useAuth`, `useSignIn`, `useSignUp`, `useSession`, `useSessions`, `useAccount`, `useUpdateAccount`, `useOrg`, `useEntitlements`, `useCheckout`, `useBundles`, `usePaymentMethods`, `useChannel`, `useStorageUpload`, `useConjoinStatus`, and `useConjoinTheme`.
+
+The billing hooks call the auth domain with the signed-in session and the billing entity that you pass, so a page needs only its publishable key. A checkout charges a card that the signed-in customer saved: `useCheckout().startCardSetup` returns the `authorisation_url` where the customer authorises the card, `usePaymentMethods` lists the saved cards, and `useCheckout().activate` takes the `paymentMethodId` of an authorised one. The activation it returns stays `pending_payment` until the charge succeeds, and `useEntitlements` grants nothing from it before then.
 
 ## Sign In
 

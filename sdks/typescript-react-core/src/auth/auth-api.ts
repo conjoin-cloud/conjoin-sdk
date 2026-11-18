@@ -5,8 +5,11 @@ import {
   createAuthFlows,
   createAuthNatives,
   createAuthSelves,
+  createBillingSelves,
   createCloudSDKs,
 } from '@conjoin-cloud/sdk/frontend'
+
+export type BillingSelfCalls = ReturnType<typeof createBillingSelves>
 
 const AUTH_DOMAIN_PATTERN = /^[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)*(:[0-9]{1,5})?$/i
 
@@ -19,6 +22,7 @@ export type AuthDomainCalls = {
 
 export type ConjoinAuthApi = AuthDomainCalls & {
   authBaseUrl: string
+  billingSelves: (billingEntityId: string) => BillingSelfCalls
 }
 
 export type ConjoinPublicApi = {
@@ -56,6 +60,7 @@ export function createConjoinAuthApi(publishableKey: string, authDomain: string)
     clients: createAuthClients(client),
     webFlows: createAuthFlows(client),
     nativeFlows: createAuthNatives(client),
+    billingSelves: billingEntityId => createBillingSelves(client.withScope({ billingEntityId })),
   }
 }
 

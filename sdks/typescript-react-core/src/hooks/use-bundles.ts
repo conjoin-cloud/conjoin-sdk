@@ -1,31 +1,26 @@
-import { createBillingPriceBundles } from '@conjoin-cloud/sdk/billing'
 import { useCallback, useMemo } from 'react'
-import { useConjoinClient } from './internal/use-conjoin-client'
-import { useConjoinQuery } from './internal/use-conjoin-query'
+import type { BillingSelfCalls } from '../auth/auth-api'
+import type { AuthTransport } from '../provider/types'
+import { useBillingSelfQuery } from './internal/use-billing-self-query'
 
-type BillingPriceBundlesApi = ReturnType<typeof createBillingPriceBundles>
-export type PriceBundleItem = Awaited<ReturnType<BillingPriceBundlesApi['list']>>['data'][number]
+export type PriceBundleItem = Awaited<ReturnType<BillingSelfCalls['listPriceBundles']>>['data'][number]
 
 const EMPTY_BUNDLES: PriceBundleItem[] = []
 
-export function useBundles(entityId: string, referenceId: string) {
-  const { client } = useConjoinClient()
-  const api = useMemo(
-    () => (entityId ? createBillingPriceBundles(client.withScope({ billingEntityId: entityId })) : null),
-    [client, entityId],
+export function useBundles(entityId: string, referenceId?: string) {
+  const read = useCallback(
+    async (billing: BillingSelfCalls, transport: AuthTransport): Promise<PriceBundleItem[]> => {
+      const page = await billing.listPriceBundles(
+        referenceId ? { reference_id: referenceId } : undefined,
+        transport.readSessionToken(),
+        transport.sessionCallOptions('GET'),
+      )
+      return page.data
+    },
+    [referenceId],
   )
 
-  const queryFn = useCallback(async () => {
-    if (api === null) return EMPTY_BUNDLES
-    const page = await api.list({ reference_id: referenceId })
-    return page.data
-  }, [api, referenceId])
-
-  const result = useConjoinQuery<PriceBundleItem[]>({
-    queryKey: ['conjoin', 'billing', 'bundles', entityId, referenceId],
-    queryFn,
-    enabled: !!entityId && !!referenceId,
-  })
+  const result = useBillingSelfQuery({ name: 'bundles', entityId, keyParts: [referenceId ?? null], read })
 
   const bundles = result.data ?? EMPTY_BUNDLES
 
