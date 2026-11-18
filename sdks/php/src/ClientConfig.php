@@ -23,7 +23,7 @@ final class ClientConfig
     private const API_VERSION_PATTERN = '/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/D';
 
     private function __construct(
-        #[\SensitiveParameter] public readonly string $key,
+        #[\SensitiveParameter] public readonly Credential $key,
         public readonly bool $isPublishableKey,
         public readonly string $baseUrl,
         public readonly string $apiVersion,
@@ -70,7 +70,7 @@ final class ClientConfig
         }
 
         return new self(
-            $key,
+            new Credential($key),
             $apiKey === null,
             $baseUrl === null ? Region::fromKey($key)->baseUrl() : self::validateBaseUrl($baseUrl),
             $version,
