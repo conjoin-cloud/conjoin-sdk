@@ -1,8 +1,9 @@
 import { cookies, headers } from 'next/headers'
 import { cache } from 'react'
-import { CONJOIN_SESSION_TOKEN_COOKIE, verifyToken } from '../server/tokens'
-import { resolveConfig, resolveTokenVerificationTarget } from './config'
+import { CONJOIN_SESSION_TOKEN_COOKIE } from '../server/tokens'
+import { resolveConfig } from './config'
 import type { AuthObject, NextAdapterConfig } from './types'
+import { verifyAuthObject } from './verify-auth'
 
 async function resolveAuth(overrides?: Partial<NextAdapterConfig>): Promise<AuthObject | null> {
   const config = resolveConfig(overrides)
@@ -18,21 +19,7 @@ async function resolveAuth(overrides?: Partial<NextAdapterConfig>): Promise<Auth
   const token = bearerToken ?? cookieToken
   if (!token) return null
 
-  const { jwksUrl, issuer } = await resolveTokenVerificationTarget(config)
-
-  try {
-    const verified = await verifyToken(token, { jwksUrl, issuer })
-
-    return {
-      accountId: verified.accountId,
-      sessionId: verified.sessionId,
-      organizationId: verified.organizationId,
-      organizationRoles: verified.organizationRoles,
-      getToken: () => token,
-    }
-  } catch {
-    return null
-  }
+  return verifyAuthObject({ token, config })
 }
 
 export const auth = cache(resolveAuth)

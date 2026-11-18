@@ -1,12 +1,13 @@
 'use client'
 
+export { encodeClientHandle } from '@conjoin-cloud/sdk/auth'
 export type { ConjoinAuthApi } from './auth/auth-api'
+export { ClientHandleSchema } from './auth/client-handle-schema'
 export {
   AUTH_CODE_CHALLENGE_HEADER,
   AUTH_CODE_VERIFIER_HEADER,
   AUTH_STATE_HEADER,
   CLIENT_HANDLE_HEADER,
-  encodeClientHandle,
 } from './auth/flow-headers'
 export { type AuthFlowCrypto, type AuthFlowProof, createAuthFlowProof } from './auth/flow-proof'
 export { createRedirectFlowRegistry, type RedirectFlowStore } from './auth/redirect-flows'
