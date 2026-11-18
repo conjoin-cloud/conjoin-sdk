@@ -1,63 +1,38 @@
 import type { NextRequest } from 'next/server'
-import { CONJOIN_CLIENT_HANDLE_COOKIE, CONJOIN_SESSION_TOKEN_COOKIE, verifyToken } from '../server/tokens'
-import { resolveConfig, resolveTokenVerificationTarget } from './config'
+import { type ConjoinClientHandle, parseClientHandle } from '../auth/client-handle'
+import { CONJOIN_CLIENT_HANDLE_COOKIE, CONJOIN_SESSION_TOKEN_COOKIE } from '../server/tokens'
+import { resolveConfig } from './config'
 import type { AuthObject, NextAdapterConfig } from './types'
+import { verifyAuthObject } from './verify-auth'
 
 const CLIENT_HANDLE_MAX_BYTES = 2048
-const CLIENT_HANDLE_IDENTIFIER_PATTERN = /^[\w.:-]{1,256}$/
-
-type ClientHandle = {
-  clientId: string
-  referenceId: string
-}
 
 type ProxyResult = Response | undefined
 
 type ProxyHandler = (auth: AuthObject | null, req: NextRequest) => ProxyResult | Promise<ProxyResult>
 
-function isClientHandleIdentifier(value: unknown): value is string {
-  return typeof value === 'string' && CLIENT_HANDLE_IDENTIFIER_PATTERN.test(value)
-}
-
-function parseClientHandle(cookieValue: string | undefined): ClientHandle | null {
+function readClientHandleCookie(cookieValue: string | undefined): ConjoinClientHandle | null {
   if (!cookieValue || new TextEncoder().encode(cookieValue).byteLength > CLIENT_HANDLE_MAX_BYTES) return null
 
   try {
-    const parsed: unknown = JSON.parse(cookieValue)
-    if (typeof parsed !== 'object' || parsed === null || Array.isArray(parsed)) return null
-
-    const { client_id: clientId, reference_id: referenceId } = parsed as Record<string, unknown>
-    if (!isClientHandleIdentifier(clientId) || !isClientHandleIdentifier(referenceId)) return null
-
-    return { clientId, referenceId }
+    return parseClientHandle(JSON.parse(cookieValue))
   } catch {
     return null
   }
 }
 
 async function resolveProxyAuth(req: NextRequest, config: NextAdapterConfig): Promise<AuthObject | null> {
-  const handle = parseClientHandle(req.cookies.get(CONJOIN_CLIENT_HANDLE_COOKIE)?.value)
+  const handle = readClientHandleCookie(req.cookies.get(CONJOIN_CLIENT_HANDLE_COOKIE)?.value)
   if (!handle) return null
 
   const token = req.cookies.get(CONJOIN_SESSION_TOKEN_COOKIE)?.value
   if (!token) return null
 
-  const { jwksUrl, issuer } = await resolveTokenVerificationTarget(config)
-
-  try {
-    const verified = await verifyToken(token, { jwksUrl, issuer })
-    if (verified.payload.client_id !== handle.clientId) return null
-
-    return {
-      accountId: verified.accountId,
-      sessionId: verified.sessionId,
-      organizationId: verified.organizationId,
-      organizationRoles: verified.organizationRoles,
-      getToken: () => token,
-    }
-  } catch {
-    return null
-  }
+  return verifyAuthObject({
+    token,
+    config,
+    isTokenAccepted: verified => verified.payload.client_id === handle.client_id,
+  })
 }
 
 export function conjoinProxy(handler?: ProxyHandler, overrides?: Partial<NextAdapterConfig>) {
