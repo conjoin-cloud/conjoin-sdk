@@ -1,11 +1,10 @@
-import { createBillingEntitlementOverrides } from '@conjoin-cloud/sdk/billing'
 import { useCallback, useMemo } from 'react'
+import type { BillingSelfCalls, ConjoinAuthApi } from '../auth/auth-api'
+import type { AuthTransport } from '../provider/types'
 import { collectPages } from './internal/collect-pages'
-import { useConjoinClient } from './internal/use-conjoin-client'
-import { useConjoinQuery } from './internal/use-conjoin-query'
+import { useSignedInQuery } from './internal/use-signed-in-query'
 
-type EntitlementOverridesApi = ReturnType<typeof createBillingEntitlementOverrides>
-type EntitlementOverrideItem = Awaited<ReturnType<EntitlementOverridesApi['list']>>['data'][number]
+type EntitlementOverrideItem = Awaited<ReturnType<BillingSelfCalls['listEntitlementOverrides']>>['data'][number]
 
 type EntitlementCheckResult = {
   allowed: boolean
@@ -15,21 +14,19 @@ type EntitlementCheckResult = {
 const EMPTY_ENTITLEMENTS: EntitlementOverrideItem[] = []
 
 export function useEntitlements(entityId: string) {
-  const { client } = useConjoinClient()
-  const api = useMemo(
-    () => (entityId ? createBillingEntitlementOverrides(client.withScope({ billingEntityId: entityId })) : null),
-    [client, entityId],
+  const read = useCallback(
+    (authApi: ConjoinAuthApi, transport: AuthTransport): Promise<EntitlementOverrideItem[]> =>
+      collectPages(
+        authApi
+          .billingSelves(entityId)
+          .listEntitlementOverrides(undefined, transport.readSessionToken(), transport.sessionCallOptions('GET')),
+      ),
+    [entityId],
   )
 
-  const queryFn = useCallback(async () => {
-    if (api === null) return EMPTY_ENTITLEMENTS
-    return collectPages(api.list())
-  }, [api])
-
-  const result = useConjoinQuery<EntitlementOverrideItem[]>({
-    queryKey: ['conjoin', 'billing', 'entitlements', entityId],
-    queryFn,
-    enabled: !!entityId,
+  const result = useSignedInQuery('billing-entitlements', read, {
+    keyParts: [entityId],
+    isEnabled: entityId.length > 0,
   })
 
   const entitlements = useMemo<EntitlementOverrideItem[]>(() => result.data ?? EMPTY_ENTITLEMENTS, [result.data])
@@ -48,7 +45,7 @@ export function useEntitlements(entityId: string) {
   )
 
   return useMemo(
-    () => ({ entitlements, isLoading: result.isLoading, error: result.error ?? null, check }),
-    [entitlements, result.isLoading, result.error, check],
+    () => ({ entitlements, isLoading: !result.isLoaded, error: result.error, check }),
+    [entitlements, result.isLoaded, result.error, check],
   )
 }

@@ -12614,6 +12614,1897 @@
         }
       }
     },
+    "/v1/billing/self/entitlement-overrides/": {
+      "get": {
+        "operationId": "listSelfEntitlementOverrides",
+        "summary": "List the entitlement overrides of the signed-in customer",
+        "tags": [
+          "Billing - Self"
+        ],
+        "security": [
+          {
+            "conjoinSessionBearer": []
+          },
+          {
+            "conjoinSessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "headers": {
+              "Conjoin-Request-Id": {
+                "$ref": "#/components/headers/ConjoinRequestId"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "response": {
+                      "$ref": "#/components/schemas/ApiSuccessResponseMeta"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "override_id": {
+                            "type": "string"
+                          },
+                          "conjoin_account_id": {
+                            "type": "string"
+                          },
+                          "conjoin_project_id": {
+                            "type": "string"
+                          },
+                          "entity_id": {
+                            "type": "string"
+                          },
+                          "customer_id": {
+                            "type": "string"
+                          },
+                          "subscription_id": {
+                            "type": "string"
+                          },
+                          "plan_id": {
+                            "type": "string"
+                          },
+                          "feature_id": {
+                            "type": "string"
+                          },
+                          "value_type": {
+                            "type": "string",
+                            "enum": [
+                              "boolean",
+                              "numeric",
+                              "unlimited"
+                            ]
+                          },
+                          "included_units": {
+                            "oneOf": [
+                              {
+                                "type": "number"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "soft_limit": {
+                            "oneOf": [
+                              {
+                                "type": "boolean"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "reason": {
+                            "oneOf": [
+                              {
+                                "type": "string"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "effective_from": {
+                            "type": "string"
+                          },
+                          "effective_to": {
+                            "oneOf": [
+                              {
+                                "type": "string"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "is_active": {
+                            "type": "boolean"
+                          },
+                          "live_mode": {
+                            "type": "boolean"
+                          },
+                          "date_created": {
+                            "type": "string"
+                          },
+                          "date_updated": {
+                            "type": "string"
+                          },
+                          "date_deleted": {
+                            "oneOf": [
+                              {
+                                "type": "string"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          }
+                        },
+                        "required": [
+                          "override_id",
+                          "conjoin_account_id",
+                          "conjoin_project_id",
+                          "entity_id",
+                          "customer_id",
+                          "subscription_id",
+                          "plan_id",
+                          "feature_id",
+                          "value_type",
+                          "effective_from",
+                          "is_active",
+                          "live_mode",
+                          "date_created",
+                          "date_updated"
+                        ]
+                      }
+                    },
+                    "cursor": {
+                      "$ref": "#/components/schemas/PaginationCursor"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error or bad request",
+            "headers": {
+              "Conjoin-Request-Id": {
+                "$ref": "#/components/headers/ConjoinRequestId"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "response": {
+                      "$ref": "#/components/schemas/ApiClientErrorResponseMeta"
+                    },
+                    "data": {
+                      "type": "null"
+                    },
+                    "error": {
+                      "$ref": "#/components/schemas/ApiErrorDetail"
+                    }
+                  },
+                  "required": [
+                    "response",
+                    "data",
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - missing or invalid API key",
+            "headers": {
+              "Conjoin-Request-Id": {
+                "$ref": "#/components/headers/ConjoinRequestId"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "response": {
+                      "$ref": "#/components/schemas/ApiClientErrorResponseMeta"
+                    },
+                    "data": {
+                      "type": "null"
+                    },
+                    "error": {
+                      "$ref": "#/components/schemas/ApiErrorDetail"
+                    }
+                  },
+                  "required": [
+                    "response",
+                    "data",
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The resource does not exist in the scope of the request",
+            "headers": {
+              "Conjoin-Request-Id": {
+                "$ref": "#/components/headers/ConjoinRequestId"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "response": {
+                      "$ref": "#/components/schemas/ApiClientErrorResponseMeta"
+                    },
+                    "data": {
+                      "type": "null"
+                    },
+                    "error": {
+                      "$ref": "#/components/schemas/ApiErrorDetail"
+                    }
+                  },
+                  "required": [
+                    "response",
+                    "data",
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "headers": {
+              "Conjoin-Request-Id": {
+                "$ref": "#/components/headers/ConjoinRequestId"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "response": {
+                      "$ref": "#/components/schemas/ApiServerErrorResponseMeta"
+                    },
+                    "data": {
+                      "type": "null"
+                    },
+                    "error": {
+                      "$ref": "#/components/schemas/ApiErrorDetail"
+                    }
+                  },
+                  "required": [
+                    "response",
+                    "data",
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ConjoinRequestId"
+          },
+          {
+            "name": "feature_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 48,
+              "example": "string"
+            }
+          },
+          {
+            "name": "subscription_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 48,
+              "example": "string"
+            }
+          },
+          {
+            "name": "is_active",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "string",
+                  "enum": [
+                    "true",
+                    "false"
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "name": "date_created",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "equals": {
+                  "type": "string",
+                  "example": "string"
+                },
+                "not_equals": {
+                  "type": "string",
+                  "example": "string"
+                },
+                "gt": {
+                  "type": "string",
+                  "example": "string"
+                },
+                "lt": {
+                  "type": "string",
+                  "example": "string"
+                },
+                "gte": {
+                  "type": "string",
+                  "example": "string"
+                },
+                "lte": {
+                  "type": "string",
+                  "example": "string"
+                }
+              },
+              "additionalProperties": false
+            },
+            "style": "deepObject",
+            "explode": true
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "prev": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 512,
+                  "example": "string"
+                },
+                "next": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 512,
+                  "example": "string"
+                }
+              }
+            },
+            "style": "deepObject",
+            "explode": true
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string",
+                "enum": [
+                  "asc",
+                  "desc"
+                ]
+              }
+            },
+            "style": "deepObject",
+            "explode": true
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "number"
+                }
+              ],
+              "default": 50
+            }
+          },
+          {
+            "name": "Billing-Entity-ID",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The Billing entity that owns the resource. A resource of another entity answers 404."
+          }
+        ]
+      }
+    },
+    "/v1/billing/self/price-bundles/": {
+      "get": {
+        "operationId": "listSelfPriceBundles",
+        "summary": "List the published price bundles that the signed-in customer can buy",
+        "tags": [
+          "Billing - Self"
+        ],
+        "security": [
+          {
+            "conjoinSessionBearer": []
+          },
+          {
+            "conjoinSessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "headers": {
+              "Conjoin-Request-Id": {
+                "$ref": "#/components/headers/ConjoinRequestId"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "response": {
+                      "$ref": "#/components/schemas/ApiSuccessResponseMeta"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "conjoin_account_id": {
+                            "type": "string"
+                          },
+                          "conjoin_project_id": {
+                            "type": "string"
+                          },
+                          "entity_id": {
+                            "type": "string"
+                          },
+                          "price_bundle_id": {
+                            "type": "string"
+                          },
+                          "reference_id": {
+                            "type": "string"
+                          },
+                          "name": {
+                            "type": "string"
+                          },
+                          "description": {
+                            "oneOf": [
+                              {
+                                "type": "string"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "authoring_mode": {
+                            "type": "string",
+                            "enum": [
+                              "linked",
+                              "managed"
+                            ]
+                          },
+                          "items": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "price_id": {
+                                  "type": "string"
+                                },
+                                "price_key": {
+                                  "type": "string"
+                                },
+                                "default_quantity": {
+                                  "type": "number"
+                                },
+                                "quantity_adjustable": {
+                                  "type": "boolean"
+                                },
+                                "billing_mode": {
+                                  "type": "string",
+                                  "enum": [
+                                    "subscription",
+                                    "invoice"
+                                  ]
+                                },
+                                "required": {
+                                  "type": "boolean"
+                                },
+                                "entitlement": {
+                                  "oneOf": [
+                                    {
+                                      "type": "object",
+                                      "properties": {
+                                        "feature_id": {
+                                          "type": "string"
+                                        },
+                                        "feature_key": {
+                                          "type": "string"
+                                        },
+                                        "value_type": {
+                                          "type": "string",
+                                          "enum": [
+                                            "boolean",
+                                            "numeric",
+                                            "unlimited"
+                                          ]
+                                        },
+                                        "included_units": {
+                                          "type": "number"
+                                        },
+                                        "soft_limit": {
+                                          "type": "boolean"
+                                        },
+                                        "overage_price_id": {
+                                          "type": "string"
+                                        },
+                                        "overage_price_key": {
+                                          "type": "string"
+                                        }
+                                      },
+                                      "required": [
+                                        "value_type"
+                                      ]
+                                    },
+                                    {
+                                      "type": "null"
+                                    }
+                                  ]
+                                }
+                              },
+                              "required": [
+                                "default_quantity",
+                                "quantity_adjustable",
+                                "required"
+                              ]
+                            }
+                          },
+                          "managed_catalog": {
+                            "oneOf": [
+                              {
+                                "type": "object",
+                                "properties": {
+                                  "product": {
+                                    "type": "object",
+                                    "properties": {
+                                      "product_id": {
+                                        "type": "string"
+                                      },
+                                      "reference_id": {
+                                        "type": "string"
+                                      },
+                                      "name": {
+                                        "type": "string"
+                                      },
+                                      "description": {
+                                        "oneOf": [
+                                          {
+                                            "type": "string"
+                                          },
+                                          {
+                                            "type": "null"
+                                          }
+                                        ]
+                                      },
+                                      "statement_descriptor": {
+                                        "oneOf": [
+                                          {
+                                            "type": "string"
+                                          },
+                                          {
+                                            "type": "null"
+                                          }
+                                        ]
+                                      },
+                                      "unit_label": {
+                                        "type": "string"
+                                      },
+                                      "is_active": {
+                                        "type": "boolean"
+                                      },
+                                      "images": {
+                                        "type": "array",
+                                        "items": {
+                                          "type": "string"
+                                        }
+                                      },
+                                      "features": {
+                                        "type": "array",
+                                        "items": {
+                                          "type": "object",
+                                          "properties": {
+                                            "name": {
+                                              "type": "string"
+                                            },
+                                            "description": {
+                                              "type": "string"
+                                            }
+                                          },
+                                          "required": [
+                                            "name"
+                                          ]
+                                        }
+                                      }
+                                    },
+                                    "required": [
+                                      "name",
+                                      "unit_label"
+                                    ]
+                                  },
+                                  "prices": {
+                                    "type": "array",
+                                    "items": {
+                                      "type": "object",
+                                      "properties": {
+                                        "price_key": {
+                                          "type": "string"
+                                        },
+                                        "price_id": {
+                                          "type": "string"
+                                        },
+                                        "reference_id": {
+                                          "type": "string"
+                                        },
+                                        "currency": {
+                                          "type": "string"
+                                        },
+                                        "amount": {
+                                          "type": "number"
+                                        },
+                                        "type": {
+                                          "type": "string",
+                                          "enum": [
+                                            "recurring",
+                                            "one_time"
+                                          ]
+                                        },
+                                        "billing_scheme": {
+                                          "type": "string",
+                                          "enum": [
+                                            "per_unit",
+                                            "tiered",
+                                            "volume"
+                                          ]
+                                        },
+                                        "tiers": {
+                                          "type": "array",
+                                          "items": {
+                                            "type": "object",
+                                            "properties": {
+                                              "flat_amount": {
+                                                "type": "number"
+                                              },
+                                              "unit_amount": {
+                                                "type": "number"
+                                              },
+                                              "up_to": {
+                                                "oneOf": [
+                                                  {
+                                                    "type": "number"
+                                                  },
+                                                  {
+                                                    "type": "null"
+                                                  }
+                                                ]
+                                              }
+                                            },
+                                            "required": [
+                                              "flat_amount",
+                                              "unit_amount"
+                                            ]
+                                          }
+                                        },
+                                        "tiers_mode": {
+                                          "type": "string",
+                                          "enum": [
+                                            "graduated",
+                                            "volume"
+                                          ]
+                                        },
+                                        "recurring": {
+                                          "type": "object",
+                                          "properties": {
+                                            "interval": {
+                                              "type": "string",
+                                              "enum": [
+                                                "day",
+                                                "week",
+                                                "month",
+                                                "year"
+                                              ]
+                                            },
+                                            "interval_count": {
+                                              "type": "number"
+                                            },
+                                            "usage_type": {
+                                              "type": "string",
+                                              "enum": [
+                                                "licensed",
+                                                "metered"
+                                              ]
+                                            },
+                                            "usage_seats_included": {
+                                              "type": "number"
+                                            },
+                                            "aggregate_usage": {
+                                              "oneOf": [
+                                                {
+                                                  "type": "string",
+                                                  "enum": [
+                                                    "sum",
+                                                    "max",
+                                                    "last_during_period",
+                                                    "last_ever"
+                                                  ]
+                                                },
+                                                {
+                                                  "type": "null"
+                                                }
+                                              ]
+                                            }
+                                          },
+                                          "required": [
+                                            "interval"
+                                          ]
+                                        },
+                                        "is_active": {
+                                          "type": "boolean"
+                                        },
+                                        "tax_behavior": {
+                                          "type": "string",
+                                          "enum": [
+                                            "exclusive",
+                                            "inclusive",
+                                            "unspecified"
+                                          ]
+                                        }
+                                      },
+                                      "required": [
+                                        "price_key",
+                                        "currency",
+                                        "amount",
+                                        "type",
+                                        "billing_scheme"
+                                      ]
+                                    }
+                                  },
+                                  "entitlement_features": {
+                                    "type": "array",
+                                    "items": {
+                                      "type": "object",
+                                      "properties": {
+                                        "feature_key": {
+                                          "type": "string"
+                                        },
+                                        "feature_id": {
+                                          "type": "string"
+                                        },
+                                        "name": {
+                                          "type": "string"
+                                        },
+                                        "description": {
+                                          "oneOf": [
+                                            {
+                                              "type": "string"
+                                            },
+                                            {
+                                              "type": "null"
+                                            }
+                                          ]
+                                        },
+                                        "type": {
+                                          "type": "string",
+                                          "enum": [
+                                            "boolean",
+                                            "metered",
+                                            "credit"
+                                          ]
+                                        },
+                                        "metering_config": {
+                                          "oneOf": [
+                                            {
+                                              "type": "object",
+                                              "properties": {
+                                                "consumable": {
+                                                  "type": "boolean"
+                                                },
+                                                "reset_interval": {
+                                                  "type": "string",
+                                                  "enum": [
+                                                    "billing_cycle",
+                                                    "monthly",
+                                                    "yearly",
+                                                    "daily",
+                                                    "never"
+                                                  ]
+                                                },
+                                                "aggregation": {
+                                                  "type": "string",
+                                                  "enum": [
+                                                    "sum",
+                                                    "max",
+                                                    "last"
+                                                  ]
+                                                }
+                                              },
+                                              "required": [
+                                                "consumable",
+                                                "reset_interval",
+                                                "aggregation"
+                                              ]
+                                            },
+                                            {
+                                              "type": "null"
+                                            }
+                                          ]
+                                        },
+                                        "credit_config": {
+                                          "oneOf": [
+                                            {
+                                              "type": "object",
+                                              "properties": {
+                                                "wallet_currency": {
+                                                  "type": "string"
+                                                },
+                                                "wallet_label": {
+                                                  "type": "string"
+                                                }
+                                              },
+                                              "required": [
+                                                "wallet_currency"
+                                              ]
+                                            },
+                                            {
+                                              "type": "null"
+                                            }
+                                          ]
+                                        }
+                                      },
+                                      "required": [
+                                        "feature_key",
+                                        "name",
+                                        "type"
+                                      ]
+                                    }
+                                  }
+                                },
+                                "required": [
+                                  "product",
+                                  "prices"
+                                ]
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "discount_coupon_id": {
+                            "oneOf": [
+                              {
+                                "type": "string"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "auto_activate": {
+                            "type": "boolean"
+                          },
+                          "tier_group": {
+                            "oneOf": [
+                              {
+                                "type": "string"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "tier_rank": {
+                            "oneOf": [
+                              {
+                                "type": "number"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "is_default_tier": {
+                            "type": "boolean"
+                          },
+                          "required_tier_group": {
+                            "oneOf": [
+                              {
+                                "type": "string"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "min_tier_rank": {
+                            "oneOf": [
+                              {
+                                "type": "number"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "compatible_bundle_ids": {
+                            "oneOf": [
+                              {
+                                "type": "array",
+                                "items": {
+                                  "type": "string"
+                                }
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "status": {
+                            "type": "string",
+                            "enum": [
+                              "draft",
+                              "active",
+                              "archived"
+                            ]
+                          },
+                          "live_mode": {
+                            "type": "boolean"
+                          },
+                          "date_created": {
+                            "type": "string"
+                          },
+                          "date_updated": {
+                            "type": "string"
+                          },
+                          "date_deleted": {
+                            "oneOf": [
+                              {
+                                "type": "string"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          }
+                        },
+                        "required": [
+                          "conjoin_account_id",
+                          "conjoin_project_id",
+                          "entity_id",
+                          "price_bundle_id",
+                          "reference_id",
+                          "name",
+                          "authoring_mode",
+                          "items",
+                          "auto_activate",
+                          "is_default_tier",
+                          "status",
+                          "live_mode",
+                          "date_created",
+                          "date_updated"
+                        ]
+                      }
+                    },
+                    "cursor": {
+                      "$ref": "#/components/schemas/PaginationCursor"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error or bad request",
+            "headers": {
+              "Conjoin-Request-Id": {
+                "$ref": "#/components/headers/ConjoinRequestId"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "response": {
+                      "$ref": "#/components/schemas/ApiClientErrorResponseMeta"
+                    },
+                    "data": {
+                      "type": "null"
+                    },
+                    "error": {
+                      "$ref": "#/components/schemas/ApiErrorDetail"
+                    }
+                  },
+                  "required": [
+                    "response",
+                    "data",
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - missing or invalid API key",
+            "headers": {
+              "Conjoin-Request-Id": {
+                "$ref": "#/components/headers/ConjoinRequestId"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "response": {
+                      "$ref": "#/components/schemas/ApiClientErrorResponseMeta"
+                    },
+                    "data": {
+                      "type": "null"
+                    },
+                    "error": {
+                      "$ref": "#/components/schemas/ApiErrorDetail"
+                    }
+                  },
+                  "required": [
+                    "response",
+                    "data",
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The resource does not exist in the scope of the request",
+            "headers": {
+              "Conjoin-Request-Id": {
+                "$ref": "#/components/headers/ConjoinRequestId"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "response": {
+                      "$ref": "#/components/schemas/ApiClientErrorResponseMeta"
+                    },
+                    "data": {
+                      "type": "null"
+                    },
+                    "error": {
+                      "$ref": "#/components/schemas/ApiErrorDetail"
+                    }
+                  },
+                  "required": [
+                    "response",
+                    "data",
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "headers": {
+              "Conjoin-Request-Id": {
+                "$ref": "#/components/headers/ConjoinRequestId"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "response": {
+                      "$ref": "#/components/schemas/ApiServerErrorResponseMeta"
+                    },
+                    "data": {
+                      "type": "null"
+                    },
+                    "error": {
+                      "$ref": "#/components/schemas/ApiErrorDetail"
+                    }
+                  },
+                  "required": [
+                    "response",
+                    "data",
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ConjoinRequestId"
+          },
+          {
+            "name": "reference_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 64,
+              "example": "string"
+            }
+          },
+          {
+            "name": "date_created",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "equals": {
+                  "type": "string",
+                  "example": "string"
+                },
+                "not_equals": {
+                  "type": "string",
+                  "example": "string"
+                },
+                "gt": {
+                  "type": "string",
+                  "example": "string"
+                },
+                "lt": {
+                  "type": "string",
+                  "example": "string"
+                },
+                "gte": {
+                  "type": "string",
+                  "example": "string"
+                },
+                "lte": {
+                  "type": "string",
+                  "example": "string"
+                }
+              },
+              "additionalProperties": false
+            },
+            "style": "deepObject",
+            "explode": true
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "prev": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 512,
+                  "example": "string"
+                },
+                "next": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 512,
+                  "example": "string"
+                }
+              }
+            },
+            "style": "deepObject",
+            "explode": true
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string",
+                "enum": [
+                  "asc",
+                  "desc"
+                ]
+              }
+            },
+            "style": "deepObject",
+            "explode": true
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "number"
+                }
+              ],
+              "default": 50
+            }
+          },
+          {
+            "name": "Billing-Entity-ID",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The Billing entity that owns the resource. A resource of another entity answers 404."
+          }
+        ]
+      }
+    },
+    "/v1/billing/self/entitlement-overrides/count": {
+      "get": {
+        "operationId": "listSelfEntitlementOverridesCount",
+        "summary": "Count the entitlement overrides of the signed-in customer",
+        "tags": [
+          "Billing - Self"
+        ],
+        "security": [
+          {
+            "conjoinSessionBearer": []
+          },
+          {
+            "conjoinSessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "headers": {
+              "Conjoin-Request-Id": {
+                "$ref": "#/components/headers/ConjoinRequestId"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "response": {
+                      "$ref": "#/components/schemas/ApiSuccessResponseMeta"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "count": {
+                          "type": "integer",
+                          "minimum": 0
+                        }
+                      },
+                      "required": [
+                        "count"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error or bad request",
+            "headers": {
+              "Conjoin-Request-Id": {
+                "$ref": "#/components/headers/ConjoinRequestId"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "response": {
+                      "$ref": "#/components/schemas/ApiClientErrorResponseMeta"
+                    },
+                    "data": {
+                      "type": "null"
+                    },
+                    "error": {
+                      "$ref": "#/components/schemas/ApiErrorDetail"
+                    }
+                  },
+                  "required": [
+                    "response",
+                    "data",
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - missing or invalid API key",
+            "headers": {
+              "Conjoin-Request-Id": {
+                "$ref": "#/components/headers/ConjoinRequestId"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "response": {
+                      "$ref": "#/components/schemas/ApiClientErrorResponseMeta"
+                    },
+                    "data": {
+                      "type": "null"
+                    },
+                    "error": {
+                      "$ref": "#/components/schemas/ApiErrorDetail"
+                    }
+                  },
+                  "required": [
+                    "response",
+                    "data",
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The resource does not exist in the scope of the request",
+            "headers": {
+              "Conjoin-Request-Id": {
+                "$ref": "#/components/headers/ConjoinRequestId"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "response": {
+                      "$ref": "#/components/schemas/ApiClientErrorResponseMeta"
+                    },
+                    "data": {
+                      "type": "null"
+                    },
+                    "error": {
+                      "$ref": "#/components/schemas/ApiErrorDetail"
+                    }
+                  },
+                  "required": [
+                    "response",
+                    "data",
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "headers": {
+              "Conjoin-Request-Id": {
+                "$ref": "#/components/headers/ConjoinRequestId"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "response": {
+                      "$ref": "#/components/schemas/ApiServerErrorResponseMeta"
+                    },
+                    "data": {
+                      "type": "null"
+                    },
+                    "error": {
+                      "$ref": "#/components/schemas/ApiErrorDetail"
+                    }
+                  },
+                  "required": [
+                    "response",
+                    "data",
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "description": "Returns how many records match the filters that the list route accepts.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ConjoinRequestId"
+          },
+          {
+            "name": "feature_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 48,
+              "example": "string"
+            }
+          },
+          {
+            "name": "subscription_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 48,
+              "example": "string"
+            }
+          },
+          {
+            "name": "is_active",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "string",
+                  "enum": [
+                    "true",
+                    "false"
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "name": "date_created",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "equals": {
+                  "type": "string",
+                  "example": "string"
+                },
+                "not_equals": {
+                  "type": "string",
+                  "example": "string"
+                },
+                "gt": {
+                  "type": "string",
+                  "example": "string"
+                },
+                "lt": {
+                  "type": "string",
+                  "example": "string"
+                },
+                "gte": {
+                  "type": "string",
+                  "example": "string"
+                },
+                "lte": {
+                  "type": "string",
+                  "example": "string"
+                }
+              },
+              "additionalProperties": false
+            },
+            "style": "deepObject",
+            "explode": true
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "prev": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 512,
+                  "example": "string"
+                },
+                "next": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 512,
+                  "example": "string"
+                }
+              }
+            },
+            "style": "deepObject",
+            "explode": true
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string",
+                "enum": [
+                  "asc",
+                  "desc"
+                ]
+              }
+            },
+            "style": "deepObject",
+            "explode": true
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "number"
+                }
+              ],
+              "default": 50
+            }
+          },
+          {
+            "name": "Billing-Entity-ID",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The Billing entity that owns the resource. A resource of another entity answers 404."
+          }
+        ]
+      }
+    },
+    "/v1/billing/self/price-bundles/count": {
+      "get": {
+        "operationId": "listSelfPriceBundlesCount",
+        "summary": "Count the published price bundles that the signed-in customer can buy",
+        "tags": [
+          "Billing - Self"
+        ],
+        "security": [
+          {
+            "conjoinSessionBearer": []
+          },
+          {
+            "conjoinSessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "headers": {
+              "Conjoin-Request-Id": {
+                "$ref": "#/components/headers/ConjoinRequestId"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "response": {
+                      "$ref": "#/components/schemas/ApiSuccessResponseMeta"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "count": {
+                          "type": "integer",
+                          "minimum": 0
+                        }
+                      },
+                      "required": [
+                        "count"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error or bad request",
+            "headers": {
+              "Conjoin-Request-Id": {
+                "$ref": "#/components/headers/ConjoinRequestId"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "response": {
+                      "$ref": "#/components/schemas/ApiClientErrorResponseMeta"
+                    },
+                    "data": {
+                      "type": "null"
+                    },
+                    "error": {
+                      "$ref": "#/components/schemas/ApiErrorDetail"
+                    }
+                  },
+                  "required": [
+                    "response",
+                    "data",
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - missing or invalid API key",
+            "headers": {
+              "Conjoin-Request-Id": {
+                "$ref": "#/components/headers/ConjoinRequestId"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "response": {
+                      "$ref": "#/components/schemas/ApiClientErrorResponseMeta"
+                    },
+                    "data": {
+                      "type": "null"
+                    },
+                    "error": {
+                      "$ref": "#/components/schemas/ApiErrorDetail"
+                    }
+                  },
+                  "required": [
+                    "response",
+                    "data",
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The resource does not exist in the scope of the request",
+            "headers": {
+              "Conjoin-Request-Id": {
+                "$ref": "#/components/headers/ConjoinRequestId"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "response": {
+                      "$ref": "#/components/schemas/ApiClientErrorResponseMeta"
+                    },
+                    "data": {
+                      "type": "null"
+                    },
+                    "error": {
+                      "$ref": "#/components/schemas/ApiErrorDetail"
+                    }
+                  },
+                  "required": [
+                    "response",
+                    "data",
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "headers": {
+              "Conjoin-Request-Id": {
+                "$ref": "#/components/headers/ConjoinRequestId"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "response": {
+                      "$ref": "#/components/schemas/ApiServerErrorResponseMeta"
+                    },
+                    "data": {
+                      "type": "null"
+                    },
+                    "error": {
+                      "$ref": "#/components/schemas/ApiErrorDetail"
+                    }
+                  },
+                  "required": [
+                    "response",
+                    "data",
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "description": "Returns how many records match the filters that the list route accepts.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ConjoinRequestId"
+          },
+          {
+            "name": "reference_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 64,
+              "example": "string"
+            }
+          },
+          {
+            "name": "date_created",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "equals": {
+                  "type": "string",
+                  "example": "string"
+                },
+                "not_equals": {
+                  "type": "string",
+                  "example": "string"
+                },
+                "gt": {
+                  "type": "string",
+                  "example": "string"
+                },
+                "lt": {
+                  "type": "string",
+                  "example": "string"
+                },
+                "gte": {
+                  "type": "string",
+                  "example": "string"
+                },
+                "lte": {
+                  "type": "string",
+                  "example": "string"
+                }
+              },
+              "additionalProperties": false
+            },
+            "style": "deepObject",
+            "explode": true
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "prev": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 512,
+                  "example": "string"
+                },
+                "next": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 512,
+                  "example": "string"
+                }
+              }
+            },
+            "style": "deepObject",
+            "explode": true
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string",
+                "enum": [
+                  "asc",
+                  "desc"
+                ]
+              }
+            },
+            "style": "deepObject",
+            "explode": true
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "number"
+                }
+              ],
+              "default": 50
+            }
+          },
+          {
+            "name": "Billing-Entity-ID",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The Billing entity that owns the resource. A resource of another entity answers 404."
+          }
+        ]
+      }
+    },
     "/v1/cloud/client/branding/": {
       "get": {
         "operationId": "readPublicProjectBranding",

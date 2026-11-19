@@ -414,6 +414,62 @@ class AuthSelfUpdateProfileResponse(ConjoinModel):
     status: str
 
 
+class BillingSelfListEntitlementOverridesCountResponse(ConjoinModel):
+    count: int
+
+
+class BillingSelfListEntitlementOverridesItem(ConjoinModel):
+    conjoin_account_id: str
+    conjoin_project_id: str
+    customer_id: str
+    date_created: str
+    date_deleted: str | None = None
+    date_updated: str
+    effective_from: str
+    effective_to: str | None = None
+    entity_id: str
+    feature_id: str
+    included_units: float | None = None
+    is_active: bool
+    live_mode: bool
+    override_id: str
+    plan_id: str
+    reason: str | None = None
+    soft_limit: bool | None = None
+    subscription_id: str
+    value_type: str
+
+
+class BillingSelfListPriceBundlesCountResponse(ConjoinModel):
+    count: int
+
+
+class BillingSelfListPriceBundlesItem(ConjoinModel):
+    authoring_mode: str
+    auto_activate: bool
+    compatible_bundle_ids: Sequence[str] | None = None
+    conjoin_account_id: str
+    conjoin_project_id: str
+    date_created: str
+    date_deleted: str | None = None
+    date_updated: str
+    description: str | None = None
+    discount_coupon_id: str | None = None
+    entity_id: str
+    is_default_tier: bool
+    items: Sequence[dict[str, Any]]
+    live_mode: bool
+    managed_catalog: dict[str, Any] | None = None
+    min_tier_rank: float | None = None
+    name: str
+    price_bundle_id: str
+    reference_id: str
+    required_tier_group: str | None = None
+    status: str
+    tier_group: str | None = None
+    tier_rank: float | None = None
+
+
 class CloudBrandingReadPublicProjectResponse(ConjoinModel):
     accessibility: dict[str, Any] | None = None
     animation: dict[str, Any] | None = None
@@ -607,6 +663,42 @@ class AuthSelfUpdateProfileRequest(TypedDict, total=False):
     name: str
     primary_email: str
     primary_phone: str
+
+
+class BillingSelfListEntitlementOverridesCountQuery(TypedDict, total=False):
+    feature_id: str
+    subscription_id: str
+    is_active: Any
+    date_created: dict[str, Any]
+    cursor: dict[str, Any]
+    sort: dict[str, str]
+    limit: Any
+
+
+class BillingSelfListEntitlementOverridesQuery(TypedDict, total=False):
+    feature_id: str
+    subscription_id: str
+    is_active: Any
+    date_created: dict[str, Any]
+    cursor: dict[str, Any]
+    sort: dict[str, str]
+    limit: Any
+
+
+class BillingSelfListPriceBundlesCountQuery(TypedDict, total=False):
+    reference_id: str
+    date_created: dict[str, Any]
+    cursor: dict[str, Any]
+    sort: dict[str, str]
+    limit: Any
+
+
+class BillingSelfListPriceBundlesQuery(TypedDict, total=False):
+    reference_id: str
+    date_created: dict[str, Any]
+    cursor: dict[str, Any]
+    sort: dict[str, str]
+    limit: Any
 
 
 class CloudBrandingReadPublicProjectQuery(TypedDict, total=False):
