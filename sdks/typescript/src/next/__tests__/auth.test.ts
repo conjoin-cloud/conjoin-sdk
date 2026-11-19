@@ -9,7 +9,8 @@ vi.mock('next/headers', () => ({
   headers: vi.fn(),
 }))
 
-vi.mock('../../server/tokens', () => ({
+vi.mock('../../server/tokens', async importOriginal => ({
+  ...(await importOriginal<typeof import('../../server/tokens')>()),
   verifyToken: vi.fn(),
 }))
 
@@ -43,17 +44,17 @@ describe('auth', () => {
 
   it('reads token from cookie and verifies', async () => {
     const cookieGet = vi.fn().mockImplementation((name: string) => {
-      if (name === '__conjoin_auth_at') return { value: 'jwt-from-cookie' }
+      if (name === '__conjoin_auth_sess') return { value: 'jwt-from-cookie' }
       return undefined
     })
     mockCookies.mockResolvedValue({ get: cookieGet } as never)
 
     mockVerifyToken.mockResolvedValueOnce({
-      payload: { sub: 'acc_123', sid: 'ses_456' },
+      payload: { sub: 'acc_123', session_id: 'ses_456' },
       accountId: 'acc_123',
       sessionId: 'ses_456',
       organizationId: null,
-      organizationRole: null,
+      organizationRoles: [],
     })
 
     const result = await auth()
@@ -63,7 +64,8 @@ describe('auth', () => {
     expect(result?.sessionId).toBe('ses_456')
     expect(result?.getToken()).toBe('jwt-from-cookie')
     expect(mockVerifyToken).toHaveBeenCalledWith('jwt-from-cookie', {
-      jwksUrl: 'https://auth.conjoin.cloud/.well-known/jwks.json',
+      jwksUrl: 'https://auth.conjoin.cloud/v1/auth/client/.well-known/jwks.json',
+      issuer: 'https://auth.conjoin.cloud/v1/auth/client',
     })
   })
 
@@ -79,7 +81,7 @@ describe('auth', () => {
       accountId: 'acc_456',
       sessionId: 'ses_789',
       organizationId: 'org_100',
-      organizationRole: 'member',
+      organizationRoles: ['member'],
     })
 
     const result = await auth()
@@ -98,7 +100,7 @@ describe('auth', () => {
     mockHeaders.mockResolvedValue({ get: headerGet } as never)
 
     const cookieGet = vi.fn().mockImplementation((name: string) => {
-      if (name === '__conjoin_auth_at') return { value: 'cookie-token' }
+      if (name === '__conjoin_auth_sess') return { value: 'cookie-token' }
       return undefined
     })
     mockCookies.mockResolvedValue({ get: cookieGet } as never)
@@ -108,7 +110,7 @@ describe('auth', () => {
       accountId: 'acc_123',
       sessionId: 'ses_456',
       organizationId: null,
-      organizationRole: null,
+      organizationRoles: [],
     })
 
     await auth()
@@ -124,7 +126,7 @@ describe('auth', () => {
 
   it('returns null when token verification fails', async () => {
     const cookieGet = vi.fn().mockImplementation((name: string) => {
-      if (name === '__conjoin_auth_at') return { value: 'bad-token' }
+      if (name === '__conjoin_auth_sess') return { value: 'bad-token' }
       return undefined
     })
     mockCookies.mockResolvedValue({ get: cookieGet } as never)

@@ -1,5 +1,12 @@
 import { createRemoteJWKSet, type JWTPayload, jwtVerify } from 'jose'
 
+export const CONJOIN_AUTH_ISSUER_PATH = '/v1/auth/client'
+export const CONJOIN_SESSION_TOKEN_AUDIENCE = 'conjoin-auth-session'
+export const CONJOIN_SESSION_TOKEN_COOKIE = '__conjoin_auth_sess'
+export const CONJOIN_CLIENT_HANDLE_COOKIE = '__conjoin_auth_cl'
+
+const CONJOIN_AUTH_JWKS_PATH = '/.well-known/jwks.json'
+
 export type VerifyTokenOptions = {
   jwksUrl: string
   audience?: string
@@ -11,10 +18,18 @@ export type VerifiedToken = {
   accountId: string
   sessionId: string
   organizationId: string | null
-  organizationRole: string | null
+  organizationRoles: string[]
 }
 
 const jwksSets = new Map<string, ReturnType<typeof createRemoteJWKSet>>()
+
+export function buildConjoinAuthIssuer(authDomain: string): string {
+  return `https://${authDomain}${CONJOIN_AUTH_ISSUER_PATH}`
+}
+
+export function buildConjoinAuthJwksUrl(issuer: string): string {
+  return `${issuer}${CONJOIN_AUTH_JWKS_PATH}`
+}
 
 function getJwksSet(url: string) {
   let jwks = jwksSets.get(url)
@@ -25,25 +40,27 @@ function getJwksSet(url: string) {
   return jwks
 }
 
+function readStringClaim(value: unknown): string | null {
+  return typeof value === 'string' && value.length > 0 ? value : null
+}
+
+function readRolesClaim(value: unknown): string[] {
+  return Array.isArray(value) ? value.filter((role): role is string => typeof role === 'string') : []
+}
+
 export async function verifyToken(token: string, options: VerifyTokenOptions): Promise<VerifiedToken> {
   const jwks = getJwksSet(options.jwksUrl)
 
   const { payload } = await jwtVerify(token, jwks, {
-    audience: options.audience,
+    audience: options.audience ?? CONJOIN_SESSION_TOKEN_AUDIENCE,
     issuer: options.issuer,
   })
-
-  const claims = payload as JWTPayload & {
-    sid?: string
-    org_id?: string
-    org_role?: string
-  }
 
   return {
     payload,
     accountId: payload.sub ?? '',
-    sessionId: claims.sid ?? '',
-    organizationId: claims.org_id ?? null,
-    organizationRole: claims.org_role ?? null,
+    sessionId: readStringClaim(payload.session_id) ?? '',
+    organizationId: readStringClaim(payload.organization_id),
+    organizationRoles: readRolesClaim(payload.organization_roles),
   }
 }

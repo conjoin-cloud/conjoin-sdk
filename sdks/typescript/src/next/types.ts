@@ -2,7 +2,7 @@ export type AuthObject = {
   accountId: string
   sessionId: string
   organizationId: string | null
-  organizationRole: string | null
+  organizationRoles: string[]
   getToken: () => string
 }
 

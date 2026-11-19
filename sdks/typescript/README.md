@@ -254,20 +254,21 @@ The connection opens a WebSocket at `/v1/relay/broadcast` on the API host, or at
 ## Server Verification
 
 ```ts
-import { verifyToken, verifyWebhook } from '@conjoin-cloud/sdk/server'
+import { buildConjoinAuthIssuer, buildConjoinAuthJwksUrl, verifyToken, verifyWebhook } from '@conjoin-cloud/sdk/server'
+
+const issuer = buildConjoinAuthIssuer('auth.example.com')
 
 const verified = await verifyToken(token, {
-  jwksUrl: 'https://your-tenant.conjoin.cloud/.well-known/jwks.json',
-  audience: 'your-app',
-  issuer: 'https://conjoin.cloud',
+  jwksUrl: buildConjoinAuthJwksUrl(issuer),
+  issuer,
 })
 
-console.log(verified.accountId, verified.sessionId, verified.organizationId)
+console.log(verified.accountId, verified.sessionId, verified.organizationId, verified.organizationRoles)
 
 const ok = verifyWebhook(rawBody, signatureHeader, webhookSecret)
 ```
 
-`verifyToken` uses `jose` with a remote JWKS cached per `jwksUrl`. `verifyWebhook` checks a hex HMAC-SHA256 signature in constant time.
+The issuer is `https://{auth domain}/v1/auth/client`, and its keys are at `{issuer}/.well-known/jwks.json`. `verifyToken` uses `jose` with a remote JWKS cached per `jwksUrl`, and it accepts only the audience `conjoin-auth-session` unless you pass another `audience`, so it refuses an OpenID Connect ID token that a client presents as a session token. `verifyWebhook` checks a hex HMAC-SHA256 signature in constant time.
 
 ## Next.js App Router
 
@@ -302,7 +303,7 @@ export default conjoinProxy((auth, req) => {
 })
 ```
 
-The proxy reads a client-state cookie at the edge for routing decisions. Use `auth()` inside Server Components and Route Handlers when you need JWT verification.
+The proxy reads the `__conjoin_auth_cl` client handle and verifies the `__conjoin_auth_sess` session token that Conjoin Auth sets, using the same auth domain settings as `auth()`. It passes `null` when either cookie is missing, when the token fails verification, or when the token belongs to another client. `auth()` reads the same session token inside Server Components and Route Handlers.
 
 `auth()` checks tokens against the JWKS on your project's auth domain. Set `CONJOIN_AUTH_DOMAIN`, or pass `authDomain` or `jwksUrl`, to point it there. With only `CONJOIN_PUBLISHABLE_KEY` set, the adapter reads the auth domain from your project's SDK settings and keeps it for five minutes. `currentAccount()` reads the signed-in account's profile from the same auth domain.
 
@@ -319,7 +320,8 @@ import {
 const app = express()
 
 app.use(conjoinMiddleware({
-  jwksUrl: 'https://your-tenant.conjoin.cloud/.well-known/jwks.json',
+  jwksUrl: 'https://auth.example.com/v1/auth/client/.well-known/jwks.json',
+  issuer: 'https://auth.example.com/v1/auth/client',
 }))
 
 app.get('/me', requireAuth, (req, res) => {
@@ -349,7 +351,8 @@ import {
 const app = new Hono()
 
 app.use('*', conjoinMiddleware({
-  jwksUrl: 'https://your-tenant.conjoin.cloud/.well-known/jwks.json',
+  jwksUrl: 'https://auth.example.com/v1/auth/client/.well-known/jwks.json',
+  issuer: 'https://auth.example.com/v1/auth/client',
 }))
 
 app.get('/me', requireAuth, c => {
