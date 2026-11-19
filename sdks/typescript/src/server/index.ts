@@ -43,5 +43,5 @@ export type {
   VerifiedToken,
   VerifyTokenOptions,
 } from './tokens'
-export { verifyToken } from './tokens'
+export { buildConjoinAuthIssuer, buildConjoinAuthJwksUrl, verifyToken } from './tokens'
 export { verifyWebhook } from './webhooks'

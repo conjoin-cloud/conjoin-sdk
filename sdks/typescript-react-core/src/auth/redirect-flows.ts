@@ -1,11 +1,10 @@
 import * as v from 'valibot'
 import type { AuthFlowState } from '../provider/types'
+import { ClientHandleSchema } from './client-handle-schema'
 
 const REDIRECT_FLOW_KEY_PREFIX = 'conjoin_auth_redirect_flow:'
 const REDIRECT_FLOW_MAX_AGE_MS = 10 * 60 * 1000
 const MAX_PENDING_REDIRECT_FLOWS = 8
-
-const identifier = v.pipe(v.string(), v.minLength(1), v.maxLength(256), v.regex(/^[\w.:-]+$/))
 
 const StoredRedirectFlowSchema = v.object({
   savedAt: v.number(),
@@ -16,7 +15,7 @@ const StoredRedirectFlowSchema = v.object({
       codeVerifier: v.pipe(v.string(), v.minLength(43), v.maxLength(128)),
       codeChallenge: v.pipe(v.string(), v.length(43)),
     }),
-    clientHandle: v.nullable(v.object({ client_id: identifier, reference_id: identifier })),
+    clientHandle: v.nullable(ClientHandleSchema),
   }),
 })
 
