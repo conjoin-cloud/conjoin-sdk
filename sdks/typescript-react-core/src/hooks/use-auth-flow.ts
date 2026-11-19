@@ -1,3 +1,4 @@
+import { parseClientHandle } from '@conjoin-cloud/sdk/auth'
 import { useCallback, useMemo, useRef } from 'react'
 import type { ConjoinAuthApi } from '../auth/auth-api'
 import type { AuthFlowKind, AuthFlowState, AuthTransport } from '../provider/types'
@@ -49,15 +50,7 @@ function callFlowStep(
 }
 
 function readClientHandle(result: AuthFlowResult): AuthFlowState['clientHandle'] {
-  if (!('client_handle' in result)) return null
-
-  const handle = result.client_handle
-
-  if (typeof handle !== 'object' || handle === null) return null
-  if (!('client_id' in handle) || !('reference_id' in handle)) return null
-  if (typeof handle.client_id !== 'string' || typeof handle.reference_id !== 'string') return null
-
-  return { client_id: handle.client_id, reference_id: handle.reference_id }
+  return 'client_handle' in result ? parseClientHandle(result.client_handle) : null
 }
 
 function useAuthFlow<TKind extends AuthFlowKind>(kind: TKind) {
