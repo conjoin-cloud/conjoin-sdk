@@ -13,7 +13,16 @@ export type SignedInQuery<TData> =
   | { isLoaded: true; isSignedIn: false; data: null; error: null }
   | { isLoaded: boolean; isSignedIn: true; data: TData | null; error: Error | null }
 
-export function useSignedInQuery<TData>(name: string, read: SignedInRead<TData>): SignedInQuery<TData> {
+type SignedInQueryOptions = {
+  keyParts?: readonly unknown[]
+  isEnabled?: boolean
+}
+
+export function useSignedInQuery<TData>(
+  name: string,
+  read: SignedInRead<TData>,
+  { keyParts = [], isEnabled = true }: SignedInQueryOptions = {},
+): SignedInQuery<TData> {
   const { authApi, transport } = useConjoinClient()
   const authState = useAuthState()
   const isSignedIn = authState.isLoaded && authState.isSignedIn
@@ -27,9 +36,9 @@ export function useSignedInQuery<TData>(name: string, read: SignedInRead<TData>)
   }, [authApi, transport, read])
 
   const result: QueryObserverResult<TData, Error> = useConjoinQuery<TData>({
-    queryKey: ['conjoin', 'auth', name, accountId, sessionId, organizationId],
+    queryKey: ['conjoin', 'auth', name, accountId, sessionId, organizationId, ...keyParts],
     queryFn,
-    enabled: isSignedIn && authApi !== null,
+    enabled: isEnabled && isSignedIn && authApi !== null,
   })
 
   if (!authState.isLoaded) return { isLoaded: false, isSignedIn: undefined, data: undefined, error: null }

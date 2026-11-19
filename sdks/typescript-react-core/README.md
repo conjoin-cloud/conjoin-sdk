@@ -59,6 +59,8 @@ function Profile() {
 
 `ConjoinProvider` accepts `publishableKey`, `config`, and `appearance`. It reads your project's SDK settings with the publishable key, and it calls the auth domain from those settings for sign-in and for the signed-in account. On the web, the session lives in the auth domain's cookies, and the provider renews it before it expires. The hooks include `useAuth`, `useSignIn`, `useSignUp`, `useSession`, `useSessions`, `useAccount`, `useUpdateAccount`, `useOrg`, `useEntitlements`, `useCheckout`, `useBundles`, `useChannel`, `useStorageUpload`, `useConjoinStatus`, and `useConjoinTheme`.
 
+`useEntitlements` and `useBundles` read from the auth domain with the signed-in session and the billing entity that you pass, so a page needs only its publishable key to show them.
+
 ## Sign In
 
 `useSignIn` and `useSignUp` each return `start`, `complete`, `startRedirect`, `completeRedirect`, and `reset`. Every step returns the server's `status`, and the hook signs the user in once a step returns `complete`:
