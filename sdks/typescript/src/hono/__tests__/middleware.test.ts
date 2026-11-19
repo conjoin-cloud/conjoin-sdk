@@ -2,7 +2,8 @@ import { Hono } from 'hono'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import type { VerifiedToken } from '../../server/tokens'
 
-vi.mock('../../server/tokens', () => ({
+vi.mock('../../server/tokens', async importOriginal => ({
+  ...(await importOriginal<typeof import('../../server/tokens')>()),
   verifyToken: vi.fn(),
 }))
 
@@ -17,11 +18,11 @@ const JWKS_URL = 'https://auth.conjoin.cloud/.well-known/jwks.json'
 const VALID_REQUEST_ID = 'cnj_req_0198f0f7-5d0b-7b4a-8d5a-cf5693f0b2c1'
 
 const mockVerifiedToken: VerifiedToken = {
-  payload: { sub: 'acc_123', sid: 'ses_456' },
+  payload: { sub: 'acc_123', session_id: 'ses_456' },
   accountId: 'acc_123',
   sessionId: 'ses_456',
   organizationId: 'org_789',
-  organizationRole: 'admin',
+  organizationRoles: ['admin'],
 }
 
 function createApp() {
@@ -65,7 +66,7 @@ describe('conjoinMiddleware', () => {
     })
 
     const res = await app.request('/test', {
-      headers: { cookie: '__conjoin_auth_at=cookie-token' },
+      headers: { cookie: '__conjoin_auth_sess=cookie-token' },
     })
 
     expect(res.status).toBe(200)
@@ -82,7 +83,7 @@ describe('conjoinMiddleware', () => {
     await app.request('/test', {
       headers: {
         authorization: 'Bearer bearer-token',
-        cookie: '__conjoin_auth_at=cookie-token',
+        cookie: '__conjoin_auth_sess=cookie-token',
       },
     })
 

@@ -7,6 +7,7 @@ import {
   type AuthSessionGrant,
   type AuthTransport,
   CLIENT_HANDLE_HEADER,
+  ClientHandleSchema,
   type ConjoinAuthApi,
   createAuthFlowProof,
   createRedirectFlowRegistry,
@@ -20,9 +21,6 @@ import { loadFlowCrypto, loadSecureStore } from './native-modules'
 const LEGACY_ACCESS_TOKEN_KEY = 'conjoin_access_token'
 const REFRESH_TOKEN_KEY = 'conjoin_refresh_token'
 const CLIENT_HANDLE_KEY = 'conjoin_client_handle'
-
-const identifier = v.pipe(v.string(), v.minLength(1), v.maxLength(256), v.regex(/^[\w.:-]+$/))
-const StoredClientHandleSchema = v.object({ client_id: identifier, reference_id: identifier })
 
 type NativeSessionTokens = Awaited<ReturnType<ConjoinAuthApi['nativeFlows']['processTokenMint']>>
 
@@ -38,7 +36,7 @@ function readStoredClientHandle(raw: string | null): AuthClientHandle | null {
   if (raw === null) return null
 
   try {
-    const parsed = v.safeParse(StoredClientHandleSchema, JSON.parse(raw))
+    const parsed = v.safeParse(ClientHandleSchema, JSON.parse(raw))
     return parsed.success ? parsed.output : null
   } catch {
     return null

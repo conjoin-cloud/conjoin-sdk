@@ -1,14 +1,13 @@
 import type { RequestHandler } from 'express'
 import { getConjoinRequestIdFromHeaders } from '../core/request-tracing'
-import { verifyToken } from '../server/tokens'
+import { CONJOIN_SESSION_TOKEN_COOKIE, verifyToken } from '../server/tokens'
 import './types'
 import type { ConjoinExpressOptions } from './types'
 
-const DEFAULT_COOKIE_NAME = '__conjoin_auth_at'
 const MIDDLEWARE_SENTINEL = '__conjoin_middleware_applied'
 
 export function conjoinMiddleware(options: ConjoinExpressOptions): RequestHandler {
-  const cookieName = options.cookieName ?? DEFAULT_COOKIE_NAME
+  const cookieName = options.cookieName ?? CONJOIN_SESSION_TOKEN_COOKIE
 
   return async (req, _res, next) => {
     Object.defineProperty(req, MIDDLEWARE_SENTINEL, {
