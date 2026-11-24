@@ -174,6 +174,6 @@
     "generate": "openapi-typescript ../../spec/openapi.json -o src/generated/api-types.ts && openapi-typescript ../../spec/openapi-frontend.json -o src/generated/frontend-api-types.ts && tsx codegen/generate.ts"
   },
   "dependencies": {
-    "jose": "6.2.3"
+    "jose": "6.2.17"
   }
 }
